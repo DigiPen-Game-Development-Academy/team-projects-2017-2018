@@ -1,0 +1,9 @@
+DataContent = 
+{
+	RichAnimationBuilder = 
+	{
+		string Name = "IntroIsland",
+		uint64 ResourceId = 5ab69c36aba0f6d2,
+		string PreviewArchetype = "",
+	},
+},

@@ -1,0 +1,58 @@
+/*class DropRecources : ZilchComponent
+//Elena Schefer
+//Purpose: Makes player drop items upon death
+{
+     [Static] function Get(name : String) : Integer
+     {
+         return 0;
+     }      
+     [Static] function Add(name : String, count : Integer)
+     {
+        
+     }
+     [Static] function Remove(name : String, count : Integer)
+     {
+         
+     }
+     
+      
+    [Property]
+    
+    var SpawnInventoryItems : Real3;
+    var ClearInventory : Boolean;
+    var RespawnItemsPosition : Real3;
+
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+        if(Health.CurrentHealth <= 0)
+        {
+            this.ClearInventory = true;
+            
+            if(this.ClearInventory == true)
+            {
+               this.Drop("Food", 6, Archetype.Food); 
+               this.Drop("HealthPotion", 6, Archetype.HealthPotion);
+               this.Drop("Gears", 6, Archetype.Gear);
+        
+              this.SpawnInventoryItems = this.RespawnItemsPosition;
+              
+              this.ClearInventory = false;
+            }
+        }
+    }
+    
+    function Drop(whattodrop : String, howMany : Integer, archetype : Archetype)
+    {
+        if (AdvInventory.Get(whattodrop) < howMany)
+        {
+           
+        }
+    }
+}
+*/

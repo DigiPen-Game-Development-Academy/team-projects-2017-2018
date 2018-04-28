@@ -1,0 +1,9 @@
+DataContent = 
+{
+	RichAnimationBuilder = 
+	{
+		string Name = "plzwork",
+		uint64 ResourceId = 5a4b938fb9f00275,
+		string PreviewArchetype = "",
+	},
+},

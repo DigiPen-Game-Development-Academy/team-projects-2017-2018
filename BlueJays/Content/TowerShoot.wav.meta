@@ -1,0 +1,11 @@
+AudioContent = 
+{
+	SoundBuilder = 
+	{
+		string Name = "TowerShoot",
+		uint64 ResourceId = 5ada0c41e4787c8a,
+		bool Compressed = false,
+		bool Streamed = false,
+		SoundLoadType LoadType = Decompress,
+	},
+},

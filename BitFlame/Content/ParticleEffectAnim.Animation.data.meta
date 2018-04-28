@@ -1,0 +1,9 @@
+DataContent = 
+{
+	RichAnimationBuilder = 
+	{
+		string Name = "ParticleEffectAnim",
+		uint64 ResourceId = 5a4001a286867a85,
+		string PreviewArchetype = "",
+	},
+},

@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "EntityDrop",
+		uint64 ResourceId = 5a8d7aacee10c561,
+	},
+},

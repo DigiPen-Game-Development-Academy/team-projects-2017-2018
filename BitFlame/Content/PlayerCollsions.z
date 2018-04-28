@@ -1,0 +1,36 @@
+class PlayerCollsions : ZilchComponent
+{
+    [Property] var Interval : Real = 0.5;
+    
+    var Timer : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Timer < this.Interval)
+        {
+            this.Timer += event.Dt;
+        }
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(this.Timer >= this.Interval)
+        {
+            this.Timer = 0;
+            if(event.OtherObject.Name == "Oxygen_Field" || event.OtherObject.Name == "Ship")
+            {
+                
+            }
+            else
+            {
+                this.Space.SoundSpace.PlayCue(SoundCue.Player_Collision);
+            }
+        }
+    }
+}

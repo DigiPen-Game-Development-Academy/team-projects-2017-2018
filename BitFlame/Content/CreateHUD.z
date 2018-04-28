@@ -1,0 +1,13 @@
+class CreateHUD : ZilchComponent
+{
+    [Property] var HUD : Archetype;
+    
+    var CreatedHUD : Cog;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.CreatedHUD = this.Space.CreateAtPosition(this.HUD, Real3(this.Owner.Transform.WorldTranslation.XY, 0.0));
+        
+        this.CreatedHUD.AttachTo(this.Owner);
+    }
+}

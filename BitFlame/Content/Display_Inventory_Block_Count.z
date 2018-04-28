@@ -1,0 +1,32 @@
+/*************************************
+Filename: Display_Inventory_Block_Count.z
+Author: Jakob McFarland
+Contributors: NULL
+Last modified: 3/6/18
+Brief: This Component displays the number of each type of block the player has
+******************************************/
+
+class Display_Inventory_Block_Count : ZilchComponent
+{
+    [Dependency] var SpriteText : SpriteText;
+    
+    [Property] var BlockType : BlockType;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.BlockType == BlockType.Pipe)
+        {
+            this.SpriteText.Text = "`this.GameSession.GameVars.PlayerPipes`";
+        }
+        else if(this.BlockType == BlockType.Turret)
+        {
+            this.SpriteText.Text = "`this.GameSession.GameVars.PlayerTurrets`";
+        }
+        
+    }
+}

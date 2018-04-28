@@ -1,0 +1,38 @@
+class AppearIfClose : ZilchComponent
+{
+    [Property] var CloseColor : Real4 = Real4(1.0, 1.0, 1.0, 1.0);
+    [Property] var FarColor : Real4 = Real4(1.0, 1.0, 1.0, 0.0);
+    
+    [Property] var Radius : Real = 2.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var playerIsClose = false;
+        
+        var position = this.Owner.Transform.Translation;
+        var playerPosition = this.Space.FindObjectByName("EntityPlayer").Transform.Translation;
+        
+        if (Math.ApproximatelyEqual(playerPosition.X, position.X, this.Radius) && Math.ApproximatelyEqual(playerPosition.Y, position.Y, this.Radius))
+            playerIsClose = true;
+        
+        if (this.Owner.Sprite != null)
+        {
+            if (playerIsClose)
+                Action.Property(ActionGroup.Group(this.Owner.Actions), @this.Owner.Sprite.Color, this.CloseColor, 0.1, Ease.QuadInOut);
+            else
+                Action.Property(ActionGroup.Group(this.Owner.Actions), @this.Owner.Sprite.Color, this.FarColor, 0.1, Ease.QuadInOut);
+        }
+        else if (this.Owner.SpriteText != null)
+        {
+            if (playerIsClose)
+                Action.Property(ActionGroup.Group(this.Owner.Actions), @this.Owner.SpriteText.Color, this.CloseColor, 0.1, Ease.QuadInOut);
+            else
+                Action.Property(ActionGroup.Group(this.Owner.Actions), @this.Owner.SpriteText.Color, this.FarColor, 0.1, Ease.QuadInOut);
+        }
+    }
+}

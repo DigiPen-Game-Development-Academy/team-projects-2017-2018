@@ -1,0 +1,16 @@
+class MainLevelReferances : ZilchComponent
+{
+    var Player : Cog = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        //Console.WriteLine("`this.Player`");
+        
+        //Console.WriteLine("`this.Player.Inventory.InventoryOpen`");
+    }
+}

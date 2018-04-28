@@ -1,0 +1,38 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class ItemWeapon : Item {
+    
+    var HasCapturedLore : Boolean = false;
+    
+    var Tier : String = "Weapon";
+    var Damage : Real = 1.0;
+    var Cooldown : Real = 0.0;
+    var Ammo : Integer = -1;
+    var MaxAmmo : Integer = -1;
+    
+    var ItemLoreOriginal : String = "";
+    
+    function GiveStats(weapon : Weapon, tierTag : String) {
+        
+        if(!this.HasCapturedLore) {
+            this.ItemLoreOriginal = this.ItemLore;
+            this.HasCapturedLore = true;
+        }
+        
+        this.Tier = tierTag;
+        this.Damage = weapon.BulletDamage;
+        this.Cooldown = weapon.Cooldown;
+        this.Ammo = weapon.CurrentAmmo;
+        this.MaxAmmo = weapon.MaxAmmo;
+        
+        var ammoTag = "Ammo: `this.Ammo` / `this.MaxAmmo`";
+        
+        if(this.MaxAmmo == -1)
+            ammoTag = "Infinite Ammo";
+        
+        this.ItemLore = "`this.Tier`\nDamage: `this.Damage`\nCooldown: `this.Cooldown`\n`ammoTag`\n\n`this.ItemLoreOriginal`";
+        
+    }
+    
+}

@@ -1,0 +1,43 @@
+/*************************************
+Filename: PlayerShooting
+Author: Sage Dupuy
+Contributors: 
+-
+-
+-
+-
+Last modified: 1/23/2018
+Brief:
+Destroys after a certain amount of time
+******************************************/
+
+class TimedDestroy : ZilchComponent
+{
+    [Property] var Lifetime : Real = 0.5;
+    
+    [Property] var Fade : Boolean = false;
+    
+    var TimeAlive : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Fade)
+        {
+            this.Owner.Sprite.Color += Real4(0.0,0.0,0.0,-1.0) * event.Dt;
+        }
+        
+        if(this.TimeAlive >= this.Lifetime)
+        {
+            this.Owner.Destroy();
+        }
+        else
+        {
+            this.TimeAlive += event.Dt;
+        }
+    }
+}

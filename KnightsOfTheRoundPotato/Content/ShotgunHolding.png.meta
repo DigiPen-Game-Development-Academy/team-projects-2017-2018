@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "ShotgunHolding",
+		uint64 ResourceId = 5af4923cd5b44732,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 160,
+		uint FrameSizeY = 160,
+		uint FrameCount = 8,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 80,
+		float OriginY = 80,
+		float PixelsPerUnit = 160,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

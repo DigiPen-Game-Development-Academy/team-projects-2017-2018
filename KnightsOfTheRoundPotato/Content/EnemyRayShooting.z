@@ -1,0 +1,117 @@
+class EnemyRayShooting : ZilchComponent {
+    [Dependency]
+    var EnemyAI : EnemyAI;
+    [Dependency]
+    var Vis : Visibility;
+    
+    [Property]
+    var MaxRange : Real = 10;
+    [Property]
+    var DamagePer : Real = 10;
+    [Property]
+    var WakeSprite : Archetype = Archetype.Wake;
+    [Property]
+    var SoundDistance : Real = 10;
+    [Property]
+    var Sound : SoundCue = SoundCue.Shot;
+    [Property]
+    var RandAngle : Real = 1;
+    [Property]
+    var MagSize : Integer = 10;
+    [Property]
+    var ReloadTime : Real = 3;
+    [Property]
+    var FireRate : Real = 4;
+    [Property]
+    var MinDist : Real = 2;
+    [Property]
+    var MaxDist : Real = 10;
+    [Property]
+    var DeathMSG : String = "You Where Shot by an Enemy";
+    
+    var Timer : Real = 0;
+    var CurrentMag : Integer = 0;
+    var Reloading : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        this.CurrentMag = this.MagSize;
+        this.Timer = 1/this.FireRate;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        if(this.Owner.BasicPathFollowAI.Stunned || this.EnemyAI.State != State.Spotted)
+            return;
+        
+        var vec = GlobalVariables.Player.Transform.WorldTranslation - this.Owner.Transform.WorldTranslation;
+        var angle = Math.ATan2(vec.Y, vec.X);
+        if(this.Timer >= 0)
+            this.Timer -= event.Dt;
+        if(this.EnemyAI.Timer <= 0 && this.Vis.InSight) {
+            if(this.Vis.DirectLine && Math.Distance(this.Owner.Transform.WorldTranslation, GlobalVariables.Player.Transform.WorldTranslation) <= this.MaxDist) {
+                this.Owner.EnemyPathFind.Path = null;
+                if(this.CurrentMag <= 0 && !this.Reloading) {
+                    this.Reloading = true;
+                    this.Timer = this.ReloadTime;
+                }
+                
+                if(this.Reloading && this.Timer <= 0) {
+                    this.Reloading = false;
+                    this.CurrentMag = this.MagSize;
+                    this.Timer = 1/this.FireRate;
+                }
+                
+                if(!this.Reloading && this.Timer <= 0) {
+                    this.Shoot(angle);
+                    this.EnemyAI.ViewDirection = Real3(Math.Cos(angle), Math.Sin(angle), 0);
+                    this.Timer = 1/this.FireRate;
+                    --this.CurrentMag;
+                }
+            }else {
+                this.Owner.BasicPathFollowAI.SetTarget(GlobalVariables.Player.Transform.WorldTranslation);
+            }
+            if(Math.Distance(this.Owner.Transform.WorldTranslation, GlobalVariables.Player.Transform.WorldTranslation) <= this.MinDist) {
+                //Console.WriteLine(Math.Normalize(this.Owner.Transform.WorldTranslation - GlobalVariables.Player.Transform.WorldTranslation)*this.MinDist);
+                this.Owner.BasicPathFollowAI.SetTarget(GlobalVariables.Player.Transform.WorldTranslation + (Math.Normalize(this.Owner.Transform.WorldTranslation - GlobalVariables.Player.Transform.WorldTranslation)*this.MinDist));
+            }
+        }
+    }
+    
+    function Shoot (radAngle : Real) {
+        Console.WriteLine("EnemyShoot");
+        radAngle += Random().Range(-Math.ToRadians(this.RandAngle), Math.ToRadians(this.RandAngle));
+        var dir = Real3(Math.Cos(radAngle), Math.Sin(radAngle), 0);
+        var filter = CastFilter();
+        var vel = GlobalVariables.Player.RigidBody.Velocity;
+        var ghost = GlobalVariables.Player.BoxCollider.Ghost;
+        GlobalVariables.Player.BoxCollider.Ghost = false;
+        GlobalVariables.Player.RigidBody.DynamicState = RigidBodyDynamicState.Static;
+        filter.IgnoreDynamic = true;
+        filter.IgnoreGhost = true;
+        filter.CollisionGroup = CollisionGroup.Enemies;
+        var res = Utilities.Raycast(this.Owner.Transform.WorldTranslation, dir, GlobalVariables.GameSpace.PhysicsSpace, this.MaxRange, filter);
+        
+        if(res != null && !GlobalVariables.SloMo) {
+            Utilities.Damage(res.ObjectHit, this.DamagePer, this.DeathMSG);
+            var wake = GlobalVariables.GameSpace.CreateAtPosition(this.WakeSprite, this.Owner.Transform.WorldTranslation);
+            wake.Transform.EulerAngles = Real3(0,0,radAngle+ Math.ToRadians(-90));
+            wake.Transform.Scale = Real3(0.05, res.Distance, 0);
+            wake.Wake.DamagePer = this.DamagePer;
+        } else {
+            var wake = GlobalVariables.GameSpace.CreateAtPosition(this.WakeSprite, this.Owner.Transform.WorldTranslation);
+            wake.Transform.EulerAngles = Real3(0,0,radAngle+ Math.ToRadians(-90));
+            wake.Transform.Scale = Real3(0.05, this.MaxRange, 0);
+            wake.Wake.DamagePer = this.DamagePer;
+        }
+        
+        Utilities.SendSound(this.SoundDistance, this.Owner.Transform.WorldTranslation);
+        GlobalVariables.GameSpace.SoundSpace.PlayCue(this.Sound);
+        GlobalVariables.Player.RigidBody.DynamicState = RigidBodyDynamicState.Dynamic;
+        GlobalVariables.Player.RigidBody.Velocity = vel;
+        GlobalVariables.Player.BoxCollider.Ghost = ghost;
+        
+        Utilities.ScreenShake(2, 10);
+        
+    }
+    
+}

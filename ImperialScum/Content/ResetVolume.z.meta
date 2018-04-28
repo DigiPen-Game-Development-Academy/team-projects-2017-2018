@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "ResetVolume",
+		uint64 ResourceId = 5a1e8918d7b14f29,
+	},
+},

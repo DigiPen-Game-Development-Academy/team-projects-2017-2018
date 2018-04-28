@@ -1,0 +1,161 @@
+//Jacob Burke
+
+//This is the script for the enemy's health
+class EnemyHealth : ZilchComponent
+{
+    [Property] 
+    var Health:Real = 5;
+    [Static]
+    var SwordDamage:Real = 1;
+    
+    [Static]
+    var SpearDamage:Real = 1;
+    
+    [Property]
+    var DamageColor:Real4;
+    [Property]
+    var RegularColor:Real4;
+
+    var Spawn:Archetype;
+    
+    [Property]
+    var HitSFX:SoundCue = SoundCue.HitSound;
+    
+    [Property]
+    var KillSFX:SoundCue = SoundCue.Kill;
+    
+    var Timer:Real = 0.2;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        //Check if this is the sword's hitbox. Sam did this since it is commented.
+        if(event.OtherObject == this.Space.FindObjectByName("SwordHitbox"))
+        {
+            this.Space.SoundSpace.PlayCue(this.HitSFX);
+            
+            this.Health -= EnemyHealth.SwordDamage;
+            this.Owner.Sprite.Color = this.DamageColor;
+            
+            //Particles
+            this.Space.CreateAtPosition(Archetype.ExplodeBubbles, this.Owner.Transform.Translation); 
+            this.Space.CreateAtPosition(Archetype.HitExplode, this.Owner.Transform.Translation); 
+            
+            if(this.Owner == this.Space.FindObjectByName("Gearahna"))
+            {
+                for (var i = 0; i != 0; i += 1)
+                {
+                    this.Space.CreateAtPosition(Archetype.EnemyGib, this.Owner.Transform.Translation); 
+                }
+                return;
+            }
+            
+            for (var i = 0; i != 4; i += 1)
+            {
+                this.Space.CreateAtPosition(Archetype.EnemyGib, this.Owner.Transform.Translation); 
+            }
+        }
+        
+        if(event.OtherObject == this.Space.FindObjectByName("Spear"))
+        {
+            this.Space.SoundSpace.PlayCue(this.HitSFX);
+            
+            this.Health -= EnemyHealth.SpearDamage;
+            this.Owner.Sprite.Color = this.DamageColor;
+            
+            //Particles
+            this.Space.CreateAtPosition(Archetype.ExplodeBubbles, this.Owner.Transform.Translation); 
+            this.Space.CreateAtPosition(Archetype.HitExplode, this.Owner.Transform.Translation);
+            
+            if(this.Owner == this.Space.FindObjectByName("Gearahna"))
+            {
+                for (var i = 0; i != 0; i += 1)
+                {
+                    this.Space.CreateAtPosition(Archetype.EnemyGib, this.Owner.Transform.Translation); 
+                }
+                return;
+            }
+            for (var i = 0; i != 4; i += 1)
+            {
+                this.Space.CreateAtPosition(Archetype.EnemyGib, this.Owner.Transform.Translation); 
+            }
+            
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Health <= 0)
+        {
+            if(this.Owner.Name == ("BOSS"))
+            {
+                BossKeyDropping.BossDead = true;
+                this.Space.CreateAtPosition(Archetype.Key, this.Owner.Transform.WorldTranslation);
+            }
+            
+            var random = new Random();
+            var randomAmount = random.DieRoll(3);
+            
+            if(this.Owner == this.Space.FindObjectByName("Gearahna"))
+            {
+                randomAmount -= 2;
+            }
+            
+            while(randomAmount >= 0)
+            {
+                var randomChoose = random.DieRoll(3);
+                
+                var randomVelocityNegative = random.DieRoll(5) * -1;
+                var randomVelocityPositive = random.DieRoll(5);
+                
+                if(randomChoose == 1)
+                this.Spawn = Archetype.Gear;
+                if(randomChoose > 1)
+                this.Spawn = Archetype.Food;
+                
+                var treasure = this.Space.CreateAtPosition(this.Spawn,
+                this.Owner.Transform.Translation);
+                
+                treasure.RigidBody.Velocity = Real3(randomVelocityNegative,randomVelocityPositive, 0);
+                
+                randomAmount -= 1;
+
+            }
+            this.Owner.Destroy();
+            
+            //Death Particle
+            this.Space.CreateAtPosition(Archetype.LegendaryExplode, this.Owner.Transform.Translation);
+            this.Space.CreateAtPosition(Archetype.EnemyExplode, this.Owner.Transform.Translation); 
+            this.Space.SoundSpace.PlayCue(this.KillSFX);
+            
+            //Particles
+            if(this.Owner == this.Space.FindObjectByName("Gearahna"))
+            {
+                for (var i = 0; i != 0; i += 1)
+                {
+                    this.Space.CreateAtPosition(Archetype.EnemyGib, this.Owner.Transform.Translation); 
+                }
+                return;
+            }
+        
+            for (var i = 0; i != 8; i += 1)
+            {
+                this.Space.CreateAtPosition(Archetype.EnemyGib, this.Owner.Transform.Translation); 
+            }
+        }
+        
+        if(this.Owner.Sprite.Color == this.DamageColor)
+        {
+            this.Timer -= event.Dt;
+        }
+        if(this.Timer <= 0)
+        {
+            this.Timer += 0.2;
+            this.Owner.Sprite.Color = this.RegularColor;
+        }
+    }
+}

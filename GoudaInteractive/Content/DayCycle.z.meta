@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "DayCycle",
+		uint64 ResourceId = 5adca0b0a18e9f04,
+	},
+},

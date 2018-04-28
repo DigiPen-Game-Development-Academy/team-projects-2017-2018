@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "GameCredits_TileMap01",
+		uint64 ResourceId = 5a68726100d07f6e,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "5a6869521c6e424e:GameCredits",
+	},
+},

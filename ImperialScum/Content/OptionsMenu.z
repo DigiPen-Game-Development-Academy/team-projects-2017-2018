@@ -1,0 +1,27 @@
+class OptionsMenu : ZilchComponent
+{
+    //Author - Jessica
+    [Property] var ArcheTypeToLoad : Archetype;
+    var Bla : Boolean = false;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Bla == true)
+        {
+            var position = Real3(0,0,0.1);
+            
+        this.Space.CreateAtPosition(this.ArcheTypeToLoad, position);
+        this.Bla = false;
+        }
+    }
+
+    function OnMouseDown(event : ViewportMouseEvent)
+    {
+        this.Bla = true;
+    }
+}

@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "QuestSprite",
+		uint64 ResourceId = 5ae3f34c7b86dd59,
+	},
+},

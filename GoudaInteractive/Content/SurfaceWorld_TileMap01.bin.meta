@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "SurfaceWorld_TileMap01",
+		uint64 ResourceId = 5a3bcdae49730c8a,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "5a3bc4c73a7e1106:SurfaceWorld",
+	},
+},

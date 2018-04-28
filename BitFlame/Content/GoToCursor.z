@@ -1,0 +1,21 @@
+class GoToCursor : ZilchComponent
+{
+    var MousePos : Real3 = Real3.Zero;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.MouseMove, this.OnMouseMove);
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnMouseMove(event : ViewportMouseEvent)
+    {
+        this.MousePos = event.ToWorldZPlane(1);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Owner.Transform.Translation = Real3(this.MousePos.X, this.MousePos.Y, this.Owner.Transform.Translation.Z);
+    }
+}

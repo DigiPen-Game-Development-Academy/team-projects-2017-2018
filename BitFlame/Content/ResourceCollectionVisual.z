@@ -1,0 +1,19 @@
+class ResourceCollectionVisual : ZilchComponent
+{
+    var PrevIron : Integer;
+    
+    function Initialize(init : CogInitializer)
+    {
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.GameSession.GameVars.PlayerResources > this.PrevIron)
+        {
+            
+        }
+        
+    }
+}

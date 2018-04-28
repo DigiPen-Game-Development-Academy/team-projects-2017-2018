@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "UFOSOUND",
+		uint64 ResourceId = 5a3df58db160b444,
+	},
+},

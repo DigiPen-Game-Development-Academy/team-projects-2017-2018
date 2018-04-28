@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "GoOppositeWayThatKeyGoes",
+		uint64 ResourceId = 5a11cf0d81f92d37,
+	},
+},

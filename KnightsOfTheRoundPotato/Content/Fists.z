@@ -1,0 +1,40 @@
+class Fists : Item {
+    
+    function Init () {
+        this.Name = "Fists";
+        this.Icon = SpriteSource.Icon_Weapon_Fists;
+        this.Type = ItemType.Weapon;
+        this.MagSize = -1;
+        this.FireRate = 3;
+        this.DamagePer = 1;
+    }
+    
+    function Use (radAngle : Real) {
+        var dir = Real3(Math.Cos(radAngle), Math.Sin(radAngle), 0);
+        var res = Utilities.Raycast(GlobalVariables.Player.Transform.WorldTranslation, dir, GlobalVariables.GameSpace.PhysicsSpace, 1);
+        var res2 = Utilities.Raycast(GlobalVariables.Player.Transform.WorldTranslation, -dir, GlobalVariables.GameSpace.PhysicsSpace, 0.75);
+        
+        GlobalVariables.Player.PlayerSprites.Lock = true;
+        GlobalVariables.Player.PlayerSprites.Timer = 0.75;
+        
+        GlobalVariables.Player.Sprite.SpriteSource = SpriteSource.PatPunch;
+        GlobalVariables.Player.Sprite.AnimationSpeed = 1;
+        
+        if(res != null) {
+            Utilities.Damage(res.ObjectHit, this.DamagePer, this.ReturnDeathMSG());
+            /*if(res.ObjectHit.Health != null) {
+                if(res.ObjectHit.EnemyAI != null && (
+                        (res.ObjectHit.EnemyAI.State == State.Spotted && res.ObjectHit.EnemyAI.Timer > 0) || 
+                        (res.ObjectHit.EnemyAI.State != State.Suspitious && res.ObjectHit.EnemyAI.State != State.Spotted) || 
+                        (res.ObjectHit.EnemyAI.State == State.Suspitious && res.ObjectHit.EnemyAI.Timer > 0))) {
+                            
+                    GlobalVariables.Player.Transform.WorldTranslation += dir * (res.Distance);
+                    Utilities.SendSound(5, res.ObjectHit.Transform.WorldTranslation);
+                    res.ObjectHit.DispatchEvent(Events.NoHealth, NoHealth());
+                    GlobalVariables.Player.PlayerMovment.Freeze(1);
+                    
+                }
+            }*/
+        }
+    }
+}

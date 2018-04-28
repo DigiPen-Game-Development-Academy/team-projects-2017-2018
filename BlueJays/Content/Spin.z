@@ -1,0 +1,14 @@
+class Spin : ZilchComponent
+{
+    [Property] var Speed : Real = 5;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var radians = Math.ToRadians(this.Speed * event.Dt);
+        this.Owner.Transform.RotateAnglesWorld(Real3(0, 0, radians));
+    }
+}

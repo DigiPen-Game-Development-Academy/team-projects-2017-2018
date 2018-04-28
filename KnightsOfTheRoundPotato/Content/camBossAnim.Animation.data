@@ -1,0 +1,170 @@
+RichAnimation = 
+{
+	float SampleTolerance = 0.0500000007,
+	float Duration = 20,
+	Object Root = 
+	{
+		TrackType Type = Object,
+		string Name = "Root",
+		string Path = "",
+		bool Disabled = false,
+		uint PropertyTypeId = 0,
+		string PropertyTypeName = "void",
+		Array KeyFrames = 
+		[
+		],
+		Array Children = 
+		[
+			{
+				TrackType Type = Object,
+				string Name = "/",
+				string Path = "/",
+				bool Disabled = false,
+				uint PropertyTypeId = 0,
+				string PropertyTypeName = "",
+				Array KeyFrames = 
+				[
+				],
+				Array Children = 
+				[
+					{
+						TrackType Type = Component,
+						string Name = "Transform",
+						string Path = "Transform",
+						bool Disabled = false,
+						uint PropertyTypeId = 0,
+						string PropertyTypeName = "",
+						Array KeyFrames = 
+						[
+						],
+						Array Children = 
+						[
+							{
+								TrackType Type = Property,
+								string Name = "Translation",
+								string Path = "Transform.Translation",
+								bool Disabled = false,
+								uint PropertyTypeId = 8,
+								string PropertyTypeName = "Vec3",
+								Array KeyFrames = 
+								[
+								],
+								Array Children = 
+								[
+									{
+										TrackType Type = SubProperty,
+										string Name = "X",
+										string Path = "Transform.Translation.X",
+										bool Disabled = false,
+										uint PropertyTypeId = 3,
+										string PropertyTypeName = "",
+										Array KeyFrames = 
+										[
+											{
+												float key = 17.666666,
+												Object value = 
+												{
+													float Time = 17.666666,
+													float Value = 0,
+													Vec2 TangentIn = [-0.0500000007, 0],
+													Vec2 TangentOut = [0.0500000007, 0],
+													uint EditorFlags = 0,
+												},
+											},
+											{
+												float key = 20,
+												Object value = 
+												{
+													float Time = 20,
+													float Value = 4.53853941,
+													Vec2 TangentIn = [-0.0500000007, 0],
+													Vec2 TangentOut = [0.0500000007, 0],
+													uint EditorFlags = 0,
+												},
+											},
+										],
+										Array Children = 
+										[
+										],
+									},
+									{
+										TrackType Type = SubProperty,
+										string Name = "Y",
+										string Path = "Transform.Translation.Y",
+										bool Disabled = false,
+										uint PropertyTypeId = 3,
+										string PropertyTypeName = "",
+										Array KeyFrames = 
+										[
+											{
+												float key = 17.666666,
+												Object value = 
+												{
+													float Time = 17.666666,
+													float Value = 0,
+													Vec2 TangentIn = [-0.0500000007, 0],
+													Vec2 TangentOut = [0.0500000007, 0],
+													uint EditorFlags = 0,
+												},
+											},
+											{
+												float key = 20,
+												Object value = 
+												{
+													float Time = 20,
+													float Value = 0,
+													Vec2 TangentIn = [-0.0500000007, 0],
+													Vec2 TangentOut = [0.0500000007, 0],
+													uint EditorFlags = 0,
+												},
+											},
+										],
+										Array Children = 
+										[
+										],
+									},
+									{
+										TrackType Type = SubProperty,
+										string Name = "Z",
+										string Path = "Transform.Translation.Z",
+										bool Disabled = false,
+										uint PropertyTypeId = 3,
+										string PropertyTypeName = "",
+										Array KeyFrames = 
+										[
+											{
+												float key = 17.666666,
+												Object value = 
+												{
+													float Time = 17.666666,
+													float Value = 40,
+													Vec2 TangentIn = [-0.0500000007, 0],
+													Vec2 TangentOut = [0.0500000007, 0],
+													uint EditorFlags = 0,
+												},
+											},
+											{
+												float key = 20,
+												Object value = 
+												{
+													float Time = 20,
+													float Value = 40,
+													Vec2 TangentIn = [-0.0500000007, 0],
+													Vec2 TangentOut = [0.0500000007, 0],
+													uint EditorFlags = 0,
+												},
+											},
+										],
+										Array Children = 
+										[
+										],
+									},
+								],
+							},
+						],
+					},
+				],
+			},
+		],
+	},
+},

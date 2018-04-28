@@ -1,0 +1,7 @@
+ContentLibrary = 
+{
+	string Name = "EscapeVelocity",
+	uint64 LibraryId = 5a1c0c87d1cd797d,
+	string SourceControlType = "",
+	bool ReadOnly = false,
+},

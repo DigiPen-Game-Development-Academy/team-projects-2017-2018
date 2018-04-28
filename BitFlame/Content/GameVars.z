@@ -1,0 +1,106 @@
+/*************************************
+Filename: GameVars.z
+Author: Jakob McFarland
+Contributors: Everyone
+Last modified: 3/6/18
+Brief: This Component stores the vars that are constant the whole game, include Player Health, Player Resources, and Player Oxygen
+******************************************/
+    
+class GameVars : ZilchComponent
+{
+    //setable starting values for the player 
+    [Property] var StartingPlayerHealth : Integer = 0; 
+    [Property] var PlayerMaxHealth : Integer = 0;
+    [Property] var StartingPlayerResources : Integer = 0; 
+    [Property] var StartingCopper : Integer = 0;
+    [Property] var StartingPlayerTitanium : Integer = 0;
+    [Property] var StartingPlayerAluminium : Integer = 0;
+    [Property] var StartingPlayerOxygen : Real = 0; 
+    [Property] var PlayerMaxOxygen : Real = 0; 
+    [Property] var StartingUpgradePoints : Integer = 0;
+    [Property] var StartingPipes : Integer = 0;  
+    [Property] var StartingTurrets : Integer = 0;  
+    
+    [Property] var ShowFrameRate :Boolean = false;  
+    
+    //upgrade flags
+    [Property] var HasUpgrade_SpreadI : Real = 0;
+    [Property] var HasUpgrade_SpreadII : Real = 0;
+    [Property] var HasUpgrade_Homing : Real = 0;
+    [Property] var HasUpgrade_FirerateI : Real = 0;
+    [Property] var HasUpgrade_BulletSpeed : Real = 0;
+    [Property] var HasUpgrade_FirerateII : Real = 0;
+    [Property] var HasUpgrade_Doubleshot : Real = 0;
+    [Property] var HasUpgrade_PenitrationI : Real = 0;
+    [Property] var HasUpgrade_PenitrationII : Real = 0;
+    [Property] var HasUpgrade_KnockbackI : Real = 0;
+    [Property] var HasUpgrade_KnockbackII : Real = 0;
+    [Property] var HasUpgrade_Maxspeed : Real = 0;
+    [Property] var HasUpgrade_Acceleration : Real = 0;
+    [Property] var HasUpgrade_InertiaDampeners : Boolean = false;
+    [Property] var HasUpgrade_Vitals : Real = 0;
+    [Property] var HasUpgrade_Maxhealth : Real = 1;
+    [Property] var HasUpgrade_Maxoxygen : Real = 1;
+    [Property] var HasUpgrade_HealthRegen : Real = 0;
+    [Property] var HasUpgrade_OxygenRegen : Real = 0;  
+    [Property] var HasUpgrade_ShieldI : Real = 0;
+    [Property] var HasUpgrade_Shieldregenspeed : Real = 0;
+    [Property] var HasUpgrade_ShieldII : Real = 0;
+    
+    //the actaul values stored on gamevars, these are the values that your scripts should be changing
+    var PlayerHealth : Integer;
+    var PlayerResources : Integer;
+    var PlayerCopper : Integer;
+    var PlayerTitanium : Integer;
+    var PlayerAluminium : Integer;
+    var PlayerOxygen: Real;
+    var PlayerUpgradePoints : Integer;
+    var PlayerPipes : Integer;
+    var PlayerTurrets : Integer;
+    
+    //popup text for sounds
+    var EnablePopupSoundText : Boolean = false;   
+    
+    //ship repair stage counter
+    var ShipRepairStage : Integer = 0;
+
+    var WorldRegen : Boolean = false;
+    
+    var PlayerActive : Boolean = false;
+    
+    var PlayerLosingOxygen : Boolean = true;
+    
+    var NewLevel : Level = null;
+        
+    var DestroyRespawnMenu : Boolean = false;
+    
+    var SlideIn : Boolean = false;
+    
+    var TutorialCompleted : Boolean = false;
+    
+    var TutorialStage : Real = 0.0;
+    
+    //Gamemode
+    var WaveGamemode : Boolean = false;
+    
+    // Tracks if a wave is active then runs code in the EnemyLogic, ChargingEnemyLogic, and ShootingEnemyAI scripts to make them chase the player from wherever they spawned during the wave.
+    var ActiveWave : Boolean = false;
+    var WaveTimer : Real;
+    
+    // Keeps track of how many waves have passed
+    var WaveTracker : Real = 0;
+    
+    var SafeToSpawn : Boolean = false;
+    
+    //initialization function, runs when the owner object is created
+    function Initialize(init : CogInitializer)
+    {
+        //setting the working game var values to their preset values.
+        this.PlayerHealth = this.StartingPlayerHealth;
+        this.PlayerResources = this.StartingPlayerResources;
+        this.PlayerOxygen = this.StartingPlayerOxygen;
+        this.PlayerUpgradePoints = this.StartingUpgradePoints;
+        this.PlayerPipes = this.StartingPipes;
+        this.PlayerTurrets = this.StartingTurrets;
+    }
+}

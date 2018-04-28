@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "SuperEasyLevel_TileMap09",
+		uint64 ResourceId = 5a6f52307a6a840b,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "5aa63a32cd351b24:SuperEasyLevel",
+	},
+},

@@ -1,0 +1,40 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class CheckBox : ZilchComponent {
+    
+    [Property] var IsChecked : Boolean = false;
+    
+    var WasClicked : Boolean = false;
+    var CanClick : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        
+        this.Owner.FindChildByName("CheckBoxButton").Sprite.Visible = this.IsChecked;
+        
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Owner, Events.MouseUpdate, this.OnMouseUpdate);
+        
+    }
+    
+    function OnMouseExit(event : ViewportMouseEvent) {
+        this.CanClick = false;
+    }
+    
+    function OnMouseUpdate(event : ViewportMouseEvent) {
+        
+        if(Zero.Mouse.IsButtonDown(MouseButtons.Left) && !this.WasClicked && this.CanClick) {
+            
+            this.IsChecked = !this.IsChecked;
+            this.Owner.FindChildByName("CheckBoxButton").Sprite.Visible = this.IsChecked;
+            
+            this.WasClicked = true;
+            
+        } else if(!Zero.Mouse.IsButtonDown(MouseButtons.Left)) {
+            this.WasClicked = false;
+            this.CanClick = true;
+        }
+        
+    }
+    
+}

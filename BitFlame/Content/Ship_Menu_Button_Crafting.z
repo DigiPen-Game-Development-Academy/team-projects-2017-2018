@@ -1,0 +1,228 @@
+/***********************
+Ship_Menu_Button_Crafting.Z
+by: Jakob McFarland
+Contributers: 
+Date: 4/3/18
+Brief: these components will make a button look good and be functional
+***********************/
+
+enum ItemType {Aluminium, Copper, Iron, Titanium, Pipe, Turret}
+
+class Ship_Menu_Button_Crafting : ZilchComponent
+{
+    // crafting cost costs
+    [Property] var IronCost : Integer = 0;
+    [Property] var CopperCost : Integer = 0; 
+    [Property] var TitaniumCost : Integer = 0;
+    [Property] var AluminiumCost : Integer = 0;  
+    
+    //what you get for the rsources
+    [Property] var ResultType : ItemType; 
+    [Property] var ResultNumber : Integer = 0;  
+
+    [Dependency] var Reactive : Reactive = null;
+
+    [Dependency] var Transform : Transform = null;
+    
+    //visual stuff
+    [Dependency] var Sprite : Sprite = null;
+        
+    //colors for sits
+    var OriginalColor :Real4 = Real4();
+        
+    [Property] var HoverColor : Real4 = Real4(1, 1, 1, 1);
+
+    [Property] var ClickColor : Real4 = Real4(1.0, 1.0, 1.0, 1); 
+    
+    [Property] var DisabledColor : Real4 = Real4(1.0, 1.0, 1.0, 1);
+    
+    var OriginalScale : Real3 = Real3();
+        
+    [Property] var HoverScale : Real = 1.2;
+        
+    [Property] var ClickScale : Real = 1.0;
+        
+    function Initialize(init : CogInitializer)
+    {
+        this.OriginalColor = this.Sprite.Color;
+        this.OriginalScale = this.Transform.Scale;
+        
+        Zero.Connect(this.Owner, Events.LeftMouseDown, this.OnLeftMouseDown);
+
+        Zero.Connect(this.Owner, Events.LeftMouseUp, this.OnLeftMouseUp);
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+      
+        if(!(this.GameSession.GameVars.PlayerResources >= this.IronCost && this.GameSession.GameVars.PlayerCopper >= this.CopperCost 
+            && this.GameSession.GameVars.PlayerTitanium >= this.TitaniumCost && this.GameSession.GameVars.PlayerAluminium >= this.AluminiumCost))
+        {
+            this.Sprite.Color = this.DisabledColor;
+        }
+        else
+        {
+            this.Sprite.Color = this.OriginalColor;
+        }
+    }
+
+    function OnLeftMouseDown(event : ViewportMouseEvent)
+    {
+        if(this.GameSession.GameVars.PlayerResources >= this.IronCost && this.GameSession.GameVars.PlayerCopper >= this.CopperCost && 
+            this.GameSession.GameVars.PlayerTitanium >= this.TitaniumCost && this.GameSession.GameVars.PlayerAluminium >= this.AluminiumCost)
+        { 
+            this.Owner.Actions.Cancel();
+            var seq = Action.Sequence(this.Owner.Actions);
+            var grp = Action.Group(seq);
+            
+            Action.Property(grp, @this.Sprite.Color, this.ClickColor, 0.03, Ease.QuadInOut);
+            Action.Property(grp, @this.Transform.Scale, this.OriginalScale * this.ClickScale, 0.3, Ease.QuadInOut);
+        }
+    }
+    
+    function OnMouseEnter(event : ViewportMouseEvent)
+    {
+        if(this.GameSession.GameVars.PlayerResources >= this.IronCost && this.GameSession.GameVars.PlayerCopper >= this.CopperCost && 
+            this.GameSession.GameVars.PlayerTitanium >= this.TitaniumCost && this.GameSession.GameVars.PlayerAluminium >= this.AluminiumCost)
+        {   
+            this.Transform.Translation.Z += 10;
+                    
+            this.Owner.Actions.Cancel();
+            var seq = Action.Sequence(this.Owner.Actions);
+            var grp = Action.Group(seq);
+                
+            Action.Property(grp, @this.Sprite.Color, this.HoverColor, 0.03, Ease.QuadInOut);
+            Action.Property(grp, @this.Transform.Scale, this.OriginalScale * this.HoverScale, 0.3, Ease.QuadInOut);
+        }
+    }
+        
+    function OnMouseExit(event : ViewportMouseEvent)
+    {
+        var color = this.DisabledColor;
+        
+        if(this.GameSession.GameVars.PlayerResources >= this.IronCost && this.GameSession.GameVars.PlayerCopper >= this.CopperCost && this.GameSession.GameVars.PlayerTitanium >= this.TitaniumCost && this.GameSession.GameVars.PlayerAluminium >= this.AluminiumCost)
+        { 
+            color = this.OriginalColor;
+        }
+
+        this.Owner.Actions.Cancel();
+        var seq = Action.Sequence(this.Owner.Actions);
+        var grp = Action.Group(seq);
+            
+        Action.Property(grp, @this.Sprite.Color, color, 0.03, Ease.QuadInOut);
+        Action.Property(grp, @this.Transform.Scale, this.OriginalScale, 0.3, Ease.QuadInOut);
+    }
+
+    function OnLeftMouseUp(event : ViewportMouseEvent)
+    {
+        if(this.GameSession.GameVars.PlayerResources >= this.IronCost && this.GameSession.GameVars.PlayerCopper >= this.CopperCost && 
+            this.GameSession.GameVars.PlayerTitanium >= this.TitaniumCost && this.GameSession.GameVars.PlayerAluminium >= this.AluminiumCost)
+        { 
+            //Console.WriteLine(this.GameSession.GameVars.ShipRepairStage);
+            this.GameSession.GameVars.PlayerResources -= this.IronCost;
+            this.GameSession.GameVars.PlayerCopper -= this.CopperCost;
+            this.GameSession.GameVars.PlayerTitanium -= this.TitaniumCost;
+            this.GameSession.GameVars.PlayerAluminium -= this.AluminiumCost;   
+                
+            if(this.ResultType == 0)
+            { 
+                this.GameSession.GameVars.PlayerAluminium += this.ResultNumber;
+            }
+            else if(this.ResultType == 1)
+            {
+                this.GameSession.GameVars.PlayerCopper += this.ResultNumber;
+            }
+            else if(this.ResultType == 2)
+            {
+                this.GameSession.GameVars.PlayerResources += this.ResultNumber;
+            }
+            else if(this.ResultType == 3)
+            {
+                this.GameSession.GameVars.PlayerTitanium += this.ResultNumber;
+            }
+            else if(this.ResultType == 4)
+            {
+                this.GameSession.GameVars.PlayerPipes += this.ResultNumber;
+            }  
+            else if(this.ResultType == 5)
+            {
+                this.GameSession.GameVars.PlayerTurrets += this.ResultNumber;
+            }                 
+        }     
+    }
+}
+
+class Ship_Menu_Button_Crafting_CostDisplay : ZilchComponent
+{
+    // Stage 1 ship repair costs
+    [Property] var IronCost : Integer = 0;
+    [Property] var CopperCost : Integer = 0; 
+    [Property] var TitaniumCost : Integer = 0;
+    [Property] var AluminiumCost : Integer = 0;  
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+    }
+
+    function OnMouseEnter(event : ViewportMouseEvent)
+    {
+        this.Space.FindObjectByName("CraftingToolTip").Sprite.Visible = true;
+        
+        foreach (var child in this.Space.FindObjectByName("CraftingToolTip").Children) 
+        {
+            if(child != null && child.Sprite != null)
+            {
+                child.Sprite.Visible = true;
+            }
+                
+            if(child != null && child.SpriteText != null)
+            {
+                child.SpriteText.Visible = true;
+            }     
+        }
+        
+        foreach(var child in this.Space.FindObjectByName("CraftingToolTip").Children)
+        {
+            if(child.Name == "AluminiumCostIndicator")
+            {
+                child.SpriteText.Text = "`this.AluminiumCost`";
+            }
+            if(child.Name == "CopperCostIndicator")
+            {
+                child.SpriteText.Text = "`this.CopperCost`";
+            }
+            if(child.Name == "IronCostIndicator")
+            {
+                child.SpriteText.Text = "`this.IronCost`";
+            }
+            if(child.Name == "TitaniumCostIndicator")
+            {
+                child.SpriteText.Text = "`this.TitaniumCost`";
+            }
+        }
+    }
+        
+    function OnMouseExit(event : ViewportMouseEvent)
+    {
+        this.Space.FindObjectByName("CraftingToolTip").Sprite.Visible = false;
+    
+        foreach (var child in this.Space.FindObjectByName("CraftingToolTip").Children) 
+        {
+            if(child != null && child.Sprite != null)
+            {
+                child.Sprite.Visible = false;
+            }
+            
+            if(child != null && child.SpriteText != null)
+            {
+                child.SpriteText.Visible = false;
+
+            }
+        }
+    }
+} 

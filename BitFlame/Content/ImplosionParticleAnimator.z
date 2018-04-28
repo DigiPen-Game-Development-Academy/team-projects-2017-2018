@@ -1,0 +1,16 @@
+class ImplosionParticleAnimator : ZilchComponent
+{
+    [Property] var RotationAmount : Real = 0.0;
+    
+    [Dependency] var Transform : Transform;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Transform.Rotation.Y += this.RotationAmount;
+    }
+}

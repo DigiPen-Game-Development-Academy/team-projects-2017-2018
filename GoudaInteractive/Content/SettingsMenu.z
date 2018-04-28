@@ -1,0 +1,118 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class SettingsMenu : ZilchComponent {
+    
+    [Property] var UIMenu : Boolean = false;
+    
+    var UIAnimationButton : Cog = null;
+    var VignetteButton : Cog = null;
+    
+    var PlayerTooltipButton : Cog = null;
+    var EnemyTooltipButton : Cog = null;
+    
+    var MusicVolumeSlider : Cog = null;
+    var SoundVolumeSlider : Cog = null;
+    
+    var MenuOpen : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        
+        if(this.UIMenu) {
+            this.Owner.Transform.WorldTranslation = Real3(0.0, 0.0, 50000.0);
+        }
+        
+        this.UIAnimationButton = this.Space.FindObjectByName("CheckBoxAnimation");
+        this.VignetteButton = this.Space.FindObjectByName("CheckBoxVignette");
+        
+        this.PlayerTooltipButton = this.Space.FindObjectByName("CheckBoxPlayerTooltip");
+        this.EnemyTooltipButton = this.Space.FindObjectByName("CheckBoxEnemyTooltip");
+        
+        this.MusicVolumeSlider = this.Space.FindObjectByName("ButtonMusicVolume");
+        this.SoundVolumeSlider = this.Space.FindObjectByName("ButtonSoundVolume");
+        
+        if(this.UIAnimationButton != null) {
+            this.UIAnimationButton.CheckBox.IsChecked = GameSetting.EnableUIAnimations;
+        }
+        
+        if(this.VignetteButton != null) {
+            this.VignetteButton.CheckBox.IsChecked = GameSetting.EnableVignette;
+        }
+        
+        if(this.PlayerTooltipButton != null) {
+            this.PlayerTooltipButton.CheckBox.IsChecked = GameSetting.PlayerTooltip;
+        }
+        
+        if(this.EnemyTooltipButton != null) {
+            this.EnemyTooltipButton.CheckBox.IsChecked = GameSetting.EnemyTooltip;
+        }
+        
+        if(this.MusicVolumeSlider != null) {
+            this.MusicVolumeSlider.Slider.CurrentAmount = GameSetting.MusicVolume * 100;
+            this.MusicVolumeSlider.Slider.InitializeSlider(SliderType.Grabber);
+        }
+        
+        if(this.SoundVolumeSlider != null) {
+            this.SoundVolumeSlider.Slider.CurrentAmount = GameSetting.SoundEffectsVolume * 100;
+            this.SoundVolumeSlider.Slider.InitializeSlider(SliderType.Grabber);
+        }
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.UIMenu) {
+            
+            if(!this.MenuOpen && this.Owner.Parent.FindChildByName("PauseButtons").FindChildByName("ButtonOptions").ButtonLevelSwitcher.ButtonClicked) {
+                this.Owner.Transform.WorldTranslation = Real3(0.0, 0.0, 0.0);
+                this.Owner.Parent.FindChildByName("PauseButtons").Transform.WorldTranslation = Real3(0.0, -2.0, 50000.0);
+                this.MenuOpen = true;
+            } else if(this.MenuOpen && this.Owner.Parent.FindChildByName("PauseButtons").FindChildByName("ButtonOptions").ButtonLevelSwitcher.ButtonClicked) {
+                this.Owner.Transform.WorldTranslation = Real3(0.0, 0.0, 50000.0);
+                this.Owner.Parent.FindChildByName("PauseButtons").Transform.WorldTranslation = Real3(0.0, -2.0, 0.0);
+                this.Owner.Parent.FindChildByName("PauseButtons").FindChildByName("ButtonOptions").ButtonLevelSwitcher.ButtonClicked = false;
+                this.Owner.Parent.FindChildByName("PauseButtons").FindChildByName("ButtonOptions").ButtonLevelSwitcher.CurrDelay = 0.0;
+                Relocation.ButtonFadeout = false;
+                this.MenuOpen = false;
+            }
+            
+            if(Zero.Keyboard.KeyIsPressed(Keys.Escape) && this.Owner.Parent.PauseMenu.PauseMenuEnabled) {
+                this.Owner.Transform.WorldTranslation = Real3(0.0, 0.0, 50000.0);
+                this.Owner.Parent.FindChildByName("PauseButtons").Transform.WorldTranslation = Real3(0.0, -2.0, 0.0);
+                this.Owner.Parent.FindChildByName("PauseButtons").FindChildByName("ButtonOptions").ButtonLevelSwitcher.ButtonClicked = false;
+                this.Owner.Parent.FindChildByName("PauseButtons").FindChildByName("ButtonOptions").ButtonLevelSwitcher.CurrDelay = 0.0;
+                Relocation.ButtonFadeout = false;
+                this.MenuOpen = false;
+            }
+            
+        }
+        
+        if(this.UIAnimationButton != null) {
+            GameSetting.EnableUIAnimations = this.UIAnimationButton.CheckBox.IsChecked;
+        }
+        
+        if(this.VignetteButton != null) {
+            GameSetting.EnableVignette = this.VignetteButton.CheckBox.IsChecked;
+        }
+        
+        if(this.PlayerTooltipButton != null) {
+            GameSetting.PlayerTooltip = this.PlayerTooltipButton.CheckBox.IsChecked;
+        }
+        
+        if(this.EnemyTooltipButton != null) {
+            GameSetting.EnemyTooltip = this.EnemyTooltipButton.CheckBox.IsChecked;
+        }
+        
+        if(this.MusicVolumeSlider != null) {
+            GameSetting.MusicVolume = this.MusicVolumeSlider.Slider.CurrentAmount / 100.0;
+        }
+        
+        if(this.SoundVolumeSlider != null) {
+            GameSetting.SoundEffectsVolume = this.SoundVolumeSlider.Slider.CurrentAmount / 100.0;
+        }
+        
+    }
+    
+}

@@ -1,0 +1,63 @@
+
+class DialogEnded : ZilchEvent {
+    
+    var Type : DialogReturn;
+    
+    sends DialogEnded : DialogEnded;
+    
+}
+
+class Damage : ZilchEvent {
+    
+    var Damage : Real = 0;
+    
+    var DeathMSG : String;
+    
+    sends Damage : Damage;
+    
+}
+
+class Stun : ZilchEvent {
+    
+    var Time : Real = 0;
+    
+    sends Stun : Stun;
+    
+}
+
+class PathFound : ZilchEvent {
+    
+    var Path : Array[NavNode];
+    
+    sends PathFound : PathFound;
+    
+}
+
+class InSound : ZilchEvent {
+    
+    var Source : Real3 = Real3(0);
+    
+    sends InSound : InSound;
+}
+
+class NoHealth : ZilchEvent {
+    
+    var DeathMSG : String;
+    
+    sends NoHealth : NoHealth;
+}
+
+class UseRadar : ZilchEvent {
+    var Timer : Real;
+    sends UseRadar : UseRadar;
+}
+
+class Notice : ZilchEvent {
+    var Pos : Real3;
+    sends Notice : Notice;
+}
+
+class KeyHeld : ZilchEvent {
+    var Key : Keys;
+    sends KeyHeld : KeyHeld;
+}

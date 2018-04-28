@@ -1,0 +1,154 @@
+class TutorialLogic : ZilchComponent
+{
+    var WPressed : Boolean = false;
+    
+    var SPressed : Boolean = false;
+    
+    var DPressed : Boolean = false;
+    
+    var APressed : Boolean = false;
+    
+    var HasClicked : Boolean = false;
+    
+    var DidMine : Boolean = false;
+    
+    var GotTitanium : Boolean = false;
+    
+    var AccessedShip : Boolean = false;
+    
+    var PressedRight : Boolean = false;
+    
+    var PressedMiddle : Boolean = false;
+    
+    
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+        
+        
+        if(this.GameSession.GameVars.TutorialStage == 0) //Movement intro
+        {
+            this.Owner.SpriteText.Text = "W, A, S, D To move your character around";
+        }
+        else if(this.GameSession.GameVars.TutorialStage == 1) //Shooting intro
+        {
+            this.Owner.SpriteText.Text = "Shoot at asteroids  by clicking the mouse";
+        }
+        else if(this.GameSession.GameVars.TutorialStage == 2) //Resource Gathering intro
+        {
+            this.Owner.SpriteText.Text = "Go ahead and mine asteroids by shooting them";
+        }
+        else if(this.GameSession.GameVars.TutorialStage == 3) //Resource Gathering intro
+        {
+            this.Owner.SpriteText.Text = "Kill Enemies to get titanium \n Press escape to pause the game";
+        }
+        else if(this.GameSession.GameVars.TutorialStage == 4) //Crafting intro
+        {
+            this.Owner.SpriteText.Text = "Press E over your ship and explore each window";
+        }
+        else if(this.GameSession.GameVars.TutorialStage == 5) //Winning the game intro
+        {
+            this.Owner.SpriteText.Text = "Right Mouse to place a building";
+        }
+        else if(this.GameSession.GameVars.TutorialStage == 6) //Winning the game intro
+        {
+            this.Owner.SpriteText.Text = "Press middle mouse to select building";
+        }
+        else if(this.GameSession.GameVars.TutorialStage == 7) //Winning the game intro
+        {
+            this.Owner.SpriteText.Text = "Repair your ship to win the game";
+        }
+        
+        if(Zero.Keyboard.KeyIsDown(Keys.W) && this.WPressed == false)
+        {
+            this.WPressed = true;
+            
+            this.GameSession.GameVars.TutorialStage += 0.25;
+        }
+        if(Zero.Keyboard.KeyIsDown(Keys.S) && this.SPressed == false)
+        {
+            this.SPressed = true;
+            
+            this.GameSession.GameVars.TutorialStage += 0.25;
+        }
+        if(Zero.Keyboard.KeyIsDown(Keys.D) && this.DPressed == false)
+        {
+            this.DPressed = true;
+            
+            this.GameSession.GameVars.TutorialStage += 0.25;
+        }
+        if(Zero.Keyboard.KeyIsDown(Keys.A) && this.APressed == false)
+        {
+            this.APressed = true;
+            
+            this.GameSession.GameVars.TutorialStage += 0.25;
+        }
+        
+        if(Zero.Mouse.IsButtonDown(MouseButtons.Left) && this.HasClicked == false && this.GameSession.GameVars.TutorialStage >= 1.0)
+        {
+            this.HasClicked = true;
+            
+            this.GameSession.GameVars.TutorialStage += 1.0;
+        }
+        
+        if(this.GameSession.GameVars.PlayerCopper >= 1.0 && this.GameSession.GameVars.PlayerResources >= 1.0 && this.GameSession.GameVars.PlayerAluminium >= 1.0 && this.HasClicked && this.DidMine == false)
+        {
+            this.DidMine = true;
+            
+            this.GameSession.GameVars.TutorialStage += 1.0;
+        }
+        
+        if(this.GameSession.GameVars.PlayerTitanium >= 1.0 && this.DidMine && this.GotTitanium == false)
+        {
+            this.GotTitanium = true;
+            
+            this.GameSession.GameVars.TutorialStage += 1.0;
+        }
+        
+        if(Math.Distance(this.Space.FindObjectByName("Player").Transform.Translation, Real3(0.0,0.0,0.0)) < 3.0 && this.GameSession.GameVars.SlideIn == true && this.GotTitanium && this.AccessedShip == false)
+        {
+            this.AccessedShip = true;
+            
+            this.GameSession.GameVars.TutorialStage += 1.0;
+        }
+        
+        if(this.GameSession.GameVars.SlideIn)
+        {
+            this.Owner.SpriteText.Visible = false;
+        }
+        else
+        {
+            this.Owner.SpriteText.Visible = true;
+        }
+        
+        if(Zero.Mouse.IsButtonDown(MouseButtons.Right) && this.AccessedShip && this.PressedRight == false)
+        {
+            this.PressedRight = true;
+            Console.WriteLine(this.GameSession.GameVars.TutorialStage);
+            this.GameSession.GameVars.TutorialStage  += 1.0;
+        }
+        
+        if(Zero.Mouse.IsButtonDown(MouseButtons.Middle) && this.PressedRight && this.PressedMiddle == false)
+        {
+            this.PressedMiddle = true;
+            
+            this.GameSession.GameVars.TutorialStage  += 1.0;
+        }
+        
+        if(this.GameSession.GameVars.ShipRepairStage >= 1.0)
+        {
+            this.GameSession.GameVars.TutorialCompleted = true;
+        }
+        
+        if(this.GameSession.GameVars.TutorialCompleted)
+        {
+            this.Owner.Destroy();
+        }
+    }
+}

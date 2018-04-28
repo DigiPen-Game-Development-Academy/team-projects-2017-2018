@@ -1,0 +1,31 @@
+//Sam
+//This make the shopkeeper stare at you like the handsome man he is
+
+//Slightly edited by Jacob to only happen on player collision
+class ShopLook : ZilchComponent
+{
+    [Property]
+    var Slam:SpriteSource;
+    [Property]
+    var Flex:SpriteSource;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Owner, Events.CollisionEnded, this.OnCollisionEnded);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        //He look right at you
+        if(event.OtherObject.PlayerController != null)
+        this.Owner.Sprite.SpriteSource = this.Slam;
+    }
+    
+    function OnCollisionEnded(event : CollisionEvent)
+    {   
+        //He no longer look straight
+        if(event.OtherObject.PlayerController != null)
+        this.Owner.Sprite.SpriteSource = this.Flex;
+    }
+}

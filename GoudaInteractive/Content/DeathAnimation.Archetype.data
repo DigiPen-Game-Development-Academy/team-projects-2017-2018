@@ -1,0 +1,43 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "DeathAnimation",
+	},
+	Archetyped = 
+	{
+		string Name = "5a6a19a01d610560:DeathAnimation",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [11.2646017, -3.64489985, -2.49837512e-06],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5a168c03d0ddc7e9:Player_Death",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	DestroyOnFrame = 
+	{
+		int Frame = 0,
+	},
+},

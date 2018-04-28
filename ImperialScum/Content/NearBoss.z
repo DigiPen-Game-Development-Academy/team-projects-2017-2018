@@ -1,0 +1,26 @@
+class NearBoss : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Owner, Events.CollisionEnded, this.OnCollisionEnded);
+    }
+
+    function OnCollisionEnded(event : CollisionEvent)
+    {
+        if(event.OtherObject.PlayerController != null)
+        BossDoorOpen.PlayerNear = false;
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.PlayerController != null)
+        BossDoorOpen.PlayerNear = true;
+        
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

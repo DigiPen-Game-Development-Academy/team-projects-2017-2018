@@ -1,0 +1,33 @@
+/*************************************
+Filename: Level_ChangeLevel.z
+Author: Jakob McFarland
+Contributors: NULL
+Last modified: 4/17/18
+Brief: This Component will load whatever level is contained in NewLevel on gamevars, if null, then it does nothing
+******************************************/
+
+//Brief: This Component will load whatever level is contained in NewLevel on gamevars, if null, then it does nothing
+class Level_ChangeLevel : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        //if NewLevel isn't null
+        if(this.GameSession.GameVars.NewLevel != null)
+        {
+            //set working var to whatever that level is, this way we can load the new level AFTER we reset NewLevel back to null 
+            var newLevel = this.GameSession.GameVars.NewLevel;
+            //set NewLevel back to null, so this only happens once
+            this.GameSession.GameVars.NewLevel = null;
+            
+            this.GameSession.MenuMusic.EndMusic();
+            
+            //load whatever WAS in NewLevel, this action will stop this function, so don't add anything after it.
+            this.Space.LoadLevel(newLevel);
+        }
+    }
+}

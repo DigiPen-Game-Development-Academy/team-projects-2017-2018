@@ -1,0 +1,69 @@
+class PauseMenu : ZilchComponent
+{
+    //Author - Jessica
+    var FirstTime : Boolean = true;
+    [Property] var ApplyQuit : Boolean = false;
+    //var Exists : Boolean = false
+    [Static] var DestroyNextTime : Integer = 0;
+    var Timer : Real = 0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.GameSession, Events.GameRequestQuit, this.OnGameRequestQuit);
+    }
+
+    function OnGameRequestQuit(event : GameEvent)
+    {
+        event.Handled = true;
+        
+        if(this.ApplyQuit)
+        {
+            event.Game.Quit();
+        }
+        
+        else if(Inventory.Exists == true)
+        {
+            Inventory.Exists = false;
+            return;
+        }
+        
+        else
+        {
+            PauseMenu.DestroyNextTime += 1;
+            var spaces = this.GameSession.AllSpaces;
+            
+                var position = Real3(0,1.5,0);
+                
+                if(this.Space.FindObjectByName("BlueBox") == null && MenuExists.Exists == false)
+                {
+                    this.Space.CreateAtPosition(Archetype.PauseMenu, position);
+                }
+                else
+                {
+                    return;
+                }
+                
+                foreach(var space in spaces)
+                {
+                    space.TimeSpace.TogglePause();
+                }
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Timer > 0) this.Timer -= event.Dt;
+    }
+}
+class MenuExists : ZilchComponent
+{
+    [Static]
+    var Exists:Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        MenuExists.Exists = true;
+    }
+
+}

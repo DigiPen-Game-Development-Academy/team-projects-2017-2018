@@ -1,0 +1,109 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class CraftingScrollButton : ZilchComponent {
+    
+    [Property] var ScrollWheelArea : Boolean = false;
+    
+    var IsHoveringOverOwner : Boolean = false;
+    
+    var ButtonClicked : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.MouseUpdate, this.OnMouseUpdate);
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Space, Events.MouseScroll, this.OnMouseScroll);
+    }
+    
+    function OnMouseUpdate(event : ViewportMouseEvent) {
+        
+        if(!this.ScrollWheelArea) {
+            if(event.Mouse.IsButtonDown(MouseButtons.Left) && !this.ButtonClicked) {
+                
+                this.ButtonClicked = true;
+                
+                if(Relocation.Space != null && Relocation.Space.FindObjectByName(Relocation.EntityPlayer) != null) {
+                    
+                    var player = Relocation.Space.FindObjectByName(Relocation.EntityPlayer);
+                    
+                    var scrollPos = player.Crafting.ScrollPosition;
+                    var maxScrollPos = player.Crafting.MaxScroll;
+                    
+                    if(this.Owner.Name == "ArrowTop" && player != null) {
+                        
+                        if(scrollPos <= maxScrollPos && scrollPos > 0) {
+                            player.Crafting.SetScrollPosition(scrollPos - 1);
+                        }
+                        
+                    } else if(this.Owner.Name == "ArrowBottom" && player != null) {
+                        
+                        if(scrollPos < maxScrollPos && scrollPos >= 0) {
+                            player.Crafting.SetScrollPosition(scrollPos + 1);
+                        }
+                        
+                    }
+                    
+                    scrollPos = player.Crafting.ScrollPosition;
+                    
+                    if(this.Owner.Parent.FindChildByName("ScrollNumber") != null) {
+                        this.Owner.Parent.FindChildByName("ScrollNumber").SpriteText.Text = "`scrollPos + 1`";
+                    }
+                    
+                }
+                
+            } else if(!event.Mouse.IsButtonDown(MouseButtons.Left)) {
+                this.ButtonClicked = false;
+            }
+        }
+        
+    }
+    
+    function OnMouseEnter(event : ViewportMouseEvent) {
+        this.IsHoveringOverOwner = true;
+    }
+    
+    function OnMouseExit(event : ViewportMouseEvent) {
+        this.IsHoveringOverOwner = false;
+    }
+    
+    function OnMouseScroll(event : ViewportMouseEvent) {
+        
+        if(this.ScrollWheelArea && this.IsHoveringOverOwner) {
+            
+            if(Relocation.Space != null && Relocation.Space.FindObjectByName(Relocation.EntityPlayer) != null) {
+                
+                var player = Relocation.Space.FindObjectByName(Relocation.EntityPlayer);
+                
+                var scrollPos = player.Crafting.ScrollPosition;
+                var maxScrollPos = player.Crafting.MaxScroll;
+                
+                if(event.Scroll.Y > 0 && player != null) {
+                    
+                    if(scrollPos <= maxScrollPos && scrollPos > 0) {
+                        player.Crafting.SetScrollPosition(scrollPos - 1);
+                    }
+                    
+                } else if(event.Scroll.Y < 0 && player != null) {
+                    
+                    if(scrollPos < maxScrollPos && scrollPos >= 0) {
+                        player.Crafting.SetScrollPosition(scrollPos + 1);
+                    }
+                    
+                }
+                
+                scrollPos = player.Crafting.ScrollPosition;
+                
+                if(this.Owner.Parent.Parent != null && this.Owner.Parent.Parent.FindChildByName("ScrollNumber") != null) {
+                    this.Owner.Parent.Parent.FindChildByName("ScrollNumber").SpriteText.Text = "`scrollPos + 1`";
+                } else if(this.Owner.Parent.FindChildByName("ScrollNumber") != null) {
+                    this.Owner.Parent.FindChildByName("ScrollNumber").SpriteText.Text = "`scrollPos + 1`";
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+}

@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "LorePanel",
+		uint64 ResourceId = 5a9b9eebaebed3f7,
+	},
+},

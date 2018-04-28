@@ -1,0 +1,95 @@
+class LazerNoArea : ZilchComponent {
+    
+    var EmitRate : Real = 0;
+    
+    [Property] var PulseSpeed : Real = 3;
+    
+    var Timer : Real = 0;
+    
+    var Inactive : Boolean = false;
+    
+    var Damage : Real = 100;
+    
+    var Range : Real = 10;
+    
+    var SoundRange : Real = 10;
+    
+    var AmmoTimer : Real = 1;
+    
+    var DeathMSG : String = "";
+    
+    function Initialize(init : CogInitializer) {
+        this.EmitRate = this.Owner.BoxParticleEmitter.EmitRate;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Space, Events.MouseUp, this.OnMouseUp);
+        Zero.Connect(Zero.Keyboard, Events.KeyUp, this.OnKeyUp);
+    }
+
+    function OnKeyUp(event : KeyboardEvent) {
+        if(event.Key == GlobalVariables.InputManager.UseWeaponKey) {
+            this.Timer = 25;
+            this.Inactive = true;
+        }
+    }
+
+    function OnMouseUp(event : ViewportMouseEvent) {
+        if(event.Button == GlobalVariables.InputManager.UseWeaponMouse) {
+            this.Timer = 25;
+            this.Inactive = true;
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.Inactive) {
+            this.Owner.Sprite.Visible = false;
+            this.Owner.BoxParticleEmitter.Active = false;
+            this.Timer -= event.Dt;
+            if(this.Timer <= 0) {
+                this.Owner.Destroy();
+            }
+            return;
+        }
+        
+        Utilities.SendSound(this.SoundRange);
+        
+        this.AmmoTimer -= event.Dt;
+        
+        if(this.AmmoTimer <= 0) {
+            GlobalVariables.UseWeapon.Primary.CurrentMag -= 1;
+            this.AmmoTimer = 1;
+        }
+        
+        if(GlobalVariables.UseWeapon.Primary.CurrentMag <= 0) {
+            this.Inactive = true;
+        }
+        
+        this.Timer += event.Dt*this.PulseSpeed;
+        
+        var alpha = (Math.Sin(this.Timer)+4)/8;
+        
+        var color = this.Owner.Sprite.Color;
+        
+        this.Owner.Sprite.Color = Real4(color.X, color.Y, color.Z, alpha);
+        
+        this.Owner.Transform.WorldTranslation = GlobalVariables.Player.Transform.WorldTranslation + Real3(0,0,0.1);
+        var dir = Math.Normalize(this.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 0) - this.Owner.Transform.WorldTranslation);
+        
+        var res = Utilities.Raycast(this.Owner.Transform.WorldTranslation, dir, this.Space.PhysicsSpace, this.Range);
+        
+        if(res != null) {
+            this.Owner.Transform.WorldScale = Real3(this.Owner.Transform.WorldScale.X, res.Distance, 1);
+            this.Owner.Transform.WorldTranslation += dir*(res.Distance/2);
+            this.Owner.BoxParticleEmitter.EmitRate = this.EmitRate*res.Distance;
+            Utilities.Damage(res.ObjectHit, this.Damage*event.Dt, this.DeathMSG);
+        } else {
+            this.Owner.Transform.WorldScale = Real3(this.Owner.Transform.WorldScale.X, this.Range, 1);
+            this.Owner.Transform.WorldTranslation += dir*(this.Range/2);
+            this.Owner.BoxParticleEmitter.EmitRate = this.EmitRate*this.Range;
+        }
+        
+        this.Owner.Transform.SetEulerAnglesXYZ(0, 0, Math.ATan2(dir.Y, dir.X) + Math.ToRadians(-90));
+        
+        
+    }
+}

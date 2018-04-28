@@ -1,0 +1,52 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Island",
+	},
+	Archetyped = 
+	{
+		string Name = "5ab69d35717d9077:TutorialFloor",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [39.2714729, -0.59176755, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	MultiSprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+	},
+	TileMap = 
+	{
+		string SourceName = "5ab69b525696608c:IntroCutscene_TileMap02",
+		string PaletteName = "5a0815c6bc36dbbd:GroundClutter",
+		float UnitsPerTile = 1,
+		float MeshThickness = 1.20000005,
+	},
+	AnimationGraph = 
+	{
+		bool Active = true,
+		AnimPlayMode PlayMode = PlayOnce,
+		float TimeScale = 1,
+		string AnimationName = "4f8ebbde619389d0:DefaultAnimation",
+		uint64 DebugPreviewId = 401c27d33f000000,
+	},
+	SimpleAnimation = 
+	{
+		string AnimationName = "5ab69c36aba0f6d2:IntroIsland",
+		AnimPlayMode PlayMode = PlayOnce,
+	},
+},

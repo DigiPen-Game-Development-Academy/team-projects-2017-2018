@@ -1,0 +1,1168 @@
+Level = 
+{
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 1,
+		},
+		Named = 
+		{
+			string Name = "LevelSettings",
+		},
+		GravityEffect = 
+		{
+			bool Active = false,
+			bool WakeUpOnChange = false,
+			bool LocalSpaceDirection = true,
+			float Strength = 10,
+			Vec3 Direction = [0, -1, 0],
+		},
+		DragEffect = 
+		{
+			bool Active = true,
+			bool WakeUpOnChange = false,
+			float Drag = 0.699999988,
+			float AngularDrag = 0.100000001,
+		},
+		CameraViewport = 
+		{
+			bool Background = true,
+			Vec2 Offset = [0, 0],
+			Vec2 Size = [1, 1],
+			int Layer = 0,
+			bool Active = true,
+			bool Blocking = true,
+			CogPath Renderer = 
+			{
+				string Path = ".",
+				bool ErrorOnResolveToNull = false,
+				bool ErrorOnPathCantCompute = false,
+				bool ErrorOnDirectLinkFail = false,
+				bool UpdateCogOnPathChange = true,
+				bool UpdatePathOnCogChange = true,
+				bool UpdateCogOnInitialize = true,
+				bool ResolvedNullErrorOccurred = false,
+				uint ResolvedCog = 1,
+				CogPathPreference PathPreference0 = CogRelative,
+				CogPathPreference PathPreference1 = SpaceRelative,
+				CogPathPreference PathPreference2 = Absolute,
+			},
+			CogPath Camera = 
+			{
+				string Path = ":/Camera",
+				bool ErrorOnResolveToNull = false,
+				bool ErrorOnPathCantCompute = false,
+				bool ErrorOnDirectLinkFail = false,
+				bool UpdateCogOnPathChange = true,
+				bool UpdatePathOnCogChange = true,
+				bool UpdateCogOnInitialize = true,
+				bool ResolvedNullErrorOccurred = false,
+				uint ResolvedCog = 2,
+				CogPathPreference PathPreference0 = CogRelative,
+				CogPathPreference PathPreference1 = SpaceRelative,
+				CogPathPreference PathPreference2 = Absolute,
+			},
+			ViewportScaling Scaling = Fill,
+			Vec2 Resolution = [1280, 720],
+			Vec4 MarginColor = [0, 0, 0, 1],
+		},
+		ForwardRenderer = 
+		{
+			Vec4 ClearColor = [0.850000024, 0.067999959, 0.067999959, 1],
+			bool DrawNonVisible = false,
+			bool DrawDebugObjects = true,
+			bool DrawEditorIcons = true,
+			bool EditorIconDepth = true,
+			bool Wireframe = false,
+		},
+		GridDraw = 
+		{
+			bool Active = true,
+			bool HalfCellOffset = false,
+			float CellSize = 1,
+			GridAxis Axis = ZAxis,
+			int Lines = 100,
+			bool DrawAxisOrigins = true,
+			bool AlwaysDrawInEditor = true,
+			bool DrawInGame = false,
+			Vec4 GridColor = [0.5, 0.5, 0.5, 0.400000006],
+			Vec4 GridHiLight = [0, 0, 0, 0.400000006],
+			int HilightInterval = 10,
+			bool FollowEditorCamera = false,
+		},
+		CometMaker = 
+		{
+			float SpawnRate = 5,
+			string Comet = "5a074e0c89fd18fe:Comet",
+		},
+		Level_WorldGeneration = 
+		{
+			bool Enabled = true,
+			string Asteroid_01Archetype = "5af8a0083b2d1bfe:AsteroidConfig3",
+			string Asteroid_02Archetype = "5af8dc36cf41e70a:AsteroidConfig4",
+			string EnemyArchetype = "5a74699494525886:AlienCrabEnemy",
+			string HiveArchetype = "5a1c2405f45e8ddd:EnemyHive",
+			string UpgradePickupArchetype = "5a7411b441710034:ChargingEnemy",
+			float Asteroid_01Probability = 40,
+			float Asteroid_02Probability = 40,
+			float EmptySpaceProbability = 10,
+			float HiveProbability = 10,
+			float EnemyProbability = 0,
+			float UpgradePickupProbability = 0,
+			int MaxX = 45,
+			int MaxY = 45,
+			int SpawnCellwidth = 12,
+			int EmptyRange = 10,
+			int SafeRange = 20,
+		},
+		HudCreator = 
+		{
+			string HUDLevel = "5a11bb03ee000161:HUDLevel",
+			string SpaceArchetype = "554cea0f94af6dc4:Space",
+			CogPath PlayerRef = 
+			{
+				string Path = ":/Player",
+				bool ErrorOnResolveToNull = false,
+				bool ErrorOnPathCantCompute = false,
+				bool ErrorOnDirectLinkFail = false,
+				bool UpdateCogOnPathChange = true,
+				bool UpdatePathOnCogChange = true,
+				bool UpdateCogOnInitialize = true,
+				bool ResolvedNullErrorOccurred = false,
+				uint ResolvedCog = 3,
+				CogPathPreference PathPreference0 = CogRelative,
+				CogPathPreference PathPreference1 = SpaceRelative,
+				CogPathPreference PathPreference2 = Absolute,
+			},
+		},
+		Level_ChangeLevel = 
+		{
+		},
+		WaveSpawner = 
+		{
+			CogPath Player = 
+			{
+				string Path = ":/Player",
+				bool ErrorOnResolveToNull = false,
+				bool ErrorOnPathCantCompute = false,
+				bool ErrorOnDirectLinkFail = false,
+				bool UpdateCogOnPathChange = true,
+				bool UpdatePathOnCogChange = true,
+				bool UpdateCogOnInitialize = true,
+				bool ResolvedNullErrorOccurred = false,
+				uint ResolvedCog = 3,
+				CogPathPreference PathPreference0 = CogRelative,
+				CogPathPreference PathPreference1 = SpaceRelative,
+				CogPathPreference PathPreference2 = Absolute,
+			},
+			float TimeUntilNextWave = 40,
+			float SafeDistanceToSpawnFromPlayer = 50,
+			float FurthestToSpawnFromPlayer = 130,
+			float IncreaseEnemySpawnDistance = 20,
+			string EnemyType1 = "5a7411b441710034:ChargingEnemy",
+			string EnemyType2 = "5a74699494525886:AlienCrabEnemy",
+			string EnemyType3 = "5a1c25102e8b8ff5:AlienEnemy",
+			float InitialSpawn1 = 0,
+			float InitialSpawn2 = 4,
+			float InitialSpawn3 = 8,
+			float SpawnIncrease1 = 1,
+			float SpawnIncrease2 = 4,
+			float SpawnIncrease3 = 7,
+			CogPath SpawnChecker = 
+			{
+				string Path = ":/SpawnChecker",
+				bool ErrorOnResolveToNull = false,
+				bool ErrorOnPathCantCompute = false,
+				bool ErrorOnDirectLinkFail = false,
+				bool UpdateCogOnPathChange = true,
+				bool UpdatePathOnCogChange = true,
+				bool UpdateCogOnInitialize = true,
+				bool ResolvedNullErrorOccurred = false,
+				uint ResolvedCog = 4,
+				CogPathPreference PathPreference0 = CogRelative,
+				CogPathPreference PathPreference1 = SpaceRelative,
+				CogPathPreference PathPreference2 = Absolute,
+			},
+		},
+		EnviromentSounds = 
+		{
+			float Interval1 = 30,
+			float Interval3 = 30,
+		},
+		EscapeHandler = 
+		{
+			bool ApplyQuit = false,
+			bool Pause = false,
+		},
+	},
+	ArchetypeInstance = 
+	{
+		string Name = "5a08cc0da512394f:Game_Upgrade_Pickup",
+		LinkId = 
+		{
+			uint Id = 5,
+		},
+		Transform = 
+		{
+			Vec3 Translation = [0, 0, 0],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Named = 
+		{
+			string Name = "Game_Upgrade_Pickup",
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 6,
+		},
+		Named = 
+		{
+			string Name = "EditorCamera",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [2.64577413, -2.63105702, 50],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [-0, -1.09278471e-08, 0, 1],
+		},
+		Camera = 
+		{
+			ProjectionMode ProjectionMode = Orthographic,
+			Facing Facing = NegativeZ,
+			CameraTransparentSort TransparentSort = ZDepth,
+			float FieldOfView = 45,
+			float NearPlane = 0.5,
+			float FarPlane = 500,
+			float Size = 26.927454,
+		},
+		EditorCameraController = 
+		{
+			ControlMode ControlMode = ZPlane,
+			float LookDistance = 50,
+			float VerticalAngle = 0,
+			float HorizontalAngle = 0,
+			Vec3 LookTarget = [2.64577413, -2.63105702, 1.15650245e-07],
+			float MoveSensitivity = 1,
+		},
+		EditorRenderer = 
+		{
+			Vec4 ClearColor = [0.155000001, 0.155000001, 0.155000001, 1],
+			bool DrawNonVisible = true,
+			bool DrawDebugObjects = true,
+			bool DrawEditorIcons = true,
+			bool Wireframe = false,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 2,
+		},
+		Named = 
+		{
+			string Name = "Camera",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [0, 0, 40],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Camera = 
+		{
+			ProjectionMode ProjectionMode = Orthographic,
+			Facing Facing = NegativeZ,
+			CameraTransparentSort TransparentSort = InheritFromSpace,
+			float FieldOfView = 45,
+			float NearPlane = 0.5,
+			float FarPlane = 200,
+			float Size = 20,
+		},
+		SoundListener = 
+		{
+			bool Active = true,
+			float Volume = 1,
+		},
+		CameraFollow = 
+		{
+			CogPath Target = 
+			{
+				string Path = ":/Player",
+				bool ErrorOnResolveToNull = false,
+				bool ErrorOnPathCantCompute = false,
+				bool ErrorOnDirectLinkFail = false,
+				bool UpdateCogOnPathChange = true,
+				bool UpdatePathOnCogChange = true,
+				bool UpdateCogOnInitialize = true,
+				bool ResolvedNullErrorOccurred = false,
+				uint ResolvedCog = 3,
+				CogPathPreference PathPreference0 = CogRelative,
+				CogPathPreference PathPreference1 = SpaceRelative,
+				CogPathPreference PathPreference2 = Absolute,
+			},
+			Vec2 Min = [-1000, -1000],
+			Vec2 Max = [1000, 1000],
+			float LerpValue = 0.899999976,
+		},
+		CreateCompass = 
+		{
+			string Compass = "5a2062940655f3d6:Compass",
+			string Ship = "5a6633fcc2d1e995:ShipPointer",
+		},
+		SoundEmitter = 
+		{
+			float Volume = 0.5,
+			float Pitch = 0,
+			float PitchSemitones = 0,
+			bool UsePitchSemitones = false,
+			bool Positional = true,
+			int Version = 1,
+		},
+		SimpleSound = 
+		{
+			bool StartPlaying = false,
+			string CueName = "5a35def55bb06440:MoveSound",
+		},
+		MoveSound = 
+		{
+			string MoveNoise = "5a35def55bb06440:MoveSound",
+			bool RandomPitch = true,
+			float TimeTillRandomPitch = 5,
+		},
+		ScreenShake = 
+		{
+			float ShakeAmount = 0.200000003,
+			float ShakeRate = 0.00100000005,
+		},
+		Hierarchy = 
+		{
+		},
+	},
+	ArchetypeInstance = 
+	{
+		string Name = "5a9842f78945b818:Ship",
+		LinkId = 
+		{
+			uint Id = 7,
+		},
+		Transform = 
+		{
+			Vec3 Translation = [0, 0, -0.5],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Named = 
+		{
+			string Name = "Ship",
+		},
+	},
+	ArchetypeInstance = 
+	{
+		string Name = "5a7f4db494e9d95c:Cursor",
+		LinkId = 
+		{
+			uint Id = 8,
+		},
+		Transform = 
+		{
+			Vec3 Translation = [2.75361586, 3.85469341, 0],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Named = 
+		{
+			string Name = "Cursor",
+		},
+	},
+	ArchetypeInstance = 
+	{
+		string Name = "5abde067e6fea990:SpawnChecker",
+		LinkId = 
+		{
+			uint Id = 4,
+		},
+		Transform = 
+		{
+			Vec3 Translation = [0, -6, 0],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Named = 
+		{
+			string Name = "SpawnChecker",
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 9,
+		},
+		Named = 
+		{
+			string Name = "Root",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [0, 0, 0.100000001],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Hierarchy = 
+		{
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 3,
+				},
+				Named = 
+				{
+					string Name = "Player",
+				},
+				Archetyped = 
+				{
+					string Name = "5a1c06ab2df03606:Player",
+				},
+				Transform = 
+				{
+					Vec3 Translation = [0, 0, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Sprite = 
+				{
+					bool Visible = true,
+					bool VisibilityCulling = true,
+					bool VisibilityEvents = true,
+					bool CastShadows = false,
+					Vec4 Color = [1, 1, 1, 1],
+					BlendMode BlendMode = Alpha,
+					SpriteGeometryMode GeometryMode = ZPlane,
+					string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+					string SpriteSource = "5a89015bc90c1ccb:PlayerBody_Sprite_Animated",
+					bool RenderMask = false,
+					bool FlipX = false,
+					bool FlipY = false,
+					bool AnimationActive = false,
+					float AnimationSpeed = 1,
+					uint StartFrame = 0,
+				},
+				Player_Movement_Script = 
+				{
+					bool Active = true,
+					float Speed = 40,
+					CogPath MovementParticleSystem = 
+					{
+						string Path = "JetPackParticleEffect",
+						bool ErrorOnResolveToNull = false,
+						bool ErrorOnPathCantCompute = false,
+						bool ErrorOnDirectLinkFail = false,
+						bool UpdateCogOnPathChange = true,
+						bool UpdatePathOnCogChange = true,
+						bool UpdateCogOnInitialize = true,
+						bool ResolvedNullErrorOccurred = false,
+						uint ResolvedCog = 10,
+						CogPathPreference PathPreference0 = CogRelative,
+						CogPathPreference PathPreference1 = SpaceRelative,
+						CogPathPreference PathPreference2 = Absolute,
+					},
+					Vec2 MaxPlayerSpeeds = [10, 10],
+					Vec2 MinPlayerSpeeds = [-10, -10],
+					bool ControlDampeners = false,
+				},
+				RigidBody = 
+				{
+					bool Static = false,
+					bool Asleep = false,
+					bool Kinematic = false,
+					bool RotationLocked = true,
+					bool Mode2D = true,
+					bool AllowSleep = true,
+					bool Inherit2DMode = true,
+					Vec3 Velocity = [0, 0, 0],
+					Vec3 AngularVelocity = [0, 0, 0],
+				},
+				PlayerDeath = 
+				{
+					string HUDLevel = "",
+					string SpaceArchetype = "554cea0f94af6dc4:Space",
+					CogPath PlayerRef = 
+					{
+						string Path = "",
+						bool ErrorOnResolveToNull = false,
+						bool ErrorOnPathCantCompute = false,
+						bool ErrorOnDirectLinkFail = false,
+						bool UpdateCogOnPathChange = true,
+						bool UpdatePathOnCogChange = true,
+						bool UpdateCogOnInitialize = true,
+						bool ResolvedNullErrorOccurred = false,
+						uint ResolvedCog = 4294967293,
+						CogPathPreference PathPreference0 = CogRelative,
+						CogPathPreference PathPreference1 = SpaceRelative,
+						CogPathPreference PathPreference2 = Absolute,
+					},
+					float TimeInterval = 1,
+					CogPath Space1 = 
+					{
+						string Path = "Space",
+						bool ErrorOnResolveToNull = false,
+						bool ErrorOnPathCantCompute = false,
+						bool ErrorOnDirectLinkFail = false,
+						bool UpdateCogOnPathChange = true,
+						bool UpdatePathOnCogChange = true,
+						bool UpdateCogOnInitialize = true,
+						bool ResolvedNullErrorOccurred = false,
+						uint ResolvedCog = 11,
+						CogPathPreference PathPreference0 = CogRelative,
+						CogPathPreference PathPreference1 = SpaceRelative,
+						CogPathPreference PathPreference2 = Absolute,
+					},
+					CogPath Space2 = 
+					{
+						string Path = "TwinklingStars",
+						bool ErrorOnResolveToNull = false,
+						bool ErrorOnPathCantCompute = false,
+						bool ErrorOnDirectLinkFail = false,
+						bool UpdateCogOnPathChange = true,
+						bool UpdatePathOnCogChange = true,
+						bool UpdateCogOnInitialize = true,
+						bool ResolvedNullErrorOccurred = false,
+						uint ResolvedCog = 12,
+						CogPathPreference PathPreference0 = CogRelative,
+						CogPathPreference PathPreference1 = SpaceRelative,
+						CogPathPreference PathPreference2 = Absolute,
+					},
+					string IronResource = "5a86165eb2745571:Game_ResourceOre_Pickup",
+					string CopperResource = "5a6cae91a47b14d7:Game_CopperOre_Pickup",
+					string AluminiumResource = "5a6ca514b81d8e50:Game_AluminiumOre_Pickup",
+					string TitaniumResource = "5a6ca525a5151ffd:Game_TitaniumOre_Pickup",
+				},
+				Player_Pickup_Collection = 
+				{
+					bool Active = true,
+				},
+				IgnoreSpaceEffects = 
+				{
+					bool Drag = true,
+					bool Flow = false,
+					bool Force = false,
+					bool Gravity = false,
+					bool Thrust = false,
+					bool Vortex = false,
+					bool Wind = false,
+					bool Invalid = false,
+					bool Torque = false,
+					bool PointGravity = false,
+					bool PointForce = false,
+					bool Buoyancy = false,
+					bool Custom = false,
+				},
+				PlayerAnimation = 
+				{
+				},
+				FlashColor = 
+				{
+					float FlashTime = 0.200000003,
+					Vec4 FlashColor = [1, 0, 0, 1],
+				},
+				CheatSystem = 
+				{
+				},
+				Player_Block_Placing = 
+				{
+					bool Active = true,
+					int PlacingRange = 100,
+					int TurretCost = 1,
+					string TurretArchetype = "5a33cbf6af34b493:Turret",
+					string PreTurretArchetype = "5a87d3ab11ce27cf:Pre_Turret",
+					int PipeCost = 1,
+					string PipeArchetype = "5a62ce81be38d76e:OxygenPipe",
+					string PrePipeArchetype = "5a6dd155563b46c8:OxygenPipe_Preview",
+					Enum Type = Pipe,
+				},
+				DragEffect = 
+				{
+					bool Active = true,
+					bool WakeUpOnChange = true,
+					float Drag = 4,
+					float AngularDrag = 4,
+				},
+				HealthRegen = 
+				{
+					bool Active = true,
+					int HealthRegenAmount = 1,
+				},
+				Player_Upgrade_Logic = 
+				{
+				},
+				CapsuleCollider = 
+				{
+					bool Ghost = false,
+					bool SendsMessages = true,
+					bool Seamless = true,
+					string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+					string SerializedGroupName = "5afe68729db9df55:PlayerCollisionGroup",
+					Vec3 Offset = [0, -0.0500000007, 0],
+					float Radius = 0.300000012,
+					float Height = 1.20000005,
+					AxisDirection Direction = Y,
+					CapsuleScalingMode ScalingMode = PreserveScale,
+				},
+				PlaySound = 
+				{
+					string CanSelectSound = "",
+					string CantSelectSound = "",
+					string LowOxygenSound = "5ae3cf4fa12580cf:Oxygen_Low",
+					bool CanSelect = false,
+					bool HudButton = false,
+				},
+				Orientation = 
+				{
+					Vec3 GlobalUp = [0, 1, 0],
+					Vec3 UpVector = [0, 1, 0],
+					Vec3 ForwardVector = [1, 0, 0],
+					OrientationBases DefaultBases = ForwardXUpY,
+				},
+				PlayerCollsions = 
+				{
+					float Interval = 0.5,
+				},
+				SoundEmitter = 
+				{
+					float Volume = 1,
+					float Pitch = 0,
+					float PitchSemitones = 0,
+					bool UsePitchSemitones = false,
+					bool Positional = true,
+					int Version = 1,
+				},
+				MusicController = 
+				{
+					string BackgroundSong = "5a0a91af3f1bee14:Background",
+					string BattleSong = "5a0a933c4570ee75:Battle",
+					string HitboxArche = "5a167c6ffe7cd5f9:MusicHitbox",
+				},
+				Hierarchy = 
+				{
+					Cog = 
+					{
+						LinkId = 
+						{
+							uint Id = 13,
+						},
+						Named = 
+						{
+							string Name = "E Button",
+						},
+						Transform = 
+						{
+							Vec3 Translation = [-0.200000003, 1.70000005, 0],
+							Vec3 Scale = [0.699999988, 0.699999988, 1],
+							Quat Rotation = [0, 0, 0, 1],
+						},
+						Sprite = 
+						{
+							bool Visible = true,
+							bool VisibilityCulling = true,
+							bool VisibilityEvents = true,
+							bool CastShadows = false,
+							Vec4 Color = [1, 1, 1, 1],
+							BlendMode BlendMode = Alpha,
+							SpriteGeometryMode GeometryMode = ZPlane,
+							string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+							string SpriteSource = "5af7e8354f08a3dc:E button being pressed_Animation",
+							bool RenderMask = false,
+							bool FlipX = false,
+							bool FlipY = false,
+							bool AnimationActive = true,
+							float AnimationSpeed = 1,
+							uint StartFrame = 0,
+						},
+					},
+					Cog = 
+					{
+						LinkId = 
+						{
+							uint Id = 14,
+						},
+						Named = 
+						{
+							string Name = "Arm",
+						},
+						Transform = 
+						{
+							Vec3 Translation = [-0.129999995, 0.129999995, 0],
+							Vec3 Scale = [1, 1, 1],
+							Quat Rotation = [0, 0, 0, 1],
+						},
+						Sprite = 
+						{
+							bool Visible = true,
+							bool VisibilityCulling = true,
+							bool VisibilityEvents = true,
+							bool CastShadows = false,
+							Vec4 Color = [1, 1, 1, 1],
+							BlendMode BlendMode = Alpha,
+							SpriteGeometryMode GeometryMode = ZPlane,
+							string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+							string SpriteSource = "5a1187921ddd83b7:PlayerArm_Sprite",
+							bool RenderMask = false,
+							bool FlipX = false,
+							bool FlipY = false,
+							bool AnimationActive = true,
+							float AnimationSpeed = 1,
+							uint StartFrame = 0,
+						},
+						BoxCollider = 
+						{
+							bool Ghost = true,
+							bool SendsMessages = true,
+							bool Seamless = true,
+							string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+							string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+							Vec3 Offset = [0.25, 0, 0],
+							Vec3 Size = [0.375, 0.125, 0.5],
+						},
+						Orientation = 
+						{
+							Vec3 GlobalUp = [0, 1, 0],
+							Vec3 UpVector = [0, 1, 0],
+							Vec3 ForwardVector = [1, 0, 0],
+							OrientationBases DefaultBases = ForwardXUpY,
+						},
+						LookAtMouse = 
+						{
+						},
+						PlayerShooting = 
+						{
+							float FireRate = 0.125,
+							float BulletSpeed = 25,
+							string Bullet = "5a1c3c0e55b6fbd1:Bullet",
+							bool CanShoot = true,
+							string ShotText = "5a4b1c8cd3edf0e1:ShotText",
+							string ShootingSound = "5ae3cf4fa124fd46:Laser_Shoot",
+							bool SpreadShot = false,
+							float SpreadAmount = 10,
+						},
+						SoundEmitter = 
+						{
+							float Volume = 1,
+							float Pitch = 0,
+							float PitchSemitones = 0,
+							bool UsePitchSemitones = false,
+							bool Positional = true,
+							int Version = 1,
+						},
+						SoundThing = 
+						{
+							string BlockBreak = "5a3431fd23e382c8:BlockBreak",
+							string PickupSound = "5a34364fe25bb00b:PickupNoise",
+						},
+					},
+					Cog = 
+					{
+						LinkId = 
+						{
+							uint Id = 10,
+						},
+						Named = 
+						{
+							string Name = "JetPackParticleEffect",
+						},
+						Transform = 
+						{
+							Vec3 Translation = [0.25, 0, -1],
+							Vec3 Scale = [1, 1, 1],
+							Quat Rotation = [0, 0, 0, 1],
+						},
+						SpriteParticleSystem = 
+						{
+							bool Visible = true,
+							bool VisibilityCulling = true,
+							bool VisibilityEvents = true,
+							bool CastShadows = false,
+							SystemChildMode ChildMode = Independent,
+							SystemSpace SystemSpace = WorldSpace,
+							uint DrawOrder = 0,
+							Vec4 Tint = [1, 1, 1, 1],
+							float WarmUpTime = 0,
+							ParticleGeometry GeometryMode = Billboarded,
+							ParticleRenderMode RenderMode = Blended,
+							ParticleSortMode SortMode = Youngest,
+							ParticleAnimation ParticleAnimation = Single,
+							string Texture = "5a77f9c1854884f9:Player_Movement_Particle",
+							float VelocityScale = 1,
+							float LengthScale = 1,
+							float MaxParticleSize = 100,
+							Vec3 SystemSize = [4, 4, 4],
+						},
+						SphericalParticleEmitter = 
+						{
+							bool Active = true,
+							uint EmitCount = 0,
+							float EmitRate = 500,
+							float EmitVariance = 0,
+							float Size = 0.25,
+							float SizeVariance = 0,
+							float Lifetime = 1,
+							float LifetimeVariance = 0.300000012,
+							float Spin = 2,
+							float SpinVariance = 10,
+							bool RandomSpin = true,
+							float Fill = 1,
+							float EmitterVelocityPercent = 0,
+							Vec3 StartVelocity = [0, -1, 0],
+							Vec3 RandomVelocity = [2, 2, 0],
+							Vec3 TangentVelocity = [0, 0, 0],
+							Vec3 EmitterSize = [0.0500000007, 0.0500000007, 0],
+							bool FastMovingEmitter = false,
+						},
+						LinearParticleAnimator = 
+						{
+							Vec3 Force = [0, 0, 0],
+							Vec3 RandomForce = [0, 0, 0],
+							float Torque = 0,
+							float Growth = -0.100000001,
+							float Dampening = 0,
+							Vec3 Twist = [0, 0, 0],
+						},
+						ParticleColorAnimator = 
+						{
+							Vec4 Color0 = [0.404999971, 0.404999971, 0.404999971, 1],
+							Vec4 Color1 = [0.555000007, 0.555000007, 0.555000007, 0.75],
+							Vec4 Color2 = [0.720000029, 0.720000029, 0.720000029, 0.5],
+							Vec4 Color3 = [1, 1, 1, 0.25],
+							Vec4 Color4 = [1, 1, 1, 0],
+						},
+						ChangeParticleEffects = 
+						{
+						},
+					},
+					ArchetypeInstance = 
+					{
+						string Name = "5a87e74dcbd970ec:BlockPlacingSelector",
+						LinkId = 
+						{
+							uint Id = 15,
+						},
+						Transform = 
+						{
+							Vec3 Translation = [0, 3, 100],
+							Vec3 Scale = [1, 1, 1],
+							Quat Rotation = [0, 0, 0, 1],
+						},
+						Area = 
+						{
+							Vec2 Size = [11, 5],
+							Location Origin = Center,
+						},
+						Named = 
+						{
+							string Name = "BlockPlacingSelector",
+						},
+					},
+					Cog = 
+					{
+						LinkId = 
+						{
+							uint Id = 12,
+						},
+						Named = 
+						{
+							string Name = "TwinklingStars",
+						},
+						Transform = 
+						{
+							Vec3 Translation = [0, 0, -9],
+							Vec3 Scale = [1, 1, 1],
+							Quat Rotation = [0, 0, 0, 1],
+						},
+						SpriteParticleSystem = 
+						{
+							bool Visible = true,
+							bool VisibilityCulling = true,
+							bool VisibilityEvents = true,
+							bool CastShadows = false,
+							SystemChildMode ChildMode = Independent,
+							SystemSpace SystemSpace = WorldSpace,
+							uint DrawOrder = 0,
+							Vec4 Tint = [1, 1, 1, 1],
+							float WarmUpTime = 0,
+							ParticleGeometry GeometryMode = Billboarded,
+							ParticleRenderMode RenderMode = Additive,
+							ParticleSortMode SortMode = Youngest,
+							ParticleAnimation ParticleAnimation = Single,
+							string Texture = "4fab71e8bcb7a8ce:DefaultTexture",
+							float VelocityScale = 1,
+							float LengthScale = 1,
+							float MaxParticleSize = 100,
+							Vec3 SystemSize = [21, 11, 4],
+						},
+						SphericalParticleEmitter = 
+						{
+							bool Active = true,
+							uint EmitCount = 0,
+							float EmitRate = 10,
+							float EmitVariance = 0,
+							float Size = 0.100000001,
+							float SizeVariance = 0.0500000007,
+							float Lifetime = 1,
+							float LifetimeVariance = 0.200000003,
+							float Spin = 0,
+							float SpinVariance = 0,
+							bool RandomSpin = false,
+							float Fill = 0.5,
+							float EmitterVelocityPercent = 0,
+							Vec3 StartVelocity = [0, 0, 0],
+							Vec3 RandomVelocity = [0, 0, 0],
+							Vec3 TangentVelocity = [0, 0, 0],
+							Vec3 EmitterSize = [21, 11, 0],
+							bool FastMovingEmitter = false,
+						},
+						LinearParticleAnimator = 
+						{
+							Vec3 Force = [0, 0, 0],
+							Vec3 RandomForce = [0, 0, 0],
+							float Torque = 0,
+							float Growth = 0.0500000007,
+							float Dampening = 0,
+							Vec3 Twist = [0, 0, 0],
+						},
+						ParticleColorAnimator = 
+						{
+							Vec4 Color0 = [1, 1, 1, 0],
+							Vec4 Color1 = [1, 1, 1, 1],
+							Vec4 Color2 = [1, 1, 1, 1],
+							Vec4 Color3 = [1, 1, 1, 1],
+							Vec4 Color4 = [1, 1, 1, 0],
+						},
+						GoOppositeWayThatKeyGoes = 
+						{
+							float Offset = 0.00999999978,
+							CogPath Player = 
+							{
+								string Path = ":/Player",
+								bool ErrorOnResolveToNull = false,
+								bool ErrorOnPathCantCompute = false,
+								bool ErrorOnDirectLinkFail = false,
+								bool UpdateCogOnPathChange = true,
+								bool UpdatePathOnCogChange = true,
+								bool UpdateCogOnInitialize = true,
+								bool ResolvedNullErrorOccurred = false,
+								uint ResolvedCog = 3,
+								CogPathPreference PathPreference0 = CogRelative,
+								CogPathPreference PathPreference1 = SpaceRelative,
+								CogPathPreference PathPreference2 = Absolute,
+							},
+						},
+					},
+					Cog = 
+					{
+						LinkId = 
+						{
+							uint Id = 11,
+						},
+						Named = 
+						{
+							string Name = "Space",
+						},
+						Transform = 
+						{
+							Vec3 Translation = [0, 0, -10],
+							Vec3 Scale = [1.39999998, 1.39999998, 1],
+							Quat Rotation = [0, 0, 0, 1],
+						},
+						Sprite = 
+						{
+							bool Visible = true,
+							bool VisibilityCulling = true,
+							bool VisibilityEvents = true,
+							bool CastShadows = false,
+							Vec4 Color = [1, 1, 1, 1],
+							BlendMode BlendMode = Alpha,
+							SpriteGeometryMode GeometryMode = ZPlane,
+							string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+							string SpriteSource = "5a4018b73151485d:BitFlame_background_art",
+							bool RenderMask = false,
+							bool FlipX = false,
+							bool FlipY = false,
+							bool AnimationActive = true,
+							float AnimationSpeed = 1,
+							uint StartFrame = 0,
+						},
+						GoOppositeWayThatKeyGoes = 
+						{
+							float Offset = 0.00100000005,
+							CogPath Player = 
+							{
+								string Path = ":/Player",
+								bool ErrorOnResolveToNull = false,
+								bool ErrorOnPathCantCompute = false,
+								bool ErrorOnDirectLinkFail = false,
+								bool UpdateCogOnPathChange = true,
+								bool UpdatePathOnCogChange = true,
+								bool UpdateCogOnInitialize = true,
+								bool ResolvedNullErrorOccurred = false,
+								uint ResolvedCog = 3,
+								CogPathPreference PathPreference0 = CogRelative,
+								CogPathPreference PathPreference1 = SpaceRelative,
+								CogPathPreference PathPreference2 = Absolute,
+							},
+						},
+						RigidBody = 
+						{
+							bool Static = true,
+							bool Asleep = false,
+							bool Kinematic = false,
+							bool RotationLocked = true,
+							bool Mode2D = true,
+							bool AllowSleep = true,
+							bool Inherit2DMode = true,
+							Vec3 Velocity = [0, 0, 0],
+							Vec3 AngularVelocity = [0, 0, 0],
+						},
+					},
+					Cog = 
+					{
+						LinkId = 
+						{
+							uint Id = 16,
+						},
+						Named = 
+						{
+							string Name = "ShootingStars",
+						},
+						Transform = 
+						{
+							Vec3 Translation = [0, 0, -9],
+							Vec3 Scale = [1, 1, 1],
+							Quat Rotation = [0, 0, 0, 1],
+						},
+						SpriteParticleSystem = 
+						{
+							bool Visible = true,
+							bool VisibilityCulling = true,
+							bool VisibilityEvents = true,
+							bool CastShadows = false,
+							SystemChildMode ChildMode = Independent,
+							SystemSpace SystemSpace = WorldSpace,
+							uint DrawOrder = 0,
+							Vec4 Tint = [1, 0.979699969, 0.710000038, 1],
+							float WarmUpTime = 0,
+							ParticleGeometry GeometryMode = Beam,
+							ParticleRenderMode RenderMode = Additive,
+							ParticleSortMode SortMode = Youngest,
+							ParticleAnimation ParticleAnimation = Single,
+							string Texture = "4fab71e8bcb7a8ce:DefaultTexture",
+							float VelocityScale = 1,
+							float LengthScale = 1,
+							float MaxParticleSize = 100,
+							Vec3 SystemSize = [21, 11, 4],
+						},
+						SphericalParticleEmitter = 
+						{
+							bool Active = true,
+							uint EmitCount = 0,
+							float EmitRate = 0.5,
+							float EmitVariance = 0,
+							float Size = 0.0500000007,
+							float SizeVariance = 0.00499999989,
+							float Lifetime = 1.25,
+							float LifetimeVariance = 0.25,
+							float Spin = 0,
+							float SpinVariance = 0,
+							bool RandomSpin = false,
+							float Fill = 0.5,
+							float EmitterVelocityPercent = 0,
+							Vec3 StartVelocity = [0, 0, 0],
+							Vec3 RandomVelocity = [20, 20, 0],
+							Vec3 TangentVelocity = [0, 0, 0],
+							Vec3 EmitterSize = [21, 11, 0],
+							bool FastMovingEmitter = false,
+						},
+						LinearParticleAnimator = 
+						{
+							Vec3 Force = [0, 0, 0],
+							Vec3 RandomForce = [0, 0, 0],
+							float Torque = 0,
+							float Growth = -0.00499999989,
+							float Dampening = 0,
+							Vec3 Twist = [0, 0, 0],
+						},
+						ParticleColorAnimator = 
+						{
+							Vec4 Color0 = [1, 0.979699969, 0.710000038, 1],
+							Vec4 Color1 = [1, 0.979699969, 0.710000038, 1],
+							Vec4 Color2 = [1, 0.979699969, 0.710000038, 1],
+							Vec4 Color3 = [1, 0.979699969, 0.710000038, 1],
+							Vec4 Color4 = [1, 0.979699969, 0.710000038, 1],
+						},
+						GoOppositeWayThatKeyGoes = 
+						{
+							float Offset = 0.00999999978,
+							CogPath Player = 
+							{
+								string Path = ":/Player",
+								bool ErrorOnResolveToNull = false,
+								bool ErrorOnPathCantCompute = false,
+								bool ErrorOnDirectLinkFail = false,
+								bool UpdateCogOnPathChange = true,
+								bool UpdatePathOnCogChange = true,
+								bool UpdateCogOnInitialize = true,
+								bool ResolvedNullErrorOccurred = false,
+								uint ResolvedCog = 3,
+								CogPathPreference PathPreference0 = CogRelative,
+								CogPathPreference PathPreference1 = SpaceRelative,
+								CogPathPreference PathPreference2 = Absolute,
+							},
+						},
+					},
+					Cog = 
+					{
+						LinkId = 
+						{
+							uint Id = 17,
+						},
+						Named = 
+						{
+							string Name = "Tutorial Script",
+						},
+						Transform = 
+						{
+							Vec3 Translation = [0, 10, -0.100000001],
+							Vec3 Scale = [1, 1, 1],
+							Quat Rotation = [0, 0, 0, 1],
+						},
+						SpriteText = 
+						{
+							bool Visible = true,
+							bool VisibilityCulling = true,
+							bool VisibilityEvents = true,
+							bool CastShadows = false,
+							Vec4 Color = [1, 1, 1, 1],
+							BlendMode BlendMode = Alpha,
+							SpriteGeometryMode GeometryMode = ZPlane,
+							string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+							string FontName = "5a075f32e7b83df0:GameFont",
+							uint FontSize = 67,
+							string Text = "W, A, S, D To move",
+							TextAlign Align = Center,
+							float PixelsPerUnit = 64,
+							bool Smoothing = false,
+						},
+						TutorialLogic = 
+						{
+						},
+					},
+				},
+			},
+		},
+	},
+},

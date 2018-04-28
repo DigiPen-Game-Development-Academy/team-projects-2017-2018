@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "PlayerJump1002",
+		uint64 ResourceId = 5a4fd11807fa3010,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 16,
+		uint FrameSizeY = 32,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 8,
+		float OriginY = 19,
+		float PixelsPerUnit = 16,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

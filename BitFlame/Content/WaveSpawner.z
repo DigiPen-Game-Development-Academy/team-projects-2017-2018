@@ -1,0 +1,171 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Filename: WaveSpawner.z                                                                           
+//Created by: Luke Taranowski                                                                                 
+//Contributors:                                                                                     
+//Last Modified: 3/30/18                                                                             
+//Brief: Spawns waves of enemies                                                                     
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class WaveSpawner : ZilchComponent
+{
+    // CogPath to player
+    [Property] var Player : CogPath = null;
+    
+    // Timer for time inbetween waves.
+    [Property] var TimeUntilNextWave : Real;
+
+    // How close can enemys spawn from player.
+    [Property] var SafeDistanceToSpawnFromPlayer : Real;
+    
+    // How far away enemys can spawn
+    [Property] var FurthestToSpawnFromPlayer : Real;
+    
+    [Property] var IncreaseEnemySpawnDistance : Real;
+
+    // Set enemy archetypes to spawn.
+    [Property] var EnemyType1 : Archetype;
+    [Property] var EnemyType2 : Archetype;
+    [Property] var EnemyType3 : Archetype;
+    
+    // How much of the enemy to spawn that wave.
+    var EnemyType1AmountToSpawn : Real;
+    var EnemyType2AmountToSpawn : Real;
+    var EnemyType3AmountToSpawn : Real;
+    
+    // How much to initialy spawn
+    [Property] var InitialSpawn1 : Real;
+    [Property] var InitialSpawn2: Real;
+    [Property] var InitialSpawn3 : Real;
+    
+    // How much to increase enemy spawns each wave.
+    [Property] var SpawnIncrease1 : Real;
+    [Property] var SpawnIncrease2 : Real;
+    [Property] var SpawnIncrease3 : Real;
+    
+    // Lets me generate random numbers.
+    var RandomGenerator : Random = Random();
+    
+    // Keeps track of random X&Y.
+    var RandomSpawnX : Real;
+    var RandomSpawnY : Real;
+    
+    // Checks the spawn location for collision
+    [Property] var SpawnChecker : CogPath = null;
+    
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.GameSession.GameVars.WaveTimer = this.TimeUntilNextWave + (this.GameSession.GameVars.WaveTracker * 10);                 
+                    
+        // Increase amount of enemys that can spawn during a wave.
+        this.EnemyType1AmountToSpawn += (this.SpawnIncrease1 * this.GameSession.GameVars.WaveTracker + this.InitialSpawn1);
+        this.EnemyType2AmountToSpawn += (this.SpawnIncrease2 * this.GameSession.GameVars.WaveTracker + this.InitialSpawn2);
+        this.EnemyType3AmountToSpawn += (this.SpawnIncrease3 * this.GameSession.GameVars.WaveTracker + this.InitialSpawn3);
+                    
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        // Checks a variable in game vars to check if the player has selected this gamemode.
+        if(this.GameSession.GameVars.WaveGamemode == true)
+        {
+            // Checks if the wave timer has run out.
+            if(this.GameSession.GameVars.WaveTimer <= 0)
+            {
+                // Sets the ActiveWave varible in game vars to true.
+                this.GameSession.GameVars.ActiveWave = true;
+                
+                // Checks if we have spawned the correct amount of enemies.
+                if(this.EnemyType1AmountToSpawn > 0)
+                {
+                    // Generates random X&Y
+                    this.RandomSpawnX = this.RandomGenerator.Range(this.Player.Cog.Transform.WorldTranslation.X - this.FurthestToSpawnFromPlayer, this.Player.Cog.Transform.WorldTranslation.X + this.FurthestToSpawnFromPlayer);
+                    this.RandomSpawnY = this.RandomGenerator.Range(this.Player.Cog.Transform.WorldTranslation.Y - this.FurthestToSpawnFromPlayer, this.Player.Cog.Transform.WorldTranslation.Y + this.FurthestToSpawnFromPlayer);
+                            
+                    // Converts random X&Y into a spawnpoint for our enemy.
+                    var randomSpawn = Real3(this.RandomSpawnX, this.RandomSpawnY, 0);
+                    
+                    this.SpawnChecker.Cog.Transform.Translation = randomSpawn;
+                    
+                    // Checks if the spawnpoint is too close to the player.        
+                    if(Math.Distance(randomSpawn, this.Space.FindObjectByName("Player").Transform.Translation) > this.SafeDistanceToSpawnFromPlayer && this.GameSession.GameVars.SafeToSpawn == true)
+                    {
+                        // Creates correct enemy type and subtracts from how many need to be spawned.
+                        this.Space.CreateAtPosition(this.EnemyType1, randomSpawn);     
+                        this.EnemyType1AmountToSpawn -= 1;        
+                    }
+                    
+                }
+                // Checks if we have spawned the correct amount of enemies.
+                else if(this.EnemyType2AmountToSpawn > 0)
+                {
+                    // Generates random X&Y
+                    this.RandomSpawnX = this.RandomGenerator.Range(this.Player.Cog.Transform.WorldTranslation.X - this.FurthestToSpawnFromPlayer, this.Player.Cog.Transform.WorldTranslation.X + this.FurthestToSpawnFromPlayer);
+                    this.RandomSpawnY = this.RandomGenerator.Range(this.Player.Cog.Transform.WorldTranslation.Y - this.FurthestToSpawnFromPlayer, this.Player.Cog.Transform.WorldTranslation.Y + this.FurthestToSpawnFromPlayer);
+                            
+                    // Converts random X&Y into a spawnpoint for our enemy.
+                    var randomSpawn = Real3(this.RandomSpawnX, this.RandomSpawnY, 0);
+                    
+                    this.SpawnChecker.Cog.Transform.Translation = randomSpawn;
+                    
+                    // Checks if the spawnpoint is too close to the player.           
+                    if(Math.Distance(randomSpawn, this.Space.FindObjectByName("Player").Transform.Translation) > this.SafeDistanceToSpawnFromPlayer && this.GameSession.GameVars.SafeToSpawn == true)
+                    {
+                        // Creates correct enemy type and subtracts from how many need to be spawned.
+                        this.Space.CreateAtPosition(this.EnemyType2, randomSpawn);     
+                        this.EnemyType2AmountToSpawn -= 1;    
+                    }
+                    
+                }
+                // Checks if we have spawned the correct amount of enemies.
+                else if(this.EnemyType3AmountToSpawn > 0)
+                {
+                    // Generates random X&Y
+                    this.RandomSpawnX = this.RandomGenerator.Range(this.Player.Cog.Transform.WorldTranslation.X - this.FurthestToSpawnFromPlayer, this.Player.Cog.Transform.WorldTranslation.X + this.FurthestToSpawnFromPlayer);
+                    this.RandomSpawnY = this.RandomGenerator.Range(this.Player.Cog.Transform.WorldTranslation.Y - this.FurthestToSpawnFromPlayer, this.Player.Cog.Transform.WorldTranslation.Y + this.FurthestToSpawnFromPlayer);
+                            
+                    // Converts random X&Y into a spawnpoint for our enemy.
+                    var randomSpawn = Real3(this.RandomSpawnX, this.RandomSpawnY, 0);
+                    
+                    this.SpawnChecker.Cog.Transform.Translation = randomSpawn;
+                    
+                    // Checks if the spawnpoint is too close to the player.           
+                    if(Math.Distance(randomSpawn, this.Space.FindObjectByName("Player").Transform.Translation) > this.SafeDistanceToSpawnFromPlayer && this.GameSession.GameVars.SafeToSpawn == true)
+                    {
+                        // Creates correct enemy type and subtracts from how many need to be spawned.
+                        this.Space.CreateAtPosition(this.EnemyType3, randomSpawn);     
+                        this.EnemyType3AmountToSpawn -= 1;        
+                    }
+                    
+                }
+                else
+                {
+                    this.FurthestToSpawnFromPlayer += this.IncreaseEnemySpawnDistance;
+                    
+                    // Adds to the WaveTracker variable.
+                    this.GameSession.GameVars.WaveTracker += 1;
+                    
+                    // Sets the wave timer back to default and adds more time based on the WaveTracker.
+                    this.GameSession.GameVars.WaveTimer += this.TimeUntilNextWave + (this.GameSession.GameVars.WaveTracker * 10);
+                    
+                    
+                    
+                    // Increase amount of enemys that can spawn during a wave.
+                    this.EnemyType1AmountToSpawn += (this.SpawnIncrease1 * this.GameSession.GameVars.WaveTracker + this.InitialSpawn1);
+                    this.EnemyType2AmountToSpawn += (this.SpawnIncrease2 * this.GameSession.GameVars.WaveTracker + this.InitialSpawn2);
+                    this.EnemyType3AmountToSpawn += (this.SpawnIncrease3 * this.GameSession.GameVars.WaveTracker + this.InitialSpawn3);
+                }   
+            }
+            else
+            {
+                // Subtracts from timer till it hits zero.
+                this.GameSession.GameVars.WaveTimer -= 0.01;
+                
+                // Sets varible in game vars to false when a wave is not active.
+                this.GameSession.GameVars.ActiveWave = false;
+            }
+        }
+    }       
+}

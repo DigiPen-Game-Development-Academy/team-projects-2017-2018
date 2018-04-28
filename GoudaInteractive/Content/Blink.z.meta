@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "Blink",
+		uint64 ResourceId = 5a8bac5ffde0d31e,
+	},
+},

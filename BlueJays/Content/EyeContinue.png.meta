@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "EyeContinue",
+		uint64 ResourceId = 5a629c11446d1ae7,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 216,
+		uint FrameSizeY = 216,
+		uint FrameCount = 9,
+		float FrameDelay = 0.0500000007,
+		float OriginX = 108,
+		float OriginY = 108,
+		float PixelsPerUnit = 64,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

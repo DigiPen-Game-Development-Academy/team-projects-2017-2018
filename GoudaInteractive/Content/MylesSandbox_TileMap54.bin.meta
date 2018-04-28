@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "MylesSandbox_TileMap54",
+		uint64 ResourceId = 5ac7c6c851de2793,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "5a34faa17f701526:Tile6",
+	},
+},

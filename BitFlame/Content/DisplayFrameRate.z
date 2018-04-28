@@ -1,0 +1,38 @@
+class DisplayFrameRate : ZilchComponent
+{
+    [Dependency] var SpriteText : SpriteText;
+    
+    var Old : Real;
+    
+    var Timer : Real;  
+    var Interval : Real;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.Old = 60;
+        this.Interval = 0.25;
+        this.Timer = 0;
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    { 
+        this.Timer += event.Dt;
+        
+        if(this.Timer > this.Interval)
+        {
+            this.Timer = 0;
+            this.SpriteText.Text = "`Math.Round(1 / event.Dt, -1)` fps";
+        }
+        
+        if(this.GameSession.GameVars.ShowFrameRate)
+        {
+            this.SpriteText.Visible = true;
+        }
+        else
+        {
+            this.SpriteText.Visible = false;
+        }
+    }
+}

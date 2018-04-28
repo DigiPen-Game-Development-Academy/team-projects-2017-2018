@@ -1,0 +1,206 @@
+//Jacob Burke
+
+//This is the script for the player's health
+
+class NewHealth : ZilchComponent
+{
+    var PreviousVelocity:Real3;
+    [Static]
+    var CurrentHealth:Real;
+    
+    [Static]
+    var MaxHealth:Real = 20;
+    
+    [Property]
+    var LevelToLoad:Level;
+    
+    [Property]
+    var Timer:Real = 5;
+    
+    [Property]
+    var DamageColor:Real4;
+    [Property]
+    var RegularColor:Real4;
+    
+    [Property]
+    var HitSoundThing : SoundCue = SoundCue.PlayerHit;
+    
+    var Timer2:Real = 0.2;
+    var Timer3:Real = 0;
+    
+    var Invincibility : Boolean = false;
+    var InvincibilityTimer : Real = 0.5;
+    
+    [Property] var BaseLevelLoad : Level = Level.BaseLevel;
+    
+    
+    var Gear : Archetype = Archetype.Gear;
+    var Food : Archetype = Archetype.Food;
+    var HealthPotion : Archetype = Archetype.HealthPotion;
+    var TimesRepeated : Integer = 1;
+        
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionPersisted);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        
+        if(AdvInventory.PlayerInventory["ArmorCopper"] >= 1)
+        {
+            Health.MaxHealth = Health.MaxHealth + 20;
+        }
+        
+        if(AdvInventory.PlayerInventory["Ring_Health"] >= 1)
+        {
+           Health.MaxHealth = Health.MaxHealth + 10;
+        }
+        
+        Health.CurrentHealth = Health.MaxHealth;
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.BulletLogic != null && Health.CurrentHealth > 0 && this.Invincibility == false)
+        {
+            Health.CurrentHealth -= 2;
+            this.Owner.SoundEmitter.PlayCue(this.HitSoundThing);
+            this.Owner.Sprite.Color = this.DamageColor;
+            this.Invincibility = true;
+        }
+        
+        
+        if(event.OtherObject.Name == ("DefaultTile") && this.PreviousVelocity.Y <= -7)
+        {
+            this.GameSession.DispatchEvent(Events.Shake, ShakeEvent(0.2,0.4,0.0001, Ease.Linear, 4));
+        }
+    }
+
+    function OnCollisionPersisted(event : CollisionEvent)
+    {
+        if(event.OtherObject.Checkpoint != null)
+        Checkpoint.RespawnPosition = this.Owner.Transform.Translation;
+        
+        if(event.OtherObject.EnemyHealth != null && Health.CurrentHealth > 0 && this.Invincibility == false)
+        {
+            this.GameSession.DispatchEvent(Events.Shake, ShakeEvent(0.8,1.4,0.001, Ease.Linear, 7));
+            Health.CurrentHealth -= 2;
+            if(event.OtherObject.Name == ("BOSS"))
+            {
+                Health.CurrentHealth -= 3;
+            }
+            this.Owner.Sprite.Color = this.DamageColor;
+            this.Owner.SoundEmitter.PlayCue(this.HitSoundThing);
+            this.Invincibility = true;
+        }
+        
+        if(event.OtherObject.JaggedRock != null && Health.CurrentHealth > 0 && this.Invincibility == false)
+        {
+            this.GameSession.DispatchEvent(Events.Shake, ShakeEvent(0.5,1,0.001, Ease.Linear, 5));
+            Health.CurrentHealth -= 1;
+            this.Owner.Sprite.Color = this.DamageColor;
+            this.Owner.SoundEmitter.PlayCue(this.HitSoundThing);
+            this.Invincibility = true;
+        }
+        if(event.OtherObject.Explosion != null && Health.CurrentHealth > 0 && this.Invincibility == false)
+        {
+            Health.CurrentHealth -= 2;
+            this.Owner.Sprite.Color = this.DamageColor;
+            this.Owner.SoundEmitter.PlayCue(this.HitSoundThing);
+            this.Invincibility = true;
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.PreviousVelocity = this.Owner.RigidBody.Velocity;
+        
+        if(this.Space.CurrentLevel == Level.TheBestBossLevel_InTheWorld && Health.CurrentHealth <=0)
+        {
+              this.Space.LoadLevel(this.BaseLevelLoad);
+        }
+        
+        if(this.Timer > 0 && Hunger.Hunger <= 1)
+        {
+             
+        this.Timer -= event.Dt;
+        }
+        else if(this.Timer <= 0)
+        {
+            Health.CurrentHealth -= 1;
+            
+            this.Timer += 5;
+        }
+        
+        if(this.Invincibility == true && this.InvincibilityTimer > 0)
+        {
+            this.InvincibilityTimer -= event.Dt;
+        }
+        
+        else if(this.InvincibilityTimer <= 0)
+        {
+            this.Invincibility = false;
+            this.InvincibilityTimer = 0.5;
+        }
+        
+        if(this.Timer3 > 0) this.Timer3 -= event.Dt;
+        if(Health.CurrentHealth <= 5 && this.Timer3 <= 0)
+        {
+            this.Owner.Sprite.Color = this.DamageColor;
+            this.Timer3 += 1;
+        }
+        
+        if(this.Owner.Sprite.Color == this.DamageColor)
+        {
+            this.Timer2 -= event.Dt;
+        }
+        if(this.Timer2 <= 0)
+        {
+            this.Timer2 += 0.2;
+            this.Owner.Sprite.Color = this.RegularColor;
+        }
+        //God Mode By Jessica. Because I am bored of getting killed by gear shark.
+        if(Zero.Keyboard.KeyIsPressed(Keys.G))
+        {
+            Health.CurrentHealth += 1000;
+        }
+        
+        
+        if(Health.CurrentHealth <= 0)
+        {
+             NumOfDeaths.NumberOfDeaths += 1;
+            
+            var position = this.Owner.Transform.Translation;
+            
+            if(AdvInventory.PlayerInventory["Gears"] > 0
+            && AdvInventory.PlayerInventory["Gears"] < 4)
+            {
+                while(AdvInventory.PlayerInventory["Gears"] > 0)
+                {
+                this.Space.CreateAtPosition(Archetype.Gear, position);
+                AdvInventory.PlayerInventory["Gears"] -= 1;
+                }
+            }
+            else
+            {
+                for(var i = 3; i > 0; --i)
+                {
+                    this.Space.CreateAtPosition(Archetype.Gear, position);
+                    AdvInventory.PlayerInventory["Gears"] -= 1;
+                }
+            }
+            
+            if(AdvInventory.PlayerInventory["HealthPotion"] > 0)
+            {
+                this.Space.CreateAtPosition(Archetype.HealthPotion, position);
+                    AdvInventory.PlayerInventory["HealthPotion"] -= 1;
+            }
+                
+                
+            
+            this.Owner.Transform.Translation = Checkpoint.RespawnPosition;
+            Health.CurrentHealth = Health.MaxHealth;
+            Hunger.Hunger = Hunger.MaxHunger;
+            
+        }
+    }
+}

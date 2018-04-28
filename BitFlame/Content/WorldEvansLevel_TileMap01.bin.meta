@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "WorldEvansLevel_TileMap01",
+		uint64 ResourceId = 5a0703fc84eb617a,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "5a1c0e17b3ddfaac:WorldEvansLevel",
+	},
+},

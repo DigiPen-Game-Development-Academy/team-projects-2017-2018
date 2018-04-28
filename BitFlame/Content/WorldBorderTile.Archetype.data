@@ -1,0 +1,39 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "WorldBorderTile",
+	},
+	Archetyped = 
+	{
+		string Name = "5a8affa2dbb1e864:WorldBorderTile",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [-8.5, 10.5, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	MultiSprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [0.435294151, 0.435294151, 0.435294151, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+	},
+	TileMap = 
+	{
+		string SourceName = "",
+		string PaletteName = "",
+		float UnitsPerTile = 1,
+		float MeshThickness = 1.20000005,
+	},
+},

@@ -1,0 +1,40 @@
+//Sam
+//You can go into the cannons to enter the levels
+
+//Edited by Jacob
+class EnterCannon : ZilchComponent
+{
+    [Property]
+    var LoadSFX : SoundCue;
+    
+    var Player : Cog;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionPersisted);
+    }
+
+    function OnCollisionPersisted(event : CollisionEvent)
+    {
+        if(event.OtherObject.PlayerMovement != null)
+        {
+            if(Zero.Keyboard.KeyIsPressed(Keys.S))
+            {
+                var seq = Action.Sequence(this.Owner.Actions);
+                
+                this.Space.SoundSpace.PlayCue(this.LoadSFX);
+            
+                
+                this.Player = event.OtherObject;
+                this.Player.PlayerController.Launched = 1;
+                
+                
+                Action.Property
+                    (seq, @this.Owner.Transform.EulerAngles, Real3(0,0,-1), 2, Ease.Linear);
+                
+                
+            }
+        }
+    }
+
+}

@@ -1,0 +1,41 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Filename: EnemyLogic                                                                                   //
+//Created by: Justin                                                                                     //
+//Contributors: Luke                                                                                     //
+//Last Modified: 3/30/2018                                                                               //
+//Brief: Controls the enemy's AI                                                                         //
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class EnemyLogic : ZilchComponent
+{
+    var Target : Cog;
+    [Property] var Speed : Real = 5;
+    
+    [Property] var Range : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.Target = this.Space.FindObjectByName("Player");
+        
+        // If this enemy is spawned during a wave set there Range to a large number
+        if(this.GameSession.GameVars.ActiveWave == true)
+        {
+            this.Range += 1000;
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var player = this.Space.FindObjectByName("Player");
+        
+        if(player != null)
+        {
+            if(Math.Distance(this.Owner.Transform.Translation, this.Target.Transform.Translation) <= this.Range)
+            {
+                this.Owner.RigidBody.Velocity += Math.Normalize(this.Target.Transform.Translation - this.Owner.Transform.Translation) * event.Dt * this.Speed;
+            }
+        }
+    }
+}

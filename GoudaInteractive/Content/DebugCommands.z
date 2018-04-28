@@ -1,0 +1,621 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+enum TextBoxType {
+    TextBox, Console
+}
+
+class TextEntry : ZilchComponent {
+    
+    [Property] var TextBoxType : TextBoxType = TextBoxType.TextBox;
+    [Property] var ConsoleTextboxName : String = "Console";
+    [Property] var TextBoxBackground : String = "TextBoxBG";
+    [Property] var TextCharDimensions : Real2 = Real2(0.26, 0.5);
+    [Property] var HighlightColor : Real4 = Real4(0.2, 0.6, 1.0, 0.5);
+    [Property] var MaxCharsPerLine : Integer = 75;
+    [Property] var MaxCharLimit : Integer = 50000;
+    
+    var CaptureKeys : Boolean = false;
+    var CycleThroughCmdsAll : Boolean = false;
+    var IsTextSelected : Boolean = false;
+    var WasClicked : Boolean = false;
+    var CursorMoveClick : Boolean = false;
+    var BlinkTypingIndicator : Boolean = true;
+    
+    var CommandString : String = "";
+    var SubmittedText : String = "";
+    var ConsoleLog : String = "";
+    var TempCommandStr : String = "";
+    var TypingIndicator : String = "|";
+    var CurrTypingIndicator : String = null;
+    
+    var CommandHistory : Array[String] = null;
+    var Commands : Array[String] = null;
+    
+    var CmdHistoryIndex : Integer = 0;
+    var AutocompleteIndex : Integer = 0;
+    var CursorIndex : Integer = 0;
+    var OverflowOffset : Integer = 0;
+    var Occurances : Integer = 1;
+    
+    var TypingIndicatorBlinkTime : Real = 1.0;
+    var CurrTypingIndicatorBlinkTime : Real = 0.0;
+    var RepeatDelay : Real = 0.5;
+    var CurrRepeatDelay : Real = 0.0;
+    var HeldKeyRepeatSpeed : Real = 0.005;
+    var CurrHeldKeyRepeatSpeed : Real = 0.0;
+    
+    var ClickCount : Real = 0;
+    var CurrClickCtTimer : Real = 0.0;
+    
+    var SelectedTextIndex : Integer2 = Integer2(0, 0);
+    var StartSelectionArea : Integer = 0;
+    
+    function Initialize(init : CogInitializer) {
+        
+        this.TextCharDimensions = Real2(this.Owner.SpriteText.MeasureGivenText("G").X, this.TextCharDimensions.Y);
+        this.CommandHistory = new Array[String]();
+        this.Owner.Parent.FindChildByName("TextBoxSelection").Sprite.Color = this.HighlightColor;
+        
+        if(this.Owner.Commands != null) this.Owner.Commands.CreateCommands();
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.MouseUpdate, this.OnMouseUpdate);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(Zero.Keyboard, Events.TextTyped, this.OnTextTyped);
+        
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+            
+        if(this.CaptureKeys) {
+            
+            // CLICK COUNT RESET
+            if(this.CurrClickCtTimer < 0.2) {
+                if(this.ClickCount > 0) this.CurrClickCtTimer += event.Dt;
+                else this.CurrClickCtTimer = 0.0;
+            } else {
+                this.CurrClickCtTimer = 0.0;
+                this.ClickCount = 0;
+            }
+            
+            // SELECT TEXT ON MULTI CLICKS
+            
+            if(this.ClickCount == 2) {
+                this.SelectedTextIndex = TextHelper.GetWordIndices(this.CommandString, this.CursorIndex);
+                this.CatchInvalidCursorPos();
+                this.SelectText(this.SelectedTextIndex, false, true);
+                this.ClickCount = 2.1;
+                return;
+            }
+            
+            if(this.ClickCount >= 3) {
+                this.SelectedTextIndex = Integer2(0, this.CommandString.Count);
+                this.SelectText(this.SelectedTextIndex, false, true);
+                this.ClickCount = 0;
+                return;
+            }
+            
+            // CURSOR BLINKING
+            if(this.CurrTypingIndicatorBlinkTime > this.TypingIndicatorBlinkTime) {
+                this.CurrTypingIndicatorBlinkTime = 0.0;
+            } else {
+                if(this.CurrTypingIndicatorBlinkTime < this.TypingIndicatorBlinkTime / 2 && this.BlinkTypingIndicator) {
+                    this.CurrTypingIndicator = this.TypingIndicator;
+                } else if(this.BlinkTypingIndicator || this.IsTextSelected) {
+                    this.CurrTypingIndicator = " ";
+                } else if(!this.BlinkTypingIndicator) {
+                    this.CurrTypingIndicatorBlinkTime = 0.0;
+                    this.CurrTypingIndicator = this.TypingIndicator;
+                }
+                
+                this.CurrTypingIndicatorBlinkTime += event.Dt;
+            }
+            
+            // CONTROLS
+            this.Controls(event);
+            
+            this.Owner.Parent.FindChildByName("TextBoxSelection").Sprite.Visible = this.IsTextSelected;
+            
+            if(!this.IsTextSelected) {
+                this.SelectedTextIndex = Integer2(this.CursorIndex);
+                this.BlinkTypingIndicator = true;
+            }
+            
+            if(this.CommandString.Count <= this.MaxCharsPerLine) {
+                this.Owner.SpriteText.Text = this.CommandString;
+                this.OverflowOffset = 0;
+            } else {
+                this.Owner.SpriteText.Text = this.CommandString.SubStringFromRuneIndices(
+                    this.CommandString.Count - (this.MaxCharsPerLine), this.CommandString.Count
+                );
+                this.OverflowOffset = this.CommandString.Count - this.Owner.SpriteText.Text.Count;
+            }
+            
+            this.UpdateCursorPosition();
+            
+        } else if(this.Owner.SpriteText.Text.Count > 0) {
+            this.Owner.SpriteText.Text = "";
+            this.ClickCount = 0;
+        }
+        
+        // SHOW/HIDE THINGS WHEN TEXT BOX IS TOGGLED
+        this.Owner.Parent.FindChildByName(this.TextBoxBackground).Sprite.Visible = this.CaptureKeys;
+        this.Owner.Parent.FindChildByName("TextCursor").SpriteText.Visible = this.CaptureKeys;
+        if(this.Owner.Parent.SpriteText != null)
+            this.Owner.Parent.SpriteText.Visible = this.CaptureKeys;
+        if(!this.CaptureKeys)
+            this.DeselectText();
+        if(this.TextBoxType == TextBoxType.Console) {
+            this.Owner.Parent.FindChildByName(this.ConsoleTextboxName).SpriteText.Visible = this.CaptureKeys;
+            this.Owner.Reactive.Active = this.CaptureKeys;
+        }
+        if(((Zero.Keyboard.KeyIsPressed(Keybinds.Console) && this.TextBoxType == TextBoxType.Console) || (this.WasClicked && this.TextBoxType != TextBoxType.Console)) && !this.CaptureKeys) {
+            this.CaptureKeys = true;
+            this.WasClicked = false;
+        }
+        
+        // COMMANDS
+        if(this.SubmittedText.Count > 0 && this.TextBoxType == TextBoxType.Console)
+            this.Owner.Commands.CommandFunctions();
+        
+    }
+    
+    function OnMouseUpdate(event : ViewportMouseEvent) {
+        
+        if(this.CaptureKeys)
+            Relocation.CursorType = "Text";
+        else
+            Relocation.CursorType = "Default";
+        
+        if(event.Mouse.IsButtonDown(MouseButtons.Left) && !this.WasClicked)
+            this.WasClicked = true;
+        if(event.Mouse.IsButtonDown(MouseButtons.Left) && !this.CursorMoveClick) {
+            this.DeselectText();
+            this.CursorIndex = this.CalcTextIndexFromPosition(event.CameraViewport.ScreenToWorldZPlane(event.Position, 0.0).X);
+            this.CatchInvalidCursorPos();
+            this.SelectedTextIndex = Integer2(this.CursorIndex);
+            this.CursorMoveClick = true;
+            this.CurrClickCtTimer = 0.0;
+        } else if(!event.Mouse.IsButtonDown(MouseButtons.Left) && this.CursorMoveClick) {
+            this.CursorMoveClick = false;
+            ++this.ClickCount;
+        } else if(event.Mouse.IsButtonDown(MouseButtons.Left) && this.ClickCount == 0) {
+            this.SelectedTextIndex = Integer2(this.SelectedTextIndex.X, this.CalcTextIndexFromPosition(event.CameraViewport.ScreenToWorldZPlane(event.Position, 0.0).X));
+        }
+        
+        this.SelectText(this.SelectedTextIndex, false, true);
+        
+    }
+    
+    function OnMouseExit(event : ViewportMouseEvent) {
+        if(Relocation.CursorType == "Text")
+            Relocation.CursorType = "Default";
+    }
+    
+    function OnTextTyped(event : KeyboardTextEvent) {
+        if(this.CaptureKeys) {
+            
+            this.ClickCount = 0;
+            
+            this.CatchInvalidCursorPos();
+            
+            // CHECK IF TEXT IS RENDERABLE (IS A LETTER/NUMBER/SYMBOL)
+            if(TextHelper.IsRenderable(event.Character) && this.CommandString.Count < this.MaxCharLimit) {
+                
+                this.CurrTypingIndicatorBlinkTime = 0.0;
+                this.CycleThroughCmdsAll = false;
+                
+                if(!this.IsTextSelected) {
+                    this.CommandString = this.InsertAt(String.FromChar(event.Character));
+                } else {
+                    this.CommandString = this.ReplaceInRange(this.SelectText(this.SelectedTextIndex, true, true), "`String.FromChar(event.Character)`", true);
+                    this.DeselectText();
+                }
+                
+                ++this.CursorIndex;
+                this.CatchInvalidCursorPos();
+                this.TempCommandStr = this.CommandString;
+                this.AutocompleteIndex = 0;
+                
+            }
+            
+            // CHECK FOR BACKSPACE
+            if(event.Character == 8 && this.CommandString.Count > 0) {
+                
+                this.CurrTypingIndicatorBlinkTime = 0.0;
+                this.CycleThroughCmdsAll = false;
+                
+                if(!this.IsTextSelected && this.CursorIndex > 0) {
+                    this.CommandString = this.RemoveAt(0);
+                    --this.CursorIndex;
+                } else if(this.IsTextSelected) {
+                    this.CommandString = this.ReplaceInRange(this.SelectText(this.SelectedTextIndex, true, true), "", true);
+                    this.DeselectText();
+                }
+                
+                this.TempCommandStr = this.CommandString;
+                this.AutocompleteIndex = 0;
+                
+            }
+            
+            // CHECK FOR TAB
+            if(event.Character == 9 && this.TextBoxType == TextBoxType.Console) {
+                
+                this.DeselectText();
+                
+                if(this.AutocompleteIndex >= this.Commands.Count)
+                    this.AutocompleteIndex = 0;
+                
+                if(this.CommandString == "" || this.CycleThroughCmdsAll) {
+                    
+                    this.CurrTypingIndicatorBlinkTime = 0.0;
+                    this.CycleThroughCmdsAll = true;
+                    
+                    this.CommandString = this.Commands.Get(this.AutocompleteIndex);
+                    this.CursorIndex = this.CommandString.Count;
+                    
+                } else {
+                    
+                    var cmdStr = this.Commands.Get(this.SearchArray(this.Commands, this.TempCommandStr, this.AutocompleteIndex));
+                    
+                    if(this.Occurances != 0) {
+                        this.CurrTypingIndicatorBlinkTime = 0.0;
+                        this.CommandString = cmdStr;
+                        this.CursorIndex = this.CommandString.Count;
+                    }
+                    
+                    this.CycleThroughCmdsAll = false;
+                    this.Occurances = 1;
+                    
+                }
+                
+                ++this.AutocompleteIndex;
+                
+            }
+            
+        }
+    }
+    
+    function Controls(event : UpdateEvent) {
+        
+        if(Zero.Keyboard.KeyIsPressed(Keys.Left)) {
+            this.MoveCursor(-1, -1);
+            return;
+        } else if(Zero.Keyboard.KeyIsPressed(Keys.Right)) {
+            this.MoveCursor(-1, 1);
+            return;
+        }
+        
+        if(Zero.Keyboard.KeyIsReleased(Keys.Escape)) {
+            
+            this.CommandString = "";
+            this.TempCommandStr = "";
+            
+            this.CaptureKeys = false;
+            this.IsTextSelected = false;
+            this.CycleThroughCmdsAll = false;
+            this.WasClicked = false;
+            
+            this.CmdHistoryIndex = this.CommandHistory.Count;
+            this.AutocompleteIndex = 0;
+            this.CurrTypingIndicatorBlinkTime = 0.0;
+            
+        } else if(Zero.Keyboard.KeyIsPressed(Keys.Enter)) {
+            
+            this.SubmittedText = this.CommandString;
+            
+            this.IsTextSelected = false;
+            this.CycleThroughCmdsAll = false;
+            this.WasClicked = false;
+            
+            if(this.CommandString != "") {
+                
+                this.CmdHistoryIndex = this.CommandHistory.Count + 1;
+                this.CommandHistory.Push(this.CommandString);
+                
+                if(this.TextBoxType != TextBoxType.Console) {
+                    this.CaptureKeys = false;
+                    this.Owner.Parent.FindChildByName(this.ConsoleTextboxName).SpriteText.Text = this.SubmittedText;
+                }
+                
+            }
+            
+            this.CommandString = "";
+            this.TempCommandStr = "";
+            
+        } else if(Zero.Keyboard.KeyIsPressed(Keys.Up) && this.TextBoxType == TextBoxType.Console) {
+            
+            this.IsTextSelected = false;
+            
+            if(this.CommandHistory.Count > 0 && this.CmdHistoryIndex > 0) {
+                --this.CmdHistoryIndex;
+                
+                this.CommandString = this.CommandHistory.Get(this.CmdHistoryIndex);
+                this.TempCommandStr = this.CommandString;
+                this.CursorIndex = this.CommandString.Count;
+            }
+            
+        } else if(Zero.Keyboard.KeyIsPressed(Keys.Down) && this.TextBoxType == TextBoxType.Console) {
+            
+            this.IsTextSelected = false;
+            
+            if(this.CommandHistory.Count > 0 && this.CmdHistoryIndex < this.CommandHistory.Count - 1) {
+                ++this.CmdHistoryIndex;
+                
+                this.CommandString = this.CommandHistory.Get(this.CmdHistoryIndex);
+                this.TempCommandStr = this.CommandString;
+                this.CursorIndex = this.CommandString.Count;
+            } else if(this.CmdHistoryIndex < this.CommandHistory.Count) {
+                ++this.CmdHistoryIndex;
+                
+                this.CommandString = "";
+                this.TempCommandStr = "";
+            }
+            
+        } else if(Zero.Keyboard.KeyIsDown(Keys.Control) && Zero.Keyboard.KeyIsPressed(Keys.A)) {
+            this.SelectedTextIndex = Integer2(0, this.CommandString.Count);
+            this.SelectText(this.SelectedTextIndex, false, true);
+        } else if(Zero.Keyboard.KeyIsDown(Keys.Control) && Zero.Keyboard.KeyIsPressed(Keys.C) && this.IsTextSelected) {
+            
+            var selection = this.SelectText(this.SelectedTextIndex, true, true);
+            Zero.Shell.ClipboardText = this.CommandString.SubStringFromRuneIndices(selection.X, selection.Y);
+            
+        } else if(Zero.Keyboard.KeyIsDown(Keys.Control) && Zero.Keyboard.KeyIsPressed(Keys.X) && this.IsTextSelected) {
+            
+            var selection = this.SelectText(this.SelectedTextIndex, true, true);
+            Zero.Shell.ClipboardText = this.CommandString.SubStringFromRuneIndices(selection.X, selection.Y);
+            
+            this.CommandString = this.ReplaceInRange(this.SelectText(this.SelectedTextIndex, true, true), "", true);
+            this.TempCommandStr = this.CommandString;
+            this.IsTextSelected = false;
+            
+        } else if(Zero.Keyboard.KeyIsDown(Keys.Control) && Zero.Keyboard.KeyIsPressed(Keys.V)) {
+            this.PasteText();
+        } else if(Zero.Keyboard.KeyIsDown(Keys.Left)) {
+            this.MoveCursor(event.Dt, -1);
+        } else if(Zero.Keyboard.KeyIsDown(Keys.Right)) {
+            this.MoveCursor(event.Dt, 1);
+        } else {
+            this.CurrRepeatDelay = 0.0;
+            this.CurrHeldKeyRepeatSpeed = 0.0;
+        }
+        
+    }
+    
+    // FOR ARROW KEYS
+    function MoveCursor(dt : Real, amount : Integer) {
+        
+        if(dt < 0)
+            this.CurrRepeatDelay = 0.0;
+        
+        if(!Zero.Keyboard.KeyIsDown(Keys.Shift))
+            this.IsTextSelected = false;
+        if(this.CurrRepeatDelay > this.RepeatDelay && this.CurrHeldKeyRepeatSpeed > this.HeldKeyRepeatSpeed || dt < 0) {
+            
+            this.CursorIndex += amount;
+            this.CurrHeldKeyRepeatSpeed = 0.0;
+            
+            if(Zero.Keyboard.KeyIsDown(Keys.Shift)) {
+                if(!this.IsTextSelected) {
+                    this.StartSelectionArea = this.CursorIndex;
+                    this.SelectText(Integer2(this.CursorIndex), false, true);
+                    this.IsTextSelected = true;
+                }
+                if(this.CursorIndex < this.StartSelectionArea)
+                    this.SelectedTextIndex = this.SelectText(Integer2(this.CursorIndex, this.StartSelectionArea), false, false);
+                else if(this.CursorIndex > this.StartSelectionArea)
+                    this.SelectedTextIndex = this.SelectText(Integer2(this.StartSelectionArea, this.CursorIndex), false, false);
+                //else
+                    //this.DeselectText();
+            }
+            
+        } else {
+            this.CurrRepeatDelay += dt;
+            this.CurrHeldKeyRepeatSpeed += dt;
+        }
+        
+        this.CurrTypingIndicatorBlinkTime = 0.0;
+        this.CatchInvalidCursorPos();
+        
+    }
+    
+    // VISUAL UPDATE (DOES NOT HANDLE CURSOR INPUT. ONLY MOVES IT TO SPECIFIED POSITION)
+    function UpdateCursorPosition() {
+        
+        this.CatchInvalidCursorPos();
+        
+        var txtCursor = this.Owner.Parent.FindChildByName("TextCursor");
+        var cmdStrFront = this.CommandString.SubStringFromRuneIndices(0, this.CursorIndex);
+        
+        txtCursor.SpriteText.Text = this.CurrTypingIndicator;
+        txtCursor.Transform.WorldTranslation = Real3(
+            this.Owner.Transform.WorldTranslation.X + this.Owner.SpriteText.MeasureGivenText(cmdStrFront).X - (this.TextCharDimensions.X * 0.5) - 
+                this.OverflowOffset * this.TextCharDimensions.X,
+            txtCursor.Transform.WorldTranslation.YZ
+        );
+        
+    }
+    
+    function CalcTextIndexFromPosition(posX : Real) : Integer {
+        return Math.Round((posX - this.Owner.Transform.WorldTranslation.X) / this.TextCharDimensions.X) as Integer + this.OverflowOffset;
+    }
+    
+    function CalcTextPositionFromIndex(index : Integer) : Real {
+        return this.Owner.Transform.WorldTranslation.X + (index - this.OverflowOffset) * this.TextCharDimensions.X;
+    }
+    
+    function SelectText(selectedIndex : Integer2, returnOrderedSelection : Boolean, putCursorAtEnd : Boolean) : Integer2 {
+        
+        if(selectedIndex.X > selectedIndex.Y)
+            selectedIndex = selectedIndex.YX;
+        if(selectedIndex.X < 0)
+            selectedIndex = Integer2(0, selectedIndex.Y);
+        else if(selectedIndex.X > this.CommandString.Count)
+            selectedIndex = Integer2(this.CommandString.Count, selectedIndex.Y);
+        if(selectedIndex.Y < 0)
+            selectedIndex = Integer2(selectedIndex.X, 0);
+        else if(selectedIndex.Y > this.CommandString.Count)
+            selectedIndex = Integer2(selectedIndex.X, this.CommandString.Count);
+        if(returnOrderedSelection || selectedIndex.X == selectedIndex.Y)
+            return selectedIndex;
+        
+        this.IsTextSelected = true;
+        this.BlinkTypingIndicator = false;
+        
+        if(putCursorAtEnd) this.CursorIndex = selectedIndex.Y;
+        
+        var txtSelect = this.Owner.Parent.FindChildByName("TextBoxSelection");
+        txtSelect.Sprite.Visible = selectedIndex.X != selectedIndex.Y;
+        txtSelect.Transform.WorldTranslation = Real3(this.CalcTextPositionFromIndex(selectedIndex.X), txtSelect.Transform.WorldTranslation.YZ);
+        txtSelect.Transform.Scale = Real3((selectedIndex.Y - selectedIndex.X) * this.TextCharDimensions.X, this.TextCharDimensions.Y, 1);
+        
+        return selectedIndex;
+        
+    }
+    
+    function DeselectText() {
+        this.CatchInvalidCursorPos();
+        this.IsTextSelected = false;
+        this.SelectedTextIndex = Integer2(this.CursorIndex);
+    }
+    
+    function PasteText() {
+        
+        var tmpClipboard = "";
+        
+        // STRIP INVALID CHARACTERS
+        for(var i = 0; i < Zero.Shell.ClipboardText.Count; ++i)
+            if(TextHelper.IsRenderable(Zero.Shell.ClipboardText[i]))
+                tmpClipboard = "`tmpClipboard``String.FromChar(Zero.Shell.ClipboardText[i])`";
+        
+        this.CommandString = this.ReplaceInRange(this.SelectText(this.SelectedTextIndex, true, true), "`tmpClipboard`", true);
+        this.TempCommandStr = this.CommandString;
+        
+        this.CursorIndex += tmpClipboard.Count;
+        this.CurrTypingIndicatorBlinkTime = 0.0;
+        this.CycleThroughCmdsAll = false;
+        this.IsTextSelected = false;
+        this.CatchInvalidCursorPos();
+        
+    }
+    
+    function ReplaceInRange(range : Integer2, newTxt : String, moveCursor : Boolean) : String {
+        var start = this.CommandString.SubStringFromRuneIndices(0, range.X);
+        if(moveCursor)
+            this.CursorIndex = start.Count;
+        return "`start``newTxt``this.CommandString.SubStringFromRuneIndices(range.Y, this.CommandString.Count)`";
+    }
+    
+    function PrintToUIConsole(text : String) {
+        this.PrintToUIConsole(text, false, "");
+    }
+    
+    function PrintToUIConsole(text : String, header : Boolean) {
+        this.PrintToUIConsole(" `text` ", header, "_");
+    }
+    
+    function PrintToUIConsole(beginningText : String, endingText : String, beginningFixedTextWidth : Integer) {
+        var spaceCt = beginningFixedTextWidth - beginningText.Count;
+        for(var i = 0; i < spaceCt; ++i)
+            beginningText = "`beginningText` ";
+        this.PrintToUIConsole("`beginningText``endingText`", false, "");
+    }
+    
+    function PrintToUIConsole(text : String, centerText : Boolean, centerChar : String) {
+        
+        var maxLength = this.MaxCharsPerLine;
+        var centerTmpTxt = "";
+        
+        if(centerText) {
+            for(var i = 0; i < Math.Floor((maxLength - text.Count) / 2) as Integer; ++i)
+                centerTmpTxt = "`centerTmpTxt``centerChar`";
+            text = "`centerTmpTxt``text``centerTmpTxt`";
+        }
+        
+        if(text.Count > maxLength) {
+            for(var i = (Math.Floor(text.Count / maxLength) * maxLength) as Integer; i > 5; i -= maxLength) {
+                
+                var breakIndex = i;
+                
+                for(var j = i; j > i - maxLength / 4; --j) {
+                    if(String.FromChar(text.Get(j)) == " ") {
+                        breakIndex = j + 1;
+                        break;
+                    }
+                    if(j + 1 == i - maxLength / 4) {
+                        breakIndex = i - 8;
+                        break;
+                    }
+                }
+                
+                text = "`text.SubStringFromRuneIndices(0, breakIndex)`\n`text.SubStringFromRuneIndices(breakIndex, text.Count)`";
+                
+            }
+        }
+        
+        this.ConsoleLog = "`this.ConsoleLog`\n`text`";
+        
+        var console = this.Space.FindObjectByName(this.ConsoleTextboxName);
+        console.SpriteText.Text = this.ConsoleLog;
+        console.Transform.Translation = Real3(0, console.SpriteText.MeasureText().Y + 1.75, console.Transform.Translation.Z);
+        
+    }
+    
+    function SearchArray(array : Array[String], str : String, curIndex : Integer) : Integer {
+        
+        var occurances = 0;
+        var startIndex = 0;
+        var tmpOccur = 0;
+        var tmpIndex = 0;
+        
+        // FIND NUMBER OF OCCURANCES
+        for(var i = 0; i < array.Count; ++i) {
+            if(array.Get(i).ToLower().StartsWith(str.ToLower()) && occurances == 0)
+                startIndex = i;
+            if(array.Get(i).ToLower().StartsWith(str.ToLower()))
+                ++occurances;
+        }
+        
+        if(this.AutocompleteIndex < startIndex) {
+            this.AutocompleteIndex = startIndex;
+            return startIndex;
+        }
+        
+        this.Occurances = occurances;
+        
+        for(var i = 0; i < occurances; ++i) {
+            tmpIndex = startIndex + tmpOccur;
+            if(array.Get(tmpIndex).ToLower().StartsWith(str.ToLower()) && curIndex <= tmpIndex && tmpOccur < occurances && tmpIndex < array.Count)
+                return tmpIndex;
+            else
+                ++tmpOccur;
+        }
+        
+        if(tmpOccur >= occurances || tmpOccur == 0) {
+            this.AutocompleteIndex = startIndex;
+            return startIndex;
+        } else return -1;
+        
+    }
+    
+    function InsertAt(char : String) : String {
+        this.CatchInvalidCursorPos();
+        return "`this.CommandString.SubStringFromRuneIndices(0, this.CursorIndex)``char``this.CommandString.SubStringFromRuneIndices(this.CursorIndex, this.CommandString.Count)`";
+    }
+    
+    function RemoveAt(offset : Integer) : String {
+        this.CatchInvalidCursorPos();
+        if(this.CursorIndex - 1 + offset < 0 || this.CursorIndex + offset > this.CommandString.Count)
+            offset = 0;
+        return "`this.CommandString.SubStringFromRuneIndices(0, this.CursorIndex - 1 + offset)``this.CommandString.SubStringFromRuneIndices(this.CursorIndex + offset, this.CommandString.Count)`";
+    }
+    
+    function CatchInvalidCursorPos() {
+        if(this.CursorIndex > this.CommandString.Count)
+            this.CursorIndex = this.CommandString.Count;
+        else if(this.CursorIndex < 0)
+            this.CursorIndex = 0;
+    }
+    
+}

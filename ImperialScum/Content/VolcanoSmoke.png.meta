@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "VolcanoSmoke",
+		uint64 ResourceId = 5a0f809016faceca,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 12,
+		uint FrameSizeY = 12,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 6,
+		float OriginY = 6,
+		float PixelsPerUnit = 16,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

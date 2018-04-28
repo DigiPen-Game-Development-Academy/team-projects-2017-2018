@@ -1,0 +1,38 @@
+Cog = 
+{
+	Project = 
+	{
+		string ProjectName = "IslandOfPotato",
+		string ProjectOwner = "",
+		string DefaultLevel = "Level",
+		string ProjectSpace = "Space",
+		uint ProjectEngineRevision = 16386,
+		bool AutoTakeProjectScreenshot = false,
+		uint64 Guid = 5ab7683cc80b1053,
+	},
+	EditorSettings = 
+	{
+		EditorMode EditorMode = Mode2D,
+		bool ViewCube = true,
+		float ViewCubeViewportSize = 150,
+		ScriptReloadMethod ScriptReloadEditor = ReInitializeObjects,
+		ScriptReloadMethod ScriptReloadGame = PatchObjects,
+		bool AutoUpdateContentChanges = true,
+	},
+	ProjectDescription = 
+	{
+		string ShortDescription = "",
+		string LongDescription = "",
+		string Tags = "",
+	},
+	LauncherProjectInfo = 
+	{
+		string Tags = "",
+		string ExperimentalBranchName = "",
+		string MajorVersion = "0",
+		string MinorVersion = "0",
+		string PatchVersion = "0",
+		string RevisionId = "16386",
+		string ShortChangeSet = "",
+	},
+},

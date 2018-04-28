@@ -1,0 +1,38 @@
+class DestroySword : ZilchComponent
+{
+    var Active:Boolean = false;
+    var DestroyTimer:Real = 0.5;
+    
+    [Static]
+    var DestroyTarget:Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionPersisted);
+    }
+
+    function OnCollisionPersisted(event : CollisionEvent)
+    {
+        
+        if(event.OtherObject.PlayerController != null && SwordBoomerangMove.Moving == false)
+        this.Active = true;
+        
+        
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+        if(this.Active == true)
+        this.DestroyTimer -= event.Dt;
+        
+        if(this.DestroyTimer <= 0)
+        {
+            DestroySword.DestroyTarget = true;
+            SwordBoomerang.MarkerPlaced = false;
+            this.Owner.Destroy();
+        }
+    }
+    
+}

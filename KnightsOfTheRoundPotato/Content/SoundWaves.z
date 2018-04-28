@@ -1,0 +1,83 @@
+class SoundWaves : ZilchComponent {
+    
+    var Bars : Array[Cog];
+    
+    var Timer : Real = 0;
+    
+    [Property] var WaveNum      : Integer = 10;
+    [Property] var Spacing      : Real = 0.1;
+    [Property] var Whidth       : Real = 0.25;
+    [Property] var Height       : Real = 1;
+    [Property] var Intencity    : Real = 1;
+    [Property] var Speed        : Real = 2;
+    [Property] var MinH         : Real = 0.1;
+    [Property] var ColorGradient: ColorGradient;
+    [Property] var CooldownTime : Real = 0.1;
+    [Property] var IntecityFSpd : Real = 5;
+    
+    var Cooldown : Real = 0;
+    
+    var IntencityTarget : Real = 1;
+    
+    function Initialize(init : CogInitializer) {
+        
+        GlobalVariables.SoundUI = this;
+        
+        this.Bars = Array[Cog]();
+        
+        this.Bars.Resize(this.WaveNum);
+        
+        for(var i = 0; i < this.Bars.Count; ++i) {
+            
+            var x = i*(this.Whidth+this.Spacing);
+            
+            var pos = Real3(x,0,1);
+            
+            this.Bars[i] = this.Space.CreateAtPosition(Archetype.SWave, pos);
+            
+            this.Bars[i].Transform.Scale = Real3(this.Whidth, this.MinH, this.Bars[i].Transform.Scale.Z);
+            
+            this.Bars[i].AttachTo(this.Owner);
+            
+        }
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        this.Timer += (event.Dt*(this.Intencity/this.Speed))*GlobalVariables.GameSpace.TimeSpace.TimeScale;
+        
+        for (var i = 0; i < this.Bars.Count; ++i) {
+            var b = this.Bars[i];
+            var h = ((Math.Sin(this.Timer + i*this.Intencity)+1)*this.Intencity/this.Height)+this.MinH;
+            b.Area.Size = Real2(1, h);
+            
+            //color
+            b.Sprite.Color = this.ColorGradient.Sample(this.Intencity/16);
+            
+        }
+        
+        if(Math.Abs(this.Intencity - this.IntencityTarget) < 1) {
+            this.Intencity = this.IntencityTarget;
+        } else {
+            this.Intencity = Math.Lerp(this.Intencity, this.IntencityTarget, event.Dt*this.IntecityFSpd);
+        }
+        
+        if(this.Cooldown > 0) {
+            this.Cooldown -= event.Dt;
+            return;
+        }
+        this.IntencityTarget = 1;
+    }
+    
+    function Sound (intencity : Real) {
+        
+        if(intencity >= this.IntencityTarget) {
+            this.IntencityTarget = intencity+1;
+            this.Cooldown = this.CooldownTime;
+        }
+        
+    }
+    
+}

@@ -1,0 +1,38 @@
+SoundCue = 
+{
+	SoundPlayMode PlayMode = Single,
+	float Volume = 0.099999994,
+	float VolumeVariation = 0,
+	float VolumeDB = -20,
+	bool UseVolumeDB = false,
+	float VolumeDBVariation = 0,
+	float Pitch = -2,
+	float PitchSemitones = -23.9899998,
+	bool UsePitchSemitones = false,
+	float PitchVariation = 0,
+	float PitchSTVariation = 5,
+	float MinDistance = 1,
+	float MaxDistance = 70,
+	float MinAttenuatedVolume = 0,
+	uint MaxPlaybacks = 10,
+	Array Sounds = 
+	[
+		{
+			string SoundName = "5ae3cf4fa13b3775:Oxygen_Low",
+			string GeneratedSoundName = "55017c595ef88bf0:DefaultGeneratedSound",
+			WhichSoundType WhichToUse = FromFile,
+			float Weight = 1,
+			float LoopEndTime = 0,
+			float LoopStartTime = 0,
+		},
+	],
+	Array SoundTags = 
+	[
+		{
+			string SoundTagName = "551c2d5a29ce571d:DefaultSoundTag",
+		},
+	],
+	string RolloffCurveName = "",
+	int Version = 1,
+	RolloffCurveType RolloffCurveType = Linear,
+},

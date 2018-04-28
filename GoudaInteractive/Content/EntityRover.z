@@ -1,0 +1,218 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: MATTHEW ZEARING
+
+class EntityRover : ZilchComponent {
+    
+    [Property] var Rider : String = "EntityPlayer";
+    [Property] var VehicleSpeed : Real = 400;
+    [Property] var VehicleTurboSpeed : Real = 1000;
+    [Property] var SpriteNorth : SpriteSource = SpriteSource.Find("rover003");
+    [Property] var SpriteSouth : SpriteSource = SpriteSource.Find("rover001");
+    [Property] var SpriteEast : SpriteSource = SpriteSource.Find("rover000");
+    [Property] var SpriteWest : SpriteSource = SpriteSource.Find("rover002");
+    
+    var RiderDefaultSpeed : Real = 150;
+    var RiderDefaultRunSpeed : Real = 250;
+    
+    var IsRidingRover : Boolean = false;
+    
+    var Velocity : Real3 = Real3(0.0);
+    var HoverVelocity : Real3 = Real3(0.0);
+    
+    var HoverGravSwitchTime : Real = 0.5;
+    var CurrHoverGravSwitchTime : Real = 0.0;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.MouseUpdate, this.OnMouseUpdate);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnMouseUpdate(event : ViewportMouseEvent) {
+        
+        if(GameSetting.EnemyTooltip) {
+            
+            Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.ShowTooltip(true);
+            
+            if(Zero.Keyboard.KeyIsDown(Keys.Control)) {
+                Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.TooltipText(
+                    "Rover",
+                    "HP: `this.Owner.Health.CurrentHealth` / `this.Owner.Health.MaxHealth`",
+                    Real4(0.0, 1.0, 0.0, 1.0),
+                    Real4(1.0, 0.0, 0.0, 1.0)
+                );
+            } else {
+                Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.TooltipText(
+                    "Rover (Ctrl)",
+                    "R to Enter",
+                    Real4(0.0, 1.0, 0.0, 1.0),
+                    Real4(1.0)
+                );
+            }
+            
+        }
+        
+        if(Zero.Keyboard.KeyIsReleased(Keys.R) && !this.IsRidingRover) {
+            
+            var rider = this.Space.FindObjectByName(this.Rider);
+            
+            if(rider != null) {
+                
+                rider.Transform.WorldTranslation = Real3(this.Owner.Transform.WorldTranslation.XY, rider.Transform.WorldTranslation.Z);
+                
+                this.IsRidingRover = true;
+                
+                /*if(rider.Movement != null) {
+                    this.RiderDefaultSpeed = rider.Movement.Speed;
+                    this.RiderDefaultRunSpeed = rider.Movement.RunSpeed;
+                    rider.Movement.Speed = this.VehicleSpeed;
+                    rider.Movement.RunSpeed = this.VehicleTurboSpeed;
+                }*/
+                
+            }
+            
+        }
+        
+    }
+    
+    function OnMouseExit(event : ViewportMouseEvent) {
+        Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.ShowTooltip(false);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.IsRidingRover) {
+            
+            this.Space.FindObjectByName(this.Rider).Transform.WorldTranslation = Real3(this.Owner.Transform.WorldTranslation.XY, 2.0);
+            
+            var rider = this.Space.FindObjectByName(this.Rider);
+            
+            if(rider != null) {
+                
+                if(rider.Sprite != null) {
+                    rider.Sprite.AnimationActive = false;
+                }
+                
+                if(rider.Movement != null) {
+                    
+                    var speed = this.VehicleSpeed;
+                    
+                    if(Zero.Keyboard.KeyIsDown(Keys.Shift)) {
+                        speed = this.VehicleTurboSpeed;
+                    }
+                    
+                    if(Zero.Keyboard.KeyIsDown(Keys.W) && Zero.Keyboard.KeyIsDown(Keys.D)) {
+                        
+                        this.Owner.FindChildByName("InBack").Sprite.SpriteSource = this.SpriteEast;
+                        this.Owner.FindChildByName("InFront").Sprite.SpriteSource = this.SpriteEast;
+                        
+                        this.Owner.FindChildByName("InFront").Sprite.Visible = true;
+                        
+                        this.Velocity = Real3(1.0 * event.Dt * speed, 1.0 * event.Dt * speed, 0.0);
+                        
+                    } else if(Zero.Keyboard.KeyIsDown(Keys.W) && Zero.Keyboard.KeyIsDown(Keys.A)) {
+                        
+                        this.Owner.FindChildByName("InBack").Sprite.SpriteSource = this.SpriteWest;
+                        this.Owner.FindChildByName("InFront").Sprite.SpriteSource = this.SpriteWest;
+                        
+                        this.Owner.FindChildByName("InFront").Sprite.Visible = true;
+                        
+                        this.Velocity = Real3(-1.0 * event.Dt * speed, 1.0 * event.Dt * speed, 0.0);
+                        
+                    } else if(Zero.Keyboard.KeyIsDown(Keys.S) && Zero.Keyboard.KeyIsDown(Keys.D)) {
+                        
+                        this.Owner.FindChildByName("InBack").Sprite.SpriteSource = this.SpriteEast;
+                        this.Owner.FindChildByName("InFront").Sprite.SpriteSource = this.SpriteEast;
+                        
+                        this.Owner.FindChildByName("InFront").Sprite.Visible = true;
+                        
+                        this.Velocity = Real3(1.0 * event.Dt * speed, -1.0 * event.Dt * speed, 0.0);
+                        
+                    } else if(Zero.Keyboard.KeyIsDown(Keys.S) && Zero.Keyboard.KeyIsDown(Keys.A)) {
+                        
+                        this.Owner.FindChildByName("InBack").Sprite.SpriteSource = this.SpriteWest;
+                        this.Owner.FindChildByName("InFront").Sprite.SpriteSource = this.SpriteWest;
+                        
+                        this.Owner.FindChildByName("InFront").Sprite.Visible = true;
+                        
+                        this.Velocity = Real3(-1.0 * event.Dt * speed, -1.0 * event.Dt * speed, 0.0);
+                        
+                    } else if(Zero.Keyboard.KeyIsDown(Keys.W)) {
+                        
+                        this.Owner.FindChildByName("InBack").Sprite.SpriteSource = this.SpriteNorth;
+                        this.Owner.FindChildByName("InFront").Sprite.SpriteSource = this.SpriteNorth;
+                        
+                        this.Owner.FindChildByName("InFront").Sprite.Visible = false;
+                        
+                        this.Velocity = Real3(0.0, 1.0 * event.Dt * speed, 0.0);
+                        
+                    } else if(Zero.Keyboard.KeyIsDown(Keys.D)) {
+                        
+                        this.Owner.FindChildByName("InBack").Sprite.SpriteSource = this.SpriteEast;
+                        this.Owner.FindChildByName("InFront").Sprite.SpriteSource = this.SpriteEast;
+                        
+                        this.Owner.FindChildByName("InFront").Sprite.Visible = true;
+                        
+                        this.Velocity = Real3(1.0 * event.Dt * speed, 0.0, 0.0);
+                        
+                    } else if(Zero.Keyboard.KeyIsDown(Keys.S)) {
+                        
+                        this.Owner.FindChildByName("InBack").Sprite.SpriteSource = this.SpriteSouth;
+                        this.Owner.FindChildByName("InFront").Sprite.SpriteSource = this.SpriteSouth;
+                        
+                        this.Owner.FindChildByName("InFront").Sprite.Visible = false;
+                        
+                        this.Velocity = Real3(0.0, -1.0 * event.Dt * speed, 0.0);
+                        
+                    } else if(Zero.Keyboard.KeyIsDown(Keys.A)) {
+                        
+                        this.Owner.FindChildByName("InBack").Sprite.SpriteSource = this.SpriteWest;
+                        this.Owner.FindChildByName("InFront").Sprite.SpriteSource = this.SpriteWest;
+                        
+                        this.Owner.FindChildByName("InFront").Sprite.Visible = true;
+                        
+                        this.Velocity = Real3(-1.0 * event.Dt * speed, 0.0, 0.0);
+                        
+                    } else {
+                        this.Velocity = Math.Lerp(this.Velocity, Real3(0.0, 0.0, 0.0), event.Dt * 2);
+                    }
+                    
+                    this.Owner.RigidBody.Velocity = this.Velocity;
+                    
+                }
+                
+            }
+            
+            // GO TO DEFAULT SPEED
+            if(Zero.Keyboard.KeyIsPressed(Keys.R)) {
+                
+                /*if(rider != null && rider.Movement != null) {
+                    rider.Movement.Speed = this.RiderDefaultSpeed;
+                    rider.Movement.RunSpeed = this.RiderDefaultRunSpeed;
+                }*/
+                
+                this.Space.FindObjectByName(this.Rider).Transform.WorldTranslation = Real3(this.Owner.Transform.WorldTranslation.XY, 0.0);
+                
+                this.IsRidingRover = false;
+                
+            }
+            
+        } else {
+            
+            // HOVER ANIMATION
+            
+            if(this.CurrHoverGravSwitchTime < this.HoverGravSwitchTime) {
+                this.CurrHoverGravSwitchTime += event.Dt;
+            } else {
+                this.CurrHoverGravSwitchTime = -this.HoverGravSwitchTime;
+            }
+            
+            this.HoverVelocity = Math.Sin(Real3(this.Owner.RigidBody.Velocity.X, this.CurrHoverGravSwitchTime, 0.0));
+            
+            this.Owner.RigidBody.Velocity = this.HoverVelocity;
+            
+        }
+        
+    }
+    
+}

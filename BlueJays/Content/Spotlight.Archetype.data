@@ -1,0 +1,44 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Spotlight",
+	},
+	Archetyped = 
+	{
+		string Name = "5a2c9f1e3a9142df:Spotlight",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0.147970676, -0.0309724808, 0.900836229],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [0.614250004, 0.801839948, 0.975000024, 0.664999962],
+		BlendMode BlendMode = Additive,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5274db4c2e7c11f9:Circle",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	Area = 
+	{
+		Vec2 Size = [6.68822384, 4.64401817],
+		Location Origin = Center,
+	},
+},

@@ -1,0 +1,64 @@
+class Starving : ZilchComponent
+{
+    //By Jessica For making it so if player is starving it lets them know on HUD
+    var Timer : Real = 0.5;
+    var Timer2 : Real = 0.2;
+    
+    var Starve : Boolean = false;
+    
+    [Property]
+    var DamageColor:Real4;
+    [Property]
+    var RegularColor:Real4;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(Hunger.Hunger <= 30 && this.Starve == false && Hunger.Hunger > 0)
+        {
+            this.Owner.Transform.Translation = Real3(-15.14,6.01,0);
+            this.Owner.SpriteText.Text = "Eat Food Soon";
+            this.Owner.SpriteText.Visible = true;
+        }
+        if(Hunger.Hunger <= 0 && this.Starve == false)
+        {
+            this.Owner.SpriteText.Text = "You are Starving!";
+            this.Owner.Transform.Translation = Real3(-2, 3, 0);
+            this.Owner.SpriteText.Visible = true;
+            this.Starve = true;
+        }
+        
+        if(this.Starve == true && this.Timer > 0)
+        {
+            this.Timer -= event.Dt;
+        }
+        else if(this.Timer <= 0)
+        {
+            this.Timer += 0.5;
+            this.Owner.SpriteText.Color = this.DamageColor;
+        }
+        if(this.Owner.SpriteText.Color == this.DamageColor)
+        {
+            this.Timer2 -= event.Dt;
+        }
+        if(this.Timer2 <= 0)
+        {
+            this.Timer2 += 0.2;
+            this.Owner.SpriteText.Color = this.RegularColor;
+        }
+        
+        if(Hunger.Hunger > 30)
+        {
+            this.Owner.SpriteText.Visible = false;
+            this.Starve = false;
+        }
+        else if(Hunger.Hunger > 0)
+        {
+            this.Starve = false;
+        }
+    }
+}

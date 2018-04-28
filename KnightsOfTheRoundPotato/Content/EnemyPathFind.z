@@ -1,0 +1,24 @@
+//Author Brandon Wolenetz
+
+class EnemyPathFind : ZilchComponent {
+    
+    var Path : Array[NavNode] = null;
+    
+    var Once : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        
+        this.Path = null;
+        
+        Zero.Connect(this.Owner, Events.PathFound, this.OnPathFound);
+        
+    }
+
+    function OnPathFound(event : PathFound) {
+        this.Path = event.Path;
+    }
+    
+    function Recalculate(target : Real3) {
+        this.LevelSettings.FindPath.FindPath(this.Owner.Transform.WorldTranslation, target, this.Owner);
+    }
+}

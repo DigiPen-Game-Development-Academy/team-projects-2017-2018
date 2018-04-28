@@ -1,0 +1,71 @@
+
+    //Modified by Jakob McFarland
+    
+class Health : ZilchComponent
+{
+    [Property] var Health : Real = 0.0;
+    
+    //leave null to spawn nothing
+    [Property] var ArchetypetoSpawnOnDeath1 : Archetype = null;
+    [Property] var ArchetypetoSpawnOnDeath2 : Archetype = null;
+    [Property] var ArchetypetoSpawnOnDeath3 : Archetype = null;
+    
+    [Property] var ExplosionSound : SoundCue;
+    
+    [Property] var Unbreakable : Boolean = false;
+    
+    [Property] var Random3Drop : Boolean = false;
+    
+    [Dependency] var Transform : Transform;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    { 
+        if(this.Unbreakable)
+        {
+            this.Health = 500; 
+        }
+        
+        if(this.Health <= 0.0)
+        {
+            if(this.ArchetypetoSpawnOnDeath1 != null)
+            {
+                this.Space.CreateAtPosition(this.ArchetypetoSpawnOnDeath1, this.Owner.Transform.WorldTranslation
+                    + Real3( Random().Range(-0.5, 0.5), Random().Range(-0.5, 0.5), 0) );    
+            }
+            if(this.ArchetypetoSpawnOnDeath2 != null)
+            {
+                this.Space.CreateAtPosition(this.ArchetypetoSpawnOnDeath2, this.Owner.Transform.WorldTranslation
+                    + Real3( Random().Range(-0.5, 0.5), Random().Range(-0.5, 0.5), 0) );          
+            }
+            if(this.ArchetypetoSpawnOnDeath3 != null)
+            {
+                if(this.Random3Drop)
+                {
+                   if(!Random().Range(0, 2) as Integer as Boolean)
+                   {
+                        this.Space.CreateAtPosition(this.ArchetypetoSpawnOnDeath3, this.Owner.Transform.WorldTranslation 
+                            + Real3( Random().Range(-0.5, 0.5), Random().Range(-0.5, 0.5), 0) );                                                                   
+                   }
+                }
+                else
+                {
+                    this.Space.CreateAtPosition(this.ArchetypetoSpawnOnDeath3, this.Owner.Transform.WorldTranslation
+                        + Real3( Random().Range(-0.5, 0.5), Random().Range(-0.5, 0.5), 0) );          
+                }
+            }
+            var blockUpdate = BlockUpdate();
+            blockUpdate.Translation = this.Transform.Translation;
+            //this.Space.DispatchEvent(Events.BlockUpdate, blockUpdate);
+            
+            this.Space.SoundSpace.PlayCue(this.ExplosionSound);
+            //this.Owner.DispatchEvent(Events.PreDestroy, ZilchEvent());
+            this.Owner.Destroy();
+        }
+    }
+}
+

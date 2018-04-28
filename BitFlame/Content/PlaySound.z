@@ -1,0 +1,95 @@
+class PlaySound : ZilchComponent
+{
+    // Keeps track of the timers starting amount
+    var TimerStartingNumber : Real = 6;
+    
+    var Timer : Real = 6;
+    
+    [Property] var CanSelectSound : SoundCue;
+    [Property] var CantSelectSound : SoundCue;
+    [Property] var LowOxygenSound : SoundCue;
+    [Property] var CanSelect : Boolean = false;
+    [Property] var HudButton : Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.LeftMouseDown, this.OnLeftMouseDown);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        // Checks if players current oxygen is within certain parameters
+        if(this.GameSession.GameVars.PlayerOxygen <= 2.5 && this.GameSession.GameVars.PlayerOxygen > 0.75)
+        {
+            // Subtracts from the timer
+            this.Timer -= 0.25;
+            
+            // If the is below certain limit
+            if(this.Timer <= 0)
+            {
+                // Set sound we are play to a varible so we can edit the pitch
+                var sound = this.Space.SoundSpace.PlayCue(this.LowOxygenSound); 
+                 
+                 // Reset timer to original amount using another variable
+                this.Timer += this.TimerStartingNumber;
+            }
+        }
+        // Checks if players current oxygen is within certain parameters
+        else if (this.GameSession.GameVars.PlayerOxygen <= 0.75 && this.GameSession.GameVars.PlayerOxygen > 0)
+        {
+            // Subtracts from the timers starting amount so we can play sound effects faster
+            this.TimerStartingNumber = 3;
+            
+            // Subtracts from the timer
+            this.Timer -= 0.25;
+            
+            if(this.Timer <= 0)
+            {
+                // Set sound we are play to a varible so we can edit the pitch
+                var sound = this.Space.SoundSpace.PlayCue(this.LowOxygenSound); 
+                
+                // Edits the sound effects pitch
+                sound.Pitch = -1.5;
+                
+                // Reset timer to original amount using another variable
+                this.Timer += this.TimerStartingNumber;
+            }
+        }
+        // Checks if players current oxygen is within certain parameters
+        else if (this.GameSession.GameVars.PlayerOxygen <= 0)
+        {
+            // Subtracts from the timers starting amount so we can play sound effects faster
+            this.TimerStartingNumber = 2;
+            
+            // Subtracts from the timer
+            this.Timer -= 0.25;
+            
+            if(this.Timer <= 0)
+            {
+                // Set sound we are play to a varible so we can edit the pitch
+                var sound = this.Space.SoundSpace.PlayCue(this.LowOxygenSound); 
+                
+                // Edits the sound effects pitch
+                sound.Pitch = -1;
+                
+                // Reset timer to original amount using another variable
+                this.Timer += this.TimerStartingNumber;
+            }
+        }
+    }
+    function OnLeftMouseDown(event : ViewportMouseEvent)
+    {
+        if(this.HudButton)
+        {
+            if(this.CanSelect)
+            {
+            this.Space.SoundSpace.PlayCue(this.CanSelectSound);
+            }
+            else
+            {
+                this.Space.SoundSpace.PlayCue(this.CantSelectSound);
+            }
+        } 
+    }
+}

@@ -1,0 +1,41 @@
+GameSession = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Archetyped = 
+	{
+		string Name = "554cea0f94af5fea:Game",
+	},
+	Viewports = 
+	{
+	},
+	CameraViewports = 
+	{
+	},
+	ZilchState = 
+	{
+	},
+	Globals = 
+	{
+		float PlayerMaxHealth = 10,
+		float PlayerMaxFate = 10,
+		float BossMaxHealth = 100,
+		float BossMaxFate = 100,
+		float PlayerRegenHealth = 0,
+		float PlayerRegenFate = 1,
+		float BossRegenHealth = 1,
+		float BossRegenFate = 0,
+		string ArchetypeKnight = "5aeacb7144eafedd:Knight",
+		string ArchetypeTower = "5aea1bea3167182a:Tower",
+		string ArchetypeChariot = "5aea7fa45101767f:Chariot",
+		float CostKnight = 1,
+		float CostTower = 5,
+		float CostChariot = 3,
+		float RadiusKnight = 1,
+		float RadiusTower = 1,
+		float RadiusChariot = 1,
+		float MaxChariotCooldown = 10,
+	},
+},

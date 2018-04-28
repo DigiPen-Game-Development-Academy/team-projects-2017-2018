@@ -1,0 +1,34 @@
+//Author: Eli Miller
+//Purpose: Spawns a text box when this object is hovered over.
+
+class HoverEffect : ZilchComponent
+{
+    [Property] var HoveredSpawn : Archetype;
+    var HoveredSpawned : Cog;
+    
+    [Property] var HoveredColor : Real4 = Real4(0.8, 0.8, 0.8, 1);
+    var OriginalColor : Real4;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        
+        if (this.Owner.Sprite != null) this.OriginalColor = this.Owner.Sprite.Color;
+        if (this.Owner.SpriteText != null) this.OriginalColor = this.Owner.SpriteText.Color;
+    }
+    function OnMouseEnter(event : ViewportMouseEvent)
+    {
+        if (this.HoveredSpawn != null) this.HoveredSpawned = this.Space.CreateAtPosition(this.HoveredSpawn, this.Owner.Transform.WorldTranslation);
+        
+        if (this.Owner.Sprite != null) this.Owner.Sprite.Color = this.HoveredColor;
+        if (this.Owner.SpriteText != null) this.Owner.SpriteText.Color = this.HoveredColor;
+    }
+    function OnMouseExit(event : ViewportMouseEvent)
+    {
+        if (this.HoveredSpawned != null) this.HoveredSpawned.Destroy();
+        
+        if (this.Owner.Sprite != null) this.Owner.Sprite.Color = this.OriginalColor;
+        if (this.Owner.SpriteText != null) this.Owner.SpriteText.Color = this.OriginalColor;
+    }
+}

@@ -1,0 +1,45 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "SoundWaves",
+	},
+	Archetyped = 
+	{
+		string Name = "5a6dc57e30d123ad:SoundWaves",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [-8.5625, 4.125, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	SoundWaves = 
+	{
+		int WaveNum = 50,
+		float Spacing = 0.0500000007,
+		float Whidth = 0.100000001,
+		float Height = 5,
+		float Intencity = 0,
+		float Speed = 1,
+		float MinH = 0.25,
+		string ColorGradient = "5a6dca6a17b25fdf:SoundInd",
+		float CooldownTime = 0.100000001,
+		float IntecityFSpd = 15,
+	},
+	Area = 
+	{
+		Vec2 Size = [1, 1],
+		Location Origin = Center,
+	},
+	ScreenAlign = 
+	{
+		Enum Pos = Topleft,
+		Vec3 Offset = [0, 0, 0],
+		Vec2 RelOffset = [0.400000006, 2],
+	},
+},

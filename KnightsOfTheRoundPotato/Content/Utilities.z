@@ -1,0 +1,417 @@
+//Author Brandon Wolenetz
+
+struct PointReturn {
+    var Pos : Real3 = Real3(9999);
+    var Target : Real3 = Real3(9999);
+}
+
+class ItemID {
+    constructor (id : String) {
+        this.ID = id;
+    }
+    var ID : String;
+}
+
+class EnemyID {
+    constructor (arch : Archetype) {
+        this.ID = arch.Name;
+        this.Arch = arch;
+    }
+    var ID : String;
+    var Arch : Archetype;
+}
+
+class Utilities
+{
+    /*Enemy Auto-Complete Array*/
+    [Static]
+    var EnemiesIDS : Array[EnemyID] = Array[EnemyID](){
+        EnemyID(Archetype.Enemy_Rusher),
+        EnemyID(Archetype.Enemy_GI_Pistol),
+        EnemyID(Archetype.Boss_Rusher),
+        EnemyID(Archetype.Enemy_Rusher_Tutorial),
+        EnemyID(Archetype.Enemy_Stealth),
+        EnemyID(Archetype.Enemy_StealthW1),
+        EnemyID(Archetype.Enemy_StealthW2),
+        EnemyID(Archetype.Enemy_StealthW3),
+        EnemyID(Archetype.Enemy_Shield),
+        EnemyID(Archetype.Enemy_ShieldW1),
+        EnemyID(Archetype.Enemy_ShieldW2),
+        EnemyID(Archetype.Enemy_ShieldW3),
+        EnemyID(Archetype.Enemy_RusherW1),
+        EnemyID(Archetype.Enemy_RusherW2),
+        EnemyID(Archetype.Enemy_RusherW3),
+        EnemyID(Archetype.Enemy_GI_PistolW1),
+        EnemyID(Archetype.Enemy_GI_PistolW2),
+        EnemyID(Archetype.Enemy_GI_PistolW3)
+    };
+    
+    /*Item Auto-Compete Array*/
+    [Static]
+    var Ids : Array[ItemID] = Array[ItemID](){
+        ItemID("Health_Pack_(T1)"),
+        ItemID("Health_Pack_(T2)"),
+        ItemID("Health_Pack_(T3)"),
+        ItemID("Ammo"),
+        ItemID("Potato"),
+        ItemID("Test"),
+        ItemID("Test2"),
+        ItemID("Pistol"),
+        ItemID("Radar"),
+        ItemID("Rifle"),
+        ItemID("Shotgun"),
+        ItemID("Saw_Laser"),
+        ItemID("MMS_Sniper"),
+        ItemID("Sniper"),
+        ItemID("Watch"),
+        ItemID("Sword"),
+        ItemID("Boomerang"),
+        ItemID("Shoes"),
+        ItemID("Silencer"),
+        ItemID("Potato_cannon"),
+        ItemID("Laser_Beam"),
+        ItemID("Stun_m"),
+        ItemID("Missile"),
+        ItemID("Light")
+    };
+    
+    [Static]
+    function SendSound (dist : Real, pos : Real3) {
+        var toSend = InSound();
+        toSend.Source = pos;
+        var filter = CastFilter();
+        filter.IgnoreStatic = true;
+        filter.IgnoreGhost = true;
+        var result = GlobalVariables.GameSpace.PhysicsSpace.CastSphereResults(pos, dist, 20, filter);
+        foreach(var item in result) {
+            item.ObjectHit.DispatchEvent(Events.InSound, toSend);
+        }
+        if(GlobalVariables.DebugLinesActive) {
+            Utilities.DrawCircle(pos, dist, false, Real4(1,0,0,1));
+        }
+        GlobalVariables.SoundUI.Sound(dist);
+    }
+    
+    [Static]
+    function SendSound (dist : Real) {
+        Utilities.SendSound(dist, GlobalVariables.Player.Transform.WorldTranslation);
+    }
+    
+    [Static]
+    function SendSoundWeapon (dist : Real) {
+        if(GlobalVariables.UseWeapon.Utility == null || GlobalVariables.UseWeapon.Utility.ID != "Silencer")
+            Utilities.SendSound(dist, GlobalVariables.Player.Transform.WorldTranslation);
+    }
+    
+    [Static]
+    function SendSoundWeapon (dist : Real, pos : Real3) {
+        if(GlobalVariables.UseWeapon.Utility == null || GlobalVariables.UseWeapon.Utility.ID != "Silencer")
+            Utilities.SendSound(dist, pos);
+    }
+    
+    [Static]
+    function Raycast (start : Real3, direction : Real3, physSpace : PhysicsSpace, range : Real) : CastResult {
+        
+        var ray = Ray();
+        ray.Start = start;
+        ray.Direction = direction;
+        var result = physSpace.CastRayFirst(ray);
+        if(range != -1 && result.Distance > range){
+            if(GlobalVariables.DebugLinesActive) Utilities.DrawdebugLine(start, start + (range * Math.Normalize(direction)), Real4(0, 0, 1, 1));
+            return null;
+        }
+        
+        if(GlobalVariables.DebugLinesActive) Utilities.DrawdebugLine(start, start + (result.Distance * Math.Normalize(direction)), Real4(0, 0, 1, 1));
+        
+        return result;
+        
+    }
+    
+    [Static]
+    function Raycast (start : Real3, direction : Real3, physSpace : PhysicsSpace, range : Real, filter : CastFilter) : CastResult {
+        
+        var ray = Ray();
+        ray.Start = start;
+        ray.Direction = direction;
+        var result = physSpace.CastRayFirstFiltered(ray, filter);
+        if(range != -1 && result.Distance > range){
+            if(GlobalVariables.DebugLinesActive) Utilities.DrawdebugLine(start, start + (range * Math.Normalize(direction)), Real4(0, 0, 1, 1));
+            return null;
+        }
+        
+        if(GlobalVariables.DebugLinesActive) Utilities.DrawdebugLine(start, start + (result.Distance * Math.Normalize(direction)), Real4(0, 0, 1, 1));
+        
+        return result;
+        
+    }
+    
+    [Static]
+    function DrawCircle (pos : Real3, radius : Real, filled : Boolean, color : Real4) {
+        
+        var circle = DebugCircle();
+        circle.Position(pos);
+        circle.Radius(radius);
+        circle.Float4Color(color);
+        circle.Filled(filled);
+        circle.ViewAligned(true);
+        circle.Draw();
+    }
+    [Static]
+    function DrawdebugLine(start : Real3, end :Real3){
+        Utilities.DrawdebugLine(start, end, Real4(0,0,1,1));
+    }
+     [Static]
+    function DrawdebugLine(start : Real2, end : Real2){
+        Utilities.DrawdebugLine(Real3(start.X, start.Y, 0), Real3(end.X, end.Y, 0), Real4(0,0,1,1));
+    }
+     [Static]
+    function DrawdebugLine(start : Real3, end : Real3, color :Real4){
+        var debugLine = DebugLine();
+        debugLine.Start(start);
+        debugLine.End(end);
+        debugLine.Float4Color(color);
+        debugLine.Duration(0.1);
+        debugLine.Draw();
+    }
+     [Static]
+    function DrawdebugLine(start : Real2, end : Real2, color :Real4){
+        Utilities.DrawdebugLine(Real3(start.X, start.Y, 0), Real3(end.X, end.Y, 0), color);
+        
+    }
+    
+    
+    [Static]
+    function Damage(obj : Cog, damage : Real, msg : String) {
+        
+        var dmg = Damage();
+        
+        dmg.Damage = damage;
+        
+        dmg.DeathMSG = msg;
+        
+        obj.DispatchEvent(Events.Damage, dmg);
+        
+    }
+    
+    [Static]
+    function TimeTimerSet (timeScale : Real, time : Real, movSpd : Real) {
+        
+        GlobalVariables.GameSpace.LevelSettings.TimeTimer.SetTimer(timeScale, time, movSpd);
+        
+    }
+    
+    [Static]
+    function ItemFromID(id : String) : Item {
+        /*to add an item to the game, add another if statment for that item checking if di == <the_items_id_no_spaces>, return The_Items_Class();*/
+        /*Also don't forget to add the item's id to the auto-complete array at the top of the script*/
+        if(id == "Health_Pack_(T1)")
+            return HealthPackT1();
+        else if(id == "Health_Pack_(T2)")
+            return HealthPackT2();
+        else if(id == "Health_Pack_(T3)")
+            return HealthPackT3();
+        else if(id  == "Ammo")
+            return Ammo();
+        else if(id == "Potato")
+            return Potato();
+        else if(id == "Test")
+            return TestItem1();
+        else if(id == "Test2")
+            return TestItem2();
+        else if(id == "Pistol")
+            return Plasma_Pistol();
+        else if(id == "Radar")
+            return Radar();
+        else if(id == "Rifle")
+            return TerribleAssaultRifle();
+        else if(id == "Shotgun")
+            return SlugShotgun();
+        else if(id == "Saw_Laser")
+            return SawLaser();
+        else if(id == "Sniper")
+            return Lasersniper();
+        else if(id == "MMS_Sniper")
+            return MMS_Sniper();
+        else if(id == "Watch")
+            return Watch();
+        else if(id == "Sword")
+            return PlasmaSword();
+        else if(id == "Boomerang")
+            return Boomerang();
+        else if(id == "Shoes")
+            return SoftShoes();
+        else if(id == "Silencer")
+            return Silencer();
+        else if(id == "Potato_cannon")
+            return Potatocannon();
+        else if(id == "Laser_Beam")
+            return Laserbeam();
+        else if(id == "Stun_m")
+            return StunMissile();
+        else if(id == "Missile")
+            return Missile();
+        else if(id == "Light")
+            return Flashlight();
+        else
+            return null;
+        
+    }
+    
+    [Static]
+    function EnemyFromID(id : String) : Archetype {
+        
+        foreach(var e in Utilities.EnemiesIDS) {
+            if(e.ID == id) {
+                return e.Arch;
+            }
+        }
+        
+        return null;
+        
+    }
+    [Static]
+    function ConsoleSend(msg : String, color : Real4) {
+        if(GlobalVariables.Console != null)
+            GlobalVariables.Console.ConsoleController.AddMSG(msg, color);
+    }
+    
+    [Static]
+    function ItemFromIDInit(id : String) : Item {
+        var item = Utilities.ItemFromID(id);
+        item.Init();
+        return item;
+    }
+    
+    [Static]
+    var DialogBox : Cog = null;
+    
+    [Static]
+    function Dialog(text : String, dialogType : DialogTypes, size : Real) : Cog {
+        
+        var dialogBox : Cog = null;
+        
+        var dialogspace = GlobalVariables.GameSpace.GameSession.FindSpaceByName("Dialog");
+        
+        if(dialogspace == null || Utilities.DialogBox != null)
+            return null;
+        
+        if(dialogType == DialogTypes.OK) {
+            dialogBox = dialogspace.Create(Archetype.DialogBoxOK);
+        } else if(dialogType == DialogTypes.OKCANCEL) {
+            dialogBox = dialogspace.Create(Archetype.DialogBoxOKCancel);
+        } else if(dialogType == DialogTypes.YESNO) {
+            dialogBox = dialogspace.Create(Archetype.DialogBoxYESNO);
+        } else if(dialogType == DialogTypes.SETTINGS) {
+            dialogBox = dialogspace.Create(Archetype.DialogBoxSettings);
+        }
+        
+        if(dialogType != DialogTypes.SETTINGS) {
+            dialogBox.FindChildByName("TXT").SpriteText.Text = text;
+            
+            Utilities.ConsoleSend("Dialog: `text`", Real4(1, 1, 1, 1));
+            
+        }
+        
+        Utilities.Block();
+        
+        dialogspace.LevelSettings.CameraViewport.Camera.Camera.Size = 20-size;
+        
+        Utilities.DialogBox = dialogBox;
+        
+        dialogBox.Transform.Scale = Real3(0.0001, 0.0001, 1);
+        
+        return dialogBox;
+        
+    }
+    
+    [Static]
+    var MaxIndex : Integer = -1;
+    
+    [Static]
+    function SetQuest(index : Integer, prompt : Boolean) {
+        if(index > Utilities.MaxIndex) {
+            GlobalVariables.QuestSprite.Set(Objective.Quests[index]);
+            Utilities.MaxIndex = index;
+            GlobalVariables.Save.SaveController.Quest = Objective.Quests[index];
+            
+            if(prompt) {
+                Utilities.Dialog(Objective.Quests[index], DialogTypes.OK, 15);
+            }
+            
+        }
+    }
+    
+    [Static]
+    function ClearQuest() {
+        GlobalVariables.QuestSprite.Clear();
+        GlobalVariables.Save.SaveController.Quest = "";
+    }
+    
+    [Static]
+    function PlaySFX(sound : SoundCue) {
+        
+        GlobalVariables.SFXSpace.SoundSpace.PlayCue(sound);
+        
+    }
+    
+    [Static]
+    var Blocked : Boolean = false;
+    
+    [Static]
+    function Block () {
+        if(!Utilities.Blocked) {
+            Utilities.Blocked = true;
+            var ui = GlobalVariables.GameSpace.GameSession.FindSpaceByName("UI");
+            if(ui != null) {
+                ui.CreateAtPosition(Archetype.Blocker, Real3(0, 0, 25));
+            }
+            if(GlobalVariables.Player != null)
+                GlobalVariables.GameSpace.CreateAtPosition(Archetype.Blocker, GlobalVariables.Player.Transform.WorldTranslation + Real3(0, 0, 25));
+            else
+                GlobalVariables.GameSpace.CreateAtPosition(Archetype.Blocker, Real3(0, 0, 25));
+        }
+    }
+    
+    [Static]
+    function UnBlock () {
+        
+        Utilities.Blocked = false;
+        
+        var ui = GlobalVariables.GameSpace.GameSession.FindSpaceByName("UI");
+        if(ui != null) {
+            if(ui.FindObjectByName("Blocker") != null)
+                ui.FindObjectByName("Blocker").Destroy();
+        }
+        if(GlobalVariables.GameSpace.FindObjectByName("Blocker") != null)
+            GlobalVariables.GameSpace.FindObjectByName("Blocker").Destroy();
+        
+    }
+    
+    [Static]
+    function ScreenShake(intencity : Real, falloff : Real) {
+        GlobalVariables.CamFollow.ScreenShakeIntencity = intencity;
+        GlobalVariables.CamFollow.Falloff = falloff;
+    }
+    
+    [Static]
+    function MeleeFX(sprite : SpriteSource, speed : Real, offset : Real, angle : Real, dist : Real, stab : Boolean) {
+        
+        var fx = GlobalVariables.GameSpace.Create(Archetype.Melee_FX);
+        if(Math.ATan2(GlobalVariables.Player.PlayerMovment.Dir.Y, GlobalVariables.Player.PlayerMovment.Dir.X) > Math.ToRadians(75)) {
+            fx.MeleeFX.Left = true;
+        } else {
+            fx.MeleeFX.Left = false;
+        }
+        fx.MeleeFX.Speed = speed;
+        fx.MeleeFX.AngleOffset = offset;
+        fx.MeleeFX.Angle = offset;
+        fx.MeleeFX.Dist = dist;
+        fx.MeleeFX.Sprite = sprite;
+        fx.MeleeFX.Stab = stab;
+        fx.AttachTo(GlobalVariables.Player);
+        fx.Transform.Translation = Real3(0, 0, 0);
+        fx.MeleeFX.Init();
+        
+    }
+    
+}

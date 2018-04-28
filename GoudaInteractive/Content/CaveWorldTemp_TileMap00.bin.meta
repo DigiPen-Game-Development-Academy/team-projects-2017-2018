@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "CaveWorldTemp_TileMap00",
+		uint64 ResourceId = 5adf432113f255ae,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "5a01955c7fa1e073:CaveWorldTemp",
+	},
+},

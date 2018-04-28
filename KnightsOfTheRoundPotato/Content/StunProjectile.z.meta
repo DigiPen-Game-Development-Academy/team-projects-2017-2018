@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "StunProjectile",
+		uint64 ResourceId = 5a74a4738770ae67,
+	},
+},

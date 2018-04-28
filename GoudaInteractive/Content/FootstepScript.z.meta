@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "FootstepScript",
+		uint64 ResourceId = 5a16eecf26d5d25f,
+	},
+},

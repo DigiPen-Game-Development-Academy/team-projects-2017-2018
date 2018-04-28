@@ -1,0 +1,43 @@
+class SettingsSave : ZilchComponent {
+    [Serialized] var MASTERvol : Real = 1;
+    [Serialized] var SFXvol : Real = 0.5;
+    [Serialized] var MUSICvol : Real = 0.35;
+    [Serialized] var CamSmoothness : Real = 0.25;
+    [Serialized] var ScreenShakeIntecity : Real = 2;
+    function Initialize(init : CogInitializer) {
+        GlobalVariables.Settings = this.Owner;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        //load
+        Settings.MUSICvol = this.MUSICvol;
+        Settings.SFXvol = this.SFXvol;
+        Settings.MASTERvol = this.MASTERvol;
+        Settings.CamSmoothness = this.CamSmoothness;
+        Settings.ScreenShake = this.ScreenShakeIntecity;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        //save
+        this.SetSave();
+        
+        if(GlobalVariables.GameSpace != null) {
+            GlobalVariables.GameSpace.SoundSpace.Volume = Settings.SFXvol * Settings.MASTERvol;
+        }
+        if(GlobalVariables.SFXSpace != null) {
+            GlobalVariables.SFXSpace.SoundSpace.Volume = Settings.SFXvol * Settings.MASTERvol;
+        }
+        
+    }
+    
+    function SetSave() {
+        this.SFXvol = Settings.SFXvol;
+        this.MUSICvol = Settings.MUSICvol;
+        this.MASTERvol = Settings.MASTERvol;
+        this.CamSmoothness = Settings.CamSmoothness;
+        this.ScreenShakeIntecity = Settings.ScreenShake;
+    }
+    
+    function Save() {
+        this.SetSave();
+        SaveLoad.SaveSettings();
+    }
+}

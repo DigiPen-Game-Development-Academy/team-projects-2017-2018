@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "HUD_ResourceDisplay",
+		uint64 ResourceId = 5ad89080bab31a10,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 64,
+		uint FrameSizeY = 100,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 32,
+		float OriginY = 50,
+		float PixelsPerUnit = 64,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

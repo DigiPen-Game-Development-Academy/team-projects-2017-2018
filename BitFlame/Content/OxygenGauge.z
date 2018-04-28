@@ -1,0 +1,90 @@
+/****************************
+Filename: OxygenGauge.z
+Author: Justin Smith
+Contributors: Jakob McFarland
+Last modified: 1/25/18
+Brief: Controls the OxygenGauge hud object
+****************************/
+
+class OxygenGauge : ZilchComponent
+{
+    
+    //control the speed that oxygen decays (will be removed once oxygen decays by itself);
+    [Property] var DecaySpeed : Real = 10;
+    [Static] var DecaySpeed : Real;
+    
+    //i made this in case the max amount of oxygen does not = 100
+    var OxygenModifier : Real = 1;
+    
+    var CurrentOxygen : Real = 100;
+    var UpdateTimer : Real = 5;
+    var Direction : Real3 = Real3(0.0, 0.0, 0.0);
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.OxygenModifier = 100 / this.GameSession.GameVars.PlayerMaxOxygen;
+        
+        OxygenGauge.DecaySpeed = this.DecaySpeed;
+    }
+
+    function UpdateMax()
+    {
+        this.OxygenModifier = 100 / this.GameSession.GameVars.PlayerMaxOxygen;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.UpdateTimer -= event.Dt;
+        if(this.UpdateTimer < 0)
+        {
+            this.UpdateMax();
+            this.UpdateTimer = 5;
+        }
+        
+        this.CurrentOxygen = this.GameSession.GameVars.PlayerOxygen * this.OxygenModifier;
+        
+        if(this.GameSession.GameVars.PlayerLosingOxygen == true)
+        {
+            if (this.CurrentOxygen > 0 )
+            {
+                this.GameSession.GameVars.PlayerOxygen -= ((OxygenGauge.DecaySpeed - this.GameSession.GameVars.HasUpgrade_OxygenRegen) * event.Dt)/this.OxygenModifier;                //this.CurrentOxygen -= this.DecaySpeed * event.Dt;
+            }
+            else
+            {
+                this.CurrentOxygen = 0.0;
+                this.GameSession.GameVars.PlayerOxygen = 0.0;
+            }
+        }
+            //complicated math stuff that works but i dont understand how
+            var posX : Real = 0.0;
+            var posY : Real = 0.0;
+            posX = 10 * Math.Cos((this.CurrentOxygen + 22) * 2.2 * 0.0174533);
+            posY = 10 * Math.Sin((this.CurrentOxygen + 22) * 2.2 * 0.0174533);
+            
+            this.Direction = Real3(posX, posY, 0.0);
+                 
+    }
+}
+
+class OxygenGauge_PinController : ZilchComponent
+{
+    var Gauge : Cog;
+    
+    var Direction : Real3 = Real3(0.0, 0.0, 0.0);
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.Gauge = this.Space.FindObjectByName("OxygenGauge");
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Direction = this.Gauge.OxygenGauge.Direction;
+        
+        this.Owner.Orientation.LookAtDirection(this.Direction);
+    }
+}

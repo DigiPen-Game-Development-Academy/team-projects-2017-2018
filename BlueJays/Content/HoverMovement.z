@@ -1,0 +1,29 @@
+class HoverMovement : ZilchComponent
+{
+    [Property] var OscilationDirection : Real3 = Real3.YAxis;
+    [Property] var OscilationMagnitude : Real = 1;
+    [Property] var OscilationFrequency : Real = 1;
+    [Property] var OscilationTimer : Real = 0;
+    
+    [Property] var CoordinateSystem : TargetSpace = TargetSpace.LocalSpace;
+    
+    var OriginalPosition : Real3;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        if (this.CoordinateSystem == TargetSpace.LocalSpace)
+            this.OriginalPosition = this.Owner.Transform.Translation;
+        else this.OriginalPosition = this.Owner.Transform.WorldTranslation;
+    }
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.OscilationTimer += event.Dt;
+        var angle = Math.Pi * this.OscilationFrequency * this.OscilationTimer;
+        var offset = this.OscilationMagnitude * Math.Cos(angle);
+        if (this.CoordinateSystem == TargetSpace.LocalSpace)
+            this.Owner.Transform.Translation = this.OriginalPosition + this.OscilationDirection * offset;
+        else this.Owner.Transform.WorldTranslation = this.OriginalPosition + this.OscilationDirection * offset;
+    }
+}

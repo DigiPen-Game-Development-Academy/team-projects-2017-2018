@@ -1,0 +1,31 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class HPack : Item {
+    
+    var HealAmount : Real = 25;
+    
+    constructor(itemName : String, useNameAsSpriteSource : Boolean, healAmt : Real) : base(itemName, useNameAsSpriteSource) {
+        this.ItemColor = Real4(1.0, 0.0, 0.0, 1.0);
+        this.HealAmount = healAmt;
+    }
+    
+    function Update(dt : Real) {
+        
+        if(Relocation.Space != null && Relocation.Space.FindObjectByName(Relocation.EntityPlayer) != null) {
+            
+            var healthScript = Relocation.Space.FindObjectByName(Relocation.EntityPlayer).Health;
+            
+            if(healthScript.CurrentHealth < healthScript.MaxHealth) {
+                healthScript.CurrentHealth += this.HealAmount;
+                if(healthScript.CurrentHealth > healthScript.MaxHealth) {
+                    healthScript.CurrentHealth = healthScript.MaxHealth;
+                }
+                Relocation.Space.FindObjectByName(Relocation.EntityPlayer).Inventory.RemoveItemInSlot(2, false);
+            }
+            
+        }
+        
+    }
+    
+}

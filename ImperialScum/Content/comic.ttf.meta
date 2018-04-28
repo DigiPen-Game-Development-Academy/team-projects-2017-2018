@@ -1,0 +1,8 @@
+FontContent = 
+{
+	FontBuilder = 
+	{
+		string Name = "comic",
+		uint64 ResourceId = 5a76fb9e69c80542,
+	},
+},

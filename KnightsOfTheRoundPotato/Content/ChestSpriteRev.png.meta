@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "ChestSpriteRev",
+		uint64 ResourceId = 5a7033740294d239,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 32,
+		uint FrameSizeY = 32,
+		uint FrameCount = 2,
+		float FrameDelay = 0.142857149,
+		float OriginX = 16,
+		float OriginY = 16,
+		float PixelsPerUnit = 32,
+		bool Smoothing = false,
+		bool Looping = false,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

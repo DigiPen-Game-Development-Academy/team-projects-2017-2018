@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "BossFight3_TileMap00",
+		uint64 ResourceId = 5a50d20b049a5eab,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "5a50a5f2381c0c1a:BossFight3",
+	},
+},

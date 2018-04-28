@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "OxygenGauge",
+		uint64 ResourceId = 5ac103cb76506a87,
+	},
+},

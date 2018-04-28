@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "Ping",
+		uint64 ResourceId = 5afe69e9fef2e01b,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 32,
+		uint FrameSizeY = 32,
+		uint FrameCount = 13,
+		float FrameDelay = 0.0588235296,
+		float OriginX = 16,
+		float OriginY = 16,
+		float PixelsPerUnit = 32,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

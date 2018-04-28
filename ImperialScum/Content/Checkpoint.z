@@ -1,0 +1,20 @@
+class Checkpoint : ZilchComponent
+//Elena Schefer
+{
+  [Static]
+   var RespawnPosition : Real3 = Real3();
+
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(init,Events.AllObjectsInitialized, this.OnAllObjectsInitialized);
+    }
+
+    function OnAllObjectsInitialized(event : CogInitializerEvent)
+    {
+        var player = this.Space.FindObjectByName("Player").Transform.Translation;
+        
+        Checkpoint.RespawnPosition = player;
+        
+    }
+
+}

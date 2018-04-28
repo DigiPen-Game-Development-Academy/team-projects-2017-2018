@@ -1,0 +1,258 @@
+/*************************************
+Filename: PlayerDeath.z
+Author: Jakob McFarland
+Contributors: Luke Taranowski
+Last modified: 3/27/2018
+Brief: This Component will cause the owner to teleport back to origin when their health or oxygen = 0
+******************************************/
+
+class PlayerDeath : ZilchComponent
+{
+    // The level that our HUD is contained within
+    [Property]
+    var HUDLevel : Level = null;
+    
+    //The space archetype from which to create the new HUD space
+    [Property]
+    var SpaceArchetype : Archetype = Archetype.Space;
+    
+    //Reference to the Player object
+    [Property]
+    var PlayerRef : CogPath = null;
+    
+    //HealthDrainTimeInterval
+    [Property] var TimeInterval : Real = 1.0; 
+    
+    var Timer : Real;
+    
+    [Property] var Space1 : CogPath = null;
+    [Property] var Space2 : CogPath = null;
+    
+    // Store the space where our HUD is so that we can access and destroy it
+    var HUDSpace : Space = null;
+    
+    var HUDCreated : Boolean = false; 
+   
+    var TimeKeeper : Real = 0;
+    
+    //make sure owner has a transform
+    [Dependency] var Transform : Transform;
+    
+    [Property] var IronResource : Archetype = null;
+    [Property] var CopperResource : Archetype = null;
+    [Property] var AluminiumResource : Archetype = null;
+    [Property] var TitaniumResource : Archetype = null;
+    
+    var T : Real = 0.0;
+    
+    var RandGen : Random = Random();
+
+    //initilization
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    //every logic update
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.GameSession.GameVars.DestroyRespawnMenu == true)
+            {
+                
+                if(this.HUDSpace != null)
+                {
+                    this.HUDSpace.Destroy();  
+                }
+                
+                 //enable player controls
+                this.Owner.Player_Movement_Script.Active = true;
+                this.Owner.Player_Pickup_Collection.Active = true;
+                this.Owner.Player_Block_Placing.Active = true;        
+                this.Owner.FindChildByName("Arm").PlayerShooting.CanShoot = true;  
+
+                this.GameSession.GameVars.DestroyRespawnMenu = false;
+
+                this.GameSession.GameVars.PlayerLosingOxygen = true;
+                this.Owner.Transform.Translation = Real3(0.0, 0.0, 0.0);         
+            }
+            
+        //setup quick var to save on repitition
+        var gameVars = this.GameSession.GameVars;
+        
+        //check if player oxygen is less than 0, if so, drain player health - jakob McFarland
+        if(this.GameSession.GameVars.PlayerOxygen <= 0.0)
+        {
+            this.Owner.HealthRegen.Active = false;
+            
+            if(this.Timer >= this.TimeInterval)
+            {
+                this.Timer -= this.TimeInterval;
+                this.GameSession.GameVars.PlayerHealth -= 1;
+                this.Space.SoundSpace.PlayCue(SoundCue.Player_Damaged);
+                
+                var playerHurtUpdate = PlayerHurtUpdate();
+                this.GameSession.DispatchEvent(Events.PlayerHurtUpdate, playerHurtUpdate);
+            }
+            this.Timer += event.Dt;
+        }
+        else
+        {
+            this.Owner.HealthRegen.Active = true;    
+        }
+        
+        //if the player has no health or oxygen then they're dead, reset their health and oxygen and teleport them to world origin.
+        if (gameVars.PlayerHealth <= 0)
+        {  
+            if(this.Space1 != null)
+            {
+                this.Space1.Cog.Detach();
+                this.Space1.Cog.Transform.Translation = Real3(0, 0, 100);
+            }
+                    
+            if(this.Space2 != null)
+            {
+                this.Space2.Cog.Detach();
+            }
+
+            //disable player controls
+            this.Owner.Player_Pickup_Collection.Active = false;
+            this.Owner.Player_Block_Placing.Active = false;
+            this.Owner.Player_Movement_Script.Active = false;
+            this.Owner.FindChildByName("Arm").PlayerShooting.CanShoot = false;
+            
+            this.Owner.RigidBody.AngularVelocity = Real3(0, 0, 15);
+            
+            this.Space.SoundSpace.PlayCue(SoundCue.Player_Death_Sound);
+            this.GameSession.GameVars.PlayerLosingOxygen = false;
+            
+            this.GameSession.GameVars.PlayerHealth = this.GameSession.GameVars.StartingPlayerHealth;
+            this.GameSession.GameVars.PlayerOxygen = this.GameSession.GameVars.StartingPlayerOxygen;
+            
+            var seq = Actions.Sequence(this.Owner.Actions);
+            Actions.Delay(seq, 2.0);
+            Actions.Call(seq, this.PostDeath);
+            
+            if(gameVars.PlayerResources > 0)
+            {
+                for(var i = 0; i < 2; ++i)
+                {
+                    var resource = this.Space.CreateAtPosition(this.IronResource, this.Owner.Transform.Translation);
+                    resource.RigidBody.Velocity += Real3(this.RandGen.Range(-1.0, 1.0), this.RandGen.Range(-1.0, 1.0), 0.0);
+                    resource.ResourcePickup.PickupValue = gameVars.PlayerResources / 2;
+                    
+                    if(gameVars.PlayerResources % 2 == 1)
+                    {
+                        resource.ResourcePickup.PickupValue += i;
+                    }
+                }
+            }
+            
+            if(gameVars.PlayerAluminium > 0)
+            {    
+                for(var i = 0; i < 2; ++i)
+                {
+                    var resource = this.Space.CreateAtPosition(this.AluminiumResource, this.Owner.Transform.Translation);
+                    resource.RigidBody.Velocity += Real3(this.RandGen.Range(-1.0, 1.0), this.RandGen.Range(-1.0, 1.0), 0.0);
+                    resource.AluminiumPickup.PickupValue = gameVars.PlayerAluminium / 2;
+                    
+                    if(gameVars.PlayerAluminium % 2 == 1)
+                    {
+                        resource.AluminiumPickup.PickupValue += i;
+                    }
+                }
+            }
+            if(gameVars.PlayerCopper > 0)
+            {    
+                for(var i = 0; i < 2; ++i)
+                {
+                    var resource = this.Space.CreateAtPosition(this.CopperResource, this.Owner.Transform.Translation);
+                    resource.RigidBody.Velocity += Real3(this.RandGen.Range(-1.0, 1.0), this.RandGen.Range(-1.0, 1.0), 0.0);
+                    resource.CopperPickup.PickupValue = gameVars.PlayerCopper / 2;
+                    
+                    if(gameVars.PlayerCopper % 2 == 1)
+                    {
+                        resource.CopperPickup.PickupValue += i;
+                    }
+                }
+            }
+            if(gameVars.PlayerTitanium > 0)
+            {        
+                for(var i = 0; i < 2; ++i)
+                {
+                    var resource = this.Space.CreateAtPosition(this.TitaniumResource, this.Owner.Transform.Translation);
+                    resource.RigidBody.Velocity += Real3(this.RandGen.Range(-1.0, 1.0), this.RandGen.Range(-1.0, 1.0), 0.0);
+                    resource.TitaniumPickup.PickupValue = gameVars.PlayerTitanium / 2;
+                    
+                    if(gameVars.PlayerTitanium % 2 == 1)
+                    {
+                        resource.TitaniumPickup.PickupValue += i;
+                    }
+                }
+            }
+            
+            gameVars.PlayerResources = 0;
+            gameVars.PlayerTitanium = 0;
+            gameVars.PlayerCopper = 0;
+            gameVars.PlayerAluminium = 0;      
+            
+            /*if(this.GameSession.GameVars.DestroyRespawnMenu == true)
+            {
+                
+                if(this.HUDSpace != null)
+                {
+                    this.HUDSpace.Destroy();  
+                }
+                
+                
+                this.GameSession.GameVars.DestroyRespawnMenu = false;
+                Console.WriteLine(this.GameSession.GameVars.DestroyRespawnMenu);
+                
+                //respawn the player when the respawn button is pressed - jakob McFarland
+                this.GameSession.GameVars.PlayerHealth = this.GameSession.GameVars.StartingPlayerHealth;
+                this.GameSession.GameVars.PlayerOxygen = this.GameSession.GameVars.StartingPlayerOxygen;
+            
+                this.GameSession.GameVars.PlayerLosingOxygen = true;
+                this.Owner.Transform.Translation = Real3(0.0, 0.0, 0.0);         
+            }*/
+        }
+        
+        //kill cheat <For Testing ONLY>
+        
+    }
+    
+    function PostDeath()
+    {
+        //teleport the player behind the camera where it can't be interacted with - jakob McFarland
+        this.Owner.Transform.Translation = Real3(0.0, 0.0, 1000.0);
+        this.Owner.RigidBody.AngularVelocity = Real3(0, 0, 0);
+        this.Owner.Orientation.LookAtDirection(Real3(1, 0, 0));
+        
+        Zero.Mouse.Cursor = Cursor.Arrow;
+        
+        if(this.HUDSpace == null)
+        {
+            // Create the HUD space and then load our HUD level into it
+            this.HUDSpace = this.GameSession.CreateNamedSpace("HUDSpace", this.SpaceArchetype);
+                
+            //Load the level specified in the HUDLevel Property above
+            this.HUDSpace.LoadLevel(Level.RespawnLevel);                
+                
+            this.HUDSpace.LevelSettings.HUDSpaceReferences.MainSpaceRef = this.Space;
+        }
+        
+        if(this.Space1 != null)
+        {
+            if(this.Owner != null)
+            {
+                this.Space1.Cog.AttachTo(this.Owner);
+                this.Space1.Cog.Transform.Translation = Real3(0, 0, -10);
+            }
+        }
+                
+        if(this.Space2 != null)
+        {
+            this.Space2.Cog.AttachTo(this.Owner);
+        }
+    }
+    
+}

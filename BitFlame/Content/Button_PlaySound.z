@@ -1,0 +1,17 @@
+class Button_PlaySound : ZilchComponent
+{
+    [Property] var ClickSound : SoundCue = null;
+    [Property] var CantSelectSound : SoundCue = null;
+    [Property] var HoverSound : SoundCue = null;
+    
+    function OnLeftMouseDown(event : ViewportMouseEvent)
+    {
+        this.Space.SoundSpace.PlayCue(this.ClickSound);
+    }
+    function OnMouseEnter(event : ViewportMouseEvent)
+    {
+        this.Space.SoundSpace.PlayCue(this.HoverSound);
+    }
+
+    
+}

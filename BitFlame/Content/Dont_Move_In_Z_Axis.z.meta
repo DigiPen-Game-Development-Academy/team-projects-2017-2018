@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "Dont_Move_In_Z_Axis",
+		uint64 ResourceId = 5aaddee62cf26349,
+	},
+},

@@ -1,0 +1,19 @@
+//Jacob Burke
+
+//I don't think this does anything
+
+class Scrap : ZilchComponent
+{
+    [Static]
+    var Scrap:Integer = 10;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Owner.SpriteText.Text = "`Scrap.Scrap`";
+    }
+}

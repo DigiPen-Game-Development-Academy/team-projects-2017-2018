@@ -1,0 +1,63 @@
+class PlayerHealthBar : ZilchComponent {
+    
+    var Effect : Cog;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        var health = GlobalVariables.Player.Health.CurrentHealth;
+        var mHealth = GlobalVariables.Player.Health.InitialHealth;
+        var back = this.Owner.FindChildByName("Back");
+        
+        this.Owner.Transform.Scale = Real3(health / mHealth, 1, 1);
+        
+        /*if(!GlobalVariables.PauseMenu.MenuVisibilityController.Vis) {
+            this.Owner.Area.Size = Real2(10, this.Owner.Area.Size.Y);
+            this.Owner.Transform.Translation = Real3(-2.5, 1.625, -1);
+            back.Area.Size = Real2(10, back.Area.Size.Y);
+        } else {
+            this.Owner.Area.Size = Real2(3.75, this.Owner.Area.Size.Y);
+            this.Owner.Transform.Translation = Real3(-1.875, -3, -1);
+            back.Area.Size = Real2(3.75, back.Area.Size.Y);
+        }
+        */
+        var wt = this.Owner.Transform.WorldTranslation;
+        
+        this.Owner.Transform.WorldTranslation = Real3(wt.X, wt.Y, -1);
+        
+        back.Transform.WorldScale = Real3(1);
+        back.Transform.Translation = Real3(0,0,-0.1);
+        
+        this.Owner.FindChildByName("TXT").SpriteText.Text = "`Math.Round(health)`/`Math.Round(mHealth)`";
+        this.Owner.FindChildByName("TXT").Transform.WorldScale = Real3(1);
+        this.Owner.FindChildByName("TXT").Transform.WorldTranslation = this.Owner.Transform.WorldTranslation + Real3(0.0625, 0.1875, 0.1);
+        
+        //effect
+        if(GlobalVariables.Player.Health.RegenEffectActive) {
+            
+            if(this.Effect == null || this.Effect.HealthBarEffect.Rev) {
+                
+                if(this.Effect != null) {
+                    this.Effect.HealthBarEffect.Speed = GlobalVariables.Player.Health.RegenMultiplier * 3;
+                }
+                this.CreateEffect(GlobalVariables.Player.Health.RegenMultiplier * 3);
+                
+            }
+            
+        }
+        
+    }
+    
+    function CreateEffect(speed : Real) {
+        
+        this.Effect = this.Space.Create(Archetype.HPEffect);
+        this.Effect.HealthBarEffect.Speed = speed;
+        this.Effect.AttachTo(this.Owner);
+        this.Effect.Transform.Translation = Real3(0);
+        
+    }
+    
+}

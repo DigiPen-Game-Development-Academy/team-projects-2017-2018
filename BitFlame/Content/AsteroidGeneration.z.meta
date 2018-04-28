@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "AsteroidGeneration",
+		uint64 ResourceId = 5a11c0c11f38c35e,
+	},
+},

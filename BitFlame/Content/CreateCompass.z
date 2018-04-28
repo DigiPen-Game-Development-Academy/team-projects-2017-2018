@@ -1,0 +1,19 @@
+class CreateCompass : ZilchComponent
+{
+    [Property] var Compass : Archetype;
+    [Property] var Ship : Archetype;
+    
+    var CreatedComp : Cog;
+    var CreatedShip : Cog;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.CreatedComp = this.Space.CreateAtPosition(this.Compass, Real3(12.5, -6, -6));
+        
+        this.CreatedComp.AttachTo(this.Owner);
+        
+        this.CreatedShip = this.Space.CreateAtPosition(this.Ship, Real3(12.5, -6, -5.5));
+        
+        this.CreatedShip.AttachTo(this.Owner);
+    }
+}

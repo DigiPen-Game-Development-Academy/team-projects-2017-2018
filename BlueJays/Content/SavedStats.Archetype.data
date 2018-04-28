@@ -1,0 +1,24 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "SavedStats",
+	},
+	SavedStats = 
+	{
+		float TotalRuns = 0,
+		float Deaths = 0,
+		float Wins = 0,
+		float FoolsBeaten = 0,
+		float LoversBeaten = 0,
+		float Spawns = 0,
+		float KnightSpawns = 0,
+		float StationarySpawns = 0,
+		float UniqueSpawns = 0,
+		string AchUnlocks = "",
+	},
+},

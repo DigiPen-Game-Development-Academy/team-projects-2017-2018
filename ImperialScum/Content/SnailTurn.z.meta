@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "SnailTurn",
+		uint64 ResourceId = 5a4a9e9263aa0cd4,
+	},
+},

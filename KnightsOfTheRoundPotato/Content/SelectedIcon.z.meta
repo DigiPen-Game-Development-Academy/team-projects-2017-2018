@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "SelectedIcon",
+		uint64 ResourceId = 5a9a9a36d6809a13,
+	},
+},

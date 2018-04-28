@@ -1,0 +1,134 @@
+//Jacob Burke, 
+//Edited by Jessica (Added god mode and bullet damage... bullet damage is currently a WIP).
+
+//This script makes the enemy shoot...
+class EnemyShoot : ZilchComponent
+{
+    [Property] var Bullet : Archetype = null;
+    
+    [Property]
+    var TimeBetweenShots : Real;
+    [Property]
+    var Shooting : Boolean = false;
+    
+    [Property]
+    var Range : Real;
+    
+    [Property] var ShootAnimationSpeed : Real = 20;
+    
+    var TimeTillNextShot:Real = 0;
+        
+    function Initialize(init : CogInitializer)
+    { 
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {   
+        this.TimeTillNextShot -= event.Dt;
+        if (this.TimeTillNextShot <= 0)
+        {
+            this.TimeTillNextShot = this.TimeBetweenShots;
+            this.Shoot();
+            
+        }
+        var pos = this.Owner.Transform.WorldTranslation;
+            
+        var target = this.Space.FindObjectByName("Player").Transform.WorldTranslation;
+
+        if(this.TimeTillNextShot < 0.3 && Math.Length(target - pos) <= this.Range)
+        {
+            this.Owner.Sprite.AnimationSpeed = this.ShootAnimationSpeed;
+            this.Shooting = true;
+        }
+        else
+        {
+            this.Owner.Sprite.AnimationSpeed = 0;
+            this.Owner.Sprite.CurrentFrame = 0;
+            this.Shooting = false;
+        }
+    }
+    
+    function Shoot()
+    {
+        
+        if (this.Bullet == null) return;
+        if(this.Owner.Name == "Laser" && BossScript.LaserActive == false) return;
+        
+        var player = this.Space.FindObjectByName("Player");
+        if (player == null) return;
+        
+        var pos = this.Owner.Transform.WorldTranslation;
+        
+        var target = this.Space.FindObjectByName("Player").Transform.WorldTranslation;
+        
+        if(Math.Length(target - pos) >= this.Range)
+        {
+            return;
+        }
+        var bullet = this.Space.CreateAtPosition(this.Bullet, this.Owner.Transform.WorldTranslation);
+        if(bullet.BulletLogic == null) return;
+        bullet.BulletLogic.Target = player;
+        bullet.RigidBody.Velocity = target - pos;
+    }
+    
+}
+class BulletLogic : ZilchComponent
+{
+    [Property]
+    var ShootSFX:SoundCue;
+    
+    [Property]
+    var HitSFX:SoundCue;
+    
+    
+    var Target : Cog = null;
+    [Property] var Speed : Real = 1;
+    
+    [Property]
+    var Gravity : Real = 0;
+    
+    [Property]
+    var DegreesOffset : Real = 0;
+    
+    [Property]
+    var DestroyOnTile:Boolean = false;
+    
+    var Timer:Real = 3;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        
+        this.Owner.SoundEmitter.PlayCue(this.ShootSFX);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.PlayerController != null || event.OtherObject.Name == ("DefaultTile") && this.DestroyOnTile == false)
+        {
+            this.Owner.SoundEmitter.PlayCue(this.HitSFX);
+            this.Owner.Destroy();
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var velocity = this.Owner.RigidBody.Velocity;
+        velocity = this.Speed * Math.Normalize(velocity);
+        velocity.Y -= this.Gravity * event.Dt;
+        this.Owner.RigidBody.Velocity = velocity;
+        
+        if(this.Timer > 0)
+        {
+            this.Timer -= event.Dt;
+        }
+        else this.Owner.Destroy();
+        
+        //Visual Angle
+        var angle = Math.Angle2D(this.Owner.RigidBody.Velocity);
+        angle += Math.ToRadians(this.DegreesOffset);
+        this.Owner.Transform.SetEulerAnglesXYZ(0,0,angle);
+    }
+}

@@ -1,0 +1,182 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "EntityEnemy",
+	},
+	Archetyped = 
+	{
+		string Name = "5a95361bd6622194:EntitySlug",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = false,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5ad13b51428143ec:SlugThingForward",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = false,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	RigidBody = 
+	{
+		bool Static = false,
+		bool Asleep = false,
+		bool Kinematic = false,
+		bool RotationLocked = true,
+		bool Mode2D = false,
+		bool AllowSleep = true,
+		bool Inherit2DMode = true,
+		Vec3 Velocity = [0, 0, 0],
+		Vec3 AngularVelocity = [0, 0, 0],
+	},
+	CapsuleCollider = 
+	{
+		bool Ghost = false,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+		string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+		Vec3 Offset = [0, -0.100000001, 0],
+		float Radius = 0.400000006,
+		float Height = 0.150000006,
+		AxisDirection Direction = Y,
+		CapsuleScalingMode ScalingMode = PreserveScale,
+	},
+	Area = 
+	{
+		Vec2 Size = [1, 1],
+		Location Origin = Center,
+	},
+	Orientation = 
+	{
+		Vec3 GlobalUp = [0, 0, 1],
+		Vec3 UpVector = [0, 0, 1],
+		Vec3 ForwardVector = [0, 1, 0],
+		OrientationBases DefaultBases = Custom,
+	},
+	EntityEnemy = 
+	{
+		float AttackCooldown = 2,
+		bool CanShoot = false,
+		bool CanAttackForward = true,
+		float AttackDamage = 2,
+		float AttackWithinRadiusOf = 3,
+		float HitboxSize = 1.75,
+		float HitboxLifetime = 0.100000001,
+		bool CanMove = false,
+		float SightRadius = 5,
+		string LookUp = "5ad13b444560ceff:SlugThingUp",
+		string LookUpRight = "5ad13b444560ceff:SlugThingUp",
+		string LookRight = "5ad13b4e43cda024:SlugThingRight",
+		string LookDownRight = "5ad13b51428143ec:SlugThingForward",
+		string LookDown = "5ad13b51428143ec:SlugThingForward",
+		float BulletSpeed = 10,
+	},
+	Health = 
+	{
+		float MaxHealth = 10,
+		bool IsInvincible = false,
+		bool NaturalRegen = false,
+		Vec4 DamagedColor = [1, 0.498039275, 0.498039246, 1],
+		string DeathAnimation = "5ad13b0a7cf6e428:SlugThingDeath",
+		int EndOfAnimation = 5,
+	},
+	SoundEmitter = 
+	{
+		float Volume = 1.99526238,
+		float Pitch = 0,
+		float PitchSemitones = 0,
+		bool UsePitchSemitones = false,
+		bool Positional = true,
+		int Version = 1,
+	},
+	SoundObject = 
+	{
+		Enum SoundCategory = Sound,
+	},
+	Follower = 
+	{
+		float SearchRange = 30,
+		float SearchFrequency = 0.100000001,
+		float SearchFrequencyVariance = 0.100000001,
+		float MemoryFrequency = 0.100000001,
+		float PredictionTime = 0.200000003,
+		float Straightness = 1,
+		float Speed = 3,
+		float Acceleration = 2,
+	},
+	EntityDrop = 
+	{
+		string ItemName = "ItemHealthPack",
+		int Amount = 1,
+	},
+	EntityFreezer = 
+	{
+		string EntityArchetype = "5a95361bd6622194:EntitySlug",
+		float FreezeDistance = 16,
+	},
+	Hierarchy = 
+	{
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 2,
+			},
+			Named = 
+			{
+				string Name = "EnemySprite",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0, 0, 0],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "5ad13b51428143ec:SlugThingForward",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			Orientation = 
+			{
+				Vec3 GlobalUp = [0, 0, 1],
+				Vec3 UpVector = [0, 0, 1],
+				Vec3 ForwardVector = [0, 1, 0],
+				OrientationBases DefaultBases = ForwardYUpZ,
+			},
+		},
+	},
+},

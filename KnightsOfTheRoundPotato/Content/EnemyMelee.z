@@ -1,0 +1,34 @@
+class EnemyMelee : ZilchComponent {
+    
+    [Property]
+    var AttacksPerSecond : Real = 3;
+    [Property]
+    var DamagerPerAttack : Real = 5;
+    [Property]
+    var DeathMSG : String = "You Where Bitten by an Enemy";
+    var Timer : Real = 3;
+    
+    function Initialize(init : CogInitializer) {
+        this.Timer = 1/this.AttacksPerSecond;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionPersisted);
+    }
+
+    function OnCollisionPersisted(event : CollisionEvent) {
+        if(event.OtherObject == GlobalVariables.Player) {
+            if(this.Timer <= 0) {
+                this.Timer = 1/this.AttacksPerSecond;
+                var damage = Damage();
+                damage.Damage = this.DamagerPerAttack;
+                damage.DeathMSG = this.DeathMSG;
+                event.OtherObject.DispatchEvent(Events.Damage, damage);
+            }
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        if(this.Owner.BasicPathFollowAI != null && !this.Owner.BasicPathFollowAI.Active)
+            return;
+        this.Timer -= event.Dt;
+    }
+}

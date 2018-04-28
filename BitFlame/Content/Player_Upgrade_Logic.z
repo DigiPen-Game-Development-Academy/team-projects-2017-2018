@@ -1,0 +1,29 @@
+/***
+this whole thing is dumb
+I'm replacing it
+- Jakob
+***/
+
+class Player_Upgrade_Logic : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.GameSession, Events.PlayerUpgradeEvent, this.OnPlayerUpgradeEvent);
+        
+        var upgradeEvent = PlayerUpgradeEvent();
+        this.GameSession.DispatchEvent(Events.PlayerUpgradeEvent, upgradeEvent);    
+    }
+
+    function OnPlayerUpgradeEvent(event : PlayerUpgradeEvent)
+    {
+        var gVars = this.GameSession.GameVars;
+        /***
+        -<I>--<Some Code By Sage Forever Immortalized>---<I>-
+        
+        this.LevelSettings.HUDSpaceReferences.MainSpaceRef.LevelSettings.HudCreator.HUDSpace.LevelSettings
+            .HUDSpaceReferences.OxygenBarRef.Cog.OxygenGauge.DecaySpeed -= gVars.HasUpgrade_OxygenRegen;
+        ***/
+       
+        this.Owner.Player_Movement_Script.ControlDampeners = gVars.HasUpgrade_InertiaDampeners;
+    }
+}

@@ -1,0 +1,34 @@
+class Lazer : ZilchComponent {
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Space, Events.MouseUp, this.OnMouseUp);
+        Zero.Connect(Zero.Keyboard, Events.KeyUp, this.OnKeyUp);
+    }
+
+    function OnKeyUp(event : KeyboardEvent) {
+        if(event.Key == GlobalVariables.InputManager.UseWeaponKey)
+            this.Owner.Destroy();
+    }
+
+    function OnMouseUp(event : ViewportMouseEvent) {
+        if(event.Button == GlobalVariables.InputManager.UseWeaponMouse)
+            this.Owner.Destroy();
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        this.Owner.Transform.WorldTranslation = GlobalVariables.Player.Transform.WorldTranslation + Real3(0,0,-0.1);
+        var dir = Math.Normalize(this.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 0) - this.Owner.Transform.WorldTranslation);
+        
+        var res = Utilities.Raycast(this.Owner.Transform.WorldTranslation, dir, this.Space.PhysicsSpace, 50);
+        
+        if(res != null) {
+            this.Owner.Transform.WorldScale = Real3(1, res.Distance, 1);
+        } else {
+            this.Owner.Transform.WorldScale = Real3(1, 50, 1);
+        }
+        
+        this.Owner.Transform.SetEulerAnglesXYZ(0, 0, Math.ATan2(dir.Y, dir.X) + Math.ToRadians(-90));
+        
+    }
+}

@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "BulletAnim",
+		uint64 ResourceId = 5abd169f33a169c4,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 16,
+		uint FrameSizeY = 8,
+		uint FrameCount = 2,
+		float FrameDelay = 0.0625,
+		float OriginX = 8,
+		float OriginY = 4,
+		float PixelsPerUnit = 32,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

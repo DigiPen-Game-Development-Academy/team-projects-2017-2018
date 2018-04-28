@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "MeleeFX",
+		uint64 ResourceId = 5a39663735cd9465,
+	},
+},

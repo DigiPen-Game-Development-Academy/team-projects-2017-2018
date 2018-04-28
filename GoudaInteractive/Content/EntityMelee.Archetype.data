@@ -1,0 +1,88 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "EntityMelee",
+	},
+	Archetyped = 
+	{
+		string Name = "5ae56129aa9fe62c:EntityMelee",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [2.0130744, 0.0453879684, 0.375],
+		Vec3 Scale = [0.100000001, 0.100000001, 0.100000001],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = false,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5275aa4d802dd6dc:Square",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	RigidBody = 
+	{
+		bool Static = false,
+		bool Asleep = false,
+		bool Kinematic = false,
+		bool RotationLocked = true,
+		bool Mode2D = true,
+		bool AllowSleep = true,
+		bool Inherit2DMode = true,
+		Vec3 Velocity = [0, 0, 0],
+		Vec3 AngularVelocity = [0, 0, 0],
+	},
+	SphereCollider = 
+	{
+		bool Ghost = true,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "5ac291505ccfd608:PlayerPhysicsMaterial",
+		string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+		Vec3 Offset = [0, 0, 0],
+		float Radius = 1,
+	},
+	IgnoreSpaceEffects = 
+	{
+		bool Drag = true,
+		bool Flow = false,
+		bool Force = false,
+		bool Gravity = false,
+		bool Thrust = false,
+		bool Vortex = false,
+		bool Wind = false,
+		bool Invalid = false,
+		bool Torque = false,
+		bool PointGravity = false,
+		bool PointForce = false,
+		bool Buoyancy = false,
+		bool Custom = false,
+	},
+	EntityBullet = 
+	{
+		bool FromPlayer = true,
+		bool DrillBullet = true,
+		float Lifetime = 0.0500000007,
+		float Damage = 1,
+		float BlockDamageAmount = 1,
+	},
+	Hierarchy = 
+	{
+	},
+},

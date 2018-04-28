@@ -1,0 +1,20 @@
+//Sam
+//Make the gibs fly in random directions
+
+class Gibs : ZilchComponent
+{
+    var RandomGen : Random = Random();
+    
+    function Initialize(init : CogInitializer)
+    {
+        var randX = this.RandomGen.DieRoll(20) -10;
+        var randY = this.RandomGen.DieRoll(10);
+        
+        this.Owner.RigidBody.Velocity = Real3(randX,randY,0);
+        
+        if (this.Owner.DestroyTimer != null)
+        {
+            this.Owner.DestroyTimer.Time = 100 + this.RandomGen.DieRoll(100);
+        }
+    }
+}

@@ -1,0 +1,21 @@
+class NoParticlesInBaseLevel : ZilchComponent
+
+// Author Elena Schefer
+{
+
+   
+    function Initialize(init : CogInitializer)
+    {
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+        if(this.Space.CurrentLevel == Level.BaseLevel)
+        {
+            this.Owner.Destroy();
+        }
+    }
+}

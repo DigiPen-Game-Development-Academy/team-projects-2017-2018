@@ -1,0 +1,218 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Pigeon",
+	},
+	Archetyped = 
+	{
+		string Name = "5a6ea1f2412a5c3b:Pigeon",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0.00999999978],
+		Vec3 Scale = [1, 0.400000006, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [0, 0, 0, 0.5],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5274db4c2e7c11f9:Circle",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	RigidBody = 
+	{
+		bool Static = false,
+		bool Asleep = false,
+		bool Kinematic = false,
+		bool RotationLocked = true,
+		bool Mode2D = false,
+		bool AllowSleep = true,
+		bool Inherit2DMode = true,
+		Vec3 Velocity = [0, 0, 0],
+		Vec3 AngularVelocity = [0, 0, 0],
+	},
+	EllipsoidCollider = 
+	{
+		bool Ghost = false,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+		string SerializedGroupName = "5ae8cbc8b648997c:Enemy",
+		Vec3 Offset = [0, 0, 0],
+		Vec3 Radii = [0.5, 0.5, 1],
+	},
+	AutoDepth = 
+	{
+		bool Local = false,
+		float Offset = 0.00999999978,
+	},
+	Health = 
+	{
+		string Level = "5aa296fcf4715c3c:WinScreen",
+		Enum HealthType = EnemyMinion,
+		float Health = 3,
+		bool Debug = false,
+	},
+	DoOnCollide = 
+	{
+		Enum TeamToAffect = Player,
+		float HealthToChange = 0,
+		float FateToChange = 0,
+		bool DeactivateSelf = false,
+		bool AttachSelf = false,
+		bool DestroySelf = true,
+		float DestroyDelay = 0,
+	},
+	PigeonNPC = 
+	{
+		Vec2 Velocity = [0, 0],
+		float WanderAcceleration = 10,
+		float WanderMoveSpeed = 5,
+		float WanderTurnSpeed = 10,
+		float ChaseAcceleration = 5,
+		float ChaseMoveSpeed = 10,
+		float ChaseTurnSpeed = 3,
+		string FlappingSoundToPlay = "5a37cc0d337b2741:Flapping",
+		Vec2 TurnFrequency = [0.100000001, 1],
+	},
+	Hierarchy = 
+	{
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 2,
+			},
+			Named = 
+			{
+				string Name = "MainSprite",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0, 5, 0],
+				Vec3 Scale = [1, 2.5, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 0.999899983],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "5a5b184bf39b7b7f:PigeonFly",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			SpriteFlip = 
+			{
+			},
+			HealthEffect = 
+			{
+			},
+			Hierarchy = 
+			{
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 3,
+			},
+			Named = 
+			{
+				string Name = "BasicParticleEffect",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0, 5, 0.479999989],
+				Vec3 Scale = [1, 2.5, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			SpriteParticleSystem = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				SystemChildMode ChildMode = Independent,
+				SystemSpace SystemSpace = WorldSpace,
+				uint DrawOrder = 0,
+				Vec4 Tint = [1, 1, 1, 1],
+				float WarmUpTime = 0,
+				ParticleGeometry GeometryMode = Billboarded,
+				ParticleRenderMode RenderMode = Blended,
+				ParticleSortMode SortMode = Youngest,
+				ParticleAnimation ParticleAnimation = Single,
+				string Texture = "5310e87946edb371:WhiteCloud",
+				float VelocityScale = 1,
+				float LengthScale = 1,
+				float MaxParticleSize = 100,
+				Vec3 SystemSize = [4, 4, 4],
+			},
+			SphericalParticleEmitter = 
+			{
+				bool Active = true,
+				uint EmitCount = 0,
+				float EmitRate = 2.30769229,
+				float EmitVariance = 0,
+				float Size = 1,
+				float SizeVariance = 0.5,
+				float Lifetime = 0.5,
+				float LifetimeVariance = 0,
+				float Spin = 0,
+				float SpinVariance = 50,
+				bool RandomSpin = true,
+				float Fill = 1,
+				float EmitterVelocityPercent = 0,
+				Vec3 StartVelocity = [0, -5, 0],
+				Vec3 RandomVelocity = [0, 0, 0],
+				Vec3 TangentVelocity = [0, 0, 0],
+				Vec3 EmitterSize = [0, 0, 0],
+				bool FastMovingEmitter = false,
+			},
+			LinearParticleAnimator = 
+			{
+				Vec3 Force = [0, 0, 0],
+				Vec3 RandomForce = [0, 0, 0],
+				float Torque = 0,
+				float Growth = 5,
+				float Dampening = 2,
+				Vec3 Twist = [0, 0, 0],
+			},
+			ParticleColorAnimator = 
+			{
+				Vec4 Color0 = [1, 1, 1, 0],
+				Vec4 Color1 = [1, 1, 1, 1],
+				Vec4 Color2 = [1, 1, 1, 0.539999962],
+				Vec4 Color3 = [1, 1, 1, 0.185000002],
+				Vec4 Color4 = [1, 1, 1, 0],
+			},
+		},
+	},
+},

@@ -1,0 +1,96 @@
+/*************************************
+Filename:  Oxygen_Regen_Field.z
+Author: Jakob McFarland
+Contributors: NULL
+Last modified: 2/15/18
+Brief: This Component allows the owner to be interacted with it 
+******************************************/
+
+class Oxygen_Regen_Field : ZilchComponent
+{
+    //class vars 
+    var Active : Boolean = true;
+    
+    var TimeKeeper : Real = 0;
+    
+    [Property] var OxygenRechargeRate : Real = 0.05;
+    
+    
+    function Initialize(init : CogInitializer)
+    {
+        //init our timer var
+        this.TimeKeeper = this.Space.GameTimer.Timer;
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionPersisted);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Owner, Events.CollisionEnded, this.OnCollisionEnded);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Active)
+        {
+            this.Owner.Sprite.Visible = true;
+        }
+        else if(!this.Active)
+        {
+            this.Owner.Sprite.Visible = false;
+        }
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(!this.Active)
+        {
+            return;
+        }
+        
+        var player = event.OtherObject;
+           
+        if(player.Player_Movement_Script != null)
+        {      
+            //put hover feed back here
+            
+            this.GameSession.GameVars.PlayerLosingOxygen = false;
+        }
+    }
+
+    function OnCollisionEnded(event : CollisionEvent)
+    {
+        var player = event.OtherObject;
+           
+        if(player.Player_Movement_Script != null)
+        {      
+            //put hover feed back here
+            
+            this.GameSession.GameVars.PlayerLosingOxygen = true;
+        }
+    }
+    
+    function OnCollisionPersisted(event : CollisionEvent)
+    {
+        if(!this.Active)
+        {
+            return;
+        }
+        
+        var player = event.OtherObject;
+        
+        if(player.Player_Movement_Script != null)
+        {
+            //if the OxygenRechargeTime value is smaller than the timer passed since last reset
+            if(this.Space.GameTimer.Timer - this.TimeKeeper >= 0.01)
+            {
+                //debug
+                //Console.WriteLine("Beep");
+                //reset timer
+                this.TimeKeeper = this.Space.GameTimer.Timer;
+                //add one oxygen to the gamevar
+                this.GameSession.GameVars.PlayerOxygen += this.OxygenRechargeRate;
+            }
+            
+            this.GameSession.GameVars.PlayerOxygen = Math.Clamp(this.GameSession.GameVars.PlayerOxygen, 0, this.GameSession.GameVars.PlayerMaxOxygen);
+        }
+    }
+}

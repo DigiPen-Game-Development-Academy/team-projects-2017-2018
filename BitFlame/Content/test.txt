@@ -1,0 +1,8 @@
+Use W, A, S, and D to move your player
+Shoot your gun with the left mouse button
+Shoot enemies to gather a special resource
+Repair your ship using resources you gather
+Destroy asteroids to gather resources and craft things
+Press E over your ship to open your ships menu
+Press Q to select which crated item you'd like to place
+Exist by using your brain

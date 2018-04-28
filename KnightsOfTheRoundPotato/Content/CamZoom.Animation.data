@@ -1,0 +1,84 @@
+RichAnimation = 
+{
+	float SampleTolerance = 0.0500000007,
+	float Duration = 2,
+	Object Root = 
+	{
+		TrackType Type = Object,
+		string Name = "Root",
+		string Path = "",
+		bool Disabled = false,
+		uint PropertyTypeId = 0,
+		string PropertyTypeName = "void",
+		Array KeyFrames = 
+		[
+		],
+		Array Children = 
+		[
+			{
+				TrackType Type = Object,
+				string Name = "/",
+				string Path = "/",
+				bool Disabled = false,
+				uint PropertyTypeId = 0,
+				string PropertyTypeName = "",
+				Array KeyFrames = 
+				[
+				],
+				Array Children = 
+				[
+					{
+						TrackType Type = Component,
+						string Name = "Camera",
+						string Path = "Camera",
+						bool Disabled = false,
+						uint PropertyTypeId = 0,
+						string PropertyTypeName = "",
+						Array KeyFrames = 
+						[
+						],
+						Array Children = 
+						[
+							{
+								TrackType Type = Property,
+								string Name = "Size",
+								string Path = "Camera.Size",
+								bool Disabled = false,
+								uint PropertyTypeId = 3,
+								string PropertyTypeName = "float",
+								Array KeyFrames = 
+								[
+									{
+										float key = 0,
+										Object value = 
+										{
+											float Time = 0,
+											float Value = 1000,
+											Vec2 TangentIn = [-0.0500000007, 0],
+											Vec2 TangentOut = [0.0500000007, 0],
+											uint EditorFlags = 0,
+										},
+									},
+									{
+										float key = 2,
+										Object value = 
+										{
+											float Time = 2,
+											float Value = 10,
+											Vec2 TangentIn = [-0.0500000007, 0],
+											Vec2 TangentOut = [0.0500000007, 0],
+											uint EditorFlags = 0,
+										},
+									},
+								],
+								Array Children = 
+								[
+								],
+							},
+						],
+					},
+				],
+			},
+		],
+	},
+},

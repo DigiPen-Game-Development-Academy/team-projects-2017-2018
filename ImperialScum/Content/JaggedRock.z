@@ -1,0 +1,18 @@
+class JaggedRock : ZilchComponent
+{
+    //Elena
+   
+    
+    
+     
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+
+    }
+}

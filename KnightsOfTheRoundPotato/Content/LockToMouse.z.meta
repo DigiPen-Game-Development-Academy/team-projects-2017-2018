@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "LockToMouse",
+		uint64 ResourceId = 5a75bed5f77f2cae,
+	},
+},

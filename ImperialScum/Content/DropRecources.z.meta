@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "DropRecources",
+		uint64 ResourceId = 5a6ea8533f9a8344,
+	},
+},

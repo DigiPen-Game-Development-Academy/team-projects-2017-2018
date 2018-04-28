@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "ProofOfConcept_TileMap04",
+		uint64 ResourceId = 5ac2fab3e7d71a10,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "5a34f9517cbb3c0a:Tile4",
+	},
+},

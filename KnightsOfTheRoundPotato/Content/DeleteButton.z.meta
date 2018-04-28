@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "DeleteButton",
+		uint64 ResourceId = 5a9b9c533f912f4c,
+	},
+},

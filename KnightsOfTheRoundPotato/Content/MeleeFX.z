@@ -1,0 +1,107 @@
+class MeleeFX : ZilchComponent {
+    
+    var Timer : Real = -100;
+    
+    var Left : Boolean = false;
+    
+    var Speed : Real = 4;
+    
+    var Dist : Real = 0.35;
+    
+    var AngleOffset : Real = -90;
+    
+    var Angle : Real = 45;
+    
+    var Initialized : Boolean = false;
+    
+    var Sprite : SpriteSource = SpriteSource.Icon_Weapon_Potato;
+    
+    var Stab : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        this.Stab = false;
+        this.Init();
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        if(!this.Initialized) {
+            return;
+        }
+        
+        if(!this.Stab) {
+            if(this.Left) {
+                this.Timer += event.Dt * this.Speed;
+            } else {
+                this.Timer -= event.Dt * this.Speed;
+            }
+            
+            this.Owner.Transform.SetEulerAnglesXYZ(0, 0, this.Timer);
+            this.Owner.Transform.Translation = Real3(Math.Cos(this.Owner.Transform.EulerAngles.Z) * this.Dist, Math.Sin(this.Owner.Transform.EulerAngles.Z) * this.Dist, 0);
+            
+            this.Owner.Transform.SetEulerAnglesXYZ(0, 0, this.Owner.Transform.EulerAngles.Z + Math.ToRadians(this.AngleOffset));
+            this.Owner.Sprite.FlipX = true;
+            if(this.Left) {
+                
+                this.Owner.Transform.Translation = -this.Owner.Transform.Translation;
+                
+                this.Owner.Sprite.FlipY = true;
+                
+            }
+            
+            if((this.Left && this.Timer > -Math.ToRadians(this.Angle)) || (!this.Left && this.Timer < Math.ToRadians(this.Angle))) {
+                this.Owner.Destroy();
+            }
+        } else {
+            
+            if(this.Left) {
+                this.Owner.Transform.SetEulerAnglesXYZ(0, 0, Math.ToRadians(0));
+            } else {
+                this.Owner.Transform.SetEulerAnglesXYZ(0, 0, Math.ToRadians(0));
+            }
+            
+            this.Timer += event.Dt * this.Speed;
+            
+            var sin = Math.Sin(this.Timer) * this.Dist;
+            
+            this.Owner.Transform.Translation = Real3(Math.Cos(this.Owner.Transform.EulerAngles.Z), Math.Sin(this.Owner.Transform.EulerAngles.Z), 0) * sin;
+            
+            this.Owner.Transform.SetEulerAnglesXYZ(0, 0, this.Owner.Transform.EulerAngles.Z + Math.ToRadians(this.AngleOffset));
+            this.Owner.Sprite.FlipX = true;
+            if(this.Left) {
+                this.Owner.Transform.Translation = -this.Owner.Transform.Translation;
+                this.Owner.Sprite.FlipY = true;
+            }
+            
+            if(sin < 0) {
+                this.Owner.Destroy();
+            }
+            
+        }
+        
+    }
+    
+    function Init() {
+        if(this.Stab) {
+            if(this.Left) {
+                this.Owner.Transform.SetEulerAnglesXYZ(0, 0, Math.ToRadians(0));
+            } else {
+                this.Owner.Transform.SetEulerAnglesXYZ(0, 0, Math.ToRadians(0));
+            }
+            this.Timer = 0;
+        } else {
+            if(this.Left) {
+                this.Owner.Transform.SetEulerAnglesXYZ(0, 0, Math.ToRadians(this.Angle));
+            } else {
+                this.Owner.Transform.SetEulerAnglesXYZ(0, 0, Math.ToRadians(this.Angle + 180));
+            }
+            this.Timer = this.Owner.Transform.EulerAngles.Z;
+        }
+        
+        
+        this.Initialized = true;
+        this.Owner.Sprite.SpriteSource = this.Sprite;
+        
+    }
+    
+}

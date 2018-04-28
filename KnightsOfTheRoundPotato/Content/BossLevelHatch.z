@@ -1,0 +1,64 @@
+class BossLevelHatch : ZilchComponent {
+    
+    [Dependency] var Reactive : Reactive;
+    
+    [Property] var Level : Level;
+    
+    [Property] var Index : Integer = 0;
+    
+    var Dialog : Cog;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+    }
+    
+    function OnMouseDown(event : ViewportMouseEvent) {
+        
+        if(event.Button == MouseButtons.Right && !GlobalVariables.QuestItems[this.Index]) {
+            
+            this.Dialog = Utilities.Dialog("Are you sure you want to enter this boss fight?\nDont worry about saving, the game will save before you enter!", DialogTypes.YESNO, 5);
+            if(this.Dialog != null) {
+                Zero.Connect(this.Dialog, Events.DialogEnded, this.OnDialogEnded);
+            }
+            
+        }
+        
+    }
+
+    function OnDialogEnded(event : DialogEnded) {
+        
+        if(event.Type == DialogReturn.YES) {
+            this.LevelSettings.SaveLoad.Save();
+            this.Space.LoadLevel(this.Level);
+        }
+        
+        Zero.Disconnect(this.Owner, Events.DialogEnded, this.Dialog);
+        
+    }
+    
+    function OnMouseExit(event : ViewportMouseEvent) {
+        GlobalVariables.LorePanel.Sprite.Visible = false;
+    }
+
+    function OnMouseEnter(event : ViewportMouseEvent) {
+        var res = Utilities.Raycast(this.Owner.Transform.WorldTranslation, GlobalVariables.Player.Transform.WorldTranslation-this.Owner.Transform.WorldTranslation, this.Space.PhysicsSpace, 3);
+        
+        if(res == null || res.ObjectHit != GlobalVariables.Player) {
+            return;
+        }
+        
+        GlobalVariables.LorePanel.Sprite.Visible = true;
+        
+        var text = "";
+        if(GlobalVariables.QuestItems[this.Index]) {
+            text = "This is a hatch!\nYou have already defeated this boss!";
+        } else {
+            text = "This is a hatch!\nThere appears to be a boat part inside!";
+        }
+        
+        GlobalVariables.LorePanel.LorePanel.Text = text;
+    }
+    
+}

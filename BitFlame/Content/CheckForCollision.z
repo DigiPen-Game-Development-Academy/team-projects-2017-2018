@@ -1,0 +1,33 @@
+class CheckForCollision : ZilchComponent
+{
+    var Switch : Boolean = true;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Owner, Events.CollisionEnded, this.OnCollisionEnded);
+    }
+    
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        this.Switch = false;
+    }
+    function OnCollisionEnded(event : CollisionEvent)
+    {
+        this.Switch = true;
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Switch == false)
+        {
+            this.GameSession.GameVars.SafeToSpawn = false;
+        }
+        
+        if(this.Switch == true)
+        {
+            this.GameSession.GameVars.SafeToSpawn = true;
+        }
+    }
+}

@@ -1,0 +1,37 @@
+class HudCreator : ZilchComponent
+{
+    // The level that our HUD is contained within
+    [Property]
+    var HUDLevel : Level = null;
+    
+    //The space archetype from which to create the new HUD space
+    [Property]
+    var SpaceArchetype : Archetype = Archetype.Space;
+    
+    //Reference to the Player object
+    [Property]
+    var PlayerRef : CogPath = null;
+    
+    // Store the space where our HUD is so that we can access and destroy it
+    var HUDSpace : Space = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        // Create the HUD space and then load our HUD level into it
+        this.HUDSpace = this.GameSession.CreateNamedSpace("HUDSpace", this.SpaceArchetype);
+        
+        //Load the level specified in the HUDLevel Property above
+        this.HUDSpace.LoadLevel(this.HUDLevel);
+        
+        this.HUDSpace.LevelSettings.HUDSpaceReferences.MainSpaceRef = this.Space;
+    }
+    
+    function Destroyed()
+    {
+        // Make sure to clean up the HUD space when we get destroyed
+        if(this.HUDSpace != null)
+        {
+            this.HUDSpace.Destroy();
+        }
+    }
+}

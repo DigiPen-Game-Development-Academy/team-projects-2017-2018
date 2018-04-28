@@ -1,0 +1,8 @@
+TextContent = 
+{
+	TextBuilder = 
+	{
+		string Name = "WarpWarning",
+		uint64 ResourceId = 5a08e39ee92729f6,
+	},
+},

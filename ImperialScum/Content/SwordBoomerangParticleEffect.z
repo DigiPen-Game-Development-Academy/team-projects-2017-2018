@@ -1,0 +1,35 @@
+//Elena
+//Makes trail for sword boomerang
+class SwordBoomerangParticleEffect : ZilchComponent
+{
+    [Property]
+    var Speed : Real = 5;
+    var Timer : Real = 3;
+    var WhatToSpawn :Archetype = Archetype.SwordBoomerangTrail2;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        if(SwordBoomerangMove.Moving == false)
+        {
+        var target = this.Space.FindObjectByName("SwordBoomerang");
+        this.Space.CreateAtPosition(this.WhatToSpawn,target.Transform.Translation);
+        this.Owner.Transform.Translation = Math.Normalize(target.Transform.Translation - this.Owner.Transform.Translation)
+        * this.Speed;
+        } 
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(SwordBoomerangMove.Moving == false)
+        {
+        this.Timer -= 1;
+        if(this.Timer <= 0)
+        {
+            this.Owner.Destroy;
+            this.Timer + 2;
+        }
+        }
+    
+    }
+
+}

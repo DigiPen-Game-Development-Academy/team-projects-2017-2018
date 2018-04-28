@@ -1,0 +1,269 @@
+RichAnimation = 
+{
+	float SampleTolerance = 0.0500000007,
+	float Duration = 8.99584293,
+	Object Root = 
+	{
+		TrackType Type = Object,
+		string Name = "Root",
+		string Path = "",
+		bool Disabled = false,
+		uint PropertyTypeId = 0,
+		string PropertyTypeName = "void",
+		Array KeyFrames = 
+		[
+		],
+		Array Children = 
+		[
+			{
+				TrackType Type = Object,
+				string Name = "/",
+				string Path = "/",
+				bool Disabled = false,
+				uint PropertyTypeId = 0,
+				string PropertyTypeName = "",
+				Array KeyFrames = 
+				[
+				],
+				Array Children = 
+				[
+					{
+						TrackType Type = Component,
+						string Name = "Transform",
+						string Path = "Transform",
+						bool Disabled = false,
+						uint PropertyTypeId = 0,
+						string PropertyTypeName = "",
+						Array KeyFrames = 
+						[
+						],
+						Array Children = 
+						[
+							{
+								TrackType Type = Property,
+								string Name = "Translation",
+								string Path = "Transform.Translation",
+								bool Disabled = false,
+								uint PropertyTypeId = 8,
+								string PropertyTypeName = "Vec3",
+								Array KeyFrames = 
+								[
+								],
+								Array Children = 
+								[
+									{
+										TrackType Type = SubProperty,
+										string Name = "X",
+										string Path = "Transform.Translation.X",
+										bool Disabled = false,
+										uint PropertyTypeId = 3,
+										string PropertyTypeName = "",
+										Array KeyFrames = 
+										[
+											{
+												float key = 0,
+												Object value = 
+												{
+													float Time = 0,
+													float Value = -0.100000001,
+													Vec2 TangentIn = [-0.0500000007, 0],
+													Vec2 TangentOut = [0.0500000007, 0],
+													uint EditorFlags = 0,
+												},
+											},
+											{
+												float key = 1.39999998,
+												Object value = 
+												{
+													float Time = 1.39999998,
+													float Value = -0.100000001,
+													Vec2 TangentIn = [-0.0500000007, 0],
+													Vec2 TangentOut = [0.0500000007, 0],
+													uint EditorFlags = 0,
+												},
+											},
+											{
+												float key = 3.48409605,
+												Object value = 
+												{
+													float Time = 3.48409605,
+													float Value = -0.519710302,
+													Vec2 TangentIn = [-0.0500000007, 0],
+													Vec2 TangentOut = [0.0500000007, 0],
+													uint EditorFlags = 0,
+												},
+											},
+											{
+												float key = 6.67973614,
+												Object value = 
+												{
+													float Time = 6.67973614,
+													float Value = -0.111238003,
+													Vec2 TangentIn = [-0.0500000007, 0],
+													Vec2 TangentOut = [0.0500000007, 0],
+													uint EditorFlags = 0,
+												},
+											},
+											{
+												float key = 8.99584293,
+												Object value = 
+												{
+													float Time = 8.99584293,
+													float Value = -0.169591188,
+													Vec2 TangentIn = [-0.0500000007, 0],
+													Vec2 TangentOut = [0.0500000007, 0],
+													uint EditorFlags = 0,
+												},
+											},
+										],
+										Array Children = 
+										[
+										],
+									},
+									{
+										TrackType Type = SubProperty,
+										string Name = "Y",
+										string Path = "Transform.Translation.Y",
+										bool Disabled = false,
+										uint PropertyTypeId = 3,
+										string PropertyTypeName = "",
+										Array KeyFrames = 
+										[
+											{
+												float key = 0,
+												Object value = 
+												{
+													float Time = 0,
+													float Value = 1.19033027,
+													Vec2 TangentIn = [-0.0500000007, 0],
+													Vec2 TangentOut = [0.0500000007, 0],
+													uint EditorFlags = 0,
+												},
+											},
+											{
+												float key = 1.30142295,
+												Object value = 
+												{
+													float Time = 1.30142295,
+													float Value = 1.33696914,
+													Vec2 TangentIn = [-0.0500000007, 0],
+													Vec2 TangentOut = [0.0500000007, 0],
+													uint EditorFlags = 0,
+												},
+											},
+											{
+												float key = 3.67477083,
+												Object value = 
+												{
+													float Time = 3.67477083,
+													float Value = 1.33696914,
+													Vec2 TangentIn = [-0.0500000007, 0],
+													Vec2 TangentOut = [0.0500000007, 0],
+													uint EditorFlags = 0,
+												},
+											},
+											{
+												float key = 6.58191729,
+												Object value = 
+												{
+													float Time = 6.58191729,
+													float Value = 1.21289015,
+													Vec2 TangentIn = [-0.0500000007, 0],
+													Vec2 TangentOut = [0.0500000007, 0],
+													uint EditorFlags = 0,
+												},
+											},
+											{
+												float key = 8.88135529,
+												Object value = 
+												{
+													float Time = 8.88135529,
+													float Value = 1.10009098,
+													Vec2 TangentIn = [-0.0500000007, 0],
+													Vec2 TangentOut = [0.0500000007, 0],
+													uint EditorFlags = 0,
+												},
+											},
+										],
+										Array Children = 
+										[
+										],
+									},
+									{
+										TrackType Type = SubProperty,
+										string Name = "Z",
+										string Path = "Transform.Translation.Z",
+										bool Disabled = false,
+										uint PropertyTypeId = 3,
+										string PropertyTypeName = "",
+										Array KeyFrames = 
+										[
+											{
+												float key = 0,
+												Object value = 
+												{
+													float Time = 0,
+													float Value = 0,
+													Vec2 TangentIn = [-0.0500000007, 0],
+													Vec2 TangentOut = [0.0500000007, 0],
+													uint EditorFlags = 0,
+												},
+											},
+											{
+												float key = 1.39999998,
+												Object value = 
+												{
+													float Time = 1.39999998,
+													float Value = 0,
+													Vec2 TangentIn = [-0.0500000007, 0],
+													Vec2 TangentOut = [0.0500000007, 0],
+													uint EditorFlags = 0,
+												},
+											},
+											{
+												float key = 3.77727413,
+												Object value = 
+												{
+													float Time = 3.77727413,
+													float Value = 0.0638215542,
+													Vec2 TangentIn = [-0.0500000007, 0],
+													Vec2 TangentOut = [0.0500000007, 0],
+													uint EditorFlags = 0,
+												},
+											},
+											{
+												float key = 6.67973614,
+												Object value = 
+												{
+													float Time = 6.67973614,
+													float Value = -0.111238003,
+													Vec2 TangentIn = [-0.0500000007, 0],
+													Vec2 TangentOut = [0.0500000007, 0],
+													uint EditorFlags = 0,
+												},
+											},
+											{
+												float key = 8.99584293,
+												Object value = 
+												{
+													float Time = 8.99584293,
+													float Value = -0.0528848171,
+													Vec2 TangentIn = [-0.0500000007, 0],
+													Vec2 TangentOut = [0.0500000007, 0],
+													uint EditorFlags = 0,
+												},
+											},
+										],
+										Array Children = 
+										[
+										],
+									},
+								],
+							},
+						],
+					},
+				],
+			},
+		],
+	},
+},

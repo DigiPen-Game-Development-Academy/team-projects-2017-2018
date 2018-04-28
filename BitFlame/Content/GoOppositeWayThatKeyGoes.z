@@ -1,0 +1,37 @@
+    //Modified by Jakob McFarland 
+
+class GoOppositeWayThatKeyGoes : ZilchComponent
+{
+    [Property] var Offset : Real = 0.01;
+    
+    [Property] var Player : CogPath = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        // If player is pushing W move player up
+        if(this.Player.Cog.RigidBody.Velocity.Y >= 0.1)
+        {
+            this.Owner.Transform.Translation -= Real3(0.0, this.Player.Cog.RigidBody.Velocity.Y, 0) * event.Dt * this.Offset;
+        }
+        // If player is pushing A move player left
+        if(this.Player.Cog.RigidBody.Velocity.X <= -0.1)
+        {
+            this.Owner.Transform.Translation -= Real3(this.Player.Cog.RigidBody.Velocity.X, 0.0, 0.0) * event.Dt * this.Offset;
+        }
+        // If player is pushing S move player down
+        if(this.Player.Cog.RigidBody.Velocity.Y <= -0.1)
+        {
+            this.Owner.Transform.Translation -= Real3(0.0, this.Player.Cog.RigidBody.Velocity.Y, 0) * event.Dt * this.Offset;
+        }
+        // If player is pushing D move player right
+        if(this.Player.Cog.RigidBody.Velocity.X >= 0.1)
+        {
+            this.Owner.Transform.Translation -= Real3(this.Player.Cog.RigidBody.Velocity.X, 0.0, 0.0) * event.Dt * this.Offset;
+        }
+    }
+}

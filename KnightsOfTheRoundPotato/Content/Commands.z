@@ -1,0 +1,470 @@
+//Author Brandon Wolenetz
+
+class CMD {
+    constructor (cmd : String, func : delegate(vals : Array[String])) {
+        this.Cmd = cmd;
+        this.Func = func;
+    }
+    var Cmd : String;
+    var Func : delegate(vals : Array[String]);
+}
+
+class Commands {
+    
+    [Static]
+    var Commands : Array[CMD];
+    
+    [Static]
+    var Xray : Boolean = false;
+    
+    [Static]
+    var LoggedOn : Boolean = false;
+    
+    [Static]
+    function Init () {
+        /*initilize array of commands*/
+        if(Commands.Commands == null) {
+            
+            Commands.Commands = Array[CMD]();
+            Commands.Commands.Add(CMD("/help",              Commands.Help));
+            Commands.Commands.Add(CMD("/?",                 Commands.Help));
+            Commands.Commands.Add(CMD("/debug",             Commands.Debug));
+            Commands.Commands.Add(CMD("/pathdebug",         Commands.PathDebug));
+            Commands.Commands.Add(CMD("/give",              Commands.GiveItem));
+            Commands.Commands.Add(CMD("/clear",             Commands.Clear));
+            Commands.Commands.Add(CMD("/cls",               Commands.Clear));
+            Commands.Commands.Add(CMD("/heal",              Commands.Heal));
+            Commands.Commands.Add(CMD("/h",                 Commands.Heal));
+            Commands.Commands.Add(CMD("/potato",            Commands.Potato));
+            Commands.Commands.Add(CMD("/suspicious",        Commands.Potato));
+            Commands.Commands.Add(CMD("/suspicion",         Commands.Potato));
+            Commands.Commands.Add(CMD("/kit",               Commands.Kit));
+            Commands.Commands.Add(CMD("/ammo",              Commands.Ammo));
+            Commands.Commands.Add(CMD("/noclip",            Commands.NoClip));
+            Commands.Commands.Add(CMD("/xray",              Commands.XRay));
+            Commands.Commands.Add(CMD("/spawn",             Commands.Spawn));
+            Commands.Commands.Add(CMD("/invis",             Commands.Invisible));
+            Commands.Commands.Add(CMD("/invisible",         Commands.Invisible));
+            Commands.Commands.Add(CMD("/speed",             Commands.Speed));
+            Commands.Commands.Add(CMD("/zoom",              Commands.Zoom));
+            Commands.Commands.Add(CMD("/killall",           Commands.KillEnemies));
+            Commands.Commands.Add(CMD("/time",              Commands.Time));
+            Commands.Commands.Add(CMD("/devsaw",            Commands.DevSaw));
+            Commands.Commands.Add(CMD("/loggon",            Commands.Login));
+            Commands.Commands.Add(CMD("/test",              Commands.Test));
+            Commands.Commands.Add(CMD("/level",             Commands.Level));
+            Commands.Commands.Add(CMD("/regen",             Commands.Regen));
+            
+        }
+    }
+    
+    /*Check For Commands*/
+    [Static]
+    function CheckForCommands (str : String) {
+        
+        var cmd = Commands.ParseCommand(str);
+        var vals = Commands.ParseValue(str);
+        
+        if(Commands.Commands != null) {
+            foreach(var command in Commands.Commands) {
+                if(cmd.ToLower() == command.Cmd.ToLower()) {
+                    if(command.Cmd.ToLower() == "/loggon" || Commands.LoggedOn == true)
+                        command.Func(vals);
+                    else {
+                        Utilities.ConsoleSend("YOU DIDN'T LOG ON!", Real4(1, 1, 0, 1));
+                        GlobalVariables.Player.FindChildByName("Camera").CamFollow.Spin = true;
+                    }
+                    return;
+                }
+            }
+        }
+        Commands.Invalad(vals, cmd);
+    }
+    
+    /*Commands*/
+    
+    [Static]
+    function Help (vals : Array[String]) {
+        if(vals == null || vals.Count == 0 || Integer.Parse(vals[0]) == 0) {
+            Commands.Clear(null);
+            Utilities.ConsoleSend("---Help---", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("-lists commands in pages-", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("/help <Page> or /? <Page>", Real4(0, 1, 0, 1));
+        } else if (Integer.Parse(vals[0]) == 1) {
+            Commands.Clear(null);
+            Utilities.ConsoleSend("---Commands---", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("-toggles debug lines-", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("/debug", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("-toggles pathfinding debug-", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("/pathdebug", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("-gives item-", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("/give <item> <ammount>(Optional)", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("-clear console-", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("/clear or /cls", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("-heal to 100%-", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("/heal or /h", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("-what is this?-", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("/potato or /suspicious or /suspicion", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("-Gives you stuff-", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("/kit", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("-Gives you ammo-", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("/ammo", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("-Toggles player collision-", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("/noclip", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("-Lets you see through walls-", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("/xray", Real4(0, 1, 0, 1));
+        } else if (Integer.Parse(vals[0]) == 2) {
+            Commands.Clear(null);
+            Utilities.ConsoleSend("---Commands---", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("-spawn enemy-", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("/spawn <EnemyID> <Ammount>(Optional)", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("-makes enemies unable to see you-", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("/invis or /invisible", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("-sets your movement speed-", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("/speed <speed>", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("-sets your camera zoom-", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("/zoom <zoom>", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("-kills all enemies-", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("/killall", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("-sets time scale-", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("/time <time scale>", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("-gives Saw Laser with infanate ammo-", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("/devsaw", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("-loggs on-", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("/loggon", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("-Runs test finction-", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("/test", Real4(0, 1, 0, 1));
+        }  else if (Integer.Parse(vals[0]) == 3) {
+            Commands.Clear(null);
+            Utilities.ConsoleSend("---Commands---", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("-Loads a level (has no auto-complete cause zero engine -_-)-", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("/level <level name>", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("-Gives the player a regen effect-", Real4(0, 1, 0, 1));
+            Utilities.ConsoleSend("/regen <time> <ammount>", Real4(0, 1, 0, 1));
+        }
+    }
+    
+    [Static]
+    function Debug (vals : Array[String]) {
+        GlobalVariables.DebugLinesActive = !GlobalVariables.DebugLinesActive;
+        if(GlobalVariables.DebugLinesActive)
+            Utilities.ConsoleSend("Debug Mode ON", Real4(1, 0, 0, 1));
+        else
+            Utilities.ConsoleSend("Debug Mode OFF", Real4(1, 0, 0, 1));
+    }
+    
+    [Static]
+    function PathDebug (vals : Array[String]) {
+        GlobalVariables.DebugNavNodes = !GlobalVariables.DebugNavNodes;
+    }
+    
+    [Static]
+    function GiveItem (vals : Array[String]) {
+        if(vals == null || vals.Count == 0) {
+            Utilities.ConsoleSend("INVALID PARAMETERS, correct\nperameters are:\n/give [ITEM ID] [AMMOUNT](Optional)", Real4(1, 1, 0, 1));
+            return;
+        }
+        var item = Utilities.ItemFromID(vals[0]);
+        if(item == null) {
+            Utilities.ConsoleSend("INVALID ITEM ID: `vals[0]`", Real4(1, 1, 0, 1));
+            return;
+        }
+        
+        item.Init();
+        
+        if(item.Stackable && vals.Count > 1) {
+            var int = Integer.Parse(vals[1]);
+            if(int != 0)
+                item.Ammount = int;
+            else
+                item.Ammount = 1;
+        } else if(item.Stackable) {
+            item.Ammount = 1;
+        }
+        
+        Utilities.ConsoleSend("`vals[0]` Given", Real4(1, 0, 0, 1));
+        
+        GlobalVariables.AddInventoryItem(item);
+        
+    }
+    
+    [Static]
+    function Clear (vals : Array[String]) {
+        GlobalVariables.Console.ConsoleController.Clear();
+    }
+    
+    [Static]
+    function Heal (vals : Array[String]) {
+        GlobalVariables.Player.Health.CurrentHealth = GlobalVariables.Player.Health.InitialHealth;
+        Utilities.ConsoleSend("Healed", Real4(1, 0, 0, 1));
+    }
+    
+    [Static]
+    function Potato (vals : Array[String]) {
+        var potato = SPotato();
+        potato.Init();
+        GlobalVariables.AddInventoryItem(potato);
+        Utilities.ConsoleSend("What is this potato doing here?", Real4(1, 0, 0, 1));
+    }
+    
+    [Static]
+    function Kit (vals : Array[String]) {
+        GlobalVariables.AddInventoryItem(Utilities.ItemFromIDInit("Pistol"));
+        GlobalVariables.AddInventoryItem(Utilities.ItemFromIDInit("Potato"));
+        GlobalVariables.AddInventoryItem(Utilities.ItemFromIDInit("Radar"));
+        var ammo = Utilities.ItemFromIDInit("Ammo");
+        ammo.Ammount = ammo.StackSize;
+        GlobalVariables.AddInventoryItem(ammo);
+        ammo = Utilities.ItemFromIDInit("Ammo");
+        ammo.Ammount = ammo.StackSize;
+        GlobalVariables.AddInventoryItem(ammo);
+        ammo = Utilities.ItemFromIDInit("Ammo");
+        ammo.Ammount = ammo.StackSize;
+        GlobalVariables.AddInventoryItem(ammo);
+        Utilities.ConsoleSend("Here, Take this!", Real4(1, 0, 0, 1));
+    }
+    
+    [Static]
+    function Ammo (vals : Array[String]) {
+        var ammo = Utilities.ItemFromIDInit("Ammo");
+        ammo.Ammount = ammo.StackSize;
+        GlobalVariables.AddInventoryItem(ammo);
+        ammo = Utilities.ItemFromIDInit("Ammo");
+        ammo.Ammount = ammo.StackSize;
+        GlobalVariables.AddInventoryItem(ammo);
+        ammo = Utilities.ItemFromIDInit("Ammo");
+        ammo.Ammount = ammo.StackSize;
+        GlobalVariables.AddInventoryItem(ammo);
+        Utilities.ConsoleSend("Ammo Everywhere!", Real4(1, 0, 0, 1));
+    }
+    
+    [Static]
+    function NoClip (vals : Array[String]) {
+        GlobalVariables.Player.BoxCollider.Ghost = ! GlobalVariables.Player.BoxCollider.Ghost;
+        if(GlobalVariables.Player.BoxCollider.Ghost) {
+            Utilities.ConsoleSend("You are now a ghost, WOOooOOooO", Real4(1, 0, 0, 1));
+        } else {
+            Utilities.ConsoleSend("You are no longer a ghost", Real4(1, 0, 0, 1));
+        }
+    }
+    
+    [Static]
+    function XRay (vals : Array[String]) {
+        Commands.Xray = !Commands.Xray;
+        if(Commands.Xray) {
+            var toSend = UseRadar();
+            toSend.Timer = Real.PositiveMax;
+            GlobalVariables.GameSpace.DispatchEvent(Events.UseRadar, toSend);
+            Utilities.ConsoleSend("XRAY ON", Real4(1, 0, 0, 1));
+        } else {
+            var toSend = UseRadar();
+            toSend.Timer = 0;
+            GlobalVariables.GameSpace.DispatchEvent(Events.UseRadar, toSend);
+            Utilities.ConsoleSend("XRAY OFF", Real4(1, 0, 0, 1));
+        }
+    }
+    
+    [Static]
+    function Spawn (vals : Array[String]) {
+        var count = 1;
+        if(vals != null && vals.Count >= 2 && Integer.Parse(vals[1]) > 0) {
+            count = Integer.Parse(vals[1]);
+        }
+        if(vals == null || vals.Count == 0) {
+            Utilities.ConsoleSend("INVALID PARAMETERS, use /spawn <EnemyID>", Real4(1, 1, 0, 1));
+            return;
+        } else if(Utilities.EnemyFromID(vals[0]) != null) {
+            for(var i = 0; i < count; ++i) {
+                GlobalVariables.GameSpace.CreateAtPosition(Utilities.EnemyFromID(vals[0]), GlobalVariables.GameSpace.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition + Random().Real2(1,1), 0));
+                Utilities.ConsoleSend("Created `Utilities.EnemyFromID(vals[0]).Name`", Real4(1, 0, 0, 1));
+            }
+        } else {
+            Utilities.ConsoleSend("INVALID ID: `vals[0]`", Real4(1, 0, 0, 1));
+            return;
+        }
+    }
+    
+    [Static]
+    function Invisible (vals : Array[String]) {
+        
+        GlobalVariables.Invis = !GlobalVariables.Invis;
+        
+        if(GlobalVariables.Invis) {
+            Utilities.ConsoleSend("Enemies cannot see you!", Real4(1, 0, 0, 1));
+        } else {
+            Utilities.ConsoleSend("Enemies can see you, Watch Out!", Real4(1, 0, 0, 1));
+        }
+        
+    }
+    
+    [Static]
+    function Speed (vals : Array[String]) {
+        if(vals == null || vals.Count == 0) {
+            Utilities.ConsoleSend("INVALID PARAMETERS, use /speed <speed>", Real4(1, 1, 0, 1));
+            return;
+        }
+        GlobalVariables.Player.PlayerMovment.MoveSpeed = Integer.Parse(vals[0]);
+        Utilities.ConsoleSend("Movement speed set to: `Integer.Parse(vals[0])`", Real4(1, 0, 0, 1));
+    }
+    
+    [Static]
+    function Zoom (vals : Array[String]) {
+        if(vals == null || vals.Count == 0) {
+            Utilities.ConsoleSend("INVALID PARAMETERS, use /zoom <zoom>", Real4(1, 1, 0, 1));
+            return;
+        }
+        GlobalVariables.GameSpace.LevelSettings.CameraViewport.Camera.Camera.Size = Integer.Parse(vals[0]);
+        Utilities.ConsoleSend("Camera zoom set to: `Integer.Parse(vals[0])`", Real4(1, 0, 0, 1));
+    }
+    
+    [Static]
+    function KillEnemies (vals : Array[String]) {
+        GlobalVariables.GameSpace.GameSession.DispatchEvent(Events.NoHealth, NoHealth());
+        Utilities.ConsoleSend("Killed all enemies", Real4(1, 0, 0, 1));
+    }
+    
+    [Static]
+    function Time (vals : Array[String]) {
+        if(vals == null || vals.Count == 0) {
+            Utilities.ConsoleSend("INVALID PARAMETERS, use /zoom <zoom>", Real4(1, 1, 0, 1));
+            return;
+        }
+        
+        GlobalVariables.GameSpace.TimeSpace.TimeScale = Real.Parse(vals[0]);
+        Utilities.ConsoleSend("Time scale set to `Real.Parse(vals[0])`", Real4(1, 0, 0, 1));
+        
+        if(Real.Parse(vals[0]) < 1) {
+            GlobalVariables.SloMo = true;
+        } else {
+            GlobalVariables.SloMo = false;
+        }
+        
+    }
+    
+    [Static]
+    function DevSaw (vals : Array[String]) {
+        var saw = SawLaser();
+        saw.Init();
+        saw.MagSize = -1;
+        saw.FireRate = 10000;
+        saw.RandAngle = 45;
+        GlobalVariables.AddInventoryItem(saw);
+    }
+    
+    [Static]
+    function Login (vals : Array[String]) {
+        if(vals == null || vals.Count == 0) {
+            Utilities.ConsoleSend("INVALID PARAMETERS, use /zoom <zoom>", Real4(1, 1, 0, 1));
+            return;
+        }
+        
+        if(vals[0] == "123qwe") {
+            Commands.LoggedOn = true;
+            Utilities.ConsoleSend("Logged on!", Real4(1, 0, 0, 1));
+            GlobalVariables.Player.FindChildByName("Camera").CamFollow.Spin = false;
+        } else {
+            Utilities.ConsoleSend("WRONG!", Real4(1, 1, 0, 1));
+            GlobalVariables.Player.FindChildByName("Camera").CamFollow.Spin = true;
+        }
+        
+    }
+    
+    [Static]
+    function Level (vals : Array[String]) {
+        if(vals == null || vals.Count == 0) {
+            Utilities.ConsoleSend("INVALID PARAMETERS, use /level <level name>", Real4(1, 1, 0, 1));
+            return;
+        }
+        
+        var level = Zero.ResourceSystem.GetResourceByTypeAndName("Level", vals[0]) as Level;
+        
+        if(level == null) {
+            Utilities.ConsoleSend("Level `vals[0]` not found!", Real4(1, 1, 0, 1));
+            return;
+        }
+        
+        Utilities.ConsoleSend("Loading level `vals[0]`", Real4(1, 0, 0, 1));
+        
+        var uiSpace = GlobalVariables.GameSpace.GameSession.FindSpaceByName("UI");
+        if(uiSpace != null) {
+            uiSpace.Destroy();
+        }
+        if(GlobalVariables.GameSpace == null) {
+            GlobalVariables.GameSpace.Space.LoadLevel(level);
+            GlobalVariables.GameSpace.Space.TimeSpace.Paused = false;
+        } else {
+            GlobalVariables.GameSpace.LoadLevel(level);
+            GlobalVariables.GameSpace.TimeSpace.Paused = false;
+        }
+        Zero.Mouse.Trapped = false;
+        
+    }
+    
+    [Static]
+    function Regen (vals : Array[String]) {
+        
+        if(vals == null || vals.Count < 2) {
+            Utilities.ConsoleSend("INVALID PARAMETERS, use /regen <time> <ammount>", Real4(1, 1, 0, 1));
+            return;
+        }
+        
+        GlobalVariables.Player.Health.RegenEffect(Integer.Parse(vals[0]), Integer.Parse(vals[1]));
+        
+        Utilities.ConsoleSend("Regen `vals[1]` given for `vals[0]` seconds!", Real4(1, 0, 0, 1));
+        
+    }
+    
+    [Static]
+    function Test (vals : Array[String]) {
+        GlobalVariables.GameSpace.LoadLevel(Level.BossFight2);
+        GlobalVariables.GameSpace.LevelSettings.SaveLoad.Save();
+    }
+    
+    [Static]
+    function Invalad (vals : Array[String], cmd : String) {
+        Utilities.ConsoleSend("ERROR: No Sutch Command: `cmd`", Real4(1, 1, 0, 1));
+    }
+    
+    
+    /*Parsing*/
+    [Static]
+    function ParseCommand (str : String) : String {
+        var cmd = "";
+        for (var i = 0; i < str.Count; ++i) {
+            if(String.FromChar(str[i]) == " ") {
+                //Console.WriteLine("hello");
+                cmd = str.SubStringFromRuneIndices(0, i);
+                return cmd;
+            }
+        }
+        return str;
+    }
+    
+    [Static]
+    function ParseValue (str : String) : Array[String] {
+        var vals = Array[String]();
+        var valsStr = "";
+        for (var i = 0; i < str.Count; ++i) {
+            if(String.FromChar(str[i]) == " ") {
+                if(str.Count >= i+1) {
+                    valsStr = str.SubStringFromRuneIndices(i+1, str.Count);
+                    break;
+                }else
+                    return null;
+            }
+        }
+        if(valsStr == "")
+            return null;
+        var last = 0;
+        for (var i = 0; i < valsStr.Count; ++i) {
+            if(String.FromChar(valsStr[i]) == " ") {
+                vals.Add(valsStr.SubStringFromRuneIndices(last, i));
+                last = i+1;
+            } else if (i == valsStr.Count-1)
+                vals.Add(valsStr.SubStringFromRuneIndices(last, i+1));
+        }
+        return vals;
+    }
+    
+    
+}

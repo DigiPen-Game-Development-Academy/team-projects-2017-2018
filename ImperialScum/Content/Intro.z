@@ -1,0 +1,97 @@
+class Intro : ZilchComponent
+{
+    var Timer : Integer = 120;
+    
+    var Logo : Integer = 0;
+    
+    [Property]
+    var White : Real4;
+    [Property]
+    var Black : Real4;
+    
+    [Property]
+    var SecondLogo : SpriteSource;
+    [Property]
+    var LevelToLoad : Level;
+    
+    var CoolText : Cog;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        var seq = Action.Sequence(this.Owner.Actions);
+        
+        Action.Property
+        (seq, @this.Owner.Sprite.Color, this.White, 2, Ease.QuadInOut);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Timer -= 1;
+        
+        if (this.Timer == 0)
+        {
+            //Fade Out the Logo
+            if (this.Logo == 0)
+            {
+                var seq = Action.Sequence(this.Owner.Actions);
+                
+                Action.Property
+                (seq, @this.Owner.Sprite.Color, this.Black, 1, Ease.QuadInOut);
+                
+                this.Logo = 1;
+                this.Timer = 60;
+                
+                return;
+            }
+
+            
+            //Change to Imperial Scum Logo
+            if (this.Logo == 1)
+            {
+                
+                this.Logo = 2;
+                this.Owner.Sprite.SpriteSource = this.SecondLogo;
+                this.Timer = 240;
+                
+                this.CoolText = this.Space.CreateAtPosition(Archetype.Agamebydaimperialscum,
+                this.Owner.Transform.Translation + Real3(0,-7,0)); 
+                
+                var seq = Action.Sequence(this.Owner.Actions);
+                
+                Action.Property
+                (seq, @this.Owner.Sprite.Color, this.White, 1, Ease.QuadInOut);
+        
+                Action.Property
+                (seq, @this.CoolText.SpriteText.Color, this.White, 1, Ease.QuadInOut);
+                
+                return;
+            }
+            
+            //Fade Out the Logo
+            if (this.Logo == 2)
+            {
+                var seq = Action.Sequence(this.Owner.Actions);
+                
+                Action.Property
+                (seq, @this.CoolText.SpriteText.Color, this.Black, 0.5, Ease.QuadInOut);
+                Action.Property
+                (seq, @this.Owner.Sprite.Color, this.Black, 0.5, Ease.QuadInOut);
+                
+                this.Logo = 3;
+                this.Timer = 60;
+                
+                return;
+            }
+            
+            //Go to the Main Menu
+            if (this.Logo == 3)
+            {
+                this.Space.LoadLevel(this.LevelToLoad);
+                
+                return;
+            }
+        }
+    }
+}

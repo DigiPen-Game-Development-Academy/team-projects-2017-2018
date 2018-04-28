@@ -1,0 +1,148 @@
+/*************************************
+Filename: Level_WorldGeneration.z
+Author: Jakob McFarland
+Contributors: NULL
+Last modified: 1/4/2018
+Brief: This Component will generate a random world when initialized.
+******************************************/
+
+
+class Level_WorldGeneration : ZilchComponent
+{
+    [Property] var Enabled : Boolean = true;
+    
+    [Property] var Asteroid_01Archetype : Archetype = null;
+    
+    [Property] var Asteroid_02Archetype : Archetype = null;
+    
+    [Property] var EnemyArchetype : Archetype = null;
+     
+    [Property] var HiveArchetype : Archetype = null;
+    
+    [Property] var UpgradePickupArchetype : Archetype = null;
+    
+    //each range is the inputed value
+    [Property] var Asteroid_01Probability : Real = 0;
+    [Property] var Asteroid_02Probability : Real = 0;
+    
+    [Property] var EmptySpaceProbability : Real = 0;
+      
+    [Property] var HiveProbability : Real = 0;
+    
+    [Property] var EnemyProbability : Real = 0;
+    
+    [Property] var UpgradePickupProbability : Real = 0;
+    
+    //spawning vars
+    [Property] var MaxX : Integer = 245;
+    
+    [Property] var MaxY : Integer = 245;
+    
+    [Property] var SpawnCellwidth : Integer = 10;
+    
+    [Property] var EmptyRange : Integer = 10;
+        
+    [Property] var SafeRange : Integer = 10;
+    
+    var RandomGenerator : Random = Random();
+    
+    function Initialize(init : CogInitializer)
+    {
+      Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+      if(this.Enabled)
+        this.BuildWorld();
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.GameSession.GameVars.WorldRegen)
+        {
+            this.GameSession.GameVars.WorldRegen = false;
+            this.Space.ReloadLevel();
+        }
+    }
+    
+    function BuildWorld()
+    {
+        var currentX = -this.MaxX;
+        var currentY = -this.MaxY; 
+        var safe : Boolean = false;
+   
+        for(currentY = -this.MaxY; currentY <= this.MaxY; currentY += this.SpawnCellwidth)
+        {
+            for(currentX = -this.MaxX; currentX <= this.MaxX; currentX += this.SpawnCellwidth)
+            {  
+                //if within empty range, skip this iteration
+                if((-this.EmptyRange < currentX && currentX < this.EmptyRange) && (-this.EmptyRange < currentY && currentY < this.EmptyRange))
+                {
+                    continue;
+                } 
+                //if within safe range, set safe bool to true
+                if((-this.SafeRange < currentX && currentX < this.SafeRange) && (-this.SafeRange < currentY && currentY < this.SafeRange))
+                {
+                    safe = true;
+                } 
+                
+                this.BuildSquare(currentX, currentY, safe);
+                
+                //Test Writes
+                //Console.WriteLine(currentX);
+                //Console.WriteLine(currentY);
+            }
+            //Console.WriteLine("Test");
+        }
+    }
+    
+    //builds the square according to the probablity tables lain out.
+    function BuildSquare(x : Integer, y : Integer, safe : Boolean)
+    {
+        var selector = this.RandomGenerator.Range(0, 100) + this.RandomGenerator.Range(0, 100);
+        
+        selector = Math.Min(selector, 100);
+        
+        //Console.WriteLine(selector);
+        
+        if(selector < this.Asteroid_01Probability)
+        {
+            this.Space.CreateAtPosition( this.Asteroid_01Archetype, Real3(x, y, 0));
+        }
+        else if (selector < this.Asteroid_01Probability + this.Asteroid_02Probability)
+        {
+            this.Space.CreateAtPosition( this.Asteroid_02Archetype, Real3(x, y, 0));
+        }
+        else if (selector < this.Asteroid_01Probability + this.Asteroid_02Probability + this.EmptySpaceProbability)
+        {
+            
+        }
+        else if (selector < this.Asteroid_01Probability + this.Asteroid_02Probability + this.EmptySpaceProbability + this.HiveProbability)
+        {
+            if(!safe)
+            {
+                this.Space.CreateAtPosition( this.HiveArchetype, Real3(x, y, 0));
+            } 
+        }
+        else if (selector < this.Asteroid_01Probability + this.Asteroid_02Probability + this.EmptySpaceProbability + this.HiveProbability + this.EnemyProbability)
+        {
+           if(!safe)
+            {  
+                this.Space.CreateAtPosition( this.EnemyArchetype, Real3(x, y, 0));
+            }
+        }
+        else if (selector < this.Asteroid_01Probability + this.Asteroid_02Probability + this.EmptySpaceProbability + this.HiveProbability + this.EnemyProbability + this.UpgradePickupProbability)
+        {
+           if(!safe)
+            {  
+                this.Space.CreateAtPosition( this.UpgradePickupArchetype, Real3(x, y, 0));
+            }
+        }
+    }
+}
+
+//this class contains the level regenerate function, put it on the player.
+class Level_WorldRegeneration : ZilchComponent
+{
+    function Regenerate()
+    {
+         this.Space.ReloadLevel();
+    }
+}

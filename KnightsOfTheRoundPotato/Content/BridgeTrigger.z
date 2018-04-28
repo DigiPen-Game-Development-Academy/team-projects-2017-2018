@@ -1,0 +1,56 @@
+//Author Brandon Wolenetz
+
+class BridgeTrigger : ZilchComponent {
+    
+    //the bridge to control
+    [Property]
+    var BridgePath : CogPath;
+    var Bridge : Cog;
+    
+    function Initialize(init : CogInitializer) {
+        this.Bridge = this.BridgePath.Cog;
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(GlobalVariables.Save.SaveController.BridgeBuilt) {
+            this.Disconnect();
+        } else {
+            this.Bridge.Sprite.Visible = false;
+            this.Bridge.BoxCollider.Ghost = false;
+        }
+        
+        Zero.Disconnect(this.Owner, Events.LogicUpdate, this.Space);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent) {
+        
+        if(this.Bridge.Sprite.Visible) {
+            return;
+        }
+        
+        if(GlobalVariables.QuestItems[0] && GlobalVariables.QuestItems[1]) {
+            this.Disconnect();
+            
+            GlobalVariables.Save.SaveController.BridgeBuilt = true;
+            
+            var dialog = Utilities.Dialog("Congrats! you have built a bridge!", DialogTypes.OK, 15);
+            
+        } else {
+            
+            var dialog = Utilities.Dialog("You need some SCRAP and\nsome WELDING EQUIPTMENT to\nrepair this bridge!", DialogTypes.OK, 15);
+            
+        }
+        
+    }
+    
+    function Disconnect() {
+        this.Bridge.Sprite.Visible = true;
+        this.Bridge.BoxCollider.Ghost = true;
+        Zero.Disconnect(this.Owner, Events.CollisionStarted, this.Owner);
+        Zero.Disconnect(this.Owner, Events.LogicUpdate, this.Space);
+    }
+    
+}

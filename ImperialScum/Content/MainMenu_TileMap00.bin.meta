@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "MainMenu_TileMap00",
+		uint64 ResourceId = 5a562174f6484ebb,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "5a5618f4f348dab3:MainMenu",
+	},
+},

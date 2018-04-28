@@ -1,0 +1,52 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Compass",
+	},
+	Archetyped = 
+	{
+		string Name = "5a2062940655f3d6:Compass",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0],
+		Vec3 Scale = [4, 4, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5a66387efb0bfd15:ShipPointer",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	Orientation = 
+	{
+		Vec3 GlobalUp = [0, 0, 1],
+		Vec3 UpVector = [0, 1, 0],
+		Vec3 ForwardVector = [-0, -0, -1],
+		OrientationBases DefaultBases = ForwardNegativeZUpY,
+	},
+	LookAtShip = 
+	{
+	},
+	Hierarchy = 
+	{
+	},
+},

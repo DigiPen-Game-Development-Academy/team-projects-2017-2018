@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "EntityFrozen",
+		uint64 ResourceId = 5ab8260d06325dad,
+	},
+},

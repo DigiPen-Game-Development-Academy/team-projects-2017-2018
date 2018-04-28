@@ -1,0 +1,279 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Enemy_ShieldW3",
+	},
+	Archetyped = 
+	{
+		string Name = "5a2e6806f8cb7f51:Enemy_ShieldW3",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [0, 0.130000114, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5275aa4d802dd6dc:Square",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	RigidBody = 
+	{
+		bool Static = false,
+		bool Asleep = false,
+		bool Kinematic = false,
+		bool RotationLocked = true,
+		bool Mode2D = false,
+		bool AllowSleep = true,
+		bool Inherit2DMode = true,
+		Vec3 Velocity = [0, 0, 0],
+		Vec3 AngularVelocity = [0, 0, 0],
+	},
+	IgnoreSpaceEffects = 
+	{
+		bool Drag = true,
+		bool Flow = true,
+		bool Force = true,
+		bool Gravity = true,
+		bool Thrust = true,
+		bool Vortex = true,
+		bool Wind = true,
+		bool Invalid = false,
+		bool Torque = true,
+		bool PointGravity = true,
+		bool PointForce = true,
+		bool Buoyancy = true,
+		bool Custom = true,
+	},
+	EnemyPathFind = 
+	{
+	},
+	BasicPathFollowAI = 
+	{
+	},
+	Visibility = 
+	{
+	},
+	SphereCollider = 
+	{
+		bool Ghost = false,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "5a08c96d04f0597c:Enemy",
+		string SerializedGroupName = "5a11bfba4f162cf2:Enemies",
+		Vec3 Offset = [0, 0, 0],
+		float Radius = 0.5,
+	},
+	EnemyAI = 
+	{
+		float InstantSpotRadius = 3,
+		float MaxDistFromGuard = 20,
+		float WaitTime = 1,
+		float SpotTime = 1,
+		float Range = 3,
+		float ViewAngle = 45,
+		float ViewRange = 10,
+		float MoveSpeed = 1.5,
+		float ChaseSpeedMultiplier = 1.5,
+		float GuardWaitTime = 5,
+		float SearchTimer = 20,
+		float MaxTimeOutOfSight = 1,
+		float SearchRange = 10,
+		float ViewDist = 10,
+	},
+	EnemySprite = 
+	{
+		string North = "5a3958e3bac9ad9c:PhalanxBeta004",
+		string NorthEast = "5a3958e2ba96cf69:PhalanxBeta003",
+		string East = "5a3958e1bab7f1da:PhalanxBeta002",
+		string SouthEast = "5a3958e0ba52102b:PhalanxBeta001",
+		string South = "5a3958ffba7efc49:PhalanxBeta000",
+		string SouthWest = "5a3958e5bb6c5576:PhalanxBeta007",
+		string West = "5a3958e4bb0ab8c0:PhalanxBeta006",
+		string NorthWest = "5a3958e3bb2b054b:PhalanxBeta005",
+	},
+	EnemyMelee = 
+	{
+		float AttacksPerSecond = 3,
+		float DamagerPerAttack = 5,
+		string DeathMSG = "You Where Bitten by an Enemy",
+	},
+	Health = 
+	{
+		float InitialHealth = 200,
+		float Cooldown = 3,
+		float RegenRate = 0.333333343,
+		float FlashLength = 0.100000001,
+	},
+	EnemyDeath = 
+	{
+		int NumberOfDrops = 3,
+		int NumberOfDropsVariation = 1,
+		float DropRange = 0.5,
+		string LootTable = "5a816d6a44fae722:levelthree",
+	},
+	EnemyPing = 
+	{
+	},
+	MenuVisibilityController = 
+	{
+	},
+	EnemyRayShooting = 
+	{
+		float MaxRange = 10,
+		float DamagePer = 15,
+		string WakeSprite = "5a9bdadb3cdcabb7:Wake",
+		float SoundDistance = 10,
+		string Sound = "5a84cbaca2f7cdf9:Shot",
+		float RandAngle = 15,
+		int MagSize = 100,
+		float ReloadTime = 5,
+		float FireRate = 18,
+		float MinDist = 2,
+		float MaxDist = 3,
+		string DeathMSG = "You Where Shot by an Enemy",
+	},
+	Hierarchy = 
+	{
+		ArchetypeInstance = 
+		{
+			string Name = "5a7c1968c9af3d26:Healthbar",
+			LinkId = 
+			{
+				uint Id = 2,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0, -0.625, 1],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Area = 
+			{
+				Vec2 Size = [1, 0.100000001],
+				Location Origin = Center,
+			},
+			Named = 
+			{
+				string Name = "Healthbar",
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 3,
+			},
+			Named = 
+			{
+				string Name = "Shield",
+			},
+			Archetyped = 
+			{
+				string Name = "5a508b0a00bfa5a3:Shield",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0, 0, 1],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Shield = 
+			{
+				float TurnSpeed = 0.75,
+				float FlashSpeed = 5,
+				bool Shoot = true,
+			},
+			MenuVisibilityController = 
+			{
+			},
+			Hierarchy = 
+			{
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 4,
+					},
+					Named = 
+					{
+						string Name = "Blocker",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0.625, 0, 0],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					Sprite = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string SpriteSource = "5ad391c7f0ed4e59:BossyShieldAlpha",
+						bool RenderMask = false,
+						bool FlipX = false,
+						bool FlipY = false,
+						bool AnimationActive = true,
+						float AnimationSpeed = 1,
+						uint StartFrame = 0,
+					},
+					BoxCollider = 
+					{
+						bool Ghost = false,
+						bool SendsMessages = true,
+						bool Seamless = true,
+						string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+						string SerializedGroupName = "5a11bfba4f162cf2:Enemies",
+						Vec3 Offset = [0, 0, 0],
+						Vec3 Size = [0.125, 0.5, 2],
+					},
+					RigidBody = 
+					{
+						bool Static = false,
+						bool Asleep = false,
+						bool Kinematic = true,
+						bool RotationLocked = false,
+						bool Mode2D = false,
+						bool AllowSleep = true,
+						bool Inherit2DMode = true,
+						Vec3 Velocity = [0, 0, 0],
+						Vec3 AngularVelocity = [0, 0, 0],
+					},
+					MenuVisibilitySprite = 
+					{
+					},
+					Area = 
+					{
+						Vec2 Size = [0.25, 1],
+						Location Origin = Center,
+					},
+				},
+			},
+		},
+	},
+},

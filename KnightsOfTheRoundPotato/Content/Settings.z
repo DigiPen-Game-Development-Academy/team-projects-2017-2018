@@ -1,0 +1,8 @@
+class Settings {
+    //Settings go here
+    [Static] var MASTERvol : Real = 1;
+    [Static] var SFXvol : Real = 0.5;
+    [Static] var MUSICvol : Real = 0.35;
+    [Static] var CamSmoothness : Real = 0.25;
+    [Static] var ScreenShake : Real = 2;
+}

@@ -1,0 +1,108 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+/**
+EDITOR BUTTON EXAMPLE:
+
+[Editable] var Foo : EditorButton {
+    get {
+        return EditorButton.Run;
+    } set {
+        this.Foo();
+    }
+}
+
+**/
+
+enum EditorButtonRun {
+    Run
+}
+
+enum EditorButtonReset {
+    Reset
+}
+
+enum EditorButtonExecute {
+    Execute
+}
+
+class Utility {
+    
+    // KEYBOARD SHORTCUTS
+    [Static] var Shortcut_SelectAll : Array[Keys] = Array[Keys]() { Keys.Control, Keys.A };
+    [Static] var Shortcut_Cut : Array[Keys] = Array[Keys]() { Keys.Control, Keys.X };
+    [Static] var Shortcut_Copy : Array[Keys] = Array[Keys]() { Keys.Control, Keys.C };
+    [Static] var Shortcut_Paste : Array[Keys] = Array[Keys]() { Keys.Control, Keys.V };
+    
+    [Static] var Shortcut_Undo : Array[Keys] = Array[Keys]() { Keys.Control, Keys.Z };
+    [Static] var Shortcut_Redo : Array[Keys] = Array[Keys]() { Keys.Control, Keys.Y };
+    
+    // ALT KEYOBARD SHORTCUTS
+    [Static] var ShortcutAlt_Cut : Array[Keys] = Array[Keys]() { Keys.Shift, Keys.Delete };
+    
+    [Static] var ShortcutAlt_Redo : Array[Keys] = Array[Keys]() { Keys.Control, Keys.Shift, Keys.Z };
+    
+}
+
+class TextHelper {
+    
+    [Static] function IsRenderable(code : Integer) : Boolean {
+        return code >= " "[0] && code <= "~"[0];
+    }
+    
+    [Static] function GetWordIndices(str : String, index : Integer) : Integer2 {
+        
+        var index_ = index;
+        
+        if(index_ >= str.Count)
+            index_ = str.Count - 1;
+        else if(index_ < 0)
+            index_ = 0;
+        
+        var indeces = Integer2(index_);
+        
+        if(str.Count > 0 && !TextHelper.IsConsideredSpacerChar(String.FromChar(str[index_]))) {
+            
+            for(var i = index_; i <= str.Count; ++i)
+                if(i >= str.Count || TextHelper.IsConsideredSpacerChar(String.FromChar(str[i]))) {
+                    indeces = Integer2(indeces.X, i);
+                    break;
+                }
+            
+            for(var i = index_; i >= 0; --i)
+                if(i < 1 || TextHelper.IsConsideredSpacerChar(String.FromChar(str[i]))) {
+                    indeces = Integer2(i, indeces.Y);
+                    break;
+                }
+            
+        }
+        
+        return indeces;
+        
+    }
+    
+    [Static] function IsConsideredSpacerChar(char : String) : Boolean {
+        
+        if(
+            char == " " ||
+            char == "," ||
+            char == "." ||
+            char == "*" ||
+            char == "-" ||
+            char == "(" ||
+            char == ")" ||
+            char == "[" ||
+            char == "]" ||
+            char == "{" ||
+            char == "}" ||
+            char == "/" ||
+            char == "\\"
+        ) {
+            return true;
+        }
+        
+        return false;
+        
+    }
+    
+}

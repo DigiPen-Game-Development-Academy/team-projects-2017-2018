@@ -1,0 +1,27 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class GameSetting {
+    
+    /* AUDIO OPTIONS */
+    [Static] var MasterVolume : Real = 1.0;
+    [Static] var MusicVolume : Real = 1.0;
+    [Static] var SoundEffectsVolume : Real = 1.0;
+    [Static] var PitchValue : Real = 0.0;
+    
+    /* GRAPHICS OPTIONS */
+    [Static] var EnableUIAnimations : Boolean = true;
+    [Static] var EnableVignette : Boolean = true;
+    [Static] var WorldGenerationRadius : Integer = 25;
+    
+    /* GAME OPTIONS */
+    [Static] var PlayerTooltip : Boolean = true;
+    [Static] var EnemyTooltip : Boolean = true;
+    
+    /* GAME OPTIONS */
+    //[Static] var . . .
+    
+    /* MISC OPTIONS */
+    //[Static] var . . .
+    
+}

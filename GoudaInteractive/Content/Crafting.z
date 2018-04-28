@@ -1,0 +1,642 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class Recipe {
+    
+    var Recipe : Array[Integer] = null;
+    
+    constructor(recipe : Array[Integer]) {
+        this.Recipe = recipe;
+    }
+    
+}
+
+class Crafting : ZilchComponent {
+    
+    var ItemAir                     : Array[Integer] = null;
+    var ItemCopper                  : Array[Integer] = null;
+    var ItemIron                    : Array[Integer] = null;
+    var ItemGold                    : Array[Integer] = null;
+    var ItemTitanium                : Array[Integer] = null;
+    var ItemPlatinum                : Array[Integer] = null;
+    var ItemGoudarium               : Array[Integer] = null;
+    
+    var ItemAmmoPistol              : Array[Integer] = null;
+    var ItemAmmoShotgun             : Array[Integer] = null;
+    var ItemAmmoMinigun             : Array[Integer] = null;
+    //var ItemAmmoAssault             : Array[Integer] = null;
+    var ItemAmmoSniper              : Array[Integer] = null;
+    
+    var ItemPistol                  : Array[Integer] = null;
+    var ItemRevolver                : Array[Integer] = null;
+    var ItemShotgun                 : Array[Integer] = null;
+    var ItemMinigun                 : Array[Integer] = null;
+    var ItemSniper                  : Array[Integer] = null;
+    var ItemGouda                   : Array[Integer] = null;
+    
+    var ItemDrillCopper             : Array[Integer] = null;
+    var ItemDrillIron               : Array[Integer] = null;
+    var ItemDrillTitanium           : Array[Integer] = null;
+    var ItemDrillPlatinum           : Array[Integer] = null;
+    
+    var ItemGunTrigger              : Array[Integer] = null;
+    var ItemGunHandle               : Array[Integer] = null;
+    var ItemGunBase                 : Array[Integer] = null;
+    var ItemGunBaseMinigun          : Array[Integer] = null;
+    var ItemGunPartialAssembled     : Array[Integer] = null;
+    var ItemGunPartialAssembledMG   : Array[Integer] = null;
+    
+    var ItemGunBarrel               : Array[Integer] = null;
+    var ItemGunBarrelLong           : Array[Integer] = null;
+    var ItemGunStock                : Array[Integer] = null;
+    
+    var ItemHealthPack              : Array[Integer] = null;
+    
+    var CraftingRecipes : Array[Recipe] = null;
+    var CraftableItems : Array[Integer] = null;
+    
+    var SlotClicked : Integer = -1;
+    
+    var SlotHover : Integer = -1;
+    var LastSlotHover : Integer = -1;
+    var CRSlotHover : Integer = -1;
+    
+    var ScrollPosition : Integer = 0;
+    var MaxScroll : Integer = 6;
+    
+    var MaxItemsInRecipe : Integer = 3;
+    var MaxCraftingSlots : Integer = 6;
+     
+    function Initialize(init : CogInitializer) {
+        
+        this.CraftingRecipes = new Array[Recipe]();
+        this.CraftableItems = new Array[Integer]();
+        
+        // CREATE RECIPE
+        
+        this.ItemAir = this.CreateRecipe(
+            0, 0, 0,
+            0, 0, 0,
+            0
+        );
+        
+        /*
+            RESOURCE
+        */
+        
+        this.ItemCopper = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemCopperOre"),
+            0,
+            0,
+            1, 0, 0,
+            Relocation.ItemManager.GetIDByName("ItemCopper")
+        );
+        this.ItemIron = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemIronOre"),
+            0,
+            0,
+            1, 0, 0,
+            Relocation.ItemManager.GetIDByName("ItemIron")
+        );
+        this.ItemGold = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemGoldOre"),
+            0,
+            0,
+            1, 0, 0,
+            Relocation.ItemManager.GetIDByName("ItemGold")
+        );
+        this.ItemTitanium = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemTitaniumOre"),
+            0,
+            0,
+            1, 0, 0,
+            Relocation.ItemManager.GetIDByName("ItemTitanium")
+        );
+        this.ItemPlatinum = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemPlatinumOre"),
+            0,
+            0,
+            1, 0, 0,
+            Relocation.ItemManager.GetIDByName("ItemPlatinum")
+        );
+        this.ItemGoudarium = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemGoudariumOre"),
+            0,
+            0,
+            1, 0, 0,
+            Relocation.ItemManager.GetIDByName("ItemGoudarium")
+        );
+        
+        /*
+            AMMO
+        */
+        
+        this.ItemAmmoPistol = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemIron"),
+            Relocation.ItemManager.GetIDByName("ItemGold"),
+            0,
+            3, 1, 0,
+            Relocation.ItemManager.GetIDByName("ItemAmmoPistol")
+        );
+        this.ItemAmmoShotgun = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemIron"),
+            Relocation.ItemManager.GetIDByName("ItemGold"),
+            0,
+            3, 1, 0,
+            Relocation.ItemManager.GetIDByName("ItemAmmoShotgun")
+        );
+        this.ItemAmmoMinigun = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemIron"),
+            Relocation.ItemManager.GetIDByName("ItemGold"),
+            0,
+            3, 1, 0,
+            Relocation.ItemManager.GetIDByName("ItemAmmoMinigun")
+        );
+        /*this.ItemAmmoAssault = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemIron"),
+            Relocation.ItemManager.GetIDByName("ItemGold"),
+            0,
+            3, 1, 0,
+            Relocation.ItemManager.GetIDByName("ItemAmmoAssault")
+        );*/
+        this.ItemAmmoSniper = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemIron"),
+            Relocation.ItemManager.GetIDByName("ItemGold"),
+            0,
+            3, 1, 0,
+            Relocation.ItemManager.GetIDByName("ItemAmmoSniper")
+        );
+        
+        /*
+            GUN
+        */
+        
+        this.ItemPistol = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemGunPartialAssembled"),
+            Relocation.ItemManager.GetIDByName("ItemGunBarrel"),
+            0,
+            1, 1, 0,
+            Relocation.ItemManager.GetIDByName("ItemPistol")
+        );
+        this.ItemRevolver = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemGunPartialAssembled"),
+            Relocation.ItemManager.GetIDByName("ItemGunBarrel"),
+            0,
+            1, 1, 0,
+            Relocation.ItemManager.GetIDByName("ItemRevolver")
+        );
+        this.ItemShotgun = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemGunStock"),
+            Relocation.ItemManager.GetIDByName("ItemGunPartialAssembled"),
+            Relocation.ItemManager.GetIDByName("ItemGunBarrelLong"),
+            1, 1, 1,
+            Relocation.ItemManager.GetIDByName("ItemShotgun")
+        );
+        this.ItemMinigun = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemGunStock"),
+            Relocation.ItemManager.GetIDByName("ItemGunPartialAssembledMG"),
+            Relocation.ItemManager.GetIDByName("ItemGunBarrelLong"),
+            1, 1, 8,
+            Relocation.ItemManager.GetIDByName("ItemMinigun")
+        );
+        this.ItemSniper = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemGunStock"),
+            Relocation.ItemManager.GetIDByName("ItemGunPartialAssembled"),
+            Relocation.ItemManager.GetIDByName("ItemGunBarrelLong"),
+            1, 1, 1,
+            Relocation.ItemManager.GetIDByName("ItemSniper")
+        );
+        this.ItemGouda = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemPistol"),
+            Relocation.ItemManager.GetIDByName("ItemRock"),
+            Relocation.ItemManager.GetIDByName("ItemBoulder"),
+            1, 16, 8,
+            Relocation.ItemManager.GetIDByName("ItemGouda")
+        );
+        
+        /*
+            DRILL
+        */
+        
+        this.ItemDrillCopper = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemCopper"),
+            Relocation.ItemManager.GetIDByName("ItemGold"),
+            0,
+            3, 1, 0,
+            Relocation.ItemManager.GetIDByName("ItemDrillCopper")
+        );
+        this.ItemDrillIron = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemIron"),
+            Relocation.ItemManager.GetIDByName("ItemGold"),
+            0,
+            3, 1, 0,
+            Relocation.ItemManager.GetIDByName("ItemDrillIron")
+        );
+        this.ItemDrillTitanium = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemTitanium"),
+            Relocation.ItemManager.GetIDByName("ItemGold"),
+            0,
+            3, 1, 0,
+            Relocation.ItemManager.GetIDByName("ItemDrillTitanium")
+        );
+        this.ItemDrillPlatinum = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemPlatinum"),
+            Relocation.ItemManager.GetIDByName("ItemGold"),
+            0,
+            3, 1, 0,
+            Relocation.ItemManager.GetIDByName("ItemDrillPlatinum")
+        );
+        
+        /*
+            GUN PARTS
+        */
+        this.ItemGunTrigger = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemIron"),
+            Relocation.ItemManager.GetIDByName("ItemCopper"),
+            0,
+            2, 1, 0,
+            Relocation.ItemManager.GetIDByName("ItemGunTrigger")
+        );
+        this.ItemGunHandle = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemIron"),
+            0,
+            0,
+            3, 0, 0,
+            Relocation.ItemManager.GetIDByName("ItemGunHandle")
+        );
+        this.ItemGunBase = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemIron"),
+            Relocation.ItemManager.GetIDByName("ItemGold"),
+            0,
+            3, 1, 0,
+            Relocation.ItemManager.GetIDByName("ItemGunBase")
+        );
+        this.ItemGunBaseMinigun = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemIron"),
+            Relocation.ItemManager.GetIDByName("ItemGold"),
+            Relocation.ItemManager.GetIDByName("ItemPlatinum"),
+            4, 2, 1,
+            Relocation.ItemManager.GetIDByName("ItemGunBaseMinigun")
+        );
+        this.ItemGunPartialAssembled = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemGunHandle"),
+            Relocation.ItemManager.GetIDByName("ItemGunTrigger"),
+            Relocation.ItemManager.GetIDByName("ItemGunBase"),
+            1, 1, 1,
+            Relocation.ItemManager.GetIDByName("ItemGunPartialAssembled")
+        );
+        this.ItemGunPartialAssembledMG = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemGunHandle"),
+            Relocation.ItemManager.GetIDByName("ItemGunTrigger"),
+            Relocation.ItemManager.GetIDByName("ItemGunBaseMinigun"),
+            2, 1, 1,
+            Relocation.ItemManager.GetIDByName("ItemGunPartialAssembledMG")
+        );
+        this.ItemGunBarrel = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemIron"),
+            Relocation.ItemManager.GetIDByName("ItemTitanium"),
+            0,
+            3, 1, 0,
+            Relocation.ItemManager.GetIDByName("ItemGunBarrel")
+        );
+        this.ItemGunBarrelLong = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemIron"),
+            Relocation.ItemManager.GetIDByName("ItemTitanium"),
+            0,
+            6, 2, 0,
+            Relocation.ItemManager.GetIDByName("ItemGunBarrelLong")
+        );
+        this.ItemGunStock = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemIron"),
+            Relocation.ItemManager.GetIDByName("ItemTitanium"),
+            0,
+            2, 1, 0,
+            Relocation.ItemManager.GetIDByName("ItemGunStock")
+        );
+        
+        /*
+            CONSUMABLES
+        */
+        this.ItemHealthPack = this.CreateRecipe(
+            Relocation.ItemManager.GetIDByName("ItemGold"),
+            0,
+            0,
+            4, 0, 0,
+            Relocation.ItemManager.GetIDByName("ItemHealthPack")
+        );
+        
+        this.CraftingRecipes.Push(new Recipe(this.ItemCopper));
+        this.CraftingRecipes.Push(new Recipe(this.ItemIron));
+        this.CraftingRecipes.Push(new Recipe(this.ItemGold));
+        this.CraftingRecipes.Push(new Recipe(this.ItemTitanium));
+        this.CraftingRecipes.Push(new Recipe(this.ItemPlatinum));
+        this.CraftingRecipes.Push(new Recipe(this.ItemGoudarium));
+        
+        this.CraftingRecipes.Push(new Recipe(this.ItemAmmoPistol));
+        this.CraftingRecipes.Push(new Recipe(this.ItemAmmoShotgun));
+        this.CraftingRecipes.Push(new Recipe(this.ItemAmmoMinigun));
+        //this.CraftingRecipes.Push(new Recipe(this.ItemAmmoAssault));
+        this.CraftingRecipes.Push(new Recipe(this.ItemAmmoSniper));
+        this.CraftingRecipes.Push(new Recipe(this.ItemAir));
+        this.CraftingRecipes.Push(new Recipe(this.ItemAir));
+        
+        this.CraftingRecipes.Push(new Recipe(this.ItemPistol));
+        this.CraftingRecipes.Push(new Recipe(this.ItemRevolver));
+        this.CraftingRecipes.Push(new Recipe(this.ItemShotgun));
+        this.CraftingRecipes.Push(new Recipe(this.ItemMinigun));
+        this.CraftingRecipes.Push(new Recipe(this.ItemSniper));
+        this.CraftingRecipes.Push(new Recipe(this.ItemGouda));
+        
+        this.CraftingRecipes.Push(new Recipe(this.ItemDrillCopper));
+        this.CraftingRecipes.Push(new Recipe(this.ItemDrillIron));
+        this.CraftingRecipes.Push(new Recipe(this.ItemDrillTitanium));
+        this.CraftingRecipes.Push(new Recipe(this.ItemDrillPlatinum));
+        this.CraftingRecipes.Push(new Recipe(this.ItemAir));
+        this.CraftingRecipes.Push(new Recipe(this.ItemAir));
+        
+        this.CraftingRecipes.Push(new Recipe(this.ItemGunTrigger));
+        this.CraftingRecipes.Push(new Recipe(this.ItemGunHandle));
+        this.CraftingRecipes.Push(new Recipe(this.ItemGunBase));
+        this.CraftingRecipes.Push(new Recipe(this.ItemGunBaseMinigun));
+        this.CraftingRecipes.Push(new Recipe(this.ItemGunPartialAssembled));
+        this.CraftingRecipes.Push(new Recipe(this.ItemGunPartialAssembledMG));
+        
+        this.CraftingRecipes.Push(new Recipe(this.ItemGunBarrel));
+        this.CraftingRecipes.Push(new Recipe(this.ItemGunBarrelLong));
+        this.CraftingRecipes.Push(new Recipe(this.ItemGunStock));
+        this.CraftingRecipes.Push(new Recipe(this.ItemAir));
+        this.CraftingRecipes.Push(new Recipe(this.ItemAir));
+        this.CraftingRecipes.Push(new Recipe(this.ItemAir));
+        
+        this.CraftingRecipes.Push(new Recipe(this.ItemHealthPack));
+        this.CraftingRecipes.Push(new Recipe(this.ItemAir));
+        this.CraftingRecipes.Push(new Recipe(this.ItemAir));
+        this.CraftingRecipes.Push(new Recipe(this.ItemAir));
+        this.CraftingRecipes.Push(new Recipe(this.ItemAir));
+        this.CraftingRecipes.Push(new Recipe(this.ItemAir));
+        
+        // ADD CRAFTABLE ITEMS TO LIST
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemCopper"));
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemIron"));
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemGold"));
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemTitanium"));
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemPlatinum"));
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemGoudarium"));
+        
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemAmmoPistol"));
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemAmmoShotgun"));
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemAmmoMinigun"));
+        //this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemAmmoAssault"));
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemAmmoSniper"));
+        this.CraftableItems.Push(0);
+        this.CraftableItems.Push(0);
+        
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemPistol"));
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemRevolver"));
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemShotgun"));
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemMinigun"));
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemSniper"));
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemGouda"));
+        
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemDrillCopper"));
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemDrillIron"));
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemDrillTitanium"));
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemDrillPlatinum"));
+        this.CraftableItems.Push(0);
+        this.CraftableItems.Push(0);
+        
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemGunTrigger"));
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemGunHandle"));
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemGunBase"));
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemGunBaseMinigun"));
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemGunPartialAssembled"));
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemGunPartialAssembledMG"));
+        
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemGunBarrel"));
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemGunBarrelLong"));
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemGunStock"));
+        this.CraftableItems.Push(0);
+        this.CraftableItems.Push(0);
+        this.CraftableItems.Push(0);
+        
+        this.CraftableItems.Push(Relocation.ItemManager.GetIDByName("ItemHealthPack"));
+        this.CraftableItems.Push(0);
+        this.CraftableItems.Push(0);
+        this.CraftableItems.Push(0);
+        this.CraftableItems.Push(0);
+        this.CraftableItems.Push(0);
+        
+        this.ShowItemsInCraftingMenu(this.CraftableItems, this.ScrollPosition);
+        this.ShowCraftingRequirements(this.CraftingRecipes, this.ScrollPosition, -1);
+        
+        Zero.Connect(Relocation.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.SlotClicked != -1) {
+            
+            this.UseRecipeAttempt();
+            
+            this.SlotClicked = -1;
+            
+        }
+        
+        if(this.SlotHover != -1) {
+            this.ShowCraftingRequirements(this.CraftingRecipes, this.ScrollPosition, this.SlotHover + (this.MaxCraftingSlots * this.ScrollPosition));
+            this.SlotHover = -1;
+        }
+        
+        this.CRSlotHover = -1;
+        
+    }
+    
+    function OnPausedLogicUpdate(event : UpdateEvent) {
+        
+        if(this.SlotClicked != -1) {
+            this.UseRecipeAttempt();
+        }
+        
+        if(this.SlotHover != -1) {
+            this.ShowCraftingRequirements(this.CraftingRecipes, this.ScrollPosition, this.SlotHover + (this.MaxCraftingSlots * this.ScrollPosition));
+        }
+        
+    }
+    
+    function PausedLogicUpdateEnd() {
+        this.SlotClicked = -1;
+        this.SlotHover = -1;
+        this.CRSlotHover = -1;
+    }
+    
+    function UseRecipeAttempt() {
+        
+        if(Zero.Keyboard.KeyIsDown(Keys.Shift)) {
+            var maxItemLimit = 64;
+            var currItemCount = 0;
+            while(this.CheckForResources(this.CraftingRecipes, this.SlotClicked  + (this.MaxCraftingSlots * this.ScrollPosition)) && currItemCount < maxItemLimit) {
+                this.UseRecipeForce(this.CraftingRecipes, this.SlotClicked  + (this.MaxCraftingSlots * this.ScrollPosition));
+                ++currItemCount;
+            }
+        } else {
+            this.UseRecipe(this.CraftingRecipes, this.SlotClicked  + (this.MaxCraftingSlots * this.ScrollPosition), false);
+        }
+        
+    }
+    
+    function RefreshIcons(i : Integer) {
+        
+        if(Relocation.UISpace.FindObjectByName("CraftingItem`i + 1`") != null) {
+            var slotObj = Relocation.UISpace.FindObjectByName("CraftingItem`i + 1`");
+            
+            if(this.CraftingRecipes != null && this.Owner.Inventory.TooltipName != null) {
+                slotObj.FindChildByName("ItemName").SpriteText.Text = Relocation.Items[this.CraftingRecipes[i].Recipe[6]].ItemRecognizableName;
+                this.Owner.Inventory.TooltipName = Relocation.Items[this.CraftingRecipes[i].Recipe[6]].ItemRecognizableName;
+            } else if(this.Owner.Inventory.TooltipName == slotObj.FindChildByName("ItemName").SpriteText.Text) {
+                this.Owner.Inventory.TooltipName = "Air";
+            }
+            slotObj.FindChildByName("ItemCount").SpriteText.Text = "1";
+        }
+        
+    }
+    
+    function GetTooltipName() : String {
+        
+        if(this.SlotHover != -1 && this.CRSlotHover == -1) {
+            this.LastSlotHover = this.SlotHover;
+            return Relocation.Items[this.CraftingRecipes[this.SlotHover - 1 + (this.MaxCraftingSlots * this.ScrollPosition)].Recipe[6]].ItemRecognizableName;
+        } else if(this.SlotHover == -1 && this.LastSlotHover != -1 && this.CRSlotHover != -1) {
+            return Relocation.Items[this.CraftingRecipes[this.LastSlotHover - 1 + (this.MaxCraftingSlots * this.ScrollPosition)].Recipe[this.CRSlotHover - 1]].ItemRecognizableName;
+        } else {
+            return "State.False";
+        }
+        
+    }
+    
+    function GetTooltipLore() : String {
+        
+        if(this.SlotHover != -1 && this.CRSlotHover == -1) {
+            this.LastSlotHover = this.SlotHover;
+            return Relocation.Items[this.CraftingRecipes[this.SlotHover - 1 + (this.MaxCraftingSlots * this.ScrollPosition)].Recipe[6]].ItemLore;
+        } else if(this.SlotHover == -1 && this.LastSlotHover != -1 && this.CRSlotHover != -1) {
+            return Relocation.Items[this.CraftingRecipes[this.LastSlotHover - 1 + (this.MaxCraftingSlots * this.ScrollPosition)].Recipe[this.CRSlotHover - 1]].ItemLore;
+        } else {
+            return "State.False";
+        }
+        
+    }
+    
+    function GetTooltipColor() : Real4 {
+        
+        if(this.SlotHover != -1 && this.CRSlotHover == -1) {
+            this.LastSlotHover = this.SlotHover;
+            return Relocation.Items[this.CraftingRecipes[this.SlotHover - 1 + (this.MaxCraftingSlots * this.ScrollPosition)].Recipe[6]].ItemColor;
+        } else if(this.SlotHover == -1 && this.LastSlotHover != -1 && this.CRSlotHover != -1) {
+            return Relocation.Items[this.CraftingRecipes[this.LastSlotHover - 1 + (this.MaxCraftingSlots * this.ScrollPosition)].Recipe[this.CRSlotHover - 1]].ItemColor;
+        } else {
+            return Real4(1.0);
+        }
+        
+    }
+    
+    function ShowItemsInCraftingMenu(items : Array[Integer], scrollPosition : Integer) {
+        
+        for(var i = 0; i < this.MaxCraftingSlots; ++i) {
+            
+            if(Relocation.Items[items[i + (this.MaxCraftingSlots * scrollPosition)]].Sprite != SpriteSource.Circle) {
+                Relocation.UISpace.FindObjectByName("CraftingItem`i + 1`").FindChildByName("SlotIcon").Sprite.Visible = true;
+                Relocation.UISpace.FindObjectByName("CraftingItem`i + 1`").FindChildByName("SlotIcon").Sprite.SpriteSource = Relocation.Items[items[i + (this.MaxCraftingSlots * scrollPosition)]].Sprite;
+            } else {
+                Relocation.UISpace.FindObjectByName("CraftingItem`i + 1`").FindChildByName("SlotIcon").Sprite.Visible = false;
+            }
+            
+        }
+        
+    }
+    
+    function ShowCraftingRequirements(recipe : Array[Recipe], scrollPosition : Integer, craftingID : Integer) {
+        
+        for(var i = 0; i < 3; ++i) {
+            
+            var craftingRIcon = Relocation.UISpace.FindObjectByName("CraftingItemRequirements`i + 1`").FindChildByName("SlotIcon");
+            var craftingRCt = Relocation.UISpace.FindObjectByName("CraftingItemRequirements`i + 1`").FindChildByName("ItemCount");
+            
+            if(craftingID >= 0 && Relocation.Items[recipe[craftingID - 1].Recipe[i]].Sprite != SpriteSource.Circle) {
+                craftingRIcon.Sprite.Visible = true;
+                craftingRCt.SpriteText.Visible = true;
+                craftingRIcon.Sprite.SpriteSource = Relocation.Items[recipe[craftingID - 1].Recipe[i]].Sprite;
+                craftingRCt.SpriteText.Text = "`recipe[craftingID - 1].Recipe[i + this.MaxItemsInRecipe]`";
+            } else {
+                craftingRIcon.Sprite.Visible = false;
+                craftingRCt.SpriteText.Visible = false;
+            }
+            
+        }
+        
+    }
+    
+    function CreateRecipe(id1 : Integer, id2 : Integer, id3 : Integer, amt1 : Integer, amt2 : Integer, amt3 : Integer, item : Integer) : Array[Integer] {
+        
+        var array = new Array[Integer]();
+        
+        array.Push(id1);
+        array.Push(id2);
+        array.Push(id3);
+        
+        array.Push(amt1);
+        array.Push(amt2);
+        array.Push(amt3);
+        
+        array.Push(item);
+        
+        return array;
+        
+    }
+    
+    function CheckForResources(recipe : Array[Recipe], recipeID : Integer) : Boolean {
+        
+        for(var i = 0; i < this.MaxItemsInRecipe; ++i) {
+            if(this.Owner.Inventory.CheckForItems(recipe[recipeID - 1].Recipe[i], recipe[recipeID - 1].Recipe[i + this.MaxItemsInRecipe])) {
+                continue;
+            } else {
+                return false;
+            }
+        }
+        
+        return true;
+        
+    }
+    
+    function UseRecipe(recipe : Array[Recipe], recipeID : Integer, useAllItems : Boolean) {
+        
+        var canCraft = false;
+        
+        if((this.CheckForResources(recipe, recipeID) && !Relocation.DebugMode) || (Relocation.DebugMode)) {
+            canCraft = true;
+        } else {
+            Relocation.UISpace.SoundSpace.PlayCue(SoundCue.Find("WeaponNoAmmo"));
+            Console.WriteLine("You do not have enough resources to craft this item.");
+            Relocation.NotificationManager.GiveNotification("You do not have enough resources to craft this item.", 1.5, Real4(1.0, 0.0, 0.0, 1.0));
+            return;
+        }
+        
+        this.UseRecipeForce(recipe, recipeID);
+        
+    }
+    
+    function UseRecipeForce(recipe : Array[Recipe], recipeID : Integer) {
+        for(var i = 0; i < this.MaxItemsInRecipe; ++i) {
+            this.Owner.Inventory.RemoveItems(recipe[recipeID - 1].Recipe[i], recipe[recipeID - 1].Recipe[i + this.MaxItemsInRecipe]);
+        }
+        
+        this.Owner.Inventory.GiveItem(recipe[recipeID - 1].Recipe[this.MaxItemsInRecipe * 2], false);
+    }
+    
+    function SetScrollPosition(pos : Integer) {
+        this.ScrollPosition = pos;
+        this.ShowItemsInCraftingMenu(this.CraftableItems, this.ScrollPosition);
+        this.ShowCraftingRequirements(this.CraftingRecipes, this.ScrollPosition, -1);
+    }
+    
+}

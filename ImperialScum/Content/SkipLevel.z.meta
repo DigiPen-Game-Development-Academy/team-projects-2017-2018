@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "SkipLevel",
+		uint64 ResourceId = 5a0371ba518b667a,
+	},
+},

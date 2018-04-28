@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "BoomerangScript",
+		uint64 ResourceId = 5a7012cccb2d9677,
+	},
+},

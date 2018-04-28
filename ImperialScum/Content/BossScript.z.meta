@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "BossScript",
+		uint64 ResourceId = 5a5df9f619a764c2,
+	},
+},

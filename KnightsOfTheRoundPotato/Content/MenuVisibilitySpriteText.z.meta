@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "MenuVisibilitySpriteText",
+		uint64 ResourceId = 5a9a88e7562d0f93,
+	},
+},

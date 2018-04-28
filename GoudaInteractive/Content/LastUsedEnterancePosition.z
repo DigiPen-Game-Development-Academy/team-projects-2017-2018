@@ -1,0 +1,16 @@
+class LastUsedEnterancePosition : ZilchComponent
+{
+    var LastUsedPosition : Real3;
+    
+    function Initalize(event : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Space.FindObjectByName("EntityPlayer").PlayerProperties.SpawnPosition = this.LastUsedPosition;
+        
+        Console.WriteLine("Player Position: `this.Space.FindObjectByName("EntityPlayer").Transform.WorldTranslation`");
+    }
+}

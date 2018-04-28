@@ -1,0 +1,9 @@
+DataContent = 
+{
+	RichAnimationBuilder = 
+	{
+		string Name = "BlockerFinal",
+		uint64 ResourceId = 5a237bc4257c9d84,
+		string PreviewArchetype = "",
+	},
+},

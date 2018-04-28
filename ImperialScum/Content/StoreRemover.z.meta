@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "StoreRemover",
+		uint64 ResourceId = 5a6b0c1a3c53cebb,
+	},
+},

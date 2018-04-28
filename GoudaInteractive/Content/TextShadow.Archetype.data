@@ -1,0 +1,38 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "TextShadow",
+	},
+	Archetyped = 
+	{
+		string Name = "5a87e8255de344dd:TextShadow",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	SpriteText = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [0, 0, 0, 0.75],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string FontName = "5addaa209e091e3e:FontDefaultMonospace",
+		uint FontSize = 128,
+		string Text = "Shadow",
+		TextAlign Align = Left,
+		float PixelsPerUnit = 256,
+		bool Smoothing = false,
+	},
+},

@@ -1,0 +1,29 @@
+//Sam
+//Makes the cannon text visible when touched, invisible otherwise
+
+class TouchVisible : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Owner, Events.CollisionEnded, this.OnCollisionEnded);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {   
+        if (event.OtherObject.PlayerController != null)
+        {
+            this.Owner.SpriteText.Visible = true;
+            this.Owner.SpriteText.Visible = true;
+        }
+    }
+    
+    function OnCollisionEnded(event : CollisionEvent)
+    {
+        if (event.OtherObject.PlayerController != null)
+        {
+            this.Owner.SpriteText.Visible = false;
+        }
+    }
+}

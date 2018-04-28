@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "SettingsSave",
+		uint64 ResourceId = 5ae3d41dcdfb75d7,
+	},
+},

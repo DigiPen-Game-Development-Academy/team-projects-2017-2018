@@ -1,0 +1,18 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Save",
+	},
+	Archetyped = 
+	{
+		string Name = "5a89145c4de21b9e:Save",
+	},
+	SaveController = 
+	{
+	},
+},

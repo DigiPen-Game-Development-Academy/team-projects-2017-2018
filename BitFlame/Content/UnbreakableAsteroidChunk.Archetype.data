@@ -1,0 +1,89 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "UnbreakableAsteroidChunk",
+	},
+	Archetyped = 
+	{
+		string Name = "5a6ea0e330430583:UnbreakableAsteroidChunk",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [2.5, 7.5, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [0.435000002, 0.435000002, 0.435000002, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5275aa4d802dd6dc:Square",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	Voxel = 
+	{
+		string TopLeft = "5afc1fb5734fb6b7:Asteroid_TileMap_Normal007",
+		string TopCenter = "5afc1fb4735485b3:Asteroid_TileMap_Normal000",
+		string TopRight = "5afc1fb57340543f:Asteroid_TileMap_Normal006",
+		string MiddleLeft = "5afc1fb4735a430f:Asteroid_TileMap_Normal003",
+		string MiddleCenter = "5afc1fb57344ed17:Asteroid_TileMap_Normal005",
+		string MiddleRight = "5afc1fb473539704:Asteroid_TileMap_Normal001",
+		string BottomLeft = "5afc1fb5734b18ed:Asteroid_TileMap_Normal008",
+		string BottomCenter = "5afc1fb4735f08b8:Asteroid_TileMap_Normal002",
+		string BottomRight = "5afc1fb572b6976c:Asteroid_TileMap_Normal009",
+		string InnerTopLeft = "5a767cd5b914d13e:Asteroid_TileMap_Normal018",
+		string InnerTopRight = "5a767cd5b912debd:Asteroid_TileMap_Normal017",
+		string InnerBottomLeft = "5a767cd5b916f639:Asteroid_TileMap_Normal019",
+		string InnerBottomRight = "5a767cd5b91b0d55:Asteroid_TileMap_Normal020",
+		string ColliderTopLeft = "5198bea43a47cbd7:SlopeLeft",
+		string ColliderTopCenter = "5198bea43a477360:Box",
+		string ColliderTopRight = "5198bea43a4694d2:SlopeRight",
+		string ColliderMiddleLeft = "5198bea43a477360:Box",
+		string ColliderMiddleCenter = "5198bea43a477360:Box",
+		string ColliderMiddleRight = "5198bea43a477360:Box",
+		string ColliderBottomLeft = "5198b94ac018d384:SlopeLeftInv",
+		string ColliderBottomCenter = "5198bea43a477360:Box",
+		string ColliderBottomRight = "5198b94ac017c8f2:SlopeRightInv",
+		string ColliderInnerTopLeft = "5198bea43a477360:Box",
+		string ColliderInnerTopRight = "5198bea43a477360:Box",
+		string ColliderInnerBottomLeft = "5198bea43a477360:Box",
+		string ColliderInnerBottomRight = "5198bea43a477360:Box",
+		string Invalid = "5274db4c2e7c11f9:Circle",
+		string AltMiddleCenter = "5afc1fb5735980f7:Asteroid_TileMap_Normal004",
+	},
+	MeshCollider = 
+	{
+		bool Ghost = false,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+		string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+		Vec3 Offset = [0, 0, 0],
+		string PhysicsMeshName = "4ee13192dc049505:Cube",
+		bool DrawEdges = true,
+		bool DrawFaces = false,
+		bool DrawFaceNormals = false,
+	},
+	Health = 
+	{
+		float Health = 2,
+		string ArchetypetoSpawnOnDeath = "",
+		bool Unbreakable = true,
+	},
+},

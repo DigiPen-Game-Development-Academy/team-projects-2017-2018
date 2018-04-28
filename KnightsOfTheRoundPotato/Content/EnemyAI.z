@@ -1,0 +1,297 @@
+enum State {
+    Suspitious,
+    Spotted,
+    Idle,
+    Searching
+}
+
+class EnemyAI : ZilchComponent {
+    [Dependency]
+    var PathFind : BasicPathFollowAI;
+    [Property]
+    var InstantSpotRadius : Real = 2;
+    [Property]
+    var MaxDistFromGuard : Real = 20;
+    var GuardPos : Real3;
+    var Timer : Real = 1;
+    [Property]
+    var WaitTime : Real = 1;
+    [Property]
+    var SpotTime : Real = 1;
+    [Property]
+    var Range : Real = 3;
+    [Property]
+    var ViewAngle : Real = 45;
+    [Property]
+    var ViewRange : Real = 6;
+    [Property]
+    var MoveSpeed : Real = 2;
+    [Property]
+    var ChaseSpeedMultiplier : Real = 2;
+    [Property]
+    var GuardWaitTime : Real = 5;
+    var ViewDirection : Real3 = Real3(0);
+    
+    [Property]
+    var SearchTimer : Real = 20;
+    
+    [Property]
+    var MaxTimeOutOfSight : Real = 1;
+    
+    [Property]
+    var SearchRange : Real = 10;
+    
+    [Property]
+    var ViewDist : Real = 10;
+    
+    var SearchPos : Real3;
+    
+    var Ex : Cog;
+    
+    var State : State;
+    
+    var ChaseTimer : Real = 0;
+    
+    function Initialize(init : CogInitializer) {
+        
+        //set collision table so enemies do not collide
+        if(this.Space.PhysicsSpace.CollisionTable != CollisionTable.CollisionTable) {
+            this.Space.PhysicsSpace.CollisionTable = CollisionTable.CollisionTable;
+        }
+        
+        this.State = State.Idle;
+        
+        if(GlobalVariables.Enemies == null)
+            GlobalVariables.Enemies = Array[Cog]();
+        GlobalVariables.Enemies.Add(this.Owner);
+        this.GuardPos = this.Owner.Transform.WorldTranslation;
+        this.Timer = this.WaitTime;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.InSound, this.OnInSound);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Space, Events.Notice, this.OnNotice);
+        this.Owner.Transform.WorldTranslation = Real3(this.Owner.Transform.WorldTranslation.XY, 0);
+    }
+    
+    //notice player if other enemies have spotted them
+    function OnNotice(event : Notice) {
+        if(this.PathFind.Stunned)
+            return;
+        if(Math.Distance(GlobalVariables.Player.Transform.WorldTranslation, this.GuardPos) <= this.MaxDistFromGuard && this.Timer <= 0 && Math.Distance(event.Pos, this.Owner.Transform.WorldTranslation) <= 10 && !GlobalVariables.Invis && this.State != State.Spotted) {
+            this.State = State.Spotted;
+        }
+    }
+    
+    //check if player toutched enemy, if so spot them
+    function OnCollisionStarted(event : CollisionEvent) {
+        if(this.PathFind.Stunned)
+            return;
+            
+        if(event.OtherObject == GlobalVariables.Player && !GlobalVariables.Invis && this.State != State.Spotted) {
+            this.State = State.Spotted;
+            this.Timer = this.WaitTime;
+        }
+    }
+    
+    //player sound nearby!
+    function OnInSound(event : InSound) {
+        if(this.PathFind.Stunned)
+            return;
+            
+        if(this.State != State.Spotted && Math.Distance(event.Source, this.GuardPos) <= this.MaxDistFromGuard) {
+            if(GlobalVariables.DebugLinesActive)
+                    Utilities.DrawCircle(this.Owner.Transform.WorldTranslation, this.InstantSpotRadius, false, Real4(0,1,0,1));
+            //if next to player instantly spot them
+            if(this.Owner.Visibility.InSight && Math.Distance(this.Owner.Transform.WorldTranslation, event.Source) <= this.InstantSpotRadius && Math.Distance(GlobalVariables.Player.Transform.WorldTranslation, event.Source) <= 1) {
+                if(this.State != State.Spotted) {
+                    this.State = State.Spotted;
+                }
+                return;
+            }
+            this.PathFind.SetTarget(this.FindClosePos(event.Source));
+            this.State = State.Suspitious;
+            this.Timer = this.WaitTime;
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        if(Math.DistanceSq(this.Owner.Transform.WorldTranslation, GlobalVariables.Player.Transform.WorldTranslation) > Math.Pow(this.MaxDistFromGuard*0.75, 2)) { //max distance to run ai
+            this.PathFind.Active = false;
+            this.Owner.RigidBody.Velocity = Real3(0);
+            if(this.Owner.Stealth != null) {
+                this.Owner.Stealth.Active = false;
+            }
+            return;
+        } else {
+            this.PathFind.Active = true;
+            if(this.Owner.Stealth != null) {
+                this.Owner.Stealth.Active = true;
+            }
+        }
+        
+        if (this.PathFind.Stunned) { //do not do anything if stunned
+            return;
+        }
+        
+        if (GlobalVariables.Invis && this.State == State.Spotted) { //do not see player if player is invisable
+            this.State = State.Idle;
+        }
+        
+        this.Owner.RigidBody.Velocity *= this.MoveSpeed; //set the movement speed
+        
+        //max distance
+        if(Math.Distance(GlobalVariables.Player.Transform.WorldTranslation, this.GuardPos) > this.MaxDistFromGuard && Math.Distance(this.Owner.Transform.WorldTranslation, GlobalVariables.Player.Transform.WorldTranslation) < this.ViewDist && this.Owner.Visibility.InSight) {
+            this.ViewDirection = Math.Normalize(GlobalVariables.Player.Transform.WorldTranslation - this.Owner.Transform.WorldTranslation);
+            //this.Owner.RigidBody.Velocity = -Math.Normalize(GlobalVariables.Player.Transform.WorldTranslation - this.Owner.Transform.WorldTranslation) * this.MoveSpeed / 2;
+            this.PathFind.SetTarget(this.GuardPos);
+            this.PathFind.Instaturn = true;
+            this.State = State.Idle;
+            
+            if (this.LevelSettings.BattleMusic != null) {
+                this.LevelSettings.BattleMusic.Spotted = true;
+            }
+            
+        } else {
+            this.PathFind.Instaturn = false;
+            //State Handeling
+            if (this.State == State.Idle) {
+                this.Idle(event.Dt);
+            } else if (this.State == State.Spotted) {
+                this.Spotted(event.Dt);
+            } else if (this.State == State.Suspitious) {
+                this.Sus(event.Dt);
+            } else if (this.State == State.Searching) {
+                this.Search(event.Dt);
+            }
+        }
+        
+        //Player Spotting
+        this.Spot();
+        
+    }
+    
+    //get random walkable position around 'pos'
+    function FindClosePos (pos : Real3) : Real3 {
+        return this.FindClosePos(pos, this.Range);
+    }
+    
+    function FindClosePos (pos : Real3, range : Real) : Real3 {
+        var rand = Random();
+        var newPos = pos + Real3(rand.Range(-range, range), rand.Range(-range, range), 0);
+        while(!this.LevelSettings.CreateNavGrid.GetNodeFromPos(newPos).Walkable) {
+            newPos = pos + Real3(rand.Range(-range, range), rand.Range(-range, range), 0);
+        }
+        return newPos;
+    }
+    
+    //check if player is in line of sight
+    function Spot () {
+        var vec = GlobalVariables.Player.Transform.WorldTranslation - this.Owner.Transform.WorldTranslation;
+        var vec2 = this.ViewDirection;
+        
+        var dot = Math.Dot(Math.Normalize(vec), Math.Normalize(vec2));
+        
+        var angle = Math.ACos(dot);
+        
+        if(this.State != State.Spotted && !GlobalVariables.Invis && angle <= Math.ToRadians(this.ViewAngle) && this.Owner.Visibility.InSight && Math.Distance(GlobalVariables.Player.Transform.WorldTranslation, this.Owner.Transform.WorldTranslation) <= this.ViewRange && Math.Distance(GlobalVariables.Player.Transform.WorldTranslation, this.GuardPos) <= this.MaxDistFromGuard) {
+            
+            this.State = State.Spotted;
+            this.Timer = this.SpotTime;
+            
+        }
+    }
+    
+    //*****State Functions*****
+    
+    //go to a sound source and see if player is there
+    function Sus (dt : Real) {
+        if(this.Owner.EnemyPathFind.Path == null) {
+            this.Timer -= dt;
+            if(this.Timer <= 0) {
+                this.Timer = this.WaitTime;
+                this.State = State.Idle;
+                this.PathFind.SetTarget(this.FindClosePos(this.GuardPos));
+            }
+        } else {
+            this.Timer = this.WaitTime;
+        }
+    }
+    
+    //chase player
+    function Spotted (dt : Real) {
+        
+        if (this.LevelSettings.BattleMusic != null) {
+            this.LevelSettings.BattleMusic.Spotted = true;
+        }
+        
+        if(Math.Distance(GlobalVariables.Player.Transform.WorldTranslation, this.GuardPos) > this.MaxDistFromGuard) {
+            this.State = State.Idle;
+            this.Owner.EnemyPathFind.Path = null;
+            this.Timer = this.WaitTime;
+        } else {
+            if(this.Ex == null && this.Timer > 0) {
+                this.Ex = this.Space.CreateAtPosition(Archetype.Exclaim, Real3(0, 1, 0));
+                this.Ex.AttachTo(this.Owner);
+                this.Ex.Despawn.Timer = this.WaitTime+0.5;
+            }
+            this.Timer -= dt;
+            if(this.Timer <= 0) {
+                var toSend = Notice();
+                toSend.Pos = this.Owner.Transform.WorldTranslation;
+                this.Space.DispatchEvent(Events.Notice, toSend);
+                this.Owner.RigidBody.Velocity *= this.ChaseSpeedMultiplier;
+                this.PathFind.SetTarget(GlobalVariables.Player.Transform.WorldTranslation);
+                
+                if(!this.Owner.Visibility.InSight) {
+                    this.ChaseTimer += dt;
+                    if(this.ChaseTimer >= this.MaxTimeOutOfSight) {
+                        this.ChaseTimer = 0;
+                        this.State = State.Searching;
+                        this.Timer = this.SearchTimer;
+                        this.SearchPos = this.Owner.Transform.WorldTranslation;
+                    }
+                } else {
+                    this.ChaseTimer = 0;
+                }
+                
+            } else {
+                this.Owner.EnemyPathFind.Path = null;
+            }
+        }
+    }
+    
+    //waunder around the guard position
+    function Idle (dt : Real) {
+        if(this.Owner.EnemyPathFind.Path == null) {
+            this.Timer -= dt;
+            if(this.Timer <= 0) {
+                this.Timer = this.GuardWaitTime;
+                this.PathFind.SetTarget(this.FindClosePos(this.GuardPos));
+            }
+        }
+    }
+    
+    //search for player
+    function Search (dt : Real) {
+        
+        if (this.LevelSettings.BattleMusic != null) {
+            this.LevelSettings.BattleMusic.Spotted = true;
+        }
+        
+        this.Timer -= dt;
+        if(this.Timer <= 0) {
+            this.State = State.Idle;
+            this.Timer = this.WaitTime;
+            return;
+            
+        }
+        
+        //randomly go to position within search radius
+        
+        if(this.Owner.EnemyPathFind.Path == null || this.Owner.EnemyPathFind.Path.Count == 0) {
+            this.PathFind.SetTarget(this.FindClosePos(this.SearchPos, this.SearchRange));
+        }
+        
+    }
+    
+}

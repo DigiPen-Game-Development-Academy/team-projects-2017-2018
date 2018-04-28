@@ -1,0 +1,16 @@
+class GoToLevel : ZilchComponent
+{
+    //Author - Jessica
+    
+    [Property] var LevelToLoad : Level;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+    }
+
+    function OnMouseDown(event : ViewportMouseEvent)
+    {
+        this.GameSession.DispatchEvent
+        (Events.Fade, FadeEvent(this.LevelToLoad, 1, Real4.Zero, Real4(0,0,0,1)));
+    }
+}

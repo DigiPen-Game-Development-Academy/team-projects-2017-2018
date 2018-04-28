@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "DeathScreenMenu",
+		uint64 ResourceId = 5adc89b9c23588d2,
+	},
+},

@@ -1,0 +1,90 @@
+//author Brandon Wolenetz
+
+class ItemPickup : ZilchComponent {
+    
+    var Item : Item = null;
+    
+    [Property]
+    var ID : String = "";
+    
+    function Initialize(init : CogInitializer) {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        if(GlobalVariables.GroundItems == null)
+            GlobalVariables.GroundItems = Array[Cog]();
+        GlobalVariables.GroundItems.Add(this.Owner);
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+        if(this.Item == null)
+            this.SetItemType(Utilities.ItemFromID(this.ID));
+        this.Owner.Transform.WorldTranslation = Real3(this.Owner.Transform.WorldTranslation.X, this.Owner.Transform.WorldTranslation.Y, 0);
+    }
+
+    function OnMouseDown(event : ViewportMouseEvent) {
+        var res = Utilities.Raycast(this.Owner.Transform.WorldTranslation, GlobalVariables.Player.Transform.WorldTranslation-this.Owner.Transform.WorldTranslation, this.Space.PhysicsSpace, 3);
+        
+        if(res == null || res.ObjectHit != GlobalVariables.Player) {
+            return;
+        }
+        if(this.Item != null && Math.Distance(GlobalVariables.Player.Transform.WorldTranslation, this.Owner.Transform.WorldTranslation) <= 3 && event.Button == MouseButtons.Right){
+            if(GlobalVariables.AddInventoryItem(this.Item)) {
+                this.Owner.Destroy();
+                GlobalVariables.LorePanel.Sprite.Visible = false;
+                GlobalVariables.GroundItems.RemoveFirst(this.Owner);
+            }
+        }
+    }
+    
+    function OnMouseExit(event : ViewportMouseEvent) {
+        GlobalVariables.LorePanel.Sprite.Visible = false;
+    }
+
+    function OnMouseEnter(event : ViewportMouseEvent) {
+        var res = Utilities.Raycast(this.Owner.Transform.WorldTranslation, GlobalVariables.Player.Transform.WorldTranslation-this.Owner.Transform.WorldTranslation, this.Space.PhysicsSpace, 3);
+        
+        if(res == null || res.ObjectHit != GlobalVariables.Player) {
+            return;
+        }
+        if(this.Item == null || Math.Distance(GlobalVariables.Player.Transform.WorldTranslation, this.Owner.Transform.WorldTranslation) > 3)
+            return;
+        GlobalVariables.LorePanel.Sprite.Visible = true;
+        var item = this.Item;
+            
+        var text = "";
+        
+        if(item.Type == ItemType.Weapon){
+            if(item.MagSize != -1)
+                text = "`item.Name`\n`item.ReturnLore()`\nMag: `item.CurrentMag`/`item.MagSize`\nFire Rate: `item.FireRate` per second\nDamage Per: `item.DamagePer`\nAmmo Per Shot: `item.AmmoPerShot`";
+            else
+                text = "`item.Name`\n`item.ReturnLore()`\nMag: INF\nFire Rate: `item.FireRate` per second\nDamage Per: `item.DamagePer`";
+        } else if(item.Type == ItemType.Utility){
+            if(item.MagSize != -1)
+                text = "`item.Name`\n`item.ReturnLore()`\nMag: `item.CurrentMag`/`item.MagSize`\nFire Rate: `item.FireRate` per second\nAmmo Per Shot: `item.AmmoPerShot`";
+            else
+                text = "`item.Name`\n`item.ReturnLore()`\nFire Rate: `item.FireRate` per second";
+        } else if(item.Type == ItemType.Consumable)
+            text = "`item.Name`\n`item.ReturnLore()`";
+        else
+            text = "`item.Name`\n`item.ReturnLore()`";
+            
+        text = "`text`\nRight Click to Pick up";
+        
+        GlobalVariables.LorePanel.LorePanel.Text = text;
+    }
+    
+    function SetItemType (item : Item) {
+        this.Item = item;
+        if(this.Item == null)
+            return;
+        this.Item.Init();
+        this.Owner.Sprite.SpriteSource = this.Item.GroundSprite;
+    }
+    
+    function SetItem (item : Item) {
+        this.Item = item;
+        if(this.Item == null)
+            return;
+        this.Owner.Sprite.SpriteSource = this.Item.GroundSprite;
+    }
+    
+}

@@ -1,0 +1,27 @@
+class DisplayBackgroundScale : ZilchComponent
+{
+    
+    var Padding : Real = 0.2;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+        if(GlobalVariables.UseWeapon.Utility == null) {
+            this.Owner.Area.Size = Real2(2.25, 3.9);
+            
+        } else {
+            this.Owner.Area.Size = Real2(2.25, 6);
+            
+        }
+        
+        this.Owner.Transform.Translation = Real3(-((this.Owner.Area.Size.X/2) - 0.5), -((this.Owner.Area.Size.Y/2) - 0.5), -2);
+        
+        this.Owner.Area.Size += Real2(this.Padding);
+        
+    }
+}

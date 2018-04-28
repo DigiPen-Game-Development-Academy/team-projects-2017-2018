@@ -1,0 +1,43 @@
+class DialogButton : ZilchComponent {
+    
+    [Property] var Type : DialogReturn;
+    
+    var Timer : Real = 0;
+    
+    var Closing : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        if(this.Closing) {
+            this.Timer += event.Dt;
+            if(this.Timer >= 0.4) {
+                if(this.GameSession.FindSpaceByName("UI") != null)
+                    this.GameSession.FindSpaceByName("UI").TimeSpace.Paused = false;
+                GlobalVariables.GameSpace.TimeSpace.Paused = false;
+                
+                Utilities.UnBlock();
+                
+                Utilities.DialogBox = null;
+                
+                var toSend = DialogEnded();
+                toSend.Type = this.Type;
+                this.Owner.Parent.DispatchEvent(Events.DialogEnded, toSend);
+                
+                this.Owner.Parent.Destroy();
+                
+            }
+        }
+    }
+
+    function OnMouseDown(event : ViewportMouseEvent) {
+        
+        this.Owner.Parent.SimpleAnimation.PlaySingle(Animation.DialogRev, AnimPlayMode.PlayOnce);
+        
+        this.Closing = true;
+        
+    }
+}

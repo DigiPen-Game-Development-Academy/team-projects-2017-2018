@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "Pipe_Preview_Collision",
+		uint64 ResourceId = 5a6eb70e56dedd32,
+	},
+},

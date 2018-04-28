@@ -1,0 +1,9 @@
+DataContent = 
+{
+	RichAnimationBuilder = 
+	{
+		string Name = "BossFire",
+		uint64 ResourceId = 5ab6acf3c9e73074,
+		string PreviewArchetype = "",
+	},
+},

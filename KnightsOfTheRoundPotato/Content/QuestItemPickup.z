@@ -1,0 +1,37 @@
+class QuestItemPickup : ZilchComponent {
+    [Property] var Index : Integer = 0;
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+    }
+    
+    function OnMouseDown(event : ViewportMouseEvent) {
+        if (event.Button == MouseButtons.Right) {
+            GlobalVariables.QuestItems[this.Index] = true;
+            
+            this.LevelSettings.SaveLoad.PartialSave();
+            this.Space.LoadLevel(Level.Mainworld);
+            
+        }
+    }
+    
+    function OnMouseExit(event : ViewportMouseEvent) {
+        GlobalVariables.LorePanel.Sprite.Visible = false;
+    }
+
+    function OnMouseEnter(event : ViewportMouseEvent) {
+        var res = Utilities.Raycast(this.Owner.Transform.WorldTranslation, GlobalVariables.Player.Transform.WorldTranslation-this.Owner.Transform.WorldTranslation, this.Space.PhysicsSpace, 3);
+        
+        if(res == null || res.ObjectHit != GlobalVariables.Player) {
+            return;
+        }
+        
+        GlobalVariables.LorePanel.Sprite.Visible = true;
+        
+        var text = "`QuestItem.Lore[this.Index]`\n\nRight click to pick up\nYou will return to main level when you pick this up";
+        
+        GlobalVariables.LorePanel.LorePanel.Text = text;
+    }
+    
+}

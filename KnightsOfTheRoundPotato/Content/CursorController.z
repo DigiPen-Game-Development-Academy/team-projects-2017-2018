@@ -1,0 +1,24 @@
+class CursorController : ZilchComponent {
+    
+    var Normal : SpriteSource;
+    
+    function Initialize(init : CogInitializer){
+        GlobalVariables.Cursor = this.Owner;
+        this.Normal = this.Owner.Sprite.SpriteSource;
+        Zero.Connect(this.Space, Events.MouseMove, this.OnMouseMove);
+    }
+
+    function OnMouseMove(event : ViewportMouseEvent) {
+        Zero.Mouse.Cursor = Cursor.Invisible;
+        this.Owner.Transform.WorldTranslation = this.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 10);
+    }
+    
+    function SetText() {
+        this.Owner.Sprite.SpriteSource = SpriteSource.TextCursor;
+    }
+    
+    function SetNormal() {
+        this.Owner.Sprite.SpriteSource = this.Normal;
+    }
+    
+}

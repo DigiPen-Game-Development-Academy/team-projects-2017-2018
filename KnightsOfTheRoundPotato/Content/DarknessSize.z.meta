@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "DarknessSize",
+		uint64 ResourceId = 5a91ec64b5ea477b,
+	},
+},

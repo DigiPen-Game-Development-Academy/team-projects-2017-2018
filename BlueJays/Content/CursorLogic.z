@@ -1,0 +1,115 @@
+class CursorLogic : ZilchComponent
+{
+    [Property] var Offset : Real3;
+    
+    [Property] var ImageCanPlace : SpriteSource = SpriteSource.Cursor;
+    [Property] var ImageTooExpensive : SpriteSource = SpriteSource.Circle;
+    [Property] var ImageOnCooldown : SpriteSource = SpriteSource.CircleBordered;
+    [Property] var ImageBlocked : SpriteSource = SpriteSource.DontPlace;
+    
+    var CanPlace : Boolean;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.MouseScroll, this.OnMouseScroll);
+        Zero.Connect(this.Space, Events.MouseDown, this.OnMouseDown);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    function OnMouseScroll(event : ViewportMouseEvent)
+    {
+        if(event.Scroll.Y < 0)
+        {
+            ++this.GameSession.Globals.CurrentTurretIndex;
+        }
+        else if(event.Scroll.Y > 0)
+        {
+            --this.GameSession.Globals.CurrentTurretIndex;
+        }
+    }
+    function OnMouseDown(event : ViewportMouseEvent)
+    {
+        if (this.CanPlace)
+        {
+            var globals = this.GameSession.Globals;
+            var turret = globals.GetCurrentTurret();
+            globals.GameSpace.CreateAtPosition(turret.Archetype, this.GetMouseGamePosition());
+            globals.PlayerCurrentFate -= turret.Cost;
+            if (globals.CurrentTurretIndex == 2)
+                globals.CurrentChariotCooldown = globals.MaxChariotCooldown;
+                this.Space.SoundSpace.PlayCue(SoundCue.TowerPlace);
+                
+        }
+        else
+        {
+            // @missing Play sound
+            this.Space.SoundSpace.PlayCue(SoundCue.TowerCantPlace); 
+        }
+    }
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        // Update position
+        var mousepos = this.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 0);
+        this.Owner.Transform.WorldTranslation = this.Offset + mousepos;
+        
+        // Update selected
+        if (Zero.Keyboard.KeyIsPressed(Keys.One))
+        {
+            this.GameSession.Globals.CurrentTurretIndex = 0;
+        }
+        if (Zero.Keyboard.KeyIsPressed(Keys.Two))
+        {
+            this.GameSession.Globals.CurrentTurretIndex = 1;
+        }
+        if (Zero.Keyboard.KeyIsPressed(Keys.Three))
+        {
+            this.GameSession.Globals.CurrentTurretIndex = 2;
+        }
+        
+        // Update state
+        this.CanPlace = false;
+        if (this.IsTooExpensive())
+        {
+            this.Owner.Sprite.SpriteSource = this.ImageTooExpensive;
+        }
+        else if (this.IsOnCooldown())
+        {
+            this.Owner.Sprite.SpriteSource = this.ImageOnCooldown;
+        }
+        else if (this.IsBlocked())
+        {
+            this.Owner.Sprite.SpriteSource = this.ImageBlocked;
+        }
+        else
+        {
+            this.CanPlace = true;
+            this.Owner.Sprite.SpriteSource = this.ImageCanPlace;
+        }
+    }
+    function GetMouseGamePosition() : Real3
+    {
+        var gameViewport = this.GameSession.Globals.GameSpace.LevelSettings.CameraViewport;
+        var mouseInGame = gameViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 0);
+        mouseInGame.Z = mouseInGame.Y*0.01;
+        return mouseInGame;
+    }
+    function IsTooExpensive() : Boolean
+    {
+        return this.GameSession.Globals.PlayerCurrentFate < this.GameSession.Globals.GetCurrentTurret().Cost;
+    }
+    function IsOnCooldown() : Boolean
+    {
+        if (this.GameSession.Globals.CurrentTurretIndex != 2) return false;
+        return this.GameSession.Globals.CurrentChariotCooldown > 0;
+    }
+    function IsBlocked() : Boolean
+    {
+        var physics = this.GameSession.Globals.GameSpace.PhysicsSpace;
+        var radius = this.GameSession.Globals.GetCurrentTurret().Radius;
+        var filter = CastFilter();
+        filter.IgnoreGhost = true;
+        if (this.GameSession.Globals.CurrentTurretIndex != 1) // Tower
+            filter.CollisionGroup = CollisionGroup.Player;
+        var results = physics.CastSphereResults(this.GetMouseGamePosition(), radius, 10, filter);
+        return results.IsNotEmpty;
+    }
+}

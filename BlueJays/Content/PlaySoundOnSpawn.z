@@ -1,0 +1,11 @@
+//Author: Eli Miller
+//Purpose: Plays a sound when initialized.
+
+class PlaySoundOnSpawn : ZilchComponent
+{
+    [Property] var Sound : SoundCue;
+    function Initialize(init : CogInitializer)
+    {
+        this.Space.SoundSpace.PlayCue(this.Sound);
+    }
+}

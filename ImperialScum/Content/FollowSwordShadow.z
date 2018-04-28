@@ -1,0 +1,40 @@
+//Jacob Burke
+
+//Makes the Sword Boomerang blur follow the sword boomerang
+
+class FollowSwordShadow : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(Upgrades.SwordUpgrade == 0)
+        this.Owner.Sprite.SpriteSource = SpriteSource.Weap_SwordBoomerang_Wimpy;
+        
+        if(Upgrades.SwordUpgrade == 1)
+        this.Owner.Sprite.SpriteSource = SpriteSource.Weap_SwordBoomerang_Copper;
+        
+        if(Upgrades.SwordUpgrade >= 2)
+        this.Owner.Sprite.SpriteSource = SpriteSource.Weap_SwordBoomerang_Volcano;
+        
+        var target = this.Space.FindObjectByName("SwordBoomerang");
+        
+        if(target == null)
+        {
+            this.Owner.Destroy();
+        }
+        else
+        {
+        this.Owner.RigidBody.Velocity = Math.Normalize(target.Transform.Translation -
+         this.Owner.Transform.Translation)
+       * 19.5; 
+        }
+
+        
+        
+        
+    }
+}

@@ -1,0 +1,67 @@
+class BlockType_Selector_Logic : ZilchComponent
+{
+    [Dependency] var Transform : Transform = null;
+    [Dependency] var Sprite : Sprite;
+    
+    [Property] var Type : BlockType;
+    
+    [Property] var Hub : Boolean = false;
+    
+    [Property] var HoverColor : Real4;
+    
+    var OrigColor : Real4;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.OrigColor = this.Sprite.Color;
+        
+        Zero.Connect(this.Space, Events.MiddleMouseDown, this.OnMiddleMouseDown);
+        Zero.Connect(this.Owner, Events.MiddleMouseUp, this.OnMiddleMouseUp);
+        Zero.Connect(this.Space, Events.MiddleMouseUp, this.OnMiddleMouseUpSpace);
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+    }
+
+    function OnMouseExit(event : ViewportMouseEvent)
+    {
+        if(!this.Hub)
+            this.Sprite.Color = this.OrigColor;
+    }
+
+    function OnMouseEnter(event : ViewportMouseEvent)                                                           {                                                                                                            
+        if(!this.Hub)
+            this.Sprite.Color = this.HoverColor;
+                                                                                                                }
+
+    function OnMiddleMouseUpSpace(event : ViewportMouseEvent)
+    {
+        if(this.Hub)
+        {
+            //Console.WriteLine(this.Transform.Translation.Z);
+            //this is really ineficiant but it was the only thinng that worked for some weird reason
+            this.Transform.Translation = Real3( this.Transform.Translation.X,  this.Transform.Translation.Y, 100);
+            //Console.WriteLine(this.Transform.Translation.Z);
+        }
+    }
+
+    function OnMiddleMouseUp(event : ViewportMouseEvent)
+    {
+        //Console.WriteLine("Test");
+        
+        if(this.Owner.Parent != null && this.Owner.Parent.Transform != null)
+        {
+            this.Owner.Parent.Parent.Player_Block_Placing.Type = this.Type;
+        }   
+    }
+
+    function OnMiddleMouseDown(event : ViewportMouseEvent)
+    {
+        if(this.Hub)
+        {
+            //Console.WriteLine(this.Transform.Translation.Z);
+            //this is really ineficiant but it was the only thinng that worked for some weird reason
+            this.Transform.Translation = Real3( this.Transform.Translation.X,  this.Transform.Translation.Y, 5);
+            //Console.WriteLine(this.Transform.Translation.Z);
+        }
+    }
+}

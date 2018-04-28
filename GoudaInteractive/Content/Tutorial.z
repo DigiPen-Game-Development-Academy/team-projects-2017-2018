@@ -1,0 +1,191 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class Tutorial : ZilchComponent {
+    
+    var SkipKey : Keys = Keys.X;
+    
+    var HasMoved : Boolean = false;
+    var HasSprinted : Boolean = false;
+    var HasOpenedInventory : Boolean = false;
+    var HasOpenedCraftingMenu : Boolean = false;
+    var HasTalkedAboutCrafting : Boolean = false;
+    var PromptToProceedToNextRoom : Boolean = false;
+    
+    var TutorialComplete : Boolean = false;
+    
+    var MinMoveAmount : Real = 3.5;
+    var CurrMinMoveAmount : Real = 0.0;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(Relocation.UISpace, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        //Console.WriteLine("INV Open: `Relocation.Player.Inventory.InventoryOpen`");
+        //Console.WriteLine("Crafting Open: `Relocation.Player.Inventory.CraftingOpen`\n");
+        
+        if
+        (Relocation.Player.Inventory.CraftingOpen == true)
+        {
+            if (Relocation.Player.Crafting.ScrollPosition == 2 && this.Space.FindObjectByName("CraftingArea").CraftingArea.PlayerInArea == true)
+            {
+                Relocation.UISpace.FindObjectByName("PistolArrow").Blink.On = true;
+                Relocation.UISpace.FindObjectByName("WeaponArrow").Blink.On = false;
+                Relocation.UISpace.FindObjectByName("WeaponArrow").Sprite.Visible = false;
+            }
+            else
+            {
+                Relocation.UISpace.FindObjectByName("PistolArrow").Blink.On = false;
+                Relocation.UISpace.FindObjectByName("PistolArrow").Sprite.Visible = false;
+            }
+            
+            if (this.Space.FindObjectByName("CraftingArea").CraftingArea.PlayerInArea == true)
+                Relocation.UISpace.FindObjectByName("WeaponArrow").Blink.On = true;
+            else
+            {
+                Relocation.UISpace.FindObjectByName("WeaponArrow").Blink.On = false;
+                Relocation.UISpace.FindObjectByName("WeaponArrow").Sprite.Visible = false;
+            }
+        }
+        
+        
+        //Console.WriteLine("Visible: `this.LevelSettings.UICreator.UISpace.FindObjectByName("WeaponArrow").Sprite.Visible`");
+        
+        if(!this.HasMoved && Relocation.Player != null) {
+            
+            Relocation.NotificationManager.DisplayKey(Relocation.Player.Movement.Up, this.IsMoving(), true);
+            Relocation.NotificationManager.DisplayKey(Relocation.Player.Movement.Left, this.IsMoving(), false);
+            Relocation.NotificationManager.DisplayKey(Relocation.Player.Movement.Down, this.IsMoving(), false);
+            Relocation.NotificationManager.DisplayKey(Relocation.Player.Movement.Right, this.IsMoving(), false);
+            Relocation.NotificationManager.DisplayKeySuffix("to move", true);
+            
+            if(this.IsMoving())
+                this.CurrMinMoveAmount += event.Dt;
+            
+            if(this.CurrMinMoveAmount >= this.MinMoveAmount || Zero.Keyboard.KeyIsPressed(this.SkipKey)) {
+                this.HasMoved = this.RunTaskCompleted();
+                return;
+            }
+            
+        }
+        
+        if(!this.HasSprinted && this.HasMoved && Relocation.Player != null) {
+            
+            Relocation.NotificationManager.DisplayKey(Relocation.Player.Movement.Sprint, this.IsSprinting(), true);
+            Relocation.NotificationManager.DisplayKeySuffix("while moving to sprint", true);
+            
+            if(this.IsSprinting())
+                this.CurrMinMoveAmount += event.Dt;
+            
+            if(this.CurrMinMoveAmount >= this.MinMoveAmount || Zero.Keyboard.KeyIsPressed(this.SkipKey)) {
+                this.HasSprinted = this.RunTaskCompleted();
+                return;
+            }
+            
+        }
+        
+        if(!this.HasOpenedInventory && this.HasMoved && this.HasSprinted && Relocation.Player != null) {
+            
+            Relocation.NotificationManager.DisplayKey(Relocation.Player.Inventory.InventoryButton, true, true);
+            Relocation.NotificationManager.DisplayKeySuffix("will open your inventory", true);
+            
+            if(Relocation.Player.Inventory.InventoryOpen || Zero.Keyboard.KeyIsPressed(this.SkipKey)) {
+                this.HasOpenedInventory = this.RunTaskCompleted();
+                return;
+            }
+            
+        }
+        
+        if(!this.HasOpenedCraftingMenu && this.HasOpenedInventory && this.HasMoved && this.HasSprinted && Relocation.Player != null) {
+            
+            Relocation.NotificationManager.DisplayKey(Relocation.Player.Inventory.CraftingButton, true, true);
+            Relocation.NotificationManager.DisplayKeySuffix("toggles the crafting menu", true);
+            
+            if(Zero.Keyboard.KeyIsPressed(Relocation.Player.Inventory.CraftingButton) || Zero.Keyboard.KeyIsPressed(this.SkipKey)) {
+                this.HasOpenedCraftingMenu = this.RunTaskCompleted();
+                return;
+            }
+            
+        }
+        
+        if(
+            !this.HasTalkedAboutCrafting &&
+            this.HasOpenedCraftingMenu &&
+            this.HasOpenedInventory &&
+            this.HasMoved &&
+            this.HasSprinted &&
+            Relocation.Player != null
+        ) {
+            
+            Relocation.NotificationManager.DisplayKeySuffix("Crafting is essential for progression", true);
+            
+            this.CurrMinMoveAmount += event.Dt;
+            
+            if(this.CurrMinMoveAmount >= this.MinMoveAmount || Zero.Keyboard.KeyIsPressed(this.SkipKey)) {
+                this.HasTalkedAboutCrafting = this.RunTaskCompleted();
+                return;
+            }
+            
+        }
+        
+        if(
+            !this.PromptToProceedToNextRoom &&
+            this.HasTalkedAboutCrafting &&
+            this.HasOpenedCraftingMenu &&
+            this.HasOpenedInventory &&
+            this.HasMoved &&
+            this.HasSprinted &&
+            Relocation.Player != null
+        ) {
+            
+            Relocation.NotificationManager.DisplayKeySuffix("Proceed to the next room, pick up the drill, and\nequip it from your inventory", true);
+            
+            this.CurrMinMoveAmount += event.Dt;
+            
+            if(this.CurrMinMoveAmount >= this.MinMoveAmount || Zero.Keyboard.KeyIsPressed(this.SkipKey)) {
+                this.PromptToProceedToNextRoom = this.RunTaskCompleted();
+                return;
+            }
+            
+        }
+        
+        this.TutorialComplete = true;
+        
+    }
+    
+    function RunTaskCompleted() : Boolean {
+        
+        this.CurrMinMoveAmount = 0.0;
+        Relocation.NotificationManager.RemoveControlTip(true);
+        
+        return true;
+        
+    }
+    
+    function IsMoving() : Boolean {
+        return  Relocation.Player != null &&
+                Relocation.Player.Movement != null &&
+                Relocation.Player.RigidBody != null &&
+                Relocation.Player.RigidBody.Velocity.XY != Real2(0.0, 0.0) && (
+                    Zero.Keyboard.KeyIsDown(
+                        Relocation.Player.Movement.Up
+                    ) ||
+                    Zero.Keyboard.KeyIsDown(
+                        Relocation.Player.Movement.Left
+                    ) ||
+                    Zero.Keyboard.KeyIsDown(
+                        Relocation.Player.Movement.Down
+                    ) ||
+                    Zero.Keyboard.KeyIsDown(
+                        Relocation.Player.Movement.Right
+                    )
+                );
+    }
+    
+    function IsSprinting() : Boolean {
+        return this.IsMoving() && Relocation.Player != null && Zero.Keyboard.KeyIsDown(Relocation.Player.Movement.Sprint);
+    }
+    
+}

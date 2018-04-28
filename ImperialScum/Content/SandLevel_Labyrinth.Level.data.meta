@@ -1,0 +1,18 @@
+DataContent = 
+{
+	DataBuilder = 
+	{
+		string Name = "SandLevel_Labyrinth",
+		uint64 ResourceId = 5a2d67691a5bd1bf,
+		string LoaderType = "Level",
+		uint Version = 0,
+		bool ShowInEditor = true,
+	},
+	ContentTags = 
+	{
+		Array Tags = 
+		[
+			"SandLevels",
+		],
+	},
+},

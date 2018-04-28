@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "OxygenTank ",
+		uint64 ResourceId = 5abd179bf397c488,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 76,
+		uint FrameSizeY = 141,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 38,
+		float OriginY = 70,
+		float PixelsPerUnit = 16,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

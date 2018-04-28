@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "BasicPathFollowAI",
+		uint64 ResourceId = 5a9afa8e3da1492a,
+	},
+},

@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "OptionsSnap1",
+		uint64 ResourceId = 5a69d20ddc4fca4a,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 18,
+		uint FrameSizeY = 32,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 9,
+		float OriginY = 16,
+		float PixelsPerUnit = 24,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

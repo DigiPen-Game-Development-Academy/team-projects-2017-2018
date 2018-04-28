@@ -1,0 +1,9 @@
+DataContent = 
+{
+	RichAnimationBuilder = 
+	{
+		string Name = "PotatA2",
+		uint64 ResourceId = 5ab4083467e1fd36,
+		string PreviewArchetype = "",
+	},
+},

@@ -1,0 +1,13 @@
+class PigeonCounter : ZilchComponent
+{
+    var PigeonCount : Integer = 0;
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+    }
+}

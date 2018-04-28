@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "Particle_Sparkle()",
+		uint64 ResourceId = 5add733cf6bb7f8c,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 7,
+		uint FrameSizeY = 7,
+		uint FrameCount = 7,
+		float FrameDelay = 0.100000001,
+		float OriginX = 3.5,
+		float OriginY = 3.5,
+		float PixelsPerUnit = 64,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

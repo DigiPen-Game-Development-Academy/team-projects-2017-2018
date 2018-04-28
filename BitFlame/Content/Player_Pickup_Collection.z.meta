@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "Player_Pickup_Collection",
+		uint64 ResourceId = 5a861b24e334100b,
+	},
+},

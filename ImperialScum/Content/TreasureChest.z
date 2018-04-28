@@ -1,0 +1,140 @@
+//Jacob Burke
+
+//LOOTBOXES! this is the script that makes the game, kids!
+
+class TreasureChest : ZilchComponent
+{
+    var RandomDieRoll:Real;
+    
+    var Active:Boolean = false;
+    
+    var Spawn:Archetype;
+    
+    [Property]
+    var BreakSFX:SoundCue = SoundCue.HitSound;
+    
+    function Initialize(init : CogInitializer)
+    {
+        var rand = new Random();
+        
+        this.RandomDieRoll = rand.DieRoll(10);
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.PlayerController != null)
+        {
+           this.Active = true;
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var random = new Random();
+        
+        if(this.Active == true)
+        {
+            while(this.RandomDieRoll >= 0)
+            {
+                var randomVelocityNegative = random.DieRoll(10) * -1;
+                var randomVelocityPositive = random.DieRoll(10);
+                var randomChoose = random.DieRoll(2);
+                var randomLoot = random.DieRoll(100);
+    
+                if(randomLoot <= 40)
+                this.Spawn = Archetype.Gear;
+                
+                if(randomLoot >= 41 && randomLoot <= 80)
+                this.Spawn = Archetype.Food;
+                
+                if(randomLoot > 80 && randomLoot <= 99)
+                this.Spawn = Archetype.HealthPotion;
+                
+                if(randomLoot > 99)
+                this.RareItem();
+                
+                var treasure = this.Space.CreateAtPosition(this.Spawn,
+                this.Owner.Transform.Translation);
+                
+                if(this.Spawn == null)
+                continue;
+                
+                if(randomChoose == 1)
+                {
+                if(this.Spawn == null)
+                continue;
+                treasure.RigidBody.Velocity = Real3(randomVelocityNegative,randomVelocityPositive, 0);
+                }
+                
+                if(randomChoose == 2)
+                {
+                if(this.Spawn == null)
+                continue;
+                treasure.RigidBody.Velocity = Real3(randomVelocityPositive,randomVelocityPositive, 0);
+                }
+                
+                this.RandomDieRoll -= 1;
+            }
+            if(this.RandomDieRoll <= 0)
+            {
+                this.Owner.Destroy();
+                
+                this.Space.SoundSpace.PlayCue(this.BreakSFX);
+                
+                this.Space.CreateAtPosition(Archetype.ExplodeBubbles, this.Owner.Transform.Translation); 
+                this.Space.CreateAtPosition(Archetype.HitExplode, this.Owner.Transform.Translation);
+            }
+        }
+    }
+    
+    function RareItem()
+    {
+        if(AdvInventory.PlayerInventory["Ring_Regen"] > 0
+        && AdvInventory.PlayerInventory["Ring_Jump"] > 0
+        && AdvInventory.PlayerInventory["ArmorVolcano"] > 0)
+        {
+            for( var i = 5; i > 0; --i)
+            {
+                this.Space.CreateAtPosition(Archetype.Gear,
+                this.Owner.Transform.Translation);
+            }
+            return;
+            
+        }
+        
+        var random = new Random();
+        var randomLoot = random.DieRoll(3);
+        
+        if(randomLoot == 1)
+        {
+            if(AdvInventory.PlayerInventory["Ring_Regen"] >= 1)
+            this.RareItem();
+            else
+            this.Space.CreateAtPosition(Archetype.Ring_Regen,
+                this.Owner.Transform.Translation);
+            
+        }
+        else if(randomLoot == 2)
+        {
+            if(AdvInventory.PlayerInventory["Ring_Jump"] >= 1)
+            this.RareItem();
+            else
+            this.Space.CreateAtPosition(Archetype.Ring_Jump,
+                this.Owner.Transform.Translation);
+            
+        }
+        else if(randomLoot == 3)
+        {
+            if(AdvInventory.PlayerInventory["ArmorVolcano"] >= 1)
+             this.RareItem();
+            else
+            this.Space.CreateAtPosition(Archetype.VolcanoArmor,
+                this.Owner.Transform.Translation);
+            
+        }
+
+    }
+}

@@ -1,0 +1,88 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: MATTHEW ZEARING
+
+class ItemDrop : ZilchComponent {
+    
+    [Property] var ItemID : Integer = 0;
+    [Property] var ItemAmount : Integer = 0;
+    [Property] var DespawnTime : Real = 5;
+    
+    var CurrLifetime : Real = 0.0;
+    
+    function Initialize(init : CogInitializer) {
+        
+        Zero.Connect(this.Owner, Events.MouseUpdate, this.OnMouseUpdate);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+    }
+    
+    function OnMouseUpdate(event : ViewportMouseEvent) {
+        
+        Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.ShowTooltip(true);
+        Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.TooltipText(
+            "`Relocation.Items[this.ItemID].ItemRecognizableName` (x`this.ItemAmount`)",
+            "`Relocation.Items[this.ItemID].ItemLore`",
+            Relocation.Items[this.ItemID].ItemColor,
+            Relocation.Items[this.ItemID].ItemLoreColor
+        );
+        
+    }
+    
+    function OnMouseExit(event : ViewportMouseEvent) {
+        Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.ShowTooltip(false);
+    }
+    
+    function OnCollisionStarted(event : CollisionEvent) {
+        
+        if(event.OtherObject.Name == Relocation.EntityPlayer) {
+            
+            if(event.OtherObject.Inventory != null && !event.OtherObject.Inventory.CheckIfFull()) {
+                
+                event.OtherObject.Inventory.GiveItemWithAmount(this.ItemID, false, this.ItemAmount);
+                
+                Relocation.NotificationManager.GiveNotification(
+                    "Picked up `Relocation.Items[this.ItemID].ItemRecognizableName` (x`this.ItemAmount`)",
+                    2.5,
+                    Real4(0.0),
+                    "`Relocation.Items[this.ItemID].ItemRecognizableName` (x`this.ItemAmount`)",
+                    "`Relocation.Items[this.ItemID].ItemLore`",
+                    Relocation.Items[this.ItemID].ItemColor,
+                    Relocation.Items[this.ItemID].ItemLoreColor
+                );
+                
+                this.Space.SoundSpace.PlayCue(SoundCue.ItemPickup);
+                this.Owner.Destroy();
+                
+            }
+            
+        } else if(event.OtherObject.ItemDrop != null) {
+            
+            if(this.CurrLifetime > event.OtherObject.ItemDrop.CurrLifetime && event.OtherObject.ItemDrop.ItemID == this.ItemID) {
+                //event.OtherObject.ItemDrop.ItemAmount += this.ItemAmount;
+                //this.Owner.Destroy();
+            } else if(this.CurrLifetime >= event.OtherObject.ItemDrop.CurrLifetime) {
+                var rand = Random();
+                this.Owner.Transform.Translation += Real3(rand.Range(-0.25, 0.25), rand.Range(-0.25, 0.25), 0.0);
+            }
+            
+        }
+        
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.CurrLifetime > this.DespawnTime * 60) {
+            this.Owner.Destroy();
+        } else {
+            this.CurrLifetime += event.Dt;
+        }
+        
+        if(this.ItemID != 0 && this.Owner.Sprite.SpriteSource == SpriteSource.MissingTexture) {
+            this.Owner.Sprite.SpriteSource = Relocation.Items[this.ItemID].Sprite;
+        }
+        
+    }
+    
+}

@@ -1,0 +1,243 @@
+/***********************
+Ship_Menu_Button_Repair.Z
+by: Jakob McFarland
+Contributers: Luke Taranowski
+Date: 2/12/18
+Brief: these components will make a button look good and be functional for repairing the ship
+***********************/
+
+class Ship_Menu_Button_Repair_Function : ZilchComponent
+{
+    // Stage 1 ship repair costs
+    [Property] var Stage0IronCost : Integer = 0;
+    [Property] var Stage0CopperCost : Integer = 0; 
+    [Property] var Stage0TitaniumCost : Integer = 0;
+    [Property] var Stage0AluminiumCost : Integer = 0;
+        
+    // Stage 1 ship repair costs
+    [Property] var Stage1IronCost : Integer = 0;
+    [Property] var Stage1CopperCost : Integer = 0; 
+    [Property] var Stage1TitaniumCost : Integer = 0;
+    [Property] var Stage1AluminiumCost : Integer = 0;
+        
+    // Stage 2 ship repair costs
+    [Property] var Stage2IronCost : Integer = 0;
+    [Property] var Stage2CopperCost : Integer = 0; 
+    [Property] var Stage2TitaniumCost : Integer = 0;
+    [Property] var Stage2AluminiumCost : Integer = 0;
+        
+    // Stage 4 ship repair costs
+    [Property] var Stage3IronCost : Integer = 0;
+    [Property] var Stage3CopperCost : Integer = 0; 
+    [Property] var Stage3TitaniumCost : Integer = 0;
+    [Property] var Stage3AluminiumCost : Integer = 0;
+        
+    var CurrentIronCost : Integer = 0;
+    var CurrentCopperCost : Integer = 0;     
+    var CurrentTitaniumCost : Integer = 0;
+    var CurrentAluminiumCost : Integer = 0;      
+
+    [Dependency] var Reactive : Reactive = null;
+
+    [Dependency] var Transform : Transform = null;
+    
+    //visual stuff
+    [Dependency] var Sprite : Sprite = null;
+        
+    //colors for sits
+    var OriginalColor :Real4 = Real4();
+        
+    [Property] var HoverColor : Real4 = Real4(1, 1, 1, 1);
+
+    [Property] var ClickColor : Real4 = Real4(1.0, 1.0, 1.0, 1); 
+    
+    [Property] var DisabledColor : Real4 = Real4(1.0, 1.0, 1.0, 1);
+    
+    var OriginalScale : Real3 = Real3();
+        
+    [Property] var HoverScale : Real = 1.2;
+        
+    [Property] var ClickScale : Real = 1.0;
+        
+    function Initialize(init : CogInitializer)
+    {
+        this.OriginalColor = this.Sprite.Color;
+        this.OriginalScale = this.Transform.Scale;
+        
+        Zero.Connect(this.Owner, Events.LeftMouseDown, this.OnLeftMouseDown);
+
+        Zero.Connect(this.Owner, Events.LeftMouseUp, this.OnLeftMouseUp);
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.GameSession.GameVars.ShipRepairStage == 0)
+        {
+            this.CurrentAluminiumCost = this.Stage0AluminiumCost;
+            this.CurrentCopperCost = this.Stage0CopperCost;
+            this.CurrentIronCost = this.Stage0IronCost;
+            this.CurrentTitaniumCost = this.Stage0TitaniumCost;
+        }
+        else if(this.GameSession.GameVars.ShipRepairStage == 1)
+        {
+            this.CurrentAluminiumCost = this.Stage1AluminiumCost;
+            this.CurrentCopperCost = this.Stage1CopperCost;
+            this.CurrentIronCost = this.Stage1IronCost;
+            this.CurrentTitaniumCost = this.Stage1TitaniumCost;
+        }
+        else if(this.GameSession.GameVars.ShipRepairStage == 2)
+        {
+            this.CurrentAluminiumCost = this.Stage2AluminiumCost;
+            this.CurrentCopperCost = this.Stage2CopperCost;
+            this.CurrentIronCost = this.Stage2IronCost;
+            this.CurrentTitaniumCost = this.Stage2TitaniumCost;
+            
+        }
+        else if(this.GameSession.GameVars.ShipRepairStage == 3)
+        {
+            this.CurrentAluminiumCost = this.Stage3AluminiumCost;
+            this.CurrentCopperCost = this.Stage3CopperCost;
+            this.CurrentIronCost = this.Stage3IronCost;
+            this.CurrentTitaniumCost = this.Stage3TitaniumCost;
+            
+        }
+        
+        foreach(var child in this.Space.FindObjectByName("RepairToolTip").Children)
+        {
+            if(child.Name == "AluminiumCostIndicator")
+            {
+                child.SpriteText.Text = "`this.CurrentAluminiumCost`";
+            }
+            if(child.Name == "CopperCostIndicator")
+            {
+                child.SpriteText.Text = "`this.CurrentCopperCost`";
+            }
+            if(child.Name == "IronCostIndicator")
+            {
+                child.SpriteText.Text = "`this.CurrentIronCost`";
+            }
+            if(child.Name == "TitaniumCostIndicator")
+            {
+                child.SpriteText.Text = "`this.CurrentTitaniumCost`";
+            }
+        }
+        
+        if(!(this.GameSession.GameVars.PlayerResources >= this.CurrentIronCost && this.GameSession.GameVars.PlayerCopper >= this.CurrentCopperCost && this.GameSession.GameVars.PlayerTitanium >= this.CurrentTitaniumCost && this.GameSession.GameVars.PlayerAluminium >= this.CurrentAluminiumCost))
+        {
+            this.Sprite.Color = this.DisabledColor;
+        }
+        else
+        {
+            this.Sprite.Color = this.OriginalColor;
+        }
+    }
+
+    function OnLeftMouseDown(event : ViewportMouseEvent)
+    {
+        if(this.GameSession.GameVars.PlayerResources >= this.CurrentIronCost && this.GameSession.GameVars.PlayerCopper >= this.CurrentCopperCost && this.GameSession.GameVars.PlayerTitanium >= this.CurrentTitaniumCost && this.GameSession.GameVars.PlayerAluminium >= this.CurrentAluminiumCost)
+        { 
+            this.Owner.Actions.Cancel();
+            var seq = Action.Sequence(this.Owner.Actions);
+            var grp = Action.Group(seq);
+            
+            Action.Property(grp, @this.Sprite.Color, this.ClickColor, 0.03, Ease.QuadInOut);
+            Action.Property(grp, @this.Transform.Scale, this.OriginalScale * this.ClickScale, 0.3, Ease.QuadInOut);
+        }
+    }
+    
+    function OnMouseEnter(event : ViewportMouseEvent)
+    {
+        if(this.GameSession.GameVars.PlayerResources >= this.CurrentIronCost && this.GameSession.GameVars.PlayerCopper >= this.CurrentCopperCost && this.GameSession.GameVars.PlayerTitanium >= this.CurrentTitaniumCost && this.GameSession.GameVars.PlayerAluminium >= this.CurrentAluminiumCost)
+        {   
+            this.Space.SoundSpace.PlayCue(SoundCue.Blip_Hover);
+            
+            this.Transform.Translation.Z += 10;
+                    
+            this.Owner.Actions.Cancel();
+            var seq = Action.Sequence(this.Owner.Actions);
+            var grp = Action.Group(seq);
+                
+            Action.Property(grp, @this.Sprite.Color, this.HoverColor, 0.03, Ease.QuadInOut);
+            Action.Property(grp, @this.Transform.Scale, this.OriginalScale * this.HoverScale, 0.3, Ease.QuadInOut);
+        }
+    
+        this.Space.FindObjectByName("RepairToolTip").Sprite.Visible = true;
+        
+        foreach (var child in this.Space.FindObjectByName("RepairToolTip").Children) 
+        {
+            if(child != null && child.Sprite != null)
+            {
+                child.Sprite.Visible = true;
+            }
+                
+            if(child != null && child.SpriteText != null)
+            {
+                child.SpriteText.Visible = true;
+            }     
+        }
+    }
+        
+    function OnMouseExit(event : ViewportMouseEvent)
+    {
+        var color = this.DisabledColor;
+        
+        if(this.GameSession.GameVars.PlayerResources >= this.CurrentIronCost && this.GameSession.GameVars.PlayerCopper >= this.CurrentCopperCost && this.GameSession.GameVars.PlayerTitanium >= this.CurrentTitaniumCost && this.GameSession.GameVars.PlayerAluminium >= this.CurrentAluminiumCost)
+        { 
+            color = this.OriginalColor;
+        }
+
+        this.Owner.Actions.Cancel();
+        var seq = Action.Sequence(this.Owner.Actions);
+        var grp = Action.Group(seq);
+        
+        Action.Property(grp, @this.Sprite.Color, color, 0.03, Ease.QuadInOut);
+        Action.Property(grp, @this.Transform.Scale, this.OriginalScale, 0.3, Ease.QuadInOut);
+
+        this.Space.FindObjectByName("RepairToolTip").Sprite.Visible = false;
+        
+        foreach (var child in this.Space.FindObjectByName("RepairToolTip").Children) 
+        {
+            if(child != null && child.Sprite != null)
+            {
+                child.Sprite.Visible = false;
+            }
+            
+            if(child != null && child.SpriteText != null)
+            {
+                child.SpriteText.Visible = false;
+
+            }
+        }
+    }
+
+    function OnLeftMouseUp(event : ViewportMouseEvent)
+    {
+        if(this.GameSession.GameVars.PlayerResources >= this.CurrentIronCost && this.GameSession.GameVars.PlayerCopper >= this.CurrentCopperCost && this.GameSession.GameVars.PlayerTitanium >= this.CurrentTitaniumCost && this.GameSession.GameVars.PlayerAluminium >= this.CurrentAluminiumCost)
+        { 
+            Console.WriteLine(this.GameSession.GameVars.ShipRepairStage);
+            this.GameSession.GameVars.PlayerResources -= this.CurrentIronCost;
+            this.GameSession.GameVars.PlayerCopper -= this.CurrentCopperCost;
+            this.GameSession.GameVars.PlayerTitanium -= this.CurrentTitaniumCost;
+            this.GameSession.GameVars.PlayerAluminium -= this.CurrentAluminiumCost;
+                
+            this.GameSession.GameVars.ShipRepairStage += 1;
+        
+            this.Space.SoundSpace.PlayCue(SoundCue.Ship_repair_sound);
+        
+            if(this.GameSession.GameVars.ShipRepairStage == 4)
+            {
+                var buildingRecall = BuildingRecall();
+                this.GameSession.DispatchEvent(Events.BuildingRecall, buildingRecall);
+                
+                this.GameSession.GameVars.NewLevel = Level.WinLevel;
+            }
+        }
+        else
+        {
+            this.Space.SoundSpace.PlayCue(SoundCue.Blip_CantSelect);
+        }     
+    }
+}

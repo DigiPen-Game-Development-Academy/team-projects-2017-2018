@@ -1,0 +1,26 @@
+class QuitButton : ZilchComponent {
+    [Dependency]
+    var Button : Button;
+    var Dialog : Cog = null;
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+    }
+
+    function OnDialogEnded(event : DialogEnded) {
+        
+        if(event.Type == DialogReturn.YES) {
+            this.GameSession.Quit();
+        }
+        
+        Zero.Disconnect(this.Owner, Events.DialogEnded, this.Dialog);
+        
+    }
+
+    function OnMouseDown(event : ViewportMouseEvent) {
+        var dialog = Utilities.Dialog("Are you sure you want to quit?\nThis will exit to the desktop!", DialogTypes.YESNO, 10);
+        if(dialog != null) {
+            this.Dialog = dialog;
+            Zero.Connect(this.Dialog, Events.DialogEnded, this.OnDialogEnded);
+        }
+    }
+}

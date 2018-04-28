@@ -1,0 +1,41 @@
+class TimeTimer : ZilchComponent {
+    var Timer : Real = 0;
+    var Once : Boolean = false;
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Space, Events.LevelStarted, this.OnLevelStarted);
+    }
+
+    function OnLevelStarted(event : GameEvent) {
+        this.Space.TimeSpace.TimeScale = 1;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        this.Timer -= event.Dt;
+        this.Space.SoundSpace.Pitch = this.Space.TimeSpace.TimeScale-1;
+        if(GlobalVariables.SFXSpace != null) {
+            GlobalVariables.SFXSpace.SoundSpace.Pitch = this.Space.TimeSpace.TimeScale-1;
+        }
+        MusicUtils.MusicSoundSpace.Pitch = this.Space.TimeSpace.TimeScale-1;
+        if(this.Once && this.Timer <= 0) {
+            this.Once = false;
+            this.Space.TimeSpace.TimeScale = 1;
+            GlobalVariables.Player.PlayerMovment.MoveSpeed = GlobalVariables.Player.PlayerMovment.StartSpd;
+            this.LevelSettings.CameraViewport.Camera.CamFollow.MoveSpd = this.LevelSettings.CameraViewport.Camera.CamFollow.StartSpd;
+            GlobalVariables.SloMo = false;
+        }
+    }
+    
+    function SetTimer (timeScale : Real, time : Real, movSpd : Real) {
+        
+        GlobalVariables.Player.PlayerMovment.MoveSpeed *= movSpd;
+        this.Once = true;
+        this.Timer = time;
+        this.Space.TimeSpace.TimeScale = timeScale;
+        this.LevelSettings.CameraViewport.Camera.CamFollow.MoveSpd *= 1/timeScale;
+        if(timeScale < 1)
+            GlobalVariables.SloMo = true;
+        
+    }
+    
+}

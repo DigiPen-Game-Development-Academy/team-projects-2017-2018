@@ -1,0 +1,64 @@
+class EnemySprite : ZilchComponent {
+    
+    [Dependency]
+    var AI : EnemyAI;
+    
+    [Property] var North      : SpriteSource;
+    [Property] var NorthEast  : SpriteSource;
+    [Property] var East       : SpriteSource;
+    [Property] var SouthEast  : SpriteSource;
+    [Property] var South      : SpriteSource;
+    [Property] var SouthWest  : SpriteSource;
+    [Property] var West       : SpriteSource;
+    [Property] var NorthWest  : SpriteSource;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        this.Owner.Sprite.SpriteSource = this.South;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(!this.Owner.BasicPathFollowAI.Active) {
+            return;
+        }
+        
+        var angle = Math.ToDegrees(Math.ATan2(this.AI.ViewDirection.Y, this.AI.ViewDirection.X));
+        if(angle >= 22.5)
+            angle -= 360;
+        if(angle < 22.5 && angle > -22.5) {
+            if(this.Owner.Sprite.SpriteSource != this.East)
+                this.Owner.Sprite.SpriteSource = this.East;
+        } else if(angle < -22.5 && angle > -67.5) {
+            if(this.Owner.Sprite.SpriteSource != this.SouthEast)
+                this.Owner.Sprite.SpriteSource = this.SouthEast;
+        } else if(angle < -67.5 && angle > -112.5) {
+            if(this.Owner.Sprite.SpriteSource != this.South)
+                this.Owner.Sprite.SpriteSource = this.South;
+        } else if(angle < -112.5 && angle > -157.5) {
+            if(this.Owner.Sprite.SpriteSource != this.SouthWest)
+                this.Owner.Sprite.SpriteSource = this.SouthWest;
+        } else if(angle < -157.5 && angle > -202.5) {
+            if(this.Owner.Sprite.SpriteSource != this.West)
+                this.Owner.Sprite.SpriteSource = this.West;
+        } else if(angle < -202.5 && angle > -247.5) {
+            if(this.Owner.Sprite.SpriteSource != this.NorthWest)
+                this.Owner.Sprite.SpriteSource = this.NorthWest;
+        } else if(angle < -247.5 && angle > -292.5) {
+            if(this.Owner.Sprite.SpriteSource != this.North)
+                this.Owner.Sprite.SpriteSource = this.North;
+        } else {
+            if(this.Owner.Sprite.SpriteSource != this.NorthEast)
+                this.Owner.Sprite.SpriteSource = this.NorthEast;
+        }
+        
+        this.Owner.Sprite.AnimationSpeed = Math.Distance(Real3(0), this.Owner.RigidBody.Velocity);
+        
+        if(Math.Distance(Real3(0), this.Owner.RigidBody.Velocity) == 0) {
+            this.Owner.Sprite.AnimationActive = false;
+            this.Owner.Sprite.CurrentFrame = 0;
+        } else {
+            this.Owner.Sprite.AnimationActive = true;
+        }
+    }
+}

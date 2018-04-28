@@ -1,0 +1,145 @@
+/*************************************
+Filename: PlayerShooting
+Author: Sage Dupuy
+Contributors: 
+- Jakob McFarland (Shooting speed is normal + Player Velocity + if around shooting popup text)
+-
+-
+-
+Last modified: 1/23/2018
+Brief:
+This controls the shooting for the player.
+******************************************/
+
+
+class PlayerShooting : ZilchComponent
+{
+    [Property] var FireRate : Real = 0.5;
+    
+    [Property] var BulletSpeed : Real = 10.0;
+    
+    [Property] var Bullet : Archetype = null;
+    
+    [Property] var CanShoot : Boolean = true;
+    
+    [Property] var ShotText : Archetype = null;
+    
+    [Property] var ShootingSound : SoundCue;
+    
+    //if the player has spread shot 
+    [Property] var SpreadShot : Boolean = false;
+    //Rotation between shots in degrees
+    [Property] var SpreadAmount : Real = 10;
+      
+    var Timer : Real = 0.0; 
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var screenPos = Zero.Mouse.ScreenPosition;
+        var mousePos = this.LevelSettings.CameraViewport.ScreenToWorldZPlane(screenPos, 0.0);
+        var mouseDirection = mousePos - this.Owner.Transform.WorldTranslation;
+        mouseDirection = Math.Normalize(mouseDirection);
+        
+        if(Zero.Mouse.IsButtonDown(MouseButtons.Left) && this.Timer >= this.FireRate - this.GameSession.GameVars.HasUpgrade_FirerateI && this.CanShoot)
+        {
+            if(this.ShootingSound != null)
+            {
+                this.Space.SoundSpace.PlayCue(this.ShootingSound);
+            }
+            
+            var bullet = this.Space.CreateAtPosition(this.Bullet,this.Owner.Transform.WorldTranslation);
+            
+            var position = this.Owner.Transform.Translation;
+            
+            var horOrVert = Random().CoinFlip();
+            
+            var upOrDown = Random().CoinFlip();
+            
+            var leftOrRight = Random().CoinFlip();
+            
+            if(horOrVert)
+            {
+                //horizontal
+                
+                if(leftOrRight)
+                {
+                    //left
+                    
+                    position.X -= Random().Range(3,4);
+                    
+                    position.Y = Random().Range(-2.5, 2.5);
+                }
+                else
+                {
+                    //right
+                    
+                    position.X += Random().Range(3,4);
+                    
+                    position.Y = Random().Range(-2.5, 2.5);
+                }
+            }
+            else
+            {
+                //vertical
+                
+                if(upOrDown)
+                {
+                    //up
+                    
+                    position.Y += Random().Range(3,4);
+                    
+                    position.X = Random().Range(-2.5, 2.5);
+                }
+                else
+                {
+                    //down
+                    
+                    position.Y -= Random().Range(3,4);
+                    
+                    position.X = Random().Range(-2.5, 2.5);
+                }
+            }
+            
+            if(this.GameSession.GameVars.EnablePopupSoundText)
+            {
+                this.Space.CreateAtPosition(this.ShotText, Real3(this.Owner.Transform.WorldTranslation.X + position.X, this.Owner.Transform.WorldTranslation.Y + position.Y, 5.0));
+            }
+            bullet.RigidBody.Velocity += mouseDirection * this.BulletSpeed * this.GameSession.GameVars.HasUpgrade_BulletSpeed + this.Owner.Parent.RigidBody.Velocity;
+            
+            bullet.Orientation.LookAtDirectionWithUp(mouseDirection, Real3(0.0,0.0,1.0));
+            
+            if(this.SpreadShot) 
+            {
+                var right = Math.RotateVector(mouseDirection, Real3.ZAxis, Math.ToRadians(this.SpreadAmount));
+                
+                var bullet2 = this.Space.CreateAtPosition(this.Bullet,this.Owner.Transform.WorldTranslation);
+                
+                bullet2.RigidBody.Velocity += right * this.BulletSpeed * this.GameSession.GameVars.HasUpgrade_BulletSpeed + this.Owner.Parent.RigidBody.Velocity;
+                
+                bullet2.Orientation.LookAtDirectionWithUp(mouseDirection, Real3(0.0,0.0,1.0));
+                                
+                
+                var left = Math.RotateVector(mouseDirection, Real3.ZAxis, Math.ToRadians(this.SpreadAmount));
+                
+                var bullet3 = this.Space.CreateAtPosition(this.Bullet,this.Owner.Transform.WorldTranslation);
+                
+                bullet3.RigidBody.Velocity += left * this.BulletSpeed * this.GameSession.GameVars.HasUpgrade_BulletSpeed + this.Owner.Parent.RigidBody.Velocity;
+                
+                bullet3.Orientation.LookAtDirectionWithUp(mouseDirection, Real3(0.0,0.0,1.0));
+                
+                
+            }
+            
+            this.Timer = 0.0;
+        }
+        else
+        {
+            this.Timer += event.Dt;
+        }
+    }
+}

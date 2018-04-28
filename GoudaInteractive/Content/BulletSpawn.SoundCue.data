@@ -1,0 +1,38 @@
+SoundCue = 
+{
+	SoundPlayMode PlayMode = Single,
+	float Volume = 1.99526238,
+	float VolumeVariation = 0.049999997,
+	float VolumeDB = 6,
+	bool UseVolumeDB = true,
+	float VolumeDBVariation = 0,
+	float Pitch = 0.600000024,
+	float PitchSemitones = 7.19000006,
+	bool UsePitchSemitones = false,
+	float PitchVariation = 0.5,
+	float PitchSTVariation = 0,
+	float MinDistance = 1,
+	float MaxDistance = 150,
+	float MinAttenuatedVolume = 0,
+	uint MaxPlaybacks = 10,
+	Array Sounds = 
+	[
+		{
+			string SoundName = "5a0b56872b02434b:GunShoot",
+			string GeneratedSoundName = "55017c595ef88bf0:DefaultGeneratedSound",
+			WhichSoundType WhichToUse = FromFile,
+			float Weight = 5,
+			float LoopEndTime = 0,
+			float LoopStartTime = 0,
+		},
+	],
+	Array SoundTags = 
+	[
+		{
+			string SoundTagName = "551c2d5a29ce571d:DefaultSoundTag",
+		},
+	],
+	string RolloffCurveName = "5ae0f1635db3d26e:BulletRolloff",
+	int Version = 1,
+	RolloffCurveType RolloffCurveType = Custom,
+},

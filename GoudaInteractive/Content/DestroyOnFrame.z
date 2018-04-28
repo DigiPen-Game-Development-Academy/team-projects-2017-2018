@@ -1,0 +1,17 @@
+// AUTHOR: MATTHEW ZEARING
+
+class DestroyOnFrame : ZilchComponent
+{
+    [Property] var Frame : Integer = 0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Owner.Sprite.CurrentFrame == this.Frame)
+            this.Owner.Destroy();
+    }
+}

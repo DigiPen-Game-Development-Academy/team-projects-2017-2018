@@ -1,0 +1,51 @@
+class LandingPoofParticleController : ZilchComponent
+//Elena did this and I used Sam's code 
+//He already did this in the Walking Particles controller.
+//Makes the landing particles different colors depending on the level. 
+//It also does the same for the Ballista Snail's arrow shockwave.
+{
+    [Property]
+    var Level1Color:Real4;
+    
+    [Property]
+    var Level2Color:Real4;
+    
+    [Property]
+    var Level3Color:Real4;
+    
+    [Property]
+    var Level4Color:Real4;
+    
+    [Property]
+    var Level5Color:Real4;
+    
+    [Property]
+    var Level6Color:Real4;
+    
+    function Initialize(init : CogInitializer)
+    {
+        if(this.Space.CurrentLevel == Level.BeginningLevel)
+        this.Owner.SpriteParticleSystem.Tint = this.Level1Color;
+        
+        if(this.Space.CurrentLevel == Level.SuperEasyLevel)
+        this.Owner.SpriteParticleSystem.Tint = this.Level2Color;
+        
+        if(this.Space.CurrentLevel == Level.SandLevel_Labyrinth)
+        this.Owner.SpriteParticleSystem.Tint = this.Level3Color;
+        
+        if(this.Space.CurrentLevel == Level.ElenasOldLevel)
+        this.Owner.SpriteParticleSystem.Tint = this.Level4Color;
+        
+        if(this.Space.CurrentLevel == Level.JacobsTerribleLevel)
+        this.Owner.SpriteParticleSystem.Tint = this.Level5Color;
+        
+        if(this.Space.CurrentLevel == Level.TheBestBossLevel_InTheWorld)
+        this.Owner.SpriteParticleSystem.Tint = this.Level6Color;
+        
+        if(this.Space.CurrentLevel == Level.ElenaDunesLevel)
+        this.Owner.SpriteParticleSystem.Tint = this.Level6Color;
+        
+         if(this.Space.CurrentLevel == Level.Level2)
+        this.Owner.SpriteParticleSystem.Tint = this.Level6Color;
+    }
+}

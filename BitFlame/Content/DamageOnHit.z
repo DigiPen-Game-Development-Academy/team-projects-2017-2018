@@ -1,0 +1,45 @@
+class DamageOnHit : ZilchComponent
+{
+    [Property] var ArchetypetoSpawnOnDamage : Archetype;
+    
+    [Property] var Damage : Real = 10.0;
+    
+    [Property] var Penatrating : Boolean = false;
+    
+    [Property] var EnemyBullet : Boolean = false;
+    
+    [Property] var PlayerDamagedSound : SoundCue;
+    
+    [Property] var SoundOnHit : SoundCue;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.Health != null)
+        {
+            event.OtherObject.Health.Health -= this.Damage;
+            
+            this.Space.SoundSpace.PlayCue(this.SoundOnHit);
+            
+            if(!this.Penatrating)
+            {
+                this.Owner.Destroy();
+            }       
+        }
+        else if(this.EnemyBullet && event.OtherObject.Name == "Player")
+        {
+            this.GameSession.GameVars.PlayerHealth -= this.Damage as Integer;
+            
+            var playerHurtUpdate = PlayerHurtUpdate();
+            this.GameSession.DispatchEvent(Events.PlayerHurtUpdate, playerHurtUpdate);
+            
+            this.Space.SoundSpace.PlayCue(this.PlayerDamagedSound);
+            
+            this.Owner.Destroy();
+        }
+    }
+}

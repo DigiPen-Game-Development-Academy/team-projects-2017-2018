@@ -1,0 +1,331 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class Movement : ZilchComponent {
+    
+    [Property] var Speed : Real = 100.0;
+    [Property] var RunSpeed : Real = 150.0;
+    [Property] var Up : Keys = Keys.W;
+    [Property] var Left : Keys = Keys.A;
+    [Property] var Down : Keys = Keys.S;
+    [Property] var Right : Keys = Keys.D;
+    [Property] var Sprint : Keys = Keys.Shift;
+    [Property] var OpenMap : Keys = Keys.Tab;
+    
+    var ItemHand : Cog = null;
+    
+    var StartFrame : Integer = 0;
+    var EndFrame : Real = 5;
+    var MouseDir : Real2 = Real2(0.0, 0.0);
+    var PlayerDirection : String = "South";
+    
+    function Initialize(init : CogInitializer) {
+        
+        var weapon = this.Owner.FindChildByName("EntityHand");
+        
+        weapon.Transform.Translation = Real3(-0.3, -0.15, 0.05);
+        weapon.Sprite.StartFrame = 2;
+        weapon.Sprite.FlipX = false;
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        // VELOCITY
+        var r3Speed = Real3(0.0, 0.0, 0.0);
+        
+        if(!Relocation.UISpace.FindObjectByName("DebugCommand").FindChildByName("TextEntry").TextEntry.CaptureKeys && !Relocation.InventoryOpen) {
+            
+            // MAP
+            if(Zero.Keyboard.KeyIsDown(this.OpenMap) && this.Owner.FindChildByName("Minimap") != null) {
+                this.Owner.FindChildByName("Minimap").CameraViewport.Active = true;
+            } else if(this.Owner.FindChildByName("Minimap") != null && Relocation.Space.CurrentLevel.Name == "SurfaceWorld") {
+                this.Owner.FindChildByName("Minimap").CameraViewport.Active = false;
+            }
+            
+            // CHECK IF SPRINTING
+            if(Zero.Keyboard.KeyIsDown(this.Sprint)) {
+                r3Speed = Real3(this.RunSpeed, this.RunSpeed, this.RunSpeed) * 0.01666;
+            } else {
+                r3Speed = Real3(this.Speed, this.Speed, this.Speed) * 0.01666;
+            }
+            
+            // MOUSE SHOOTING DIRECTION
+            if(Zero.Mouse.IsButtonDown(MouseButtons.Left)) {
+                
+                var mousePos = this.Space.FindObjectByName("LevelSettings").CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 0.0);
+                var playerPos = this.Space.FindObjectByName("EntityPlayer").Transform.WorldTranslation;
+                
+                var vectorToMouse = mousePos - playerPos;
+                var mouseAngle = Math.ATan2(vectorToMouse.Y, vectorToMouse.X);
+                
+                mouseAngle = Math.ToDegrees(mouseAngle);
+                
+                // CALC MOUSE DIR
+                if(mouseAngle < 22.5 && mouseAngle > -22.5) {
+                    this.MouseDir = Real2(1.0, 0.0);
+                } else if(mouseAngle < -45 + 22.5 && mouseAngle > -45 - 22.5) {
+                    this.MouseDir = Real2(1.0, -1.0);
+                } else if(mouseAngle < -90 + 22.5 && mouseAngle > -90 - 22.5) {
+                    this.MouseDir = Real2(0.0, -1.0);
+                } else if(mouseAngle < -135 + 22.5 && mouseAngle > -135 - 22.5) {
+                    this.MouseDir = Real2(-1.0, -1.0);
+                } else if(mouseAngle < -180 + 22.5 || mouseAngle > 180 - 22.5) {
+                    this.MouseDir = Real2(-1.0, 0.0);
+                } else if(mouseAngle < 135 + 22.5 && mouseAngle > 135 - 22.5) {
+                    this.MouseDir = Real2(-1.0, 1.0);
+                } else if(mouseAngle < 90 + 22.5 && mouseAngle > 90 - 22.5) {
+                    this.MouseDir = Real2(0.0, 1.0);
+                } else if(mouseAngle < 45 + 22.5 && mouseAngle > 45 - 22.5) {
+                    this.MouseDir = Real2(1.0, 1.0);
+                }
+                
+            } else {
+                this.MouseDir = Real2(0.0);
+            }
+            
+            // WEAPON SPRITE
+            this.ItemHand = this.Owner.FindChildByName("EntityHand");
+            
+            // MOVEMENT
+            if((Zero.Keyboard.KeyIsDown(this.Left) && Zero.Keyboard.KeyIsDown(this.Down))) {
+                
+                this.Owner.RigidBody.Velocity = Real3(-0.8, -0.8, 0) * r3Speed;
+                this.Owner.Sprite.AnimationActive = true;
+                
+                this.DirectionSouthWest();
+                
+            } else if(Zero.Keyboard.KeyIsDown(this.Right) && Zero.Keyboard.KeyIsDown(this.Down)) {
+                
+                this.Owner.RigidBody.Velocity = Real3(0.8, -0.8, 0) * r3Speed;
+                this.Owner.Sprite.AnimationActive = true;
+                
+                this.DirectionSouthEast();
+                
+            } else if(Zero.Keyboard.KeyIsDown(this.Left) && Zero.Keyboard.KeyIsDown(this.Up)) {
+                
+                this.Owner.RigidBody.Velocity = Real3(-0.8, 0.8, 0) * r3Speed;
+                this.Owner.Sprite.AnimationActive = true;
+                
+                this.DirectionNorthWest();
+                
+            } else if(Zero.Keyboard.KeyIsDown(this.Right) && Zero.Keyboard.KeyIsDown(this.Up)) {
+                
+                this.Owner.RigidBody.Velocity = Real3(0.8, 0.8, 0) * r3Speed;
+                this.Owner.Sprite.AnimationActive = true;
+                
+                this.DirectionNorthEast();
+                
+            } else if(Zero.Keyboard.KeyIsDown(this.Up)) {
+                
+                this.Owner.RigidBody.Velocity = Real3(0, 1, 0) * r3Speed;
+                this.Owner.Sprite.AnimationActive = true;
+                
+                this.DirectionNorth();
+                
+            } else if(Zero.Keyboard.KeyIsDown(this.Down)) {
+                
+                this.Owner.RigidBody.Velocity = Real3(0, -1, 0) * r3Speed;
+                this.Owner.Sprite.AnimationActive = true;
+                
+                this.DirectionSouth();
+                
+            } else if(Zero.Keyboard.KeyIsDown(this.Left)) {
+                
+                this.Owner.RigidBody.Velocity = Real3(-1, 0, 0) * r3Speed;
+                this.Owner.Sprite.AnimationActive = true;
+                
+                this.DirectionWest();
+                
+            } else if(Zero.Keyboard.KeyIsDown(this.Right)) {
+                
+                this.Owner.RigidBody.Velocity = Real3(1, 0, 0) * r3Speed;
+                this.Owner.Sprite.AnimationActive = true;
+                
+                this.DirectionEast();
+                
+            } else {
+                
+                this.Owner.RigidBody.Velocity = Real3(0);
+                
+                if(this.Owner.Sprite.CurrentFrame % 6 == 0 && this.Owner.Sprite.CurrentFrame >= this.Owner.Sprite.StartFrame) {
+                    this.Owner.Sprite.AnimationActive = false;
+                }
+                
+            }
+            
+            // MAKE PLAYER FACE MOUSE WHEN SHOOTING
+            if(this.MouseDir == Real2(-1, -1)) {
+                this.DirectionSouthWest();
+            } else if(this.MouseDir == Real2(1, -1)) {
+                this.DirectionSouthEast();
+            } else if(this.MouseDir == Real2(-1, 1)) {
+                this.DirectionNorthWest();
+            } else if(this.MouseDir == Real2(1, 1)) {
+                this.DirectionNorthEast();
+            } else if(this.MouseDir == Real2(0, 1)) {
+                this.DirectionNorth();
+            } else if(this.MouseDir == Real2(0, -1)) {
+                this.DirectionSouth();
+            } else if(this.MouseDir == Real2(-1, 0)) {
+                this.DirectionWest();
+            } else if(this.MouseDir == Real2(1, 0)) {
+                this.DirectionEast();
+            }
+            
+            // CHECK IF ANIMATION IS PAUSED WHILE FACING WRONG DIRECTION
+            if(this.Owner.Sprite.CurrentFrame < this.StartFrame || this.Owner.Sprite.CurrentFrame > this.EndFrame) {
+                this.Owner.Sprite.CurrentFrame = this.StartFrame;
+            }
+            
+            if(this.Owner.Sprite.CurrentFrame < this.StartFrame) {
+                this.Owner.Sprite.AnimationSpeed = 10;
+            } else if(Zero.Keyboard.KeyIsDown(Keys.Shift)) {
+                this.Owner.Sprite.AnimationSpeed = 1.5;
+            } else {
+                this.Owner.Sprite.AnimationSpeed = 1.25;
+            }
+            
+            if(this.Owner.Sprite.CurrentFrame >= this.EndFrame) {
+                this.Owner.Sprite.CurrentFrame = this.StartFrame;
+            }
+            
+            this.Owner.Sprite.StartFrame = this.StartFrame;
+            
+            /* CAMERA MOVEMENT */
+            
+            var cam = this.Space.FindObjectByName("Camera");
+            
+            if(cam != null) {
+                
+                var playerPos = this.Owner.Transform.WorldTranslation;
+                var mousePos = this.Space.FindObjectByName("LevelSettings").CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 0.0);
+                var dif = Real2(mousePos.X - playerPos.X, mousePos.Y - playerPos.Y);
+                var lookAmount = 8;
+                
+                cam.Transform.Translation = Math.Lerp(cam.Transform.Translation, Real3(dif.X / lookAmount, dif.Y / lookAmount, 40), event.Dt * 4);
+                
+                if(Relocation.DebugMode == true) {
+                    cam.Camera.Size = 50;
+                } else {
+                    cam.Camera.Size = 8;
+                }
+                
+            }
+            
+        } else {
+            
+            this.Owner.RigidBody.Velocity = Real3(0.0);
+            this.Owner.Sprite.AnimationActive = false;
+            
+        }
+        
+    }
+    
+    function DirectionNorth() {
+        
+        this.StartFrame = 24;
+        this.EndFrame = 29;
+        
+        this.ItemHand.Transform.Translation = Real3(0.25, -0.15, 0.05);
+        this.ItemHand.Sprite.StartFrame = 4;
+        this.ItemHand.Sprite.FlipX = false;
+        
+        this.PlayerDirection = "North";
+        
+    }
+    
+    function DirectionNorthEast() {
+        
+        this.StartFrame = 18;
+        this.EndFrame = 23;
+        
+        this.ItemHand.Transform.Translation = Real3(0.15, -0.15, 0.05);
+        this.ItemHand.Sprite.StartFrame = 3;
+        this.ItemHand.Sprite.FlipX = false;
+        
+        this.PlayerDirection = "NorthEast";
+        
+    }
+    
+    function DirectionNorthWest() {
+        
+        this.StartFrame = 30;
+        this.EndFrame = 35;
+        
+        this.ItemHand.Transform.Translation = Real3(-0.15, -0.1, -0.05);
+        this.ItemHand.Sprite.StartFrame = 3;
+        this.ItemHand.Sprite.FlipX = true;
+        
+        this.PlayerDirection = "NorthWest";
+        
+    }
+    
+    function DirectionEast() {
+        
+        this.StartFrame = 12;
+        this.EndFrame = 17;
+        
+        this.ItemHand.Transform.Translation = Real3(0.2, -0.15, 0.05);
+        this.ItemHand.Sprite.StartFrame = 0;
+        this.ItemHand.Sprite.FlipX = false;
+        
+        this.PlayerDirection = "East";
+        
+    }
+    
+    function DirectionSouth() {
+        
+        this.StartFrame = 0;
+        this.EndFrame = 5;
+        
+        this.ItemHand.Transform.Translation = Real3(-0.3, -0.15, 0.05);
+        this.ItemHand.Sprite.StartFrame = 2;
+        this.ItemHand.Sprite.FlipX = false;
+        
+        this.PlayerDirection = "South";
+        
+    }
+    
+    function DirectionSouthEast() {
+        
+        this.StartFrame = 6;
+        this.EndFrame = 11;
+        
+        this.ItemHand.Transform.Translation = Real3(-0.15, -0.15, 0.05);
+        this.ItemHand.Sprite.StartFrame = 1;
+        this.ItemHand.Sprite.FlipX = false;
+        
+        this.PlayerDirection = "SouthEast";
+        
+    }
+    
+    function DirectionSouthWest() {
+        
+        this.StartFrame = 42;
+        this.EndFrame = 47;
+        
+        this.ItemHand.Transform.Translation = Real3(-0.4, -0.1, -0.05);
+        this.ItemHand.Sprite.StartFrame = 1;
+        this.ItemHand.Sprite.FlipX = true;
+        
+        this.PlayerDirection = "SouthWest";
+        
+    }
+    
+    function DirectionWest() {
+        
+        this.StartFrame = 36;
+        this.EndFrame = 41;
+        
+        this.ItemHand.Transform.Translation = Real3(-0.3, -0.15, -0.05);
+        this.ItemHand.Sprite.StartFrame = 0;
+        this.ItemHand.Sprite.FlipX = true;
+        
+        this.PlayerDirection = "West";
+        
+    }
+    
+}

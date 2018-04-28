@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "HoverMovement",
+		uint64 ResourceId = 5aea6233ea477782,
+	},
+},

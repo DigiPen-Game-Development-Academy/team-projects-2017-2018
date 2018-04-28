@@ -1,0 +1,7 @@
+ContentLibrary = 
+{
+	string Name = "Relocation",
+	uint64 LibraryId = 5a1a924ab08752e8,
+	string SourceControlType = "",
+	bool ReadOnly = false,
+},

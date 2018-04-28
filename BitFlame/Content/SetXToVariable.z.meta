@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "SetXToVariable",
+		uint64 ResourceId = 5a11b6b7842d86f9,
+	},
+},

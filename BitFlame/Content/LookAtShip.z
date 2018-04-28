@@ -1,0 +1,20 @@
+class LookAtShip : ZilchComponent
+{
+    var Player : Cog;
+    var Ship : Cog;
+    function Initialize(init : CogInitializer)
+    {
+        this.Player  = this.Space.FindObjectByName("Player");
+        this.Ship = this.Space.FindObjectByName("Ship");
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var direction : Real3 = this.Player.Transform.WorldTranslation - this.Ship.Transform.WorldTranslation;
+        direction = Math.Normalize(direction);
+        direction.Z = this.Owner.Transform.WorldTranslation.Z;
+        
+        this.Owner.Orientation.LookAtDirection(direction);
+    }
+}

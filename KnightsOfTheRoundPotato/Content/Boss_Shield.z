@@ -1,0 +1,69 @@
+class Boss_Shield : ZilchComponent {
+    
+    //Missile fire rate
+    [Property] var FireRateFull : Real = 1;
+    [Property] var FireRateEmpty : Real = 1;
+    //movement speed of missile
+    [Property] var SpeedFull : Real = 1;
+    [Property] var SpeedEmpty : Real = 1;
+    //missile damage
+    [Property] var DamageFull : Real = 1;
+    [Property] var DamageEmpty : Real = 1;
+    //missile splash damage range
+    [Property] var SplashFull : Real = 1;
+    [Property] var SplashEmpty : Real = 1;
+    //missile arc intencity (visual only)
+    [Property] var ArcIntencity : Real = 1;
+    //missile death sessage
+    [Property] var DeathMSG : String = "You where hit in the face with a missile";
+    
+    var Timer : Real = 1;
+    
+    var Active : Boolean = true;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if (!this.Active)
+            return;
+        
+        this.Timer -= event.Dt;
+        
+        if (this.Timer <= 0) {
+            this.Timer = 1 / this.LP(this.FireRateEmpty, this.FireRateFull);
+            
+            var missile = GlobalVariables.GameSpace.CreateAtPosition(Archetype.MissileProjectile, Math.Normalize(GlobalVariables.Player.Transform.WorldTranslation-this.Owner.Transform.WorldTranslation) + (this.Owner.Transform.WorldTranslation + Real3(0,0,0.5)));
+            
+            missile.PotatProjectile.Target = GlobalVariables.Player.Transform.WorldTranslation;
+            missile.PotatProjectile.StartDist = 0;
+            missile.PotatProjectile.MovSpd = this.LP(this.SpeedEmpty, this.SpeedFull);
+            missile.PotatProjectile.Damage = this.LP(this.DamageEmpty, this.DamageFull);
+            missile.PotatProjectile.ImpactSize = this.LP(this.SplashEmpty, this.SplashFull);
+            missile.PotatProjectile.ArcIntencity = this.ArcIntencity;
+            missile.PotatProjectile.DamageMSG = this.DeathMSG;
+            missile.PotatProjectile.Set = true;
+            missile.Sprite.SpriteSource = SpriteSource.MissileAttack;
+            missile.AddComponentByName("MissileSound");
+            missile.MissileSound.Sound = SoundCue.RocketFlying;
+            missile.MissileSound.Initialize(null);
+            missile.MissileSound.SoundRange = 15;
+            missile.PotatProjectile.SoundRange = 15;
+            missile.PotatProjectile.ExplodeSound = SoundCue.Explode;
+            missile.PotatProjectile.OscilationSpeed = 15;
+            missile.PotatProjectile.OscilationIntencity = 0.25;
+            missile.PotatProjectile.Explosion = Archetype.Explode;
+            
+        }
+        
+    }
+    
+    function LP (empty : Real, full : Real) : Real {
+        
+        return Math.Lerp(empty, full, this.Owner.Health.Percent);
+        
+    }
+    
+}

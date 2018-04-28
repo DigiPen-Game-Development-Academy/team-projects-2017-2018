@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "PlayWhenXFromPlayer",
+		uint64 ResourceId = 5a64997b2990a553,
+	},
+},

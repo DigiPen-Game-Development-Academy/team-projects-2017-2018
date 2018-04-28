@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "Weap_SwordBoomerang_Volcano",
+		uint64 ResourceId = 5a0dd314ae7c0e01,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 24,
+		uint FrameSizeY = 24,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 12,
+		float OriginY = 12,
+		float PixelsPerUnit = 16,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

@@ -1,0 +1,12 @@
+Material = 
+{
+	Transparency = 
+	{
+		MaterialBlendMode BlendMode = Alpha,
+	},
+	GCircleColor = 
+	{
+		float EdgeFalloffPower = 1,
+		float EdgeFalloffScale = 1,
+	},
+},

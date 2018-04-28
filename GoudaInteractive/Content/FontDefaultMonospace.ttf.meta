@@ -1,0 +1,8 @@
+FontContent = 
+{
+	FontBuilder = 
+	{
+		string Name = "FontDefaultMonospace",
+		uint64 ResourceId = 5addaa209e091e3e,
+	},
+},

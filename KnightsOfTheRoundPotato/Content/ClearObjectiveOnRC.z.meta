@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "ClearObjectiveOnRC",
+		uint64 ResourceId = 5ada3bcf7b05fef9,
+	},
+},

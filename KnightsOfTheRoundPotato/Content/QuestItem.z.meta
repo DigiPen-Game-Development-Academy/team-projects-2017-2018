@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "QuestItem",
+		uint64 ResourceId = 5a6dd072699b0938,
+	},
+},

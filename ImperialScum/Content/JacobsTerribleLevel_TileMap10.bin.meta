@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "JacobsTerribleLevel_TileMap10",
+		uint64 ResourceId = 5a514b95c68f2aba,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "5a5a05682c712287:JacobsTerribleLevel",
+	},
+},

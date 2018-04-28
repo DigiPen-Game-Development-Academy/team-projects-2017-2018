@@ -1,0 +1,11 @@
+DataContent = 
+{
+	DataBuilder = 
+	{
+		string Name = "Comet_SpriteLayer",
+		uint64 ResourceId = 5a40329065a80374,
+		string LoaderType = "SpriteLayer",
+		uint Version = 0,
+		bool ShowInEditor = true,
+	},
+},

@@ -1,0 +1,103 @@
+//Jacob Burke
+
+//The script that controls the Mechamaid
+
+class Mechamaid : ZilchComponent
+{
+    [Property]
+    var CirclingDistance:Real;
+    
+    [Property]
+    var StopFollowing:Real;
+    
+    [Property]
+    var Speed:Real;
+    
+    [Property]
+    var Active:Boolean = true;
+    
+    //Sprites
+    [Property]
+    var AimUp:SpriteSource;
+    [Property]
+    var AimMid:SpriteSource;
+    [Property]
+    var AimDown:SpriteSource;
+    [Property]
+    var FireUp:SpriteSource;
+    [Property]
+    var FireMid:SpriteSource;
+    [Property]
+    var FireDown:SpriteSource;
+    //Sprites to Use
+    [Property]
+    var UseUp:SpriteSource;
+    [Property]
+    var UseMid:SpriteSource;
+    [Property]
+    var UseDown:SpriteSource;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+
+            //Set Sprites Accordingly
+            if(this.Owner.EnemyShoot.Shooting == true)
+            {
+                this.UseUp = this.FireUp;
+                this.UseMid = this.FireMid;
+                this.UseDown = this.FireDown;
+            }
+            else
+            {
+                this.UseUp = this.AimUp;
+                this.UseMid = this.AimMid;
+                this.UseDown = this.AimDown;
+            }
+        
+            //Aimy Sprites
+            var pos = this.Owner.Transform.WorldTranslation;
+            
+            var target = this.Space.FindObjectByName("Player").Transform.WorldTranslation;
+        
+            var toPlayer = target - pos;
+            var angle = Math.Angle2D(toPlayer);
+
+            if (angle > 0.5 && angle < 2.5)
+            {
+                this.Owner.Sprite.SpriteSource = this.UseUp;
+            }
+            else if (angle > -2.5 && angle < -0.5)
+            {
+                this.Owner.Sprite.SpriteSource = this.UseDown;
+            }
+            else
+            {
+                this.Owner.Sprite.SpriteSource = this.UseMid;
+            }
+            
+            if(Math.Length(target - pos) >= this.CirclingDistance)
+            {
+                this.Owner.RigidBody.Velocity
+                    = Math.Normalize(target - this.Owner.Transform.WorldTranslation)
+                * this.Speed; 
+            }
+            else
+            {
+                this.Owner.RigidBody.Velocity = Real3.Zero;
+                this.Owner.Transform.WorldTranslation
+                    = target - Math.RotateVector((target - pos), Real3.ZAxis,
+                -1 * event.Dt);
+            }
+            
+            
+        if(Math.Length(target - pos) >= this.StopFollowing)
+        {
+            this.Owner.RigidBody.Velocity = Real3.Zero;
+        }
+    }
+}

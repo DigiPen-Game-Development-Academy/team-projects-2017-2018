@@ -1,0 +1,30 @@
+//Author Brandon Wolenetz
+
+class SloMoBossBullet : ZilchComponent {
+    
+    //damage to deal to object hit
+    var Damage : Real = 5;
+    
+    var DamageMSG : String = "";
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent) {
+        
+        this.DMG(event.OtherObject);
+        this.Owner.Destroy();
+        
+    }
+    
+    function DMG (object : Cog) {
+        
+        var damage = Damage();
+        damage.Damage = this.Damage;
+        damage.DeathMSG = this.DamageMSG;
+        object.DispatchEvent(Events.Damage, damage);
+        
+    }
+    
+}

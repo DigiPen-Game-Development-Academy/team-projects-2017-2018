@@ -1,0 +1,84 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "SparkleExplode",
+	},
+	Archetyped = 
+	{
+		string Name = "5a14a7f53c1e0dfe:SparkleExplode",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [-1.0967828, -35.3901825, 0],
+		Vec3 Scale = [0.50000006, 0.50000006, 0.000299999985],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	SpriteParticleSystem = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		SystemChildMode ChildMode = Independent,
+		SystemSpace SystemSpace = WorldSpace,
+		uint DrawOrder = 0,
+		Vec4 Tint = [1, 0.539999843, 0, 1],
+		float WarmUpTime = 0,
+		ParticleGeometry GeometryMode = Billboarded,
+		ParticleRenderMode RenderMode = Additive,
+		ParticleSortMode SortMode = Youngest,
+		ParticleAnimation ParticleAnimation = Single,
+		string Texture = "5add733cf6bb7f8c:Particle_Sparkle()",
+		float VelocityScale = 1,
+		float LengthScale = 1,
+		float MaxParticleSize = 20,
+		Vec3 SystemSize = [1, 1, 1],
+	},
+	SphericalParticleEmitter = 
+	{
+		bool Active = true,
+		uint EmitCount = 10,
+		float EmitRate = 20,
+		float EmitVariance = 8,
+		float Size = 0.5,
+		float SizeVariance = 0.200000003,
+		float Lifetime = 0.400000006,
+		float LifetimeVariance = 0,
+		float Spin = 0,
+		float SpinVariance = 10,
+		bool RandomSpin = true,
+		float Fill = 1,
+		float EmitterVelocityPercent = 0,
+		Vec3 StartVelocity = [0, 0, 0],
+		Vec3 RandomVelocity = [24, 24, 24],
+		Vec3 TangentVelocity = [0, 0, 0],
+		Vec3 EmitterSize = [1, 1, 0.600000024],
+		bool FastMovingEmitter = true,
+	},
+	LinearParticleAnimator = 
+	{
+		Vec3 Force = [0, 0, 0],
+		Vec3 RandomForce = [0, 0, 0],
+		float Torque = 0,
+		float Growth = 0,
+		float Dampening = 0,
+		Vec3 Twist = [0, 0, 0],
+	},
+	ParticleColorAnimator = 
+	{
+		Vec4 Color0 = [0.889999986, 1, 0, 0.5],
+		Vec4 Color1 = [1, 0.720000029, 0, 1],
+		Vec4 Color2 = [1, 0.990000129, 0, 1],
+		Vec4 Color3 = [1, 0.600000143, 0, 0.5],
+		Vec4 Color4 = [1, 0.960000157, 0, 0],
+	},
+	DestroyTimer = 
+	{
+		int Time = 50,
+	},
+},

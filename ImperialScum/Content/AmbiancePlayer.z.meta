@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "AmbiancePlayer",
+		uint64 ResourceId = 5a1adb07a98657f5,
+	},
+},

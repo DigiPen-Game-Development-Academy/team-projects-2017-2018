@@ -1,0 +1,99 @@
+class MusicUtils {
+    
+    //the space that plays music
+    [Static] var MusicSpace : Space;
+    //the sound space that plays music
+    [Static] var MusicSoundSpace : SoundSpace;
+    //the music that is currently running
+    [Static] var Music : SoundCue = null;
+    //the component used for fading between music tracks
+    [Static] var MusicController : MusicController;
+    
+    //play music on sound space instantly
+    [Static]
+    function PlayNow (music : SoundCue) {
+        
+        if(MusicUtils.Music != music) {
+            MusicUtils.MusicSoundSpace.StopAllSounds();
+            MusicUtils.MusicSoundSpace.PlayCue(music);
+            MusicUtils.Music = music;
+        }
+        
+    }
+    
+    //fade between music tracks
+    [Static]
+    function PlayFade (music : SoundCue, fadeSpeed : Real) {
+        
+        if(MusicUtils.Music != music) {
+            MusicUtils.Music = music;
+            MusicUtils.MusicController.Music = music;
+            MusicUtils.MusicController.Timer = 0;
+            MusicUtils.MusicController.Fading = true;
+            MusicUtils.MusicController.Speed = fadeSpeed;
+            MusicUtils.MusicController.Faded = false;
+        }
+        
+    }
+    
+}
+
+class MusicController : ZilchComponent {
+    
+    //sound cue to go to when fading between music tracks
+    var Music : SoundCue;
+    //timer used for lerping
+    var Timer : Real = 0;
+    //are we currently fading
+    var Fading : Boolean = false;
+    //speed to fade
+    var Speed : Real = 0;
+    //done fading down
+    var Faded : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        //dont fade if not fading
+        if (!this.Fading) {
+            MusicUtils.MusicSoundSpace.Volume = Settings.MUSICvol * Settings.MASTERvol;
+            return;
+        }
+        
+        this.Timer += event.Dt*this.Speed;
+        
+        var vol = Settings.MUSICvol * Settings.MASTERvol;
+        
+        if (!this.Faded) {
+            //fade volume to 0%
+            MusicUtils.MusicSoundSpace.Volume = Math.Lerp(vol, 0, this.Timer);
+            
+        } else {
+            //fade volume back to 100%
+            MusicUtils.MusicSoundSpace.Volume = Math.Lerp(0, vol, this.Timer);
+            
+            //done fading
+            if (MusicUtils.MusicSoundSpace.Volume >= Settings.MUSICvol * Settings.MASTERvol) {
+                MusicUtils.MusicSoundSpace.Volume = Settings.MUSICvol * Settings.MASTERvol;
+                this.Fading = false;
+            }
+            
+        }
+        
+        if (MusicUtils.MusicSoundSpace.Volume <= 0) {
+            //set music to new track and start fading up
+            MusicUtils.MusicSoundSpace.StopAllSounds();
+            MusicUtils.MusicSoundSpace.PlayCue(this.Music);
+            this.Faded = true;
+            this.Timer = 0;
+            
+        }
+        
+    }
+    
+}

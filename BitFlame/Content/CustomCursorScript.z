@@ -1,0 +1,18 @@
+class CustomCursorScript : ZilchComponent
+{
+    [Dependency]
+    var Transform : Transform;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Mouse.Cursor = Cursor.Invisible;
+        
+        Zero.Connect(this.Space, Events.MouseUpdate, this.OnMouseUpdate);
+    }
+    function OnMouseUpdate(event : ViewportMouseEvent)
+    {
+        var mousePosition = event.ToWorldZPlane(10);
+        
+        this.Transform.Translation = mousePosition;
+    }
+}

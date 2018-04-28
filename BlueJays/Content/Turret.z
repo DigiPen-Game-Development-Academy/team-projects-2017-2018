@@ -1,0 +1,241 @@
+// Author: Eli Miller
+// Purpose: Class for turrets.
+
+class Turret
+{
+    var Archetype : Archetype;
+    var Cost : Real;
+    var Radius : Real;
+    constructor (archetype : Archetype, cost : Real, radius : Real)
+    {
+        this.Archetype = archetype;
+        this.Cost = cost;
+        this.Radius = radius;
+    }
+}
+
+class KnightLogic : ZilchComponent
+{
+    [Property] var Speed : Real = 1;
+    [Property] var Acceleration : Real = 1;
+    [Property] var Deceleration : Real = 1;
+    
+    var Target : Cog;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.Owner.RigidBody == null) return;
+        
+        if(this.Target == null)
+        {
+            this.Target = Globals.GetTarget(this.Owner, Team.Enemy);
+            if(this.Target == null)
+            {
+                var speed = Math.Length(this.Owner.RigidBody.Velocity);
+                if (speed > 0)
+                {
+                    this.Owner.RigidBody.Velocity = this.Owner.RigidBody.Velocity * Math.Max(0, speed - this.Deceleration * event.Dt) / speed;
+                }
+                return;
+            }
+        }
+        
+        var vec = this.Target.Transform.Translation - this.Owner.Transform.Translation;
+        this.Owner.RigidBody.Velocity = Math.Lerp(this.Owner.RigidBody.Velocity, Math.Normalize(vec) * this.Speed, this.Acceleration * event.Dt);
+    }
+}
+class ChariotLogic : ZilchComponent
+{
+    [Property] var Offset : Real3;
+       var Flashing : Boolean;
+    function Initialize(init : CogInitializer)
+    {
+        var player = this.Space.FindObjectByName("Player");
+        if (player == null) return;
+        this.Owner.AttachToRelative(player);
+        this.Owner.Transform.Translation = this.Offset;
+        this.GameSession.Globals.SingletonChariot = this;
+    }
+}
+class TowerLogic : ZilchComponent
+{
+    [Property] var TimeBetweenShots : Real = 1;
+    var TimeTillShoot : Real;
+    [Property] var ShootDuration : Real = 1;
+    
+    [Property] var BeamAcceleration : Real = 10;
+    [Property] var DamagePerSecond : Real = 0.5;
+  
+    [Property]
+    var ShootingSoundToPlay : SoundCue;
+    // We will set the sound that is currently playing in code
+    var ShootingSoundPlaying : SoundInstance;
+    
+    [Property]
+    var ChargingSoundToPlay : SoundCue;
+    // We will set the sound that is currently playing in code
+    var ChargingSoundPlaying : SoundInstance;
+    
+    var BeamOriginObject : Cog;
+    var BeamStartObject : Cog;
+    var BeamMiddleObject : Cog;
+    var BeamEndObject : Cog;
+    
+    var Target : Cog;
+    var BeamEnabled : Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, "Destroying", this.OnDestroying);
+        this.TimeTillShoot = this.TimeBetweenShots;
+        
+        this.BeamStartObject = this.Owner.FindChildByName("BeamOrigin");
+        this.BeamStartObject = this.Owner.FindChildByName("BeamStart");
+        this.BeamMiddleObject = this.Owner.FindChildByName("BeamMiddle");
+        if (this.BeamMiddleObject != null) this.BeamMiddleObject.Detach();
+        this.BeamEndObject = this.Owner.FindChildByName("BeamEnd");
+        
+        this.DisableBeam();
+    }
+    function TowerFlash()
+    {
+        var mainSprite = this.Owner.FindChildByName("MainSprite");
+        //Botom dissapear
+        var seq = Action.Sequence(this.Owner.Actions);
+        
+        var fadOut = Action.Group(seq);
+        
+        var fadIn = Action.Group(seq);
+        
+        Action.Property(fadOut, @this.Owner.Sprite.Color, Real4(0, 0, 0, 0), 0.5, Ease.Linear);
+        
+        //mainSpirte Dissaper
+        Action.Property(fadOut, @mainSprite.Sprite.Color,Real4(1, 1, 1, 0), 0.5, Ease.Linear);
+        
+        //BottomReapear
+        Action.Property(fadIn, @this.Owner.Sprite.Color, Real4(0, 0, 0, 1), 0.5, Ease.Linear);
+       
+        
+        //MainSpriteReapear
+        Action.Property(fadIn, @mainSprite.Sprite.Color, Real4(1, 1, 1, 1), 0.5, Ease.Linear);
+      
+        
+        Action.Property(seq, @this.Flashing, false, 0, Ease.Linear);
+    }
+
+    function OnDestroying(event : ZilchEvent)
+    {
+        if (this.BeamMiddleObject!=null)
+        {
+            this.BeamMiddleObject.Destroy();
+        }
+    }
+    var Flashing : Boolean;
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.Owner.DestroyTimer.Timer <= 5 && this.Flashing == false)
+        {
+            this.Flashing = true;
+            this.TowerFlash();
+        }
+
+        if(this.Target == null)
+        {
+            this.Target = Globals.GetTarget(this.Owner, Team.Enemy);
+            if(this.Target == null)
+            {
+                this.DisableBeam();
+                return;
+            }
+        }
+        
+        
+        if (this.BeamEnabled)
+        {
+            var end = this.BeamEndObject.Transform.WorldTranslation;
+            var target = this.Target.Transform.WorldTranslation;
+            this.SetPosition(this.BeamEndObject, Math.Lerp(end, target, this.BeamAcceleration * event.Dt));
+            this.Target.Health.ChangeHealth(-this.DamagePerSecond * event.Dt);
+        }
+        else
+        {
+            this.SetPosition(this.BeamEndObject, this.Target.Transform.WorldTranslation);
+            
+           
+            
+            // @missing Charging sound effect and visual effect
+            //what kind of charge effect
+            
+        }
+        
+        //couting down timer
+        this.TimeTillShoot -= event.Dt;
+        
+        //check if we can shoot
+        if (this.TimeTillShoot <= 0)
+        {
+            var seq = Action.Sequence(this.Owner.Actions);
+            Action.Delay(seq, 0.01);
+            Action.Call(seq, this.EnableBeam);
+            Action.Delay(seq, this.ShootDuration);
+            Action.Call(seq, this.DisableBeam);
+            
+            //Reset our time
+            this.TimeTillShoot = this.TimeBetweenShots;
+        }
+    }
+    function EnableBeam()
+    {
+        if (this.ChargingSoundPlaying != null && this.ChargingSoundPlaying.IsPlaying)
+            {
+                // Stop the sound that is playing
+                this.ChargingSoundPlaying.Stop();
+            }
+         
+        // If the sound is NOT playing
+        if (this.ShootingSoundPlaying == null || this.ShootingSoundPlaying.IsPlaying == false)
+        {
+            // Play the sound and remember which sound is playing (includes looping)
+            this.ShootingSoundPlaying = this.Space.SoundSpace.PlayCue(this.ShootingSoundToPlay);
+        }
+        this.BeamEnabled = true;
+        this.SetVisible(this.BeamStartObject, true);
+        this.SetVisible(this.BeamMiddleObject, true);
+        this.SetVisible(this.BeamEndObject, true);
+    }
+    function DisableBeam()
+    {
+        if (this.ChargingSoundPlaying == null || this.ChargingSoundPlaying.IsPlaying == false)
+            {
+                // Play the sound and remember which sound is playing (includes looping)
+                this.ChargingSoundPlaying = this.Space.SoundSpace.PlayCue(this.ChargingSoundToPlay);
+            }
+        
+        // If the sound is playing
+        if (this.ShootingSoundPlaying != null && this.ShootingSoundPlaying.IsPlaying)
+        {
+            // Stop the sound that is playing
+            this.ShootingSoundPlaying.Stop();
+        }
+        this.BeamEnabled = false;
+        this.SetVisible(this.BeamStartObject, false);
+        this.SetVisible(this.BeamMiddleObject, false);
+        this.SetVisible(this.BeamEndObject, false);
+    }
+    function SetVisible(cog : Cog, value : Boolean)
+    {
+        if (cog == null || cog.Sprite == null) return;
+        cog.Sprite.Visible = value;
+    }
+    function SetPosition(cog : Cog, value : Real3)
+    {
+        if (cog == null || cog.Transform == null) return;
+        cog.Transform.WorldTranslation = value;
+    }
+
+}

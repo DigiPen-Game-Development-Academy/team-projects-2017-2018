@@ -1,0 +1,37 @@
+class GlobalTimekeeper : ZilchComponent
+{
+    [Static]
+    var GlobalTime:Real = 0;
+    
+    [Property]
+    var DayColor:Real4;
+    
+    [Property]
+    var SunsetColor:Real4;
+    
+    [Property]
+    var NightColor:Real4;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var target = this.Space.FindObjectByName("Sun/Moon").Transform.EulerAngles;
+        
+        
+        GlobalTimekeeper.GlobalTime += event.Dt;
+        
+        if(GlobalTimekeeper.GlobalTime == 240)
+            GlobalTimekeeper.GlobalTime =0;
+        
+        if(target.Z > Real3.Zero.Z)
+            this.Owner.LevelSettings.DeferredRenderer.ClearColor = this.NightColor;
+        else if(target.Z < Real3.Zero.Z)
+            this.Owner.LevelSettings.DeferredRenderer.ClearColor = this.DayColor;
+        else
+            this.Owner.LevelSettings.DeferredRenderer.ClearColor = this.SunsetColor;
+    }
+}

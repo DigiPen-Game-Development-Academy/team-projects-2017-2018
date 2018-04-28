@@ -1,0 +1,18 @@
+DataContent = 
+{
+	DataBuilder = 
+	{
+		string Name = "TheBestBossLevel_InTheWorld",
+		uint64 ResourceId = 5a062577a90b5d3b,
+		string LoaderType = "Level",
+		uint Version = 0,
+		bool ShowInEditor = true,
+	},
+	ContentTags = 
+	{
+		Array Tags = 
+		[
+			"SandLevels",
+		],
+	},
+},

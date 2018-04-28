@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "DestroyMenu",
+		uint64 ResourceId = 5a7fa3bf6b2a8d6d,
+	},
+},

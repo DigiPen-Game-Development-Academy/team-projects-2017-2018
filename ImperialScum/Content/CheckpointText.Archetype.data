@@ -1,0 +1,45 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Checkpoint text",
+	},
+	Archetyped = 
+	{
+		string Name = "5a2e619bd6b4ea75:CheckpointText",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0],
+		Vec3 Scale = [1.20000005, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	SpriteText = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 0.999899983],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string FontName = "5a0f895ab1e49e19:DraftGameFont",
+		uint FontSize = 30,
+		string Text = "Checkpoint!",
+		TextAlign Align = Left,
+		float PixelsPerUnit = 64,
+		bool Smoothing = false,
+	},
+	MoveUp = 
+	{
+	},
+	DestroyTimer = 
+	{
+		int Time = 80,
+	},
+},

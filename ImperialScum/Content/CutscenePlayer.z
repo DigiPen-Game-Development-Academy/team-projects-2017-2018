@@ -1,0 +1,47 @@
+class CutscenePlayer : ZilchComponent
+{
+    [Dependency] var Sprite : Sprite;
+    
+    [Property] var FPS : Real = 2;
+    var Timer : Real = 0;
+    
+    [Property] var CutscenePrefix : String = "";
+    
+    [Property] var FrameCount : Integer = 40;
+    [Property] var CurrentFrame : Integer = 0;
+    [Property] var Archetype : Archetype;
+    
+    var TimesPlayed : Integer = 1;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Timer += event.Dt;
+        this.CurrentFrame = (this.Timer * this.FPS) as Integer;
+        
+        if(this.TimesPlayed >= 10)
+        {
+            //this.CurrentFrame = 38;
+            return;
+            
+        }
+        
+        if(this.CurrentFrame >= this.FrameCount)
+        {
+            //this.Owner.Destroy();
+            this.CurrentFrame = 0;
+            this.Timer = 0;
+            this.TimesPlayed += 1;
+        }
+        
+        var number = "`this.CurrentFrame`";
+        if(number.Count < 2) number = "0`number`";
+        var name = "`this.CutscenePrefix``number`";
+        this.Sprite.SpriteSource = SpriteSource.Find(name);
+        
+    }
+}

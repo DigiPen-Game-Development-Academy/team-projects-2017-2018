@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "PreRenderedCutscene",
+		uint64 ResourceId = 5a3957242605cdd0,
+	},
+},

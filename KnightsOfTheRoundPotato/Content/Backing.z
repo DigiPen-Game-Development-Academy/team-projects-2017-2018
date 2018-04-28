@@ -1,0 +1,9 @@
+class Backing : ZilchComponent {
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        this.Owner.Area.Size = this.Owner.Parent.Area.Size + Real2(0.2);
+    }
+}

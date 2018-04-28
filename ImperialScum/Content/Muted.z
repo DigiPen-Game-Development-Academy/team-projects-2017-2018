@@ -1,0 +1,33 @@
+class Muted : ZilchComponent
+{
+    //Author - Jessica
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+        if(BackgroundMusic.MuteText == true)
+        {
+            this.Owner.SpriteText.Text = "Volume Muted";
+    
+                this.Owner.SpriteText.Visible = true;
+        }
+        
+        if(BackgroundMusic.UnmuteText == true)
+        {
+            this.Owner.SpriteText.Text = "Volume Unmuted";
+            
+                this.Owner.SpriteText.Visible = true;
+            
+        }
+        
+        if(BackgroundMusic.MuteText == false && BackgroundMusic.UnmuteText == false)
+        {
+            this.Owner.SpriteText.Visible = false;
+        }
+    }
+}

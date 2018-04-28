@@ -1,0 +1,9 @@
+DataContent = 
+{
+	RichAnimationBuilder = 
+	{
+		string Name = "FadeOutBlocker",
+		uint64 ResourceId = 5ab760dbe6b06023,
+		string PreviewArchetype = "",
+	},
+},

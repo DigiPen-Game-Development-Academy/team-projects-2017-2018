@@ -1,0 +1,31 @@
+//Sam
+//Make the Mechamaid Bullets not appear immediately
+
+class SpawnParticle : ZilchComponent
+{
+    [Property]
+    var Spawn : Archetype;
+    [Property]
+    var AppearTimer : Integer = 4;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        //After a very brief period, the bullet will appear and spawn a particle
+        if (this.AppearTimer != 0)
+        {
+            this.AppearTimer -= 1;
+            
+            if (this.AppearTimer == 0)
+            {
+                var pos = this.Owner.Transform.Translation;
+                this.Space.CreateAtPosition(this.Spawn, pos);
+                this.Owner.Sprite.Visible = true;
+            }
+        }
+    }
+}

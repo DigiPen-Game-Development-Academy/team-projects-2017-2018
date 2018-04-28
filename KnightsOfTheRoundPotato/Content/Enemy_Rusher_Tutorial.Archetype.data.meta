@@ -1,0 +1,18 @@
+DataContent = 
+{
+	DataBuilder = 
+	{
+		string Name = "Enemy_Rusher_Tutorial",
+		uint64 ResourceId = 5ada2d9ceca1fb7f,
+		string LoaderType = "Cog",
+		uint Version = 0,
+		bool ShowInEditor = true,
+	},
+	ContentTags = 
+	{
+		Array Tags = 
+		[
+			"Tutorial",
+		],
+	},
+},

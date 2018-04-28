@@ -1,0 +1,55 @@
+// AUTHOR: MYLES BUSIG
+// CONTRIBUTORS: N/A
+
+class TutorialBlock : ZilchComponent
+{
+    [Property] var MaxBlockHealth : Real = 5.0;
+    var BlockHealth : Real = 0.0;
+    
+    [Property] var Item : String = "ItemAir";
+    
+    var DamageSprite : Cog = null;
+    var Player : Cog = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.Player = this.Space.FindObjectByName("EntityPlayer");
+        
+        this.BlockHealth = this.MaxBlockHealth;
+        
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+    
+    function UpdateDamageSprite()
+    {
+        var precentage = (100 / this.MaxBlockHealth) * this.BlockHealth;
+        
+        Console.WriteLine("Health Precentage: `precentage`\nHealth: `this.BlockHealth`/`this.MaxBlockHealth`");
+        
+        if (precentage < 100 && this.DamageSprite == null) this.DamageSprite = 
+        this.Space.CreateAtPosition(Archetype.BlockDamage, Real3(this.Owner.Transform.Translation.XY, this.Owner.Transform.Translation.Z + 0.5));
+        
+        if (precentage > 75 && precentage < 100) this.DamageSprite.Sprite.CurrentFrame = 0;
+        else if (precentage > 50 && precentage <= 75) this.DamageSprite.Sprite.CurrentFrame = 1;
+        else if (precentage > 25 && precentage <= 50) this.DamageSprite.Sprite.CurrentFrame = 2;
+        else if (precentage > 0 && precentage <= 25) this.DamageSprite.Sprite.CurrentFrame = 3;
+        else if (precentage <= 0)
+        {
+            this.DamageSprite.Destroy();
+            this.Owner.Destroy();
+            
+            if (this.Item != "ItemAir")
+            {
+                var positionVariance = Real3(new Random().Range(-0.35, 0.35), new Random().Range(-0.35, 0.35), 0.0);
+                
+                Relocation.ItemManager.DropItems(
+                    Relocation.ItemManager.GetIDByName(this.Item), 1, Real3(this.Owner.Transform.Translation.XY, -0.25) + positionVariance
+                );
+            }
+        }
+    }
+}

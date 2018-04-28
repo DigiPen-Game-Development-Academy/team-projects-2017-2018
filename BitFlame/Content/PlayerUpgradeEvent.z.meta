@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "PlayerUpgradeEvent",
+		uint64 ResourceId = 5a87a22b04eef0ba,
+	},
+},

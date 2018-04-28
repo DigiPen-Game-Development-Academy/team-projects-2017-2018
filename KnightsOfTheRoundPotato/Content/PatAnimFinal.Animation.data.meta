@@ -1,0 +1,9 @@
+DataContent = 
+{
+	RichAnimationBuilder = 
+	{
+		string Name = "PatAnimFinal",
+		uint64 ResourceId = 5a237e1585ea5fe6,
+		string PreviewArchetype = "",
+	},
+},

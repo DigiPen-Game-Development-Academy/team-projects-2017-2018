@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "Ship Destruction Stage_4",
+		uint64 ResourceId = 5a7f7704a121e43d,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 320,
+		uint FrameSizeY = 160,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 160,
+		float OriginY = 80,
+		float PixelsPerUnit = 32,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

@@ -1,0 +1,12 @@
+class SettingsButton : ZilchComponent {
+    [Dependency] var Button : Button;
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+    }
+
+    function OnMouseDown(event : ViewportMouseEvent) {
+        
+        Utilities.Dialog("", DialogTypes.SETTINGS, 15);
+        
+    }
+}

@@ -1,0 +1,425 @@
+//Jacob Burke
+
+//Moves the player
+class PlayerMovement : ZilchComponent
+{
+    [Static]
+    var Component : PlayerMovement;
+    
+    [Static]
+    var Valid : Boolean { get { return PlayerMovement.Component != null; } }
+    
+    [Static]
+    var Object : Cog { get { if (PlayerMovement.Valid)
+    return PlayerMovement.Component.Owner; else return null; } }
+    
+    [Static]
+    var Position : Real3 { get { if (PlayerMovement.Valid)
+    return PlayerMovement.Object.Transform.WorldTranslation; else return Real3.Zero; } }
+    
+    [Property]
+    var LaunchSFX:SoundCue;
+    
+    [Static]
+    var Checkpoint1 : Boolean = false;
+    
+    [Property]
+    var Speed:Real = 30;
+    
+    [Property]
+    var JumpSpeed:Real = 20;
+    
+    [Property]
+    var KeyUp:Keys;
+    
+    [Property]
+    var KeyLeft:Keys;
+    
+    [Property]
+    var KeyRight:Keys;
+    
+    [Property]
+    var KeyDown:Keys;
+    
+    [Property]
+    var CheckpointText : Archetype = Archetype.CheckpointText;
+    
+    [Property] var SingleJumpSound : SoundCue = SoundCue.SingleJump;
+    [Property] var DoubleJumpSound : SoundCue = SoundCue.DoubleJump;
+    [Property] var WalkSound : SoundCue;
+    [Property] var SoundToPlay : SoundCue = SoundCue.GearPickup;
+    [Property] var SoundToPlay2 : SoundCue = SoundCue.SpearStab;
+    var SoundToPlay3 : SoundCue = SoundCue.SelectItem;
+    var SoundToPlay4 : SoundCue = SoundCue.LegendarySound;
+    var SoundToPlay5 : SoundCue = SoundCue.ErrorSound;
+    [Static] var PlayErrorSound : Boolean = false;
+    
+    var CheckOnce : Boolean = false;
+    var CheckTwice : Boolean = false;
+    
+    var Swimming:Boolean = false;
+    
+    var DoubleJump:Boolean = true;
+    
+    var TouchingGround:Boolean;
+    
+    var CannonReady:Boolean = false;
+    
+    var BossCannonReady:Boolean = false;
+    
+    var WalkTimer:Integer = 20;
+    
+    function Initialize(init : CogInitializer)
+    {   
+        PlayerMovement.Component = this;
+        
+        this.EnemyActiveUpdate();
+        
+        
+        if(AdvInventory.PlayerInventory["Ring_Speed"] > 0)
+        this.Speed = this.Speed * 1.13;
+    
+        
+            
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionPersisted);
+        Zero.Connect(this.Owner, Events.CollisionEnded, this.OnCollisionEnded);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        
+    }
+            
+    sends EnemyActiveUpdate : ZilchEvent;
+    
+    [Property]
+    var EnemyActiveUpdateFrequency : Real = 0.25;
+    
+    function EnemyActiveUpdate()
+    {
+        this.GameSession.DispatchEvent(Events.EnemyActiveUpdate, ZilchEvent());
+        
+        var sequence = Action.Sequence(this.Owner.Actions);
+        Action.Delay(sequence, this.EnemyActiveUpdateFrequency);
+        Action.Call(sequence, this.EnemyActiveUpdate);
+    }
+    
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.Name == ("DefaultTile") && this.Owner.GroundChecker.Grounded == true)
+        {
+            this.DoubleJump = true;
+        }
+        
+        if(event.OtherObject.Checkpoint != null)
+        {
+            var textTarget = this.Space.FindObjectByName("CheckPoint");
+            this.Space.CreateAtPosition(this.CheckpointText,textTarget.Transform.Translation);
+            var checkpointPosition = event.OtherObject.Transform.Translation;
+
+            checkpointPosition.Y = this.Owner.Transform.Translation.Y;
+
+            Checkpoint.RespawnPosition = checkpointPosition;
+            
+            
+        }
+        
+        if(event.OtherObject.Name == "CheckPoint")
+        {
+            PlayerMovement.Checkpoint1 = true;
+        }
+    }
+
+    function OnCollisionEnded(event : CollisionEvent)
+    {
+        if(event.OtherObject.Region != null)
+        this.Swimming = false;
+        
+        //CheckpointText.Destroy;
+    }
+
+    function OnCollisionPersisted(event : CollisionEvent)
+    {
+        if(event.OtherObject.Region != null)
+        this.Swimming = true;
+        
+        if(event.OtherObject.Name == ("DefaultTile")
+        || event.OtherObject.Name == ("CannonBarrel")
+        || event.OtherObject.JaggedRock != null)
+        {
+            if(this.Owner.GroundChecker.Grounded == true)
+            this.TouchingGround = true;
+        }
+        
+        if(this.Owner.GroundChecker.Grounded == false)
+        this.TouchingGround = false;
+        
+        //This is the script that gets the player ready for the launch
+        if(event.OtherObject.Name == ("CannonBarrel") && Zero.Keyboard.KeyIsPressed(Keys.S))
+        {
+        this.Owner.RigidBody.DynamicState = RigidBodyDynamicState.Static;
+        this.CannonReady = true;
+        this.Owner.CapsuleCollider.Ghost = true;
+        Inventory.Exists = true;
+        }
+        
+        if(event.OtherObject.Name == ("BossCannonBarrel") && Zero.Keyboard.KeyIsPressed(Keys.S))
+        {
+        this.Owner.RigidBody.DynamicState = RigidBodyDynamicState.Static;
+        this.BossCannonReady = true;
+        this.Owner.CapsuleCollider.Ghost = true;
+        Inventory.Exists = true;
+        }
+        
+    }
+    
+    function GoToBossLevel()
+    {
+        this.GameSession.DispatchEvent
+            (Events.Fade, FadeEvent(Level.TheBestBossLevel_InTheWorld, 1, Real4.Zero, Real4(0,0,0,1)));
+    }
+    
+    function GoToNextLevel()
+    {
+        this.GameSession.DispatchEvent
+            (Events.Fade, FadeEvent(Level.LoadingLevel, 1, Real4.Zero, Real4(0,0,0,1)));
+    }
+    
+    
+    function Launch()
+    {   
+        
+        SpawnFruit.Spawn = false;
+        if(this.CannonReady == true)
+        {
+        this.CannonReady = false;
+        this.Owner.RigidBody.Velocity += Real3(80,40,0);
+        this.Owner.RigidBody.DynamicState = RigidBodyDynamicState.Dynamic;
+        
+        this.Space.SoundSpace.PlayCue(this.LaunchSFX);
+        this.Owner.PlayerController.Launched = 2;
+        
+        this.GameSession.DispatchEvent(Events.Shake, ShakeEvent(0.2,0.4,0.0001, Ease.Linear, 4));
+        
+        this.Space.CreateAtPosition(Archetype.PlayerCannon, this.Owner.Transform.Translation);
+        Inventory.Exists = false;
+        
+        }
+        
+        if(this.BossCannonReady == true)
+        {
+        this.BossCannonReady = false;
+        this.Owner.RigidBody.Velocity += Real3(80,40,0);
+        this.Owner.RigidBody.DynamicState = RigidBodyDynamicState.Dynamic;
+        
+        this.Space.SoundSpace.PlayCue(this.LaunchSFX);
+        this.Owner.PlayerController.Launched = 2;
+        
+        this.GameSession.DispatchEvent(Events.Shake, ShakeEvent(0.2,0.4,0.0001, Ease.Linear, 4));
+        
+        this.Space.CreateAtPosition(Archetype.PlayerCannon, this.Owner.Transform.Translation);
+        Inventory.Exists = false;
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        //Walkie Soundies
+        if(this.Owner.Sprite.SpriteSource == this.Owner.PlayerController.WalkingAnimation)
+        {
+            this.WalkTimer -= 1;
+            
+            if (this.WalkTimer <=0)
+            {
+                this.WalkTimer = 20;
+                this.Owner.SoundEmitter.PlayCue(this.WalkSound);
+            }
+        }
+        
+        //Cannon Stuff I think
+        if(this.CannonReady == true)
+        {
+            this.Owner.Sprite.FlipX = false;
+            
+            this.Owner.Transform.Translation=
+            this.Space.FindObjectByName("OverHere").Transform.WorldTranslation + Real3(-0.1,-0.2,-3);
+
+            var seq = Action.Sequence(this.Owner.Actions);
+                
+            Action.Property
+                (seq, @this.Owner.Transform.EulerAngles, Real3(0,0,-1), 1.1, Ease.Linear);
+            Action.Delay
+                (seq, 1);
+            Action.Call
+                (seq, this.Launch);
+            Action.Delay
+                (seq, 1);
+            Action.Call
+                (seq, this.GoToNextLevel);                
+            
+            return;
+        }
+        
+        if(this.BossCannonReady == true)
+        {
+            this.Owner.Sprite.FlipX = false;
+            
+            this.Owner.Transform.Translation =
+            this.Space.FindObjectByName("BossOverHere").Transform.WorldTranslation + Real3(-0.1,-0.2,-3);
+            
+             var seq = Action.Sequence(this.Owner.Actions);
+                
+            Action.Property
+                (seq, @this.Owner.Transform.EulerAngles, Real3(0,0,-1), 1.1, Ease.Linear);
+            Action.Delay
+                (seq, 1);
+            Action.Call
+                (seq, this.Launch);
+            Action.Delay
+                (seq, 1);
+            Action.Call
+                (seq, this.GoToBossLevel);  
+            
+            return;
+            
+        }
+        
+        
+        var direction = Real3.Zero;
+        
+        var velocity = direction * this.Speed;
+        
+        //Play 90% of sounds - Jessica
+        if(Resources.PlaySound == true) 
+        {
+            Resources.PlaySound = false;
+            this.Owner.SoundEmitter.PlayCue(this.SoundToPlay);
+        }
+        
+        if(PlayerStab.PlaySound2 == true)
+        {
+            PlayerStab.PlaySound2 = false;
+            this.Owner.SoundEmitter.PlayCue(this.SoundToPlay2);
+        }
+        
+        if(Eat.PlaySound3 == true)
+        {
+            Eat.PlaySound3 = false;
+            this.Owner.SoundEmitter.PlayCue(this.SoundToPlay3);
+        }
+        
+        if(Resources.PlayLegendarySound == true)
+        {
+            Resources.PlayLegendarySound = false;
+            this.Owner.SoundEmitter.PlayCue(this.SoundToPlay4);
+        }
+        
+        if(PlayerMovement.PlayErrorSound == true) 
+        {
+            PlayerMovement.PlayErrorSound = false;
+            this.Owner.SoundEmitter.PlayCue(this.SoundToPlay5);
+        }
+        
+        //Initializes ring effects.
+        if(AdvInventory.PlayerInventory["Ring_Speed"] > 0 && this.CheckOnce == false)
+        {
+            this.CheckOnce = true;
+            this.Speed = this.Speed * 1.2;
+        }
+        if(AdvInventory.PlayerInventory["Ring_Jump"] > 0 && this.CheckTwice == false)
+        {
+            this.CheckTwice = true;
+            this.JumpSpeed = this.JumpSpeed * 1.2;
+        }
+        
+    
+        if(Zero.Keyboard.KeyIsPressed(this.KeyUp) && this.Owner.GroundChecker.Grounded == true
+        && this.Swimming == false && this.TouchingGround == true || Zero.Keyboard.KeyIsPressed(Keys.Space) && this.Owner.GroundChecker.Grounded == true
+        && this.Swimming == false && this.TouchingGround == true)
+        {
+            this.Owner.RigidBody.Velocity =
+            Real3(this.Owner.RigidBody.Velocity.X, Math.Max(this.JumpSpeed, velocity.Y + this.JumpSpeed), 0);
+            this.Owner.SoundEmitter.PlayCue(this.SingleJumpSound);
+
+        }
+        
+        else if(Zero.Keyboard.KeyIsPressed(this.KeyUp) && this.DoubleJump == true
+         && this.Swimming == false || Zero.Keyboard.KeyIsPressed(Keys.Space) && this.DoubleJump == true
+         && this.Swimming == false)
+        {
+            this.Owner.RigidBody.Velocity =
+            Real3(this.Owner.RigidBody.Velocity.X, 
+            Math.Max(this.JumpSpeed, velocity.Y + this.JumpSpeed/2), 0);
+            this.Owner.SoundEmitter.PlayCue(this.DoubleJumpSound);
+            this.DoubleJump = false;
+            
+        }
+        
+        //Left and Right
+        if (this.Owner.PlayerController.Launched == 0 || this.Owner.PlayerController.Launched == 2)
+        {
+            if(Zero.Keyboard.KeyIsDown(this.KeyLeft))
+            {
+                if (this.Owner.PlayerController.Launched == 0)
+                {
+                    direction -= Real3.XAxis;
+                }
+                
+            }
+            
+            if(Zero.Keyboard.KeyIsDown(this.KeyRight) || this.Owner.PlayerController.Launched == 2)
+            {
+                direction += Real3.XAxis;
+            }
+        }
+        
+        //Up and Down
+        if(Zero.Keyboard.KeyIsDown(this.KeyUp) && this.Swimming == true || Zero.Keyboard.KeyIsDown(Keys.Space) && this.Swimming == true)
+        {
+            direction += Real3.YAxis;
+        }
+        
+        if(Zero.Keyboard.KeyIsDown(this.KeyDown) && this.Swimming == true)
+        {
+            direction -= Real3.YAxis;
+        }
+        
+        this.Owner.RigidBody.Velocity = 
+        Math.Lerp(this.Owner.RigidBody.Velocity, direction * this.Speed , event.Dt); 
+    }
+    
+    
+
+}
+//THIS IS JEFFERY'S SCRIPT////////////////////////////////////////////////////////////
+class GroundChecker : ZilchComponent
+{
+  [Dependency] var Contact : Contact;
+  
+  [Property] var GroundAngle : Real = 61;
+  
+  var AllGrounds : Array[Cog] = new Array[Cog]();
+  var Grounded : Boolean { get { return this.AllGrounds.Count > 0; } }
+  
+  function Initialize(init : CogInitializer)
+  {
+    Zero.Connect(this.Owner, Events.AnyCollision, this.OnAnyCollision);
+  }
+  function OnAnyCollision(event : AnyCollisionEvent)
+  {
+      
+      if(event.OtherObject.NullObject != null)return;
+    var localUp = Math.Transform(Real3.YAxis, this.Owner.Transform.WorldRotation);
+    
+    if (!event.Ended && Math.AngleBetween(-event.ContactNormal, localUp) < Math.ToRadians(this.GroundAngle))
+    {
+      if (this.AllGrounds.FindFirstIndex(event.OtherObject) < 0)
+      {
+        this.AllGrounds.Add(event.OtherObject);
+      }
+    }
+    else
+    {
+      this.AllGrounds.RemoveAll(event.OtherObject);
+    }
+  }
+}
+//THIS IS JEFFERY'S SCRIPT////////////////////////////////////////////////////////////

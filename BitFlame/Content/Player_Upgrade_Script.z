@@ -1,0 +1,19 @@
+class Player_Upgrade_Script : ZilchComponent
+{
+    /***********************
+Player_Upgrade_Script.z
+by: Luke Taranowski
+Contributers: Null
+Date: 2/1/18
+Brief: Constantly checks if an upgrade variable is true in GameVars then runs some code
+***********************/
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        // MIGHT NOT NEED THIS SCRIPT...
+    }
+}

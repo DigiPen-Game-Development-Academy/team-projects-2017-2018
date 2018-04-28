@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchFragmentBuilder = 
+	{
+		string Name = "Light",
+		uint64 ResourceId = 5a91fb42c9c289cc,
+	},
+},

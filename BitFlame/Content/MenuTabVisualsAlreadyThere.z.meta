@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "MenuTabVisualsAlreadyThere",
+		uint64 ResourceId = 5a7929b9d6cff117,
+	},
+},

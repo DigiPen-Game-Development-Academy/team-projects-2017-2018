@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "MapTest_TileMap00",
+		uint64 ResourceId = 5a11b664d5520fb2,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "5a11b6922db876de:MapTest",
+	},
+},

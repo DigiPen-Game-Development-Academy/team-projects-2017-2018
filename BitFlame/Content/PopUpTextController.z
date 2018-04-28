@@ -1,0 +1,79 @@
+enum PopupType{Explosion, Bump, Shot, Beep}
+
+class PopUpTextController : ZilchComponent
+{
+    sends PreDestroy : ZilchEvent;
+    
+    [Property] var PopUpType : PopupType = PopupType.Explosion;
+    
+    [Property] var ExplosionText : Archetype = null;
+    
+    [Property] var BumpText1 : Archetype = null;
+    
+    [Property] var BumpText2 : Archetype = null;
+    
+    [Property] var BeepText : Archetype = null;
+    
+    var Timer : Real = 0.0;
+    
+    var Touching : Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        if(this.GameSession.GameVars.EnablePopupSoundText)
+        {
+            Zero.Connect(this.Owner, Events.PreDestroy, this.OnPreDestroy);
+            
+            Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+            
+            Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+            
+            Zero.Connect(this.Owner, Events.CollisionEnded, this.OnCollisionEnded);
+        }
+    }
+
+    function OnCollisionEnded(event : CollisionEvent)
+    {
+        this.Touching = false;
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(this.PopUpType == PopupType.Bump)
+        {
+            
+            if(!this.Touching && event.OtherObject.Name == "Asteroid Chunk" || event.OtherObject.Name == "Enemy" || event.OtherObject.Name == "OxygenPipe" || event.OtherObject.Name == "LaserTurret" && this.Owner.RigidBody.Velocity.X + this.Owner.RigidBody.Velocity.Y + this.Owner.RigidBody.Velocity.Z / 3 > 20)
+            {
+                Console.WriteLine("LOL");
+                this.Touching = true;
+                
+                this.Space.CreateAtPosition(this.BumpText1, Real3(this.Owner.Transform.WorldTranslation.X + Random().Range(-2.5, 2.5), this.Owner.Transform.WorldTranslation.Y +  Random().Range(-2.5, 2.5), 5.0));
+            }
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.PopUpType == PopupType.Beep)
+        {
+            if(this.Owner.OxygenGauge.CurrentOxygen <= 25 && this.Timer > 0.25)
+            {
+                this.Timer = 0.0;
+                
+                 this.Space.CreateAtPosition(this.BeepText, Real3(this.Owner.Transform.Translation.X + Random().Range(2.5, 5), this.Owner.Transform.Translation.Y +  Random().Range(2.5, 5), 38.0));
+            }
+            else
+            {
+                this.Timer += event.Dt;
+            }
+        }
+    }
+    
+    function OnPreDestroy(event : ZilchEvent)
+    {
+        if(this.PopUpType == PopupType.Explosion)
+        {
+             this.Space.CreateAtPosition(this.ExplosionText, Real3(this.Owner.Transform.WorldTranslation.X + Random().Range(-5, 5), this.Owner.Transform.WorldTranslation.Y +  Random().Range(-5, 5), 5.0));
+        } 
+    }
+}

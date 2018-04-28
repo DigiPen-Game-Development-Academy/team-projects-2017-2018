@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "IntroCutscene_TileMap03",
+		uint64 ResourceId = 5ab6bd4640b7c79b,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "5ab76e2e8e228263:IntroCutscene",
+	},
+},

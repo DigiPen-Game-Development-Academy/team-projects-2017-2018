@@ -1,0 +1,34 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "SpawnChecker",
+	},
+	Archetyped = 
+	{
+		string Name = "5abde067e6fea990:SpawnChecker",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0.295462996, 0.216752559, 44.0999985],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	BoxCollider = 
+	{
+		bool Ghost = true,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+		string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+		Vec3 Offset = [0, 0, 0],
+		Vec3 Size = [1.5, 1, 0.5],
+	},
+	CheckForCollision = 
+	{
+	},
+},

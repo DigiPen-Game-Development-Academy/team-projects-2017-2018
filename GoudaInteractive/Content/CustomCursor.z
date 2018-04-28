@@ -1,0 +1,68 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class CustomCursor : ZilchComponent {
+    
+    [Property] var DefaultCursor : SpriteSource = SpriteSource.Cursor;
+    [Property] var HoverCursor : SpriteSource = SpriteSource.Cursor;
+    [Property] var HoverTooltipCursor : SpriteSource = SpriteSource.Cursor;
+    [Property] var HoverItemCursor : SpriteSource = SpriteSource.Cursor;
+    [Property] var ClickCursor : SpriteSource = SpriteSource.Cursor;
+    [Property] var TextCursor : SpriteSource = SpriteSource.CursorText;
+    
+    [Property] var ShowCustomCursor : Boolean = true;
+    
+    var TmpCursorType : String = "null";
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Space, Events.MouseMove, this.OnMouseMove);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(Relocation.CursorType != this.TmpCursorType) {
+            var viewportMouseEvent : ViewportMouseEvent = null;
+            this.OnMouseMove(viewportMouseEvent);
+            this.TmpCursorType = Relocation.CursorType;
+        }
+        
+    }
+    
+    function OnMouseMove(event : ViewportMouseEvent) {
+        
+        var mousePos = this.Space.FindObjectByName("LevelSettings").CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 30.0);
+        
+        this.Owner.Transform.WorldTranslation = mousePos;
+        
+        if(this.ShowCustomCursor) {
+            this.ForceSetCursor();
+        } else {
+            Zero.Mouse.Cursor = Cursor.Cross;
+            this.Owner.Sprite.Visible = false;
+        }
+        
+    }
+    
+    function ForceSetCursor() {
+        
+        Zero.Mouse.Cursor = Cursor.Invisible;
+        this.Owner.Sprite.Visible = true;
+        
+        if(Relocation.CursorType == "Hover") {
+            this.Owner.Sprite.SpriteSource = this.HoverCursor;
+        } else if(Relocation.CursorType == "TooltipHover") {
+            this.Owner.Sprite.SpriteSource = this.HoverTooltipCursor;
+        } else if(Relocation.CursorType == "ItemHover") {
+            this.Owner.Sprite.SpriteSource = this.HoverItemCursor;
+        } else if(Relocation.CursorType == "Click") {
+            this.Owner.Sprite.SpriteSource = this.ClickCursor;
+        } else if(Relocation.CursorType == "Text") {
+            this.Owner.Sprite.SpriteSource = this.TextCursor;
+        } else {
+            this.Owner.Sprite.SpriteSource = this.DefaultCursor;
+        }
+        
+    }
+    
+}

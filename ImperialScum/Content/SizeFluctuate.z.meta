@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "SizeFluctuate",
+		uint64 ResourceId = 5a7876b7cb5e07ec,
+	},
+},

@@ -1,0 +1,144 @@
+//Jacob Burke
+
+//Reads if the inventory exists, and creates it
+
+class Inventory : ZilchComponent
+{
+    [Property]
+    var InventoryKey:Keys;
+    
+    [Property]
+    var StoreKey:Keys = Keys.E;
+    
+    [Static]
+    var Exists : Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (Zero.Keyboard.KeyIsPressed(this.InventoryKey))
+        {
+            if (Inventory.Exists == true)
+            {
+                Inventory.Exists = false;
+            }
+            else
+            {
+                Inventory.Exists = true;
+                var position = Real3(0,0,0);
+                this.Space.CreateAtPosition(Archetype.Inventory, position);
+            }
+        }
+        if (Zero.Keyboard.KeyIsPressed(this.StoreKey) && StoreCollide.CollideWithShop == true)
+        {
+            if (Inventory.Exists)
+            {
+                Inventory.Exists = false;
+            }
+            else
+            {
+                Inventory.Exists = true;
+                var position = Real3(0,0,0);
+                this.Space.CreateAtPosition(Archetype.Shop, position);
+            }
+        }
+        
+        if (Zero.Keyboard.KeyIsPressed(this.StoreKey) && StoreCollide.CollideWithUpgrade == true)
+        {
+            if (Inventory.Exists)
+            {
+                Inventory.Exists = false;
+            }
+            else
+            {
+                Inventory.Exists = true;
+                var position = Real3(0,0,0);
+                this.Space.CreateAtPosition(Archetype.Upgrade, position);
+            }
+        }
+    }
+}
+//Jacob Burke
+
+//Reads if the player is colliding with the store
+
+class StoreCollide : ZilchComponent
+{
+    [Static]
+    var CollideWithShop:Boolean = false;
+    
+    [Static]
+    var CollideWithUpgrade:Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Owner, Events.CollisionEnded, this.OnCollisionEnded);
+    }
+
+    function OnCollisionEnded(event : CollisionEvent)
+    {
+        if(event.OtherObject.PlayerController != null)
+        {
+            if(this.Owner.Name == "Shop")
+            {
+            StoreCollide.CollideWithShop = false;
+            Inventory.Exists = false;
+            }
+            else if(this.Owner.Name == "Upgrade")
+            {
+            StoreCollide.CollideWithUpgrade = false;
+            Inventory.Exists = false;
+            }
+    
+        }
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.PlayerController != null && this.Owner.Name == "Shop")
+        {
+            StoreCollide.CollideWithShop = true;
+            this.Owner.SoundEmitter.PlayCue(SoundCue.HEY);
+        }
+        if(event.OtherObject.PlayerController != null && this.Owner.Name == "Upgrade")
+        StoreCollide.CollideWithUpgrade = true;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}
+
+class PressE: ZilchComponent
+{
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    if (StoreCollide.CollideWithShop == true)
+    {
+        this.Owner.SpriteText.Text = ("Press E for Shop");
+    }
+    else if(StoreCollide.CollideWithUpgrade == true)
+    {
+        this.Owner.SpriteText.Text = ("Press E for Upgrades");
+    }
+    else
+    {
+        this.Owner.SpriteText.Text = (" ");
+        
+    }
+}
+}
+    
+
+

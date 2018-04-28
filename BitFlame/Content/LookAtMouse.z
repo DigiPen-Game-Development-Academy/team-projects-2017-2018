@@ -1,0 +1,16 @@
+class LookAtMouse : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var screenPos = Zero.Mouse.ScreenPosition;
+        var mousePos = this.LevelSettings.CameraViewport.ScreenToWorldZPlane(screenPos, 0.0);
+        var mouseDirection = mousePos - this.Owner.Transform.WorldTranslation;
+        mouseDirection = Math.Normalize(mouseDirection);
+        this.Owner.Orientation.LookAtDirection(mouseDirection);
+    }
+}

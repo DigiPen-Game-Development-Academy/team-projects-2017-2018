@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "ScaleToFitScreen",
+		uint64 ResourceId = 5aadafa5b6bd7833,
+	},
+},

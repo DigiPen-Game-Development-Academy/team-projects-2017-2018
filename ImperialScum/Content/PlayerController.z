@@ -1,0 +1,257 @@
+//Jacob Burke
+
+//This just changes the spritesource, the player movement deals with the actual moving
+
+class PlayerController : ZilchComponent
+{
+    [Property]
+    var Left:Keys = Keys.Left;
+
+    [Property]
+    var Right:Keys = Keys.Right;
+    
+    [Property]
+    var  IdleAnimation:SpriteSource;
+    
+    [Property]
+    
+    var WalkingAnimation:SpriteSource;
+    
+    [Property]
+    var JumpAnimation:SpriteSource;
+    
+    [Property]
+    var FallAnimation:SpriteSource;
+    
+    [Property]
+    var MidAnimation:SpriteSource;
+    
+    [Property]
+    var StabAnimation:SpriteSource;
+    
+    [Property]
+    var StabUpAnimation:SpriteSource;
+    
+    [Property]
+    var StabDownAnimation:SpriteSource;
+    
+    [Property]
+    var DeathAnimation:SpriteSource;
+    
+    [Property]
+    var ThrowAnimation:SpriteSource;
+    var ThrowTime:Real = 0.2;
+    
+    
+    [Property]
+    var JumpSound:SoundCue;
+    
+    [Property]
+    var Lose:Integer = 1;
+    
+    var LoseTimer:Integer = 60;
+    var Dead:Boolean = false;
+    
+    [Property]
+    var HorizontalDrag:Real = 10;
+    
+    var EquipCopperArmor:Boolean = false;
+    
+    var EquipVolcanoArmor:Boolean = false;
+    
+    
+    var Launched:Integer = 0;
+    
+        
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        Zero.Connect(this.Space, Events.LeftMouseDown, this.OnLeftMouseDown);
+        
+    }
+
+    function OnLeftMouseDown(event : ViewportMouseEvent)
+    {
+        if(Inventory.Exists == false && this.Owner.PlayerStab.Spear == null)
+        {
+            //Mousey Stuff
+            var mouseScreen = Zero.Mouse.ScreenPosition;
+            var viewport = this.LevelSettings.CameraViewport;
+            var mouseWorld = viewport.ScreenToWorldZPlane(mouseScreen, 0);
+            
+            var toMouse = mouseWorld - this.Owner.Transform.WorldTranslation;
+            var angle = Math.Angle2D(toMouse);
+            
+            
+            //Stabby Sprites
+            if (angle > 0.5 && angle < 2.5)
+            {
+                this.Owner.Sprite.SpriteSource = this.StabUpAnimation;
+            }
+            else if (angle > -2.5 && angle < -0.5)
+            {
+                this.Owner.Sprite.SpriteSource = this.StabDownAnimation;
+            }
+            else
+            {
+                this.Owner.Sprite.SpriteSource = this.StabAnimation;
+            }
+        }
+    }
+    
+    function EquipCopper ()
+    {
+            this.IdleAnimation = SpriteSource.Copper_Stand;
+            this.StabAnimation = SpriteSource.Copper_StabStraight;
+            this.StabUpAnimation = SpriteSource.Copper_StabUp;
+            this.StabDownAnimation = SpriteSource.Copper_StabDown;
+            this.JumpAnimation = SpriteSource.Copper_Jump000;
+            this.MidAnimation = SpriteSource.Copper_Jump001;
+            this.FallAnimation = SpriteSource.Copper_Jump002;
+            this.ThrowAnimation = SpriteSource.Copper_Throw1;
+            this.WalkingAnimation = SpriteSource.Copper_Walk1;
+            this.DeathAnimation = SpriteSource.Copper_Death;
+    }
+    
+    function EquipVolcano ()
+    {
+            this.IdleAnimation = SpriteSource.Volcano_Stand;
+            this.StabAnimation = SpriteSource.Volcano_StabStright;
+            this.StabUpAnimation = SpriteSource.Volcano_StabUp;
+            this.StabDownAnimation = SpriteSource.Volcano_StabDown;
+            this.JumpAnimation = SpriteSource.Volcano_Jump000;
+            this.MidAnimation = SpriteSource.Volcano_Jump001;
+            this.FallAnimation = SpriteSource.Volcano_Jump002;
+            this.ThrowAnimation = SpriteSource.Volcano_Throw;
+            this.WalkingAnimation = SpriteSource.Volcano_Walk;
+            this.DeathAnimation = SpriteSource.Volcano_Death;
+    }
+        
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(AdvInventory.PlayerInventory["ArmorCopper"] >= 1 && this.EquipCopperArmor == false)
+        {
+            if(AdvInventory.PlayerInventory["ArmorVolcano"] < 1)
+            {
+            this.EquipCopper();
+            }
+            this.EquipCopperArmor = true;
+        }
+            
+        if(AdvInventory.PlayerInventory["ArmorVolcano"] >= 1 && this.EquipVolcanoArmor == false)
+        {
+            this.EquipVolcano();
+            this.EquipVolcanoArmor = true;
+        }
+        
+        //Death Timer
+        if (this.Dead == true)
+        {
+            this.LoseTimer -= 1;
+        }
+        
+        //idk what this is
+        var x = this.Owner.RigidBody.Velocity.X;
+        
+        //Horizontal Drag
+        if (x > 0)
+        {
+            x = Math.Max(0,x-this.HorizontalDrag*event.Dt);
+        }
+        
+        else if (x < 0)
+        {
+            x = Math.Min(0,x+this.HorizontalDrag*event.Dt);
+        }
+        this.Owner.RigidBody.Velocity = Real3(x,this.Owner.RigidBody.Velocity.YZ);
+            
+        //I have no idea
+        
+        if(this.Owner.Sprite.SpriteSource == this.ThrowAnimation || 
+        this.Owner.Sprite.SpriteSource == this.StabAnimation ||
+        this.Owner.Sprite.SpriteSource == this.StabUpAnimation ||
+        this.Owner.Sprite.SpriteSource == this.StabDownAnimation)
+        {
+            this.Owner.Sprite.AnimationSpeed = 1;
+            
+            this.ThrowTime -= event.Dt;
+            
+            if(this.ThrowTime >= 0)
+            {
+                return;
+            }
+            else
+            this.ThrowTime += 0.3;
+        
+        }
+        
+        
+                //Animation Speed Controller
+                if (this.Owner.Sprite.SpriteSource == this.WalkingAnimation)
+                {
+                    if (this.Owner.RigidBody.Velocity.X >= 8 || this.Owner.RigidBody.Velocity.X <= -8)
+                    {
+                        this.Owner.Sprite.AnimationSpeed = 1;
+                    }
+                    else if (this.Owner.RigidBody.Velocity.X < 8 || this.Owner.RigidBody.Velocity.X > -8)
+                    {
+                        this.Owner.Sprite.AnimationSpeed = 0.3;
+                    }
+                }
+        
+        
+        //Idle Animation
+        if (this.Owner.GroundChecker.Grounded == true && this.Owner.RigidBody.Velocity.X <= 0.1 && this.Owner.RigidBody.Velocity.X >= -0.1)
+        this.Owner.Sprite.SpriteSource = this.IdleAnimation;
+        
+        else if(this.Owner.GroundChecker.Grounded == true && this.Owner.Sprite.SpriteSource != this.WalkingAnimation)
+        {
+            if (this.Launched == 0)
+            {
+                //Walking Animation
+                
+                this.Owner.Sprite.SpriteSource = this.WalkingAnimation;
+            }
+        }
+        else if(this.Owner.GroundChecker.Grounded == false)
+        {
+            this.Owner.Sprite.SpriteSource = this.JumpAnimation;
+        }
+       
+       //Horizontal Movement
+       
+       if (this.Launched == 0 || this.Launched == 2)
+        {
+            if(Zero.Keyboard.KeyIsDown(this.Right))
+            {
+                this.Owner.Sprite.FlipX = false;
+            }
+            
+            if(Zero.Keyboard.KeyIsDown(this.Left))
+            {
+                if (this.Launched == 0)
+                {
+                    this.Owner.Sprite.FlipX = true;
+                }
+            }
+        }
+        
+        
+        
+        
+        if(this.Owner.RigidBody.Velocity.Y >= 0 && Zero.Keyboard.KeyIsPressed(Keys.W))
+        {
+            this.Owner.Sprite.SpriteSource = this.JumpAnimation;
+        }
+        if(this.Owner.RigidBody.Velocity.Y <= -1)
+        this.Owner.Sprite.SpriteSource = this.FallAnimation;
+        
+        if(this.Owner.RigidBody.Velocity.Y < 1 && this.Owner.GroundChecker.Grounded == false
+        && this.Owner.RigidBody.Velocity.Y > -1 )
+        this.Owner.Sprite.SpriteSource = this.MidAnimation;
+        
+
+    }
+}

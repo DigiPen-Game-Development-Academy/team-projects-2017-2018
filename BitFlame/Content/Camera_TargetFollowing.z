@@ -1,0 +1,66 @@
+/*************************************
+Filename: Camera_TargetFollowing.z
+Author: Jakob McFarland
+Contributors: NULL
+Last modified: 1/26/18
+Brief:this component will make the camera folow the selected target, within specified  bounds
+***********************/
+
+class CameraFollow : ZilchComponent
+{
+  [Dependency] var Transform : Transform = null;
+  
+  [Property] var Target : CogPath = null;
+
+  //minimum x,y bounds 
+  [Property] var Min : Real2 = Real2(-1000, -1000);
+  //maximum x,y bounds 
+  [Property] var Max: Real2 = Real2(1000, 1000);
+
+  //This needs to be between 0 and 1, determines how quickly the camera tracks the player
+  [Property] var LerpValue : Real = 0.9;
+  
+  function Initialize(init : CogInitializer)
+  {
+    Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+  }
+
+  function OnLogicUpdate(event : UpdateEvent)
+  {
+    if(this.Target.Cog != null) 
+    {
+      //store loccation of target
+      var newPos = this.Target.Cog.Transform.Translation;
+      
+      // maintain z
+      newPos.Z = this.Transform.Translation.Z;
+      
+      //use the lerp function to smooth movement
+      newPos = Math.Lerp(this.Transform.Translation, newPos, this.LerpValue);
+      
+      //check boundaries
+      if(newPos.X < this.Min.X)
+      {
+          newPos.X = this.Min.X;
+      }
+      else if(newPos.X > this.Max.X)
+      {
+          newPos.X = this.Max.X;
+      }
+      
+      if(newPos.Y < this.Min.Y)
+      {
+          newPos.Y = this.Min.Y;
+      }
+      else if(newPos.Y > this.Max.Y)
+      {
+          newPos.Y = this.Max.Y;
+      }
+      
+      //set camera postion
+      this.Transform.Translation = newPos;
+      
+    }
+    
+  }
+}

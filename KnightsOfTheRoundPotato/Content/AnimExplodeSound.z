@@ -1,0 +1,25 @@
+class AnimExplodeSound : ZilchComponent {
+    
+    [Property] var Sound : SoundCue;
+    
+    var Once : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(!this.Once && this.Owner.SphericalParticleEmitter.Active) {
+            
+            this.Once = true;
+            this.Owner.SoundEmitter.PlayCue(this.Sound);
+            
+        }
+        
+        if(!this.Owner.SphericalParticleEmitter.Active) {
+            this.Owner.SoundEmitter.Stop();
+        }
+        
+    }
+}

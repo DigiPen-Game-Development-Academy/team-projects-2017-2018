@@ -1,0 +1,34 @@
+class ShootDemonstration : ZilchComponent
+{
+    [Property]
+    var WhatToSpawn : Archetype;
+    
+    [Property]
+    var SpawnTime : Real = 2.0;
+    
+    [Property]
+    var BulletSpeed : Real = 10;
+    
+    var TimeSinceLastSpawn : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.TimeSinceLastSpawn += event.Dt;
+        
+        if (this.TimeSinceLastSpawn > this.SpawnTime)
+        {
+            var spawnPosition = this.Owner.Transform.Translation;
+            
+            var bullet = this.Space.CreateAtPosition(this.WhatToSpawn, spawnPosition);
+            bullet.EntityBullet.FromPlayer = true;
+            bullet.RigidBody.Velocity = Real3(0, this.BulletSpeed, 0);
+            
+            this.TimeSinceLastSpawn = 0.0;
+        }
+    }
+}

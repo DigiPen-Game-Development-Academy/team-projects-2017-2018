@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "ScreenShake",
+		uint64 ResourceId = 5ac12507cad5ad07,
+	},
+},

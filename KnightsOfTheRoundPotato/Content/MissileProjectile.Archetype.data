@@ -1,0 +1,128 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "PotatProjectile",
+	},
+	Archetyped = 
+	{
+		string Name = "5ac6d0150a410977:MissileProjectile",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [23.961771, 45.3521194, -0.900001526],
+		Vec3 Scale = [0.75, 0.75, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5a75bd91646544bb:ProjectilePotate",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	Orientation = 
+	{
+		Vec3 GlobalUp = [0, 0, 1],
+		Vec3 UpVector = [0, 0, 1],
+		Vec3 ForwardVector = [1, 0, 0],
+		OrientationBases DefaultBases = ForwardXUpZ,
+	},
+	PotatProjectile = 
+	{
+	},
+	Hierarchy = 
+	{
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 2,
+			},
+			Named = 
+			{
+				string Name = "Trail",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0, 0, -0.00999999978],
+				Vec3 Scale = [1.33333337, 1.33333337, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			SpriteParticleSystem = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = false,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				SystemChildMode ChildMode = Independent,
+				SystemSpace SystemSpace = WorldSpace,
+				uint DrawOrder = 0,
+				Vec4 Tint = [0.99000001, 0.99000001, 0.99000001, 1],
+				float WarmUpTime = 0,
+				ParticleGeometry GeometryMode = Billboarded,
+				ParticleRenderMode RenderMode = Blended,
+				ParticleSortMode SortMode = Youngest,
+				ParticleAnimation ParticleAnimation = Single,
+				string Texture = "5274db4c2e7c11f9:Circle",
+				float VelocityScale = 1,
+				float LengthScale = 1,
+				float MaxParticleSize = 100,
+				Vec3 SystemSize = [4, 4, 4],
+			},
+			SphericalParticleEmitter = 
+			{
+				bool Active = true,
+				uint EmitCount = 0,
+				float EmitRate = 1000,
+				float EmitVariance = 0,
+				float Size = 0.125,
+				float SizeVariance = 0.125,
+				float Lifetime = 1,
+				float LifetimeVariance = 0.200000003,
+				float Spin = 0,
+				float SpinVariance = 50,
+				bool RandomSpin = true,
+				float Fill = 1,
+				float EmitterVelocityPercent = 0,
+				Vec3 StartVelocity = [0, 0, 0],
+				Vec3 RandomVelocity = [0.25, 0.25, 2],
+				Vec3 TangentVelocity = [0, 0, 0],
+				Vec3 EmitterSize = [0, 0, 0],
+				bool FastMovingEmitter = true,
+			},
+			LinearParticleAnimator = 
+			{
+				Vec3 Force = [0, 0, 0],
+				Vec3 RandomForce = [0, 0, 0],
+				float Torque = 0,
+				float Growth = 0.5,
+				float Dampening = 0,
+				Vec3 Twist = [0, 0, 0],
+			},
+			ParticleColorAnimator = 
+			{
+				Vec4 Color0 = [1, 0.690000057, 0, 0.850000024],
+				Vec4 Color1 = [0.444999993, 0.444999993, 0.444999993, 0.420000017],
+				Vec4 Color2 = [0.529999971, 0.529999971, 0.529999971, 0.394999981],
+				Vec4 Color3 = [0.580000043, 0.580000043, 0.580000043, 0.350000024],
+				Vec4 Color4 = [0.805000007, 0.805000007, 0.805000007, 0],
+			},
+		},
+	},
+},

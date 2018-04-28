@@ -1,0 +1,207 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class Notification : ZilchComponent {
+    
+    [Property] var MaxNotificationCount : Integer = 5;
+    
+    var NotificationCount : Integer = 0;
+    
+    var NotificationCog : Array[Cog] = null;
+    var NotificationKeyCog : Array[Cog] = null;
+    
+    function Initialize(init : CogInitializer) {
+        
+        Relocation.NotificationManager = this;
+        
+        this.NotificationCog = new Array[Cog]();
+        this.NotificationKeyCog = new Array[Cog]();
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        this.DisplayNotification();
+    }
+    
+    function DisplayNotification() {
+        
+        var pos = this.Owner.Transform.WorldTranslation;
+        
+        var notificationIndex = 0;
+        
+        foreach(var notification in this.NotificationCog) {
+            if(notification != null) {
+                
+                notification.Transform.WorldTranslation = Math.Lerp(
+                    notification.Transform.WorldTranslation,
+                    Real3(pos.X, pos.Y + notificationIndex * 0.75, 3.0),
+                    0.06
+                );
+                
+                ++notificationIndex;
+                
+            }
+        }
+        
+    }
+    
+    function GiveNotification(
+        text                : String,
+        displayTimeout      : Real,
+        notificationColor   : Real4,
+        tooltipText         : String,
+        tooltipLore         : String,
+        tooltipColor        : Real4,
+        tooltipLoreColor    : Real4
+    ) {
+        
+        if(this.NotificationCog != null) {
+            
+            var pos = this.Owner.Transform.WorldTranslation;
+            
+            var notification = this.Space.CreateAtPosition(Archetype.NotificationText, Real3(pos.X, pos.Y + this.NotificationCount * 0.75, pos.Z));
+            
+            notification.AttachToRelative(this.Owner);
+            notification.SpriteText.Text = "`text.Replace("\n", " ")`";
+            
+            if(notificationColor != Real4(0.0))
+                notification.SpriteText.Color = notificationColor;
+            
+            notification.NotificationText.TooltipText = tooltipText;
+            notification.NotificationText.TooltipLore = tooltipLore;
+            notification.NotificationText.TooltipColor = tooltipColor;
+            notification.NotificationText.TooltipLoreColor = tooltipLoreColor;
+            
+            this.NotificationCog.Add(notification);
+            
+            ++this.NotificationCount;
+            
+        }
+        
+    }
+    
+    function GiveNotification(
+        text                : String,
+        displayTimeout      : Real,
+        notificationColor   : Real4,
+        tooltipText         : String,
+        tooltipLore         : String,
+        tooltipColor        : Real4
+    ) {
+        this.GiveNotification(text, displayTimeout, notificationColor, tooltipText, tooltipLore, tooltipColor, Real4(1.0));
+    }
+    
+    function GiveNotification(text : String, displayTimeout : Real, notificationColor : Real4) {
+        this.GiveNotification(text, displayTimeout, notificationColor, "", "", Real4(1.0), Real4(1.0));
+    }
+    
+    function GiveNotification(text : String, displayTimeout : Real) {
+        this.GiveNotification(text, displayTimeout, Real4(0.0), "", "", Real4(1.0), Real4(1.0));
+    }
+    
+    function DisplayMouseButton(btn : MouseButtons, showBtnPress : Boolean, killExistingIcons : Boolean) {
+        
+        var icon = this.DisplayControl_("`btn`", killExistingIcons);
+        
+        if(Zero.Mouse.IsButtonDown(btn) && showBtnPress) {
+            icon.Sprite.Color = Real4(1.0);
+            icon.Children.Current.SpriteText.Color = Real4(Real3(0.5), 1.0);
+        } else {
+            icon.Sprite.Color = Real4(Real3(0.5), 1.0);
+            icon.Children.Current.SpriteText.Color = Real4(1.0);
+        }
+        
+    }
+    
+    function DisplayKey(key : Keys, showKeyPress : Boolean, killExistingIcons : Boolean) {
+        
+        var icon = this.DisplayControl_("`key`", killExistingIcons);
+        
+        if(Zero.Keyboard.KeyIsDown(key) && showKeyPress) {
+            icon.Sprite.Color = Real4(1.0);
+            icon.Children.Current.SpriteText.Color = Real4(Real3(0.5), 1.0);
+        } else {
+            icon.Sprite.Color = Real4(Real3(0.5), 1.0);
+            icon.Children.Current.SpriteText.Color = Real4(1.0);
+        }
+        
+    }
+    
+    function DisplayControl_(ctrl : String, killExistingIcons : Boolean) : Cog {
+        
+        var controlNotification = this.Space.FindObjectByName("ControlNotification");
+        var spacing = 0.75;
+        var i = 0.0;
+        
+        foreach(var ico in this.NotificationKeyCog) {
+            if(ico != null) {
+                if(killExistingIcons) {
+                    ico.Destroy();
+                    ico = null;
+                } else {
+                    ico.Transform.WorldTranslation = Real3(ico.Transform.WorldTranslation.X - spacing, ico.Transform.WorldTranslation.YZ);
+                }
+                i += spacing;
+            }
+        }
+        
+        if(killExistingIcons) {
+            this.NotificationKeyCog.Clear();
+            i = 0.0;
+        }
+        
+        var icon = this.Space.CreateAtPosition(Archetype.NotificationIcon, controlNotification.Transform.WorldTranslation);
+        
+        icon.Children.Current.SpriteText.Text = "`ctrl`";
+        
+        icon.Transform.WorldTranslation += Real3(i, 0.0, 0.0);
+        icon.Area.Size = Real2(icon.Children.Current.SpriteText.Text.Count, 1.0);
+        icon.AttachToRelative(controlNotification);
+        
+        this.NotificationKeyCog.Push(icon);
+        
+        return icon;
+        
+    }
+    
+    function DisplayKeySuffix(str : String, playSound : Boolean) {
+        
+        var controlNotification = this.Space.FindObjectByName("ControlNotification");
+        
+        if(controlNotification.FindChildByName("ControlSuffix") != null) {
+            var txt = controlNotification.FindChildByName("ControlSuffix");
+            if(txt.SpriteText.Text != str && playSound)
+                this.Space.FindObjectByName("DebugCommand").SoundObject.PlayCue(SoundCue.DefaultCue);
+            txt.SpriteText.Text = str;
+        } else {
+            var txt = this.Space.CreateAtPosition(Archetype.ControlSuffix, this.Owner.Transform.WorldTranslation);
+            txt.AttachToRelative(controlNotification);
+        }
+        
+    }
+    
+    function RemoveNotification() {
+        --this.NotificationCount;
+    }
+    
+    function RemoveControlTip(removeSuffix : Boolean) {
+        
+        var controlNotification = this.Space.FindObjectByName("ControlNotification");
+        
+        foreach(var ico in this.NotificationKeyCog) {
+            if(ico != null) {
+                ico.Destroy();
+                ico = null;
+            }
+        }
+        
+        if(controlNotification.FindChildByName("ControlSuffix") != null && removeSuffix)
+            controlNotification.FindChildByName("ControlSuffix").Destroy();
+        
+        this.NotificationCog.Clear();
+        
+    }
+    
+}

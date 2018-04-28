@@ -1,0 +1,43 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "HPEffect",
+	},
+	Archetyped = 
+	{
+		string Name = "5ab459c761598f7d:HPEffect",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 1.4999994],
+		Vec3 Scale = [9.99999975e-05, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [0.987399936, 1, 0.370000005, 0.585000038],
+		BlendMode BlendMode = Additive,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5ab45e7e4d78216d:HealthRegenEffect",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	HealthBarEffect = 
+	{
+		float Speed = 2,
+	},
+},

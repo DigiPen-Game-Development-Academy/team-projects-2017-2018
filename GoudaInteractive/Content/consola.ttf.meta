@@ -1,0 +1,8 @@
+FontContent = 
+{
+	FontBuilder = 
+	{
+		string Name = "consola",
+		uint64 ResourceId = 5a399d8894a1af95,
+	},
+},

@@ -1,0 +1,8 @@
+FontContent = 
+{
+	FontBuilder = 
+	{
+		string Name = "GameFont",
+		uint64 ResourceId = 5a075f32e7b83df0,
+	},
+},

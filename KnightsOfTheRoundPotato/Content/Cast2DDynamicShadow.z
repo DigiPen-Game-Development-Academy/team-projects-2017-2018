@@ -1,0 +1,100 @@
+//Author Brandon Wolenetz
+
+struct Segment {
+    var P1 : Real3;
+    var P2 : Real3;
+    constructor (p1 : Real3, p2 : Real3){
+        this.P1 = p1;
+        this.P2 = p2;
+    }
+    constructor () {
+        this.P1 = Real3(0);
+        this.P2 = Real3(0);
+    }
+}
+
+enum ShadowCastType {
+    Box,
+    Circle
+}
+
+class Cast2DDynamicShadow : ZilchComponent
+{
+    
+    [Property]
+    var CastType : ShadowCastType = ShadowCastType.Box;
+    
+    [Property]
+    var CastSize : Real = 1;
+    
+    var Segments : Array[Segment];
+    
+    var Once : Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        
+        
+        
+        
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+        if(!this.Once){
+            this.Once = true;
+            
+            if(GlobalVariables.ShadowObjects == null)
+            GlobalVariables.ShadowObjects = Array[Cog]();
+        GlobalVariables.ShadowObjects.Add(this.Owner);
+        
+        var p = this.Owner.Transform.WorldTranslation;
+        
+        this.Segments = Array[Segment]();
+        
+        if (this.CastType == ShadowCastType.Box) {
+            var seg1 = Segment();
+            var seg2 = Segment();
+            var seg3 = Segment();
+            var seg4 = Segment();
+            
+            seg1.P1 = p + ((Real3( 0.5,    0.5,    0) * this.CastSize)*this.Owner.Transform.Scale);
+            seg1.P2 = p + ((Real3(-0.5,    0.5,    0) * this.CastSize)*this.Owner.Transform.Scale);
+            seg2.P1 = p + ((Real3(-0.5,    0.5,    0) * this.CastSize)*this.Owner.Transform.Scale);
+            seg2.P2 = p + ((Real3(-0.5,   -0.5,    0) * this.CastSize)*this.Owner.Transform.Scale);
+            seg3.P1 = p + ((Real3(-0.5,   -0.5,    0) * this.CastSize)*this.Owner.Transform.Scale);
+            seg3.P2 = p + ((Real3( 0.5,   -0.5,    0) * this.CastSize)*this.Owner.Transform.Scale);
+            seg4.P1 = p + ((Real3( 0.5,   -0.5,    0) * this.CastSize)*this.Owner.Transform.Scale);
+            seg4.P2 = p + ((Real3( 0.5,    0.5,    0) * this.CastSize)*this.Owner.Transform.Scale);
+            
+            this.Segments.Add(seg1);
+            this.Segments.Add(seg2);
+            this.Segments.Add(seg3);
+            this.Segments.Add(seg4);
+            
+        } else if (this.CastType == ShadowCastType.Circle) {
+            
+            var vertCount = 16;
+            
+            var angle = 0.0;
+            for (var i = 0; i < vertCount/2; ++i){
+                
+                var dir1 = Real3(Math.Cos(angle), Math.Sin(angle), 0);
+                
+                angle += Math.ToRadians(720/vertCount);
+                
+                var dir2 = Real3(Math.Cos(angle), Math.Sin(angle), 0);
+                
+                this.Segments.Add(Segment(p+(dir1*(this.CastSize/2)), p+(dir2*(this.CastSize/2))));
+                
+            }
+            
+        }
+            
+        }
+        
+    }
+}

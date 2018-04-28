@@ -1,0 +1,31 @@
+class PlaySound : ZilchComponent
+{
+    //Author - Jessica
+    
+    [Property] var SoundToPlay : SoundCue;
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+    }
+
+    function OnMouseDown(event : ViewportMouseEvent)
+    {
+        this.Owner.SoundEmitter.PlayCue(this.SoundToPlay);
+    }
+    
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.PlayerMovement != null)
+        {
+            
+        }
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+    }
+}

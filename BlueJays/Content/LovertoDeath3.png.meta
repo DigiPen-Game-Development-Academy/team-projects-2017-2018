@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "LovertoDeath3",
+		uint64 ResourceId = 5a498d4218efc0ba,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 3121,
+		uint FrameSizeY = 2160,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 500,
+		float OriginY = 500,
+		float PixelsPerUnit = 64,
+		bool Smoothing = true,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

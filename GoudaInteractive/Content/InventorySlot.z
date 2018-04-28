@@ -1,0 +1,69 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class InventorySlot : ZilchComponent {
+    
+    [Property] var EnableHoverSprite : Boolean = true;
+    
+    [Property] var InventorySlot : SpriteSource = SpriteSource.InventorySlot;
+    [Property] var InventorySlotHover : SpriteSource = SpriteSource.InventorySlotHover;
+    
+    function Initialize(init : CogInitializer) {
+        
+        Zero.Connect(this.Owner, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.MouseUpdate, this.OnMouseUpdate);
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+        
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.Owner.Name == "Slot1" && this.Owner.FindChildByName("ItemName").SpriteText.Text != "") {
+            this.Owner.FindChildByName("ItemName").Sprite.Visible = true;
+        } else {
+            this.Owner.FindChildByName("ItemName").Sprite.Visible = false;
+        }
+        
+        this.Owner.FindChildByName("ItemCount").SpriteText.Visible = (Integer.Parse(this.Owner.FindChildByName("ItemCount").SpriteText.Text) > 1);
+        
+    }
+    
+    function OnMouseUpdate(event : ViewportMouseEvent) {
+        
+        if(Relocation.Space != null && Relocation.Space.FindObjectByName(Relocation.EntityPlayer) != null) {
+            
+            if(Relocation.Space.FindObjectByName("EntityPlayer").Inventory.InventoryOpen) {
+                Relocation.Space.FindObjectByName("EntityPlayer").Inventory.SlotHover = Integer.Parse(this.Owner.Name.SubStringFromRuneIndices(4, this.Owner.Name.Count));
+            }
+            
+        }
+        
+    }
+    
+    function OnMouseEnter(event : ViewportMouseEvent) {
+        if(this.EnableHoverSprite) {
+            this.Owner.Sprite.SpriteSource = this.InventorySlotHover;
+            this.Owner.Sprite.Color = Real4(this.Owner.Sprite.Color.XYZ, 1.0);
+        }
+    }
+    
+    function OnMouseExit(event : ViewportMouseEvent) {
+        if(this.EnableHoverSprite) {
+            this.Owner.Sprite.SpriteSource = this.InventorySlot;
+            this.Owner.Sprite.Color = Real4(this.Owner.Sprite.Color.XYZ, 0.75);
+        }
+    }
+    
+    function OnMouseDown(event : ViewportMouseEvent) {
+        
+        //Console.WriteLine("Slot clicked: `this.Owner.Name.SubStringFromRuneIndices(4, this.Owner.Name.Count)`");
+        
+        if(Relocation.Space != null && Relocation.Player != null && Relocation.Player.Inventory.InventoryOpen) {
+            Relocation.Space.FindObjectByName("EntityPlayer").Inventory.SlotClicked = Integer.Parse(this.Owner.Name.SubStringFromRuneIndices(4, this.Owner.Name.Count));
+        }
+        
+    }
+    
+}

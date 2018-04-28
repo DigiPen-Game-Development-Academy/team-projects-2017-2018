@@ -1,0 +1,58 @@
+//Jacob Burke
+
+//This makes the "slots" in the inventory
+
+class InventorySlot : ZilchComponent
+{
+    [Property] var ItemIndex : Integer;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var index = 0;
+        foreach (var item in AdvInventory.PlayerInventory)
+        {
+         if (item.Value <= 0) continue;
+         if(index == this.ItemIndex)
+         {
+            this.Owner.Sprite.Visible = true;
+            var source = SpriteSource.Find("Inv_`item.Key`");
+            
+            if (this.Owner.Sprite.SpriteSource != source)
+            this.Owner.Sprite.SpriteSource = source;
+            
+            
+            this.Owner.FindChildByName("ItemCount").SpriteText.Text = "`item.Value`";
+            
+            return;
+         }
+         ++index;
+        }
+        
+        this.Owner.Sprite.Visible = false;
+        this.Owner.FindChildByName("ItemCount").SpriteText.Text = (" ");
+    }
+}
+class LegendarySparkle : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        Console.WriteLine(this.Owner.Parent.Sprite.SpriteSource.Name);
+        if(this.Owner.Parent.Sprite.SpriteSource.Name == ("Inv_Ring_Regen")
+        || this.Owner.Parent.Sprite.SpriteSource.Name == ("Inv_Ring_Jump")
+        || this.Owner.Parent.Sprite.SpriteSource.Name == ("Inv_ArmorVolcano"))
+        this.Owner.SphericalParticleEmitter.Active = true;
+        else
+        this.Owner.SphericalParticleEmitter.Active = false;
+        
+    }
+}

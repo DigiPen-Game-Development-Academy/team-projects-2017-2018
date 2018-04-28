@@ -1,0 +1,75 @@
+//Author Brandon Wolenetz
+
+class Stealth : ZilchComponent {
+    
+    [Dependency] var MenuVisController : MenuVisibilityController;
+    [Dependency] var Vis : Visibility;
+    [Dependency] var AI : EnemyAI;
+    [Dependency] var Sprite : Sprite;
+    
+    [Property] var InvisSpeedMultiplier : Real = 2;
+    [Property] var OpacityCurve : SampleCurve = SampleCurve.StealthOpacity;
+    [Property] var CloseSpeedMultiplier : Real = 2;
+    
+    var Movspd : Real = 0;
+    
+    var Cooldwon : Real = 0;
+    
+    var Rand : Random;
+    
+    var Active : Boolean = true;
+    
+    function Initialize(init : CogInitializer) {
+        this.Rand = Random();
+        this.Movspd = this.AI.MoveSpeed;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if (!this.Active || this.Owner.EnemyAI.State != State.Spotted) {
+            this.SetHealthbarOpacity(1);
+            return;
+        }
+        
+        this.Cooldwon -= event.Dt;
+        
+        if (this.Vis.InSight) {
+            this.Sprite.Visible = true;
+            this.AI.MoveSpeed = this.Movspd;
+            if (this.Owner.BasicPathFollowAI != null) {
+                this.Owner.BasicPathFollowAI.Instaturn = false;
+            }
+            //control opacity based on curve
+            this.Owner.Sprite.Color = Real4(this.Owner.Sprite.Color.XYZ, this.OpacityCurve.Sample(Math.Distance(this.Owner.Transform.WorldTranslation, GlobalVariables.Player.Transform.WorldTranslation)));
+            this.SetHealthbarOpacity(this.Owner.Sprite.Color.W);
+            this.AI.MoveSpeed = this.Movspd * (1 + (this.CloseSpeedMultiplier * this.Owner.Sprite.Color.W));
+            
+        } else {
+            this.Sprite.Visible = false;
+            this.AI.MoveSpeed = this.Movspd * this.InvisSpeedMultiplier;
+            if (this.Owner.BasicPathFollowAI != null) {
+                this.Owner.BasicPathFollowAI.Instaturn = true;
+            }
+            
+            if(this.Vis.Timer > 0 || this.Vis.Timer == Real.PositiveMax) {
+                this.Vis.Owner.Sprite.Visible = true;
+            }
+            
+        }
+        
+        this.Vis.InSight = true;
+        
+    }
+    
+    function SetHealthbarOpacity(opacity : Real) {
+        
+        var health = this.Owner.FindChildByName("Healthbar");
+        var bar = health.FindChildByName("Bar");
+        
+        health.Sprite.Color = Real4(health.Sprite.Color.XYZ, opacity);
+        bar.Sprite.Color = Real4(bar.Sprite.Color.XYZ, opacity);
+        
+    }
+    
+}

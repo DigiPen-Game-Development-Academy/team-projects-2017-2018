@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "PlayerThrow()",
+		uint64 ResourceId = 5aa3962a86139988,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 20,
+		uint FrameSizeY = 32,
+		uint FrameCount = 5,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 6,
+		float OriginY = 19,
+		float PixelsPerUnit = 16,
+		bool Smoothing = false,
+		bool Looping = false,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

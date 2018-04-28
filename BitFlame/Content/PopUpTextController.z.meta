@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "PopUpTextController",
+		uint64 ResourceId = 5a4b07e7c55485d7,
+	},
+},

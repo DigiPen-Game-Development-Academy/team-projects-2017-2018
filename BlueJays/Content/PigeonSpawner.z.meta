@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "PigeonSpawner",
+		uint64 ResourceId = 5ade428d0ece58f9,
+	},
+},

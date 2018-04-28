@@ -1,0 +1,8 @@
+FontContent = 
+{
+	FontBuilder = 
+	{
+		string Name = "DraftGameFont",
+		uint64 ResourceId = 5a0f895ab1e49e19,
+	},
+},

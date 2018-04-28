@@ -1,0 +1,137 @@
+class BackgroundMusic : ZilchComponent
+{
+    //Author = Jessica.
+    //Purpose = To play background music.
+    
+    var Destroy : Real = 2;
+    
+    var Timer : Real = 0.25;
+    var Timer2 : Real = 0.25;
+    var Timer3 : Real = 0.25;
+    var Timer4 : Real = 0.3;
+    var KeyWasPressed : Boolean;
+    var OnlyDoOnce : Boolean = false;
+    [Static] var NoDelay : Boolean = false;
+    [Static] var StayMuted : Boolean = false;
+    [Static] var MuteText : Boolean = false;
+    [Static] var UnmuteText : Boolean = false;
+    
+    [Property]
+     var BackgroundGameMusic : SoundCue;
+     var BackgroundMenuMusicSpace : Space;
+     
+     var OnFirstTime : Boolean = true;
+     
+    function Initialize(init : CogInitializer)
+    {
+          Zero.Connect(this.Space, Events.LevelStarted, this.OnLevelStarted);
+          Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+          if(this.OnFirstTime == false)
+        VolumeControls.Number1 = VolumeLevev.SaveVolume;
+    }
+
+    function OnLevelStarted(event : GameEvent)
+    {
+        if(BackgroundMusic.NoDelay != true && this.OnlyDoOnce == false)
+        {
+            this.Owner.SoundEmitter.PlayCue(this.BackgroundGameMusic);
+            this.OnlyDoOnce == true;
+        }
+    }
+
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+        if(BossKeyDropping.BossDead == true)
+        {
+            if(this.OnFirstTime)
+            {
+                VolumeLevev.SaveVolume = VolumeControls.Number1;
+                this.OnFirstTime = false;
+            }
+            if(this.Timer > 0 && this.Owner.SoundEmitter.Volume > 0)
+            {
+                this.Timer -= event.Dt;
+            }
+            if(this.Timer <= 0)
+            {
+                this.Owner.SoundEmitter.Volume -= 0.1;
+                this.Timer += 0.3;
+            }
+            if(this.Owner.SoundEmitter.Volume <= 0)
+            {
+                this.Owner.SoundEmitter.Stop();
+                BossKeyDropping.BossDead = false;
+            }
+        }
+        
+    
+            
+       
+        
+        //if(this.Timer2 > 0)
+        //{
+        //    this.Timer2 -= event.Dt;
+        //}
+        //if(this.Timer2 <= 0 && this.OnlyDoOnce == false)
+        //{
+        //    this.Owner.SoundEmitter.PlayCue(this.BackgroundGameMusic);
+        //    this.OnlyDoOnce = true;
+        //}
+        
+        //Makes so that you can start the boss music without the background music playing over it.
+        //if (BossMusic.BossMusicStart == true)
+        //{
+        //    this.Owner.SoundEmitter.Stop();
+        //}
+        
+        //Mute Music by pressing M
+        if (Zero.Keyboard.KeyIsPressed(Keys.M) && this.KeyWasPressed == false)
+        {
+            this.KeyWasPressed = true;
+            BackgroundMusic.StayMuted = true;
+            BackgroundMusic.MuteText = true;
+            
+           this.Owner.SoundEmitter.Volume = 0;
+           
+        }
+        
+        //Makes it so music doesn't mute and then Unmute again immedietly?
+        if(this.Timer >= 0 && this.KeyWasPressed == true)
+            {
+                this.Timer -= event.Dt;
+            }
+        
+        //Make it so if you press M again it unmutes it.
+        if(Zero.Keyboard.KeyIsPressed(Keys.M) && this.Timer <= 0)
+            {
+                BackgroundMusic.StayMuted = false;
+                this.KeyWasPressed = false;
+                BackgroundMusic.UnmuteText = true;
+                
+                this.Owner.SoundEmitter.Volume = VolumeControls.Number1;
+                this.Timer += 0.25;
+            }
+            
+            if (BackgroundMusic.MuteText == true)this.Timer2 -= event.Dt;
+            if (this.Timer2 <= 0)
+            {
+                this.Timer2 += 0.25;
+                BackgroundMusic.MuteText = false;
+            }
+            
+            if(BackgroundMusic.UnmuteText == true)this.Timer3 -= event.Dt;
+            if(this.Timer3 <= 0)
+            {
+                this.Timer3 += 0.25;
+                BackgroundMusic.UnmuteText = false;
+            }
+            
+            if(BackgroundMusic.StayMuted == true) this.Owner.SoundEmitter.Volume = 0;
+    }
+}
+
+
+
+

@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "TutorialBannerFlip",
+		uint64 ResourceId = 5a2cbe9597f42d95,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 360,
+		uint FrameSizeY = 480,
+		uint FrameCount = 10,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 180,
+		float OriginY = 240,
+		float PixelsPerUnit = 64,
+		bool Smoothing = false,
+		bool Looping = false,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

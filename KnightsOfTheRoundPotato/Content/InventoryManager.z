@@ -1,0 +1,145 @@
+//author Brandon Wolenetz
+
+class InventoryManager : ZilchComponent
+{
+    
+    
+    
+    var Slots : HierarchyNameRange;
+    
+    var PrimarySlot : Cog;
+    var SecodarySlot : Cog;
+    var UtilitySlot : Cog;
+    
+    var InitalZ : Real;
+    var MSlot : Cog;
+    
+    function Initialize(init : CogInitializer)
+    {
+        
+        GlobalVariables.Inv = this.Owner;
+        
+        this.InitalZ = this.Owner.Transform.WorldTranslation.Z;
+        this.Owner.Transform.WorldTranslation += Real3(0,0,100);
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        
+        this.PrimarySlot = this.Owner.FindChildByName("PrimarySlot");
+        this.SecodarySlot = this.Owner.FindChildByName("SecondarySlot");
+        this.UtilitySlot = this.Owner.FindChildByName("UntlitySlot");
+        this.MSlot = this.Space.FindObjectByName("MouseSlot");
+        
+        this.PrimarySlot.InventorySlot.HotbarSlot = true;
+        this.SecodarySlot.InventorySlot.HotbarSlot = true;
+        this.UtilitySlot.InventorySlot.HotbarSlot = true;
+        
+        this.PrimarySlot.InventorySlot.ItemSprite = this.PrimarySlot.FindChildByName("Item");
+        this.SecodarySlot.InventorySlot.ItemSprite = this.SecodarySlot.FindChildByName("Item");
+        this.UtilitySlot.InventorySlot.ItemSprite = this.UtilitySlot.FindChildByName("Item");
+        
+        //find all slots
+        this.RefreshSlots();
+        
+        //set array of items
+        if(GlobalVariables.Items == null)
+            GlobalVariables.Items = Array[Item]();
+        
+        //count how many slots there are
+        var count = 0;
+        foreach(var slot in this.Slots) {
+            ++count;
+        }
+        
+        GlobalVariables.Items.Resize(count);
+        
+        this.RefreshSlots();
+        
+        //initialize slots
+        var i = 0;
+        foreach(var slot in this.Slots) {
+            slot.InventorySlot.Index = i;
+            
+            slot.InventorySlot.ItemSprite = slot.FindChildByName("Item");
+            slot.InventorySlot.AmmountSprite = slot.FindChildByName("Ammount");
+            
+            if(GlobalVariables.Items[i] != null) {
+                slot.InventorySlot.ItemSprite.Sprite.SpriteSource = GlobalVariables.Items[i].Icon;
+                slot.InventorySlot.ItemSprite.Sprite.Visible = true;
+                
+            }else{
+                slot.InventorySlot.ItemSprite.Sprite.Visible = false;
+            }
+            ++i;
+        }
+        
+        
+        
+    }
+
+    function OnMouseExit(event : ViewportMouseEvent) {
+        this.MSlot.MouseSlot.OverInventory = false;
+    }
+
+    function OnMouseEnter(event : ViewportMouseEvent) {
+        this.MSlot.MouseSlot.OverInventory = true;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+        this.Refresh();
+        
+        if(GlobalVariables.GameSpace.TimeSpace.Paused)
+            this.Owner.Transform.WorldTranslation = Real3(this.Owner.Transform.WorldTranslation.X, this.Owner.Transform.WorldTranslation.Y, this.InitalZ);
+        else
+            this.Owner.Transform.WorldTranslation += Real3(0,0,100);
+        
+        
+    }
+    
+    function Refresh () {
+        
+        this.RefreshSlots();
+        
+        var i = 0;
+        foreach(var slot in this.Slots) {
+            if(GlobalVariables.Items[i] != null) {
+                slot.InventorySlot.ItemSprite.Sprite.SpriteSource = GlobalVariables.Items[i].Icon;
+                slot.InventorySlot.ItemSprite.Sprite.Visible = true;
+            }else{
+                slot.InventorySlot.ItemSprite.Sprite.Visible = false;
+            }
+            ++i;
+        }
+        
+        if(this.PrimarySlot.InventorySlot.Item != null) {
+            this.PrimarySlot.InventorySlot.ItemSprite.Sprite.SpriteSource = this.PrimarySlot.InventorySlot.Item.Icon;
+            this.PrimarySlot.InventorySlot.ItemSprite.Sprite.Visible = true;
+        }else{
+            this.PrimarySlot.InventorySlot.ItemSprite.Sprite.Visible = false;
+        }
+        
+        if(this.SecodarySlot.InventorySlot.Item != null) {
+            this.SecodarySlot.InventorySlot.ItemSprite.Sprite.SpriteSource = this.SecodarySlot.InventorySlot.Item.Icon;
+            this.SecodarySlot.InventorySlot.ItemSprite.Sprite.Visible = true;
+        }else{
+            this.SecodarySlot.InventorySlot.ItemSprite.Sprite.Visible = false;
+        }
+        
+        if(this.UtilitySlot.InventorySlot.Item != null) {
+            this.UtilitySlot.InventorySlot.ItemSprite.Sprite.SpriteSource = this.UtilitySlot.InventorySlot.Item.Icon;
+            this.UtilitySlot.InventorySlot.ItemSprite.Sprite.Visible = true;
+        }else{
+            this.UtilitySlot.InventorySlot.ItemSprite.Sprite.Visible = false;
+        }
+    }
+    
+    function RefreshSlots () {
+        
+        this.Slots = this.Owner.FindAllChildrenByName("InventorySlot");
+        
+    }
+    
+}

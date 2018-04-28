@@ -1,0 +1,164 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class Tooltip : ZilchComponent {
+    
+    var TooltipActive : Boolean = false;
+    var UseMousePosition : Boolean = true;
+    var TooltipLeftAlign : Boolean = false;
+    var TooltipBottomAlign : Boolean = false;
+    
+    var TooltipName : String = "";
+    var TooltipLore : String = "";
+    
+    var TooltipNameColor : Real4 = Real4(1.0);
+    var TooltipLoreColor : Real4 = Real4(1.0, 1.0, 1.0, 0.9);
+    
+    var TooltipPosition : Real2 = Real2(0.0);
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.TooltipActive && this.TooltipName != "" && this.TooltipName != "State.False") {
+            this.DisplayTooltip_();
+            if(Relocation.CursorType != "TooltipHover") {
+                Relocation.CursorType = "TooltipHover";
+            }
+        } else {
+            this.ResetTooltip();
+            if(Relocation.CursorType == "TooltipHover") {
+                Relocation.CursorType = "Default";
+            }
+        }
+        
+    }
+    
+    function ShowTooltip(showTooltip : Boolean) {
+        this.TooltipActive = showTooltip;
+    }
+    
+    function TooltipText(name : String, lore : String, nameColor : Real4, loreColor : Real4) {
+        
+        this.UseMousePosition = true;
+        this.TooltipPosition = Real2(0.0);
+        
+        this.TooltipName = name;
+        this.TooltipLore = lore;
+        
+        this.TooltipNameColor = nameColor;
+        this.TooltipLoreColor = loreColor;
+        
+    }
+    
+    function TooltipText(name : String, lore : String, nameColor : Real4, loreColor : Real4, pos : Real2) {
+        
+        this.UseMousePosition = false;
+        this.TooltipPosition = pos;
+        
+        this.TooltipName = name;
+        this.TooltipLore = lore;
+        
+        this.TooltipNameColor = nameColor;
+        this.TooltipLoreColor = loreColor;
+        
+    }
+    
+    /**
+        INTERNAL FUNCTION
+    **/
+    function DisplayTooltip_() {
+        
+        var screen = this.Space.FindObjectByName("LevelSettings");
+        var screenRes = screen.CameraViewport.ViewportResolutionWithMargin;
+        var mousePos = screen.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 15.0);
+        
+        var tooltipName = this.Owner.FindChildByName("TooltipName");
+        var tooltipLore = this.Owner.FindChildByName("TooltipLore");
+        var tooltipBG = tooltipName.FindChildByName("TooltipNameBG");
+        
+        tooltipName.SpriteText.Text = this.TooltipName;
+        tooltipLore.SpriteText.Text = this.TooltipLore;
+        
+        tooltipName.SpriteText.Color = this.TooltipNameColor;
+        tooltipLore.SpriteText.Color = this.TooltipLoreColor;
+        
+        // TOOLTIP BACKGROUND
+        var txtWH = tooltipName.SpriteText.MeasureText();
+        var loreTxtWH = tooltipLore.SpriteText.MeasureText();
+        
+        var cardWH = Real2(txtWH.X, txtWH.Y);
+        
+        // TOOLTIP BACKGROUND
+        if(tooltipBG != null) {
+            
+            if(txtWH.X < loreTxtWH.X) {
+                cardWH = Real2(loreTxtWH.X, cardWH.Y);
+            }
+            
+            if(tooltipLore.SpriteText.Text.Count > 0) {
+                cardWH = Real2(cardWH.X, txtWH.Y + loreTxtWH.Y);
+            }
+            
+            tooltipName.SpriteText.Visible = true;
+            tooltipLore.SpriteText.Visible = true;
+            tooltipBG.Sprite.Visible = true;
+            
+            tooltipBG.Transform.Scale = Real3(cardWH.X + 0.5, cardWH.Y + 0.35, 1);
+            
+        }
+        
+        var offsetX = 0.0;
+        var offsetY = 0.0;
+        
+        // TOOLTIP ALIGN
+        if(mousePos.X > screen.CameraViewport.ScreenToWorldZPlane(Real2(screenRes.X, 0.0), 0.0).X - ((mousePos.X - 1.0) * cardWH.X)) {
+            this.TooltipLeftAlign = true;
+            offsetX = -((cardWH.X + 0.5) * 1.5);
+        } else {
+            this.TooltipLeftAlign = false;
+            offsetX = 0.0;
+        }
+        
+        if(mousePos.Y < screen.CameraViewport.ScreenToWorldZPlane(Real2(0.0, screenRes.Y), 0.0).Y - ((mousePos.Y + 1.0) * cardWH.Y)) {
+            this.TooltipBottomAlign = true;
+            offsetY = (cardWH.Y + 0.35) * 1.5;
+        } else {
+            this.TooltipBottomAlign = false;
+            offsetY = 0.0;
+        }
+        
+        // SET POSITION
+        if(this.UseMousePosition) {
+            this.Owner.Transform.WorldTranslation = Real3(mousePos.X + offsetX, mousePos.Y + offsetY, mousePos.Z);
+        } else {
+            this.Owner.Transform.WorldTranslation = Real3(this.TooltipPosition + Real2(offsetX, offsetY), 15.0);
+        }
+        
+    }
+    
+    function ResetTooltip() {
+        
+        this.TooltipActive = false;
+        
+        this.TooltipName = "";
+        this.TooltipLore = "";
+        
+        this.TooltipNameColor = Real4(1.0);
+        this.TooltipLoreColor = Real4(1.0, 1.0, 1.0, 0.9);
+        
+        this.TooltipPosition = Real2(0.0);
+        
+        var tooltipName = this.Owner.FindChildByName("TooltipName");
+        var tooltipLore = this.Owner.FindChildByName("TooltipLore");
+        var tooltipBG = tooltipName.FindChildByName("TooltipNameBG");
+        
+        tooltipName.SpriteText.Visible = false;
+        tooltipLore.SpriteText.Visible = false;
+        tooltipBG.Sprite.Visible = false;
+        
+    }
+    
+}

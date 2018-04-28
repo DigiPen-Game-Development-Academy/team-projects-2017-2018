@@ -1,0 +1,261 @@
+class FollowTarget : ZilchComponent
+{
+  // This is a list of all the targets
+  [Static] var All : Array[FollowTarget] = new Array[FollowTarget]();
+  
+  // This function is used by anyone that wants to find targets that can be seen
+  [Static] function GetClosestSeenTarget(from : Real3) : FollowTarget {
+    return FollowTarget.GetTarget(from, Real.PositiveMax, true, null);
+  }
+  // This function is used by anyone that wants to find targets in a range whether they can be seen or not
+  [Static] function GetClosestTargetInRange(from : Real3, maxRange : Real) : FollowTarget {
+    return FollowTarget.GetTarget(from, Real.PositiveMax, false, null);
+  }
+  // This function is used by anyone that wants to find targets with various restrictions
+  [Static] function GetTarget(from : Real3, maxRange : Real, requireSight : Boolean, prefer : FollowTarget) : FollowTarget
+  {
+    // Used in sight checks (require targets seen)
+    // Create a ray for raycasting to targets
+    var ray = Ray();
+    // Set the start of the ray (it doesn't change no matter which target we are checking)
+    ray.Start = from;
+    
+    // Used in range checks (prefer closest seen targets)
+    // Create a temporary FollowTarget variable for which target is closest (null for now)
+    var closest : FollowTarget = null;
+    // Create a temporary Real variable for the closest distance squared (maxRange squared for now)
+    var closestDistanceSq = maxRange * maxRange;
+    
+    // If we have a prefered target
+    if (prefer != null)
+    {
+      // Get the position of the target
+      var other = prefer.Position;
+      
+      // Check against smallest range (by checking from.XY to other.XY squared against closestDistanceSq)
+      if (Math.DistanceSq(from.XY, other.XY) < closestDistanceSq)
+      {
+        // If sight check is not required, then return the prefered target
+        if (requireSight == false) return prefer;
+        
+        // Check for sight (by setting direction, and then casting a physics ray)
+        // If the prefered target is seen, return the prefered target
+        ray.Direction = other - from;
+        var cast = prefer.Space.PhysicsSpace.CastRayFirst(ray);
+        if (cast.ObjectHit == prefer.Owner) return prefer;
+      }
+    }
+    
+    // Loop through all possible targets
+    foreach (var target in FollowTarget.All)
+    {
+      // Get target position and squared distance to position
+      var other = target.Position;
+      var distanceSq = Math.DistanceSq(from.XY, other.XY);
+      
+      // Check against smallest range
+      if (distanceSq >= closestDistanceSq) continue;
+      
+      // If sight check is required, then also check for sight
+      if (requireSight)
+      {
+        // Check for sight
+        ray.Direction = other - from;
+        var cast = target.Space.PhysicsSpace.CastRayFirst(ray);
+        // If the target is not seen, skip the target
+        if (cast.ObjectHit != target.Owner) continue;
+      }
+      
+      // Record that the object is the closest so far
+      closest = target;
+      closestDistanceSq = distanceSq;
+    }
+    return closest;
+  }
+  
+  // Shortcut for finding the translation of an object in world space
+  var Position : Real3 { get { return this.Owner.Transform.WorldTranslation; } }
+  
+  function Initialize(init : CogInitializer)
+  {
+    // If the list of all the targets does not contain this object, add this object to the list
+    if (FollowTarget.All.FindFirstIndex(this) == -1) FollowTarget.All.Add(this);
+  }
+  function Destroyed()
+  {
+    // Remove all the targets that match this object (just in case we were added more than once)
+    FollowTarget.All.RemoveAll(this);
+  }
+}
+class Follower : ZilchComponent
+{
+  // We need to move (using velocity)
+  [Dependency] var RigidBody : RigidBody;
+  
+  // The maximum range that a follower can notice targets
+  [Property] var SearchRange : Real = 15;
+  // How often the follower will try to find targets
+  [Property] var SearchFrequency : Real = 0.1;
+  // How randomized the frequence will be, because searching is expensive
+  // This helps to make sure not all the enemies search at the same time
+  [Property] var SearchFrequencyVariance : Real = 0.1;
+  // The internal counter for searching
+  var SearchTimer : Real;
+  // The randomizer for frequency variance
+  var Random : Random = new Random();
+  // Which target we can currently see
+  var Target : FollowTarget;
+  // Which target we remember that we saw
+  var PreviousTarget : FollowTarget;
+  
+  // How often we record a new memory
+  [Property] var MemoryFrequency : Real = 0.1;
+  // The internal counter for memory
+  var MemoryTimer : Real;
+  // All of our memories of the target we are following
+  var Memories : Array[Real3] = new Array[Real3]();
+  // Whether we have lost sight of the target we last saw
+  var LostSight : Boolean = true;
+  // How long until we forget that we saw a target
+  [Property] var PredictionTime : Real = 0.2;
+  // The internal counter for prediction
+  var PredictionTimer : Real;
+  
+  // Controls whether the follower goes straight toward the player or curves through the memory points
+  [Property] var Straightness : Real = 0.5;
+  // How fast the follower goes at maximum
+  [Property] var Speed : Real = 3;
+  // How fast the follower gets to its maximum speed
+  [Property] var Acceleration : Real = 2;
+  
+  // Shortcut for finding the translation of an object in world space
+  var Position : Real3 { get { return this.Owner.Transform.WorldTranslation; } }
+  
+  function Initialize(init : CogInitializer)
+  {
+    Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+  }
+  function OnLogicUpdate(event : UpdateEvent)
+  {
+    // Draw the range of the follower
+    //DebugCircle().Axis(Real3.ZAxis).Position(this.Position).Radius(this.SearchRange).Float4Color(Real4.WAxis).Draw();
+    // If we can see our target
+    //if (this.Target != null)
+      // Draw a green line to the target
+      //DebugLine().Start(this.Position).End(this.Target.Position).Float4Color(Real4(0, 1, 0, 1)).Draw();
+    // If we remember our target
+    //else if (this.PreviousTarget != null)
+      // Draw a blue line to the target
+      //DebugLine().Start(this.Position).End(this.PreviousTarget.Position).Float4Color(Real4(0, 0, 1, 1)).Draw();
+    
+    // If we have reached the time we need to search, then get a target
+    // Otherwise, continue to count down till we need to search
+    
+    if (this.SearchTimer <= 0.0)
+        this.TargetClosest();
+    else
+        this.SearchTimer -= event.Dt;
+    
+    // If we see a target or remember a target or we still have old memories recorded of a target, follow the target
+    
+    if (this.Target != null || this.PreviousTarget != null || this.Memories.Count > 0)
+    {
+        this.Follow();
+    }
+  }
+  function TargetClosest()
+  {
+      //Console.WriteLine("`this.Target`");
+      
+    // Reset the search timer to the frequency plus a random range from -variance to +variance
+    // Use a static function in FollowTarget to find a target in the desired method
+    
+    this.Target = FollowTarget.GetTarget(this.Position, this.SearchRange, true, this.Target);
+    
+    this.SearchTimer = this.SearchFrequency;
+  }
+  function Follow()
+  {
+    // Remember where to go
+    var location = this.Remember();
+    // Get the square distance to where we need to go
+    var distanceSq = Math.DistanceSq(this.Position, location);
+    // If we have arrived at where we need to go
+    if (distanceSq < 0.125 && this.Memories.Count > 0)
+    {
+      // Remove the memory
+      this.Memories.RemoveAt(0);
+    }
+    // Otherwise, if we have more than one memory
+    else if (this.Memories.Count > 1)
+    {
+      // Check if we are closer to the next memory than this one
+      var nextDistanceSq = Math.DistanceSq(this.Position, this.Memories[1]);
+      // If so, remove the memory we are currently going toward (we should go to the next one instead)
+      if (nextDistanceSq <= distanceSq) this.Memories.RemoveAt(0);
+    }
+    
+    // Get our desired velocity toward the place we want to go
+    var velocity = this.Speed * Math.Normalize(location - this.Position);
+    // Scale the acceleration by dt
+    var alpha = this.Acceleration * this.Space.TimeSpace.Dt;
+    // Lerp from our current velocity to our desired velocity
+    this.RigidBody.Velocity = Math.Lerp(this.RigidBody.Velocity, velocity, alpha);
+  }
+  function Remember() : Real3
+  {
+    // If we can see a target right now
+    if (this.Target != null)
+    {
+      // Make sure we remember the target we see right now
+      this.PreviousTarget = this.Target;
+      // If we lost sight of the player for a while, restart our memories
+      if (this.LostSight) this.Memories.Clear();
+      // Reset whether we have lost sight of the target to false
+      this.LostSight = false;
+      // Reset the prediction timer to the maximum prediction time
+      this.PredictionTimer = this.PredictionTime;
+    }
+    // Otherwise
+    else
+    {
+      // Count down our prediction timer
+      this.PredictionTimer -= this.Space.TimeSpace.Dt;
+      // If we have run out of prediction time, then forget the target
+      if (this.PredictionTimer <= 0) this.PreviousTarget = null;
+      // Reset whether we have lost sight of the target to true
+      this.LostSight = true;
+    }
+    // If we can remember the target we last saw
+    if (this.PreviousTarget != null)
+    {
+      // Count down our memory timer
+      this.MemoryTimer -= this.Space.TimeSpace.Dt;
+      // If we have no memories of the target, add a memory
+      if (this.Memories.Count < 1) this.AddMemory();
+      // Otherwise, if we have reached a memory time, add a memory
+      else if (this.MemoryTimer <= 0) this.AddMemory();
+      // If we can see the target
+      if (this.Target != null)
+        // Return some balance between the remembered position and the seen position of the target
+        return Math.Lerp(this.Memories[0], this.PreviousTarget.Position, this.Straightness);
+        // Otherwise
+      else
+        // Return the remembered position of the target
+        return this.Memories[0];
+    }
+    // If we have at least one memory of a target, return the first memory
+    if (this.Memories.Count > 0) return this.Memories[0];
+    // Return our own position (we have no target or memories)
+    return this.Position;
+  }
+  function AddMemory()
+  {
+    // If we have at least one memory and the memory is equal to the current position, don't do anything
+    if (this.Memories.Count >= 1 && this.Memories[0] == this.PreviousTarget.Position) return;
+    // Add the memory
+    this.Memories.Add(this.PreviousTarget.Position);
+    // Reset the memory timer
+    this.MemoryTimer = this.MemoryFrequency;
+  }
+}

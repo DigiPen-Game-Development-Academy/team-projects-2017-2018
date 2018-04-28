@@ -1,0 +1,229 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Player",
+	},
+	Archetyped = 
+	{
+		string Name = "5a019e04c7cf6461:Player",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0.5, 0.5, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "4e07948c35993095:DefaultSprite",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	RigidBody = 
+	{
+		bool Static = false,
+		bool Asleep = false,
+		bool Kinematic = false,
+		bool RotationLocked = true,
+		bool Mode2D = true,
+		bool AllowSleep = true,
+		bool Inherit2DMode = true,
+		Vec3 Velocity = [0, 0, 0],
+		Vec3 AngularVelocity = [0, 0, 0],
+	},
+	BoxCollider = 
+	{
+		bool Ghost = false,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "5a917b88a0971f8b:Player",
+		string SerializedGroupName = "5a11bc4854a4df8c:NotEnemies",
+		Vec3 Offset = [0, 0, 0],
+		Vec3 Size = [0.125, 0.449999988, 0.5],
+	},
+	IgnoreSpaceEffects = 
+	{
+		bool Drag = true,
+		bool Flow = true,
+		bool Force = true,
+		bool Gravity = true,
+		bool Thrust = true,
+		bool Vortex = true,
+		bool Wind = true,
+		bool Invalid = false,
+		bool Torque = true,
+		bool PointGravity = true,
+		bool PointForce = true,
+		bool Buoyancy = true,
+		bool Custom = true,
+	},
+	PlayerMovment = 
+	{
+		float MoveSpeed = 2,
+		float SprintMultiplier = 2,
+		float SprintSoundDist = 5,
+	},
+	UseWeapon = 
+	{
+		float AnimLockTime = 0.5,
+	},
+	Health = 
+	{
+		float InitialHealth = 100,
+		float Cooldown = 3,
+		float RegenRate = 0.166665003,
+		float FlashLength = 0.100000001,
+	},
+	PlayerHealth = 
+	{
+		bool OnMainLevel = true,
+		string MainLevel = "5a1a864f77326081:Mainworld",
+	},
+	PlayerSprites = 
+	{
+		string North = "5a2ae7b041a227b8:Pat Walk N a",
+		string NorthEast = "5a2ae74234ffced0: Pat Walk NE a",
+		string East = "5a2ae4f52356109f:Pat Walk E a",
+		string SouthEast = "5a2ae7693d82ff0d:Pat Walk SE a",
+		string South = "5a2ae7192bf5d642:Pat Walk S a",
+		string SouthWest = "5a2ae783390e5123:Pat walk SW a",
+		string West = "5a2ae7342818a74f:Pat Walk W a",
+		string NorthWest = "5a2ae75830b9aaa6:Pat Walk NW a",
+		float AnimSpeed = 0.5,
+	},
+	Hierarchy = 
+	{
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 2,
+			},
+			Named = 
+			{
+				string Name = "Camera",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0, 0, 40],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Camera = 
+			{
+				ProjectionMode ProjectionMode = Orthographic,
+				Facing Facing = NegativeZ,
+				CameraTransparentSort TransparentSort = ViewDepth,
+				float FieldOfView = 45,
+				float NearPlane = 0.5,
+				float FarPlane = 100,
+				float Size = 12,
+			},
+			SoundListener = 
+			{
+				bool Active = true,
+				float Volume = 1,
+			},
+			CamFollow = 
+			{
+				float MoveSpd = 15,
+			},
+			Hierarchy = 
+			{
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 3,
+			},
+			Named = 
+			{
+				string Name = "TrollWarp",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0, 0, 0],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Camera = 
+			{
+				ProjectionMode ProjectionMode = Orthographic,
+				Facing Facing = NegativeZ,
+				CameraTransparentSort TransparentSort = InheritFromSpace,
+				float FieldOfView = 45,
+				float NearPlane = 0.5,
+				float FarPlane = 200,
+				float Size = 1,
+			},
+			ScreenWarpRing = 
+			{
+				float Size = 10.5,
+				float Thickness = 10,
+				float Intensity = 0,
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 4,
+			},
+			Named = 
+			{
+				string Name = "Hold",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0, 0, 0.100000001],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "5af4923cd5b44732:ShotgunHolding",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = false,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			Holding = 
+			{
+			},
+			Area = 
+			{
+				Vec2 Size = [1, 1],
+				Location Origin = Center,
+			},
+		},
+	},
+},

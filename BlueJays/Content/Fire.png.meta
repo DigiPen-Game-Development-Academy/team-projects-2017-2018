@@ -1,0 +1,27 @@
+ImageContent = 
+{
+	ContentTags = 
+	{
+		Array Tags = 
+		[
+			"VG1_ParticleEffects",
+		],
+	},
+	TextureBuilder = 
+	{
+		string Name = "Fire",
+		uint64 ResourceId = 559dbaea34c871b5,
+		BuilderTextureType TextureType = Texture2D,
+		RgbUsage RgbUsage = Color,
+		AlphaUsage AlphaUsage = Transparency,
+		TextureCompression Compression = Compressed,
+		TextureWrapping Wrapping = Repeat,
+		TextureFilter Filter = Trilinear,
+		float Anisotropy = 1,
+		MipGeneration MipGeneration = All,
+		ImageFilter MipFilter = Box,
+		FixPowerOf2 FixPowerOf2 = Auto,
+		ImageFilter ResizeFilter = Box,
+		OutputTextureFormat Format = Updated,
+	},
+},

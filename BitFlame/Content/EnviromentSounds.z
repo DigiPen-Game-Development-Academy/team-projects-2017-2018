@@ -1,0 +1,56 @@
+/*************************************
+Filename: Player_Pickup_Collection.z
+Author: Jakob McFarland
+Contributors: Sage Dupuy
+Last modified: 1/23/18
+Brief: This Component playes enviromental sounds at semi-random intervals 
+******************************************/
+
+
+class EnviromentSounds : ZilchComponent
+{
+    [Property] var Interval1 : Real = 20.0;
+    var Interval2 : Real = 11.0;
+    [Property] var Interval3 : Real = 20.0;
+    
+    var Timer1 : Real = 10.0 + Random().Range(0, 10); 
+    var Timer2 : Real = 0.0;
+    var Timer3 : Real = 0.0 + Random().Range(0, 10);
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Timer1 += event.Dt;
+        this.Timer3 += event.Dt;
+        
+        if(this.Timer2 != 0)
+        {
+            this.Timer2 += event.Dt;
+        }
+        
+        if(this.Timer1 >= this.Interval1)
+        {
+            this.Timer1 = 0 + Random().Range(0, 10);
+            this.Timer2 = 10;
+            this.Space.SoundSpace.PlayCue(SoundCue.Static);
+        }
+        
+        if(this.Timer2 >= this.Interval2)
+        {
+            this.Timer2 = 0;
+            this.Space.SoundSpace.PlayCue(SoundCue.Whine);
+        }
+        
+        if(this.Timer3 >= this.Interval3)
+        {
+            this.Timer3 = 0 + Random().Range(0, 10);
+            this.Timer2 = 10;
+            this.Space.SoundSpace.PlayCue(SoundCue.Buzz);
+        }
+        
+    }
+}

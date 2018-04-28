@@ -1,0 +1,54 @@
+class Vignette : ZilchComponent
+{
+    [Property]
+    var HurtColor:Real4;
+    
+    [Property]
+    var SlimeColor:Real4;
+    
+    var Timer:Real = 2;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(Slimed.Slimed == true)
+        {
+        var seq = Action.Sequence(this.Owner.Actions);
+        Action.Property
+        (seq, @this.Owner.Sprite.Color, this.SlimeColor, 0.5, Ease.Linear);
+        this.Timer -= event.Dt;
+        }
+        else if(Health.CurrentHealth < 5)
+        {
+        this.Owner.Area.Size = Real2((11 + Health.CurrentHealth), (11+Health.CurrentHealth));
+        var seq = Action.Sequence(this.Owner.Actions);
+        Action.Property
+        (seq, @this.Owner.Sprite.Color, this.HurtColor, 0.5, Ease.Linear);
+        }
+        else
+        {
+        var seq = Action.Sequence(this.Owner.Actions);
+        Action.Property
+        (seq, @this.Owner.Sprite.Color, Real4(0,0,0,0), 0.5, Ease.Linear);
+        }
+        
+        if(this.Timer <= 2)
+        {
+        Slimed.Slimed = false;
+        this.Timer += 2;
+        }
+    }
+}
+class Slimed : ZilchComponent
+{
+    [Static]
+    var Slimed:Boolean;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Slimed.Slimed = true;
+    }
+}

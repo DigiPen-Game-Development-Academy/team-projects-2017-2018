@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "BonusLevelText",
+		uint64 ResourceId = 5ac4a1854d2a4afa,
+	},
+},

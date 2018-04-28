@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "LaunchFromCannon",
+		uint64 ResourceId = 5a066a6b1237e7de,
+	},
+},

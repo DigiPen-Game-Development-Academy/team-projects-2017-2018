@@ -1,0 +1,95 @@
+class BoatRepair : ZilchComponent {
+    
+    [Dependency] var Reactive : Reactive;
+    
+    [Property] var Level : Level;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.HasAllQuest()) {
+            Utilities.SetQuest(8, true);
+        }
+        
+    }
+
+    function OnMouseDown(event : ViewportMouseEvent) {
+        
+        if(this.HasAllQuest() && event.Button == MouseButtons.Right) {
+            
+            this.LoadTheLevel();
+            
+        }
+        
+    }
+
+    function OnMouseExit(event : ViewportMouseEvent) {
+        GlobalVariables.LorePanel.Sprite.Visible = false;
+    }
+
+    function OnMouseEnter(event : ViewportMouseEvent) {
+        
+        var filter = CastFilter();
+        filter.CollisionGroup = CollisionGroup.EnemyRaycast;
+        var res = Utilities.Raycast(this.Owner.Transform.WorldTranslation, GlobalVariables.Player.Transform.WorldTranslation-this.Owner.Transform.WorldTranslation, this.Space.PhysicsSpace, 6, filter);
+        
+        if(res == null || res.ObjectHit != GlobalVariables.Player) {
+            return;
+        }
+        if(Math.Distance(GlobalVariables.Player.Transform.WorldTranslation, this.Owner.Transform.WorldTranslation) > 6)
+            return;
+        GlobalVariables.LorePanel.Sprite.Visible = true;
+        
+        var txt = "";
+        
+        if(this.HasAllQuest()) {
+            txt = "Your Yacht\n\nRight click to repair";
+        } else {
+            txt = "Your Yacht\n\nYou need parts to repair this!";
+        }
+        
+        GlobalVariables.LorePanel.LorePanel.Text = txt;
+        
+    }
+    
+    function HasAllQuest() : Boolean {
+        
+        for (var i = 0; i < GlobalVariables.QuestItems.Count; ++i) {
+            
+            if(!GlobalVariables.QuestItems[i]) {
+                return false;
+            }
+            
+        }
+        
+        return true;
+        
+    }
+    
+    function LoadTheLevel () {
+        
+        if(Utilities.DialogBox != null)
+            return;
+        
+        var uiSpace = this.GameSession.FindSpaceByName("UI");
+        if(uiSpace != null) {
+            uiSpace.Destroy();
+        }
+        if(GlobalVariables.GameSpace == null) {
+            this.Space.LoadLevel(this.Level);
+            this.Space.TimeSpace.Paused = false;
+        } else {
+            GlobalVariables.GameSpace.LoadLevel(this.Level);
+            GlobalVariables.GameSpace.TimeSpace.Paused = false;
+        }
+        Zero.Mouse.Trapped = false;
+        
+    }
+    
+}

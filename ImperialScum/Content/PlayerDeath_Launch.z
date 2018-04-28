@@ -1,0 +1,21 @@
+//Sam
+//Launches the player's 'dead body' into the air
+class PlayerDeath_Launch : ZilchComponent
+{
+    [Property]
+    var LaunchSpeed : Integer = 5;
+    
+    [Property]
+    var DieSFX:SoundCue;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.Space.SoundSpace.PlayCue(this.DieSFX);
+        var player = this.Space.FindObjectByName("Player");
+        this.Owner.Sprite.SpriteSource = player.PlayerController.DeathAnimation;
+        
+        var velocity = this.Owner.RigidBody.Velocity;
+        velocity.Y = this.LaunchSpeed;
+        this.Owner.RigidBody.Velocity = velocity;
+    }
+}

@@ -1,0 +1,45 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Water",
+	},
+	Archetyped = 
+	{
+		string Name = "5ac6a856f14f9d62:Water",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [-5.8148303, -6.64360666, -0.900001526],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	MultiSprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+	},
+	MeshCollider = 
+	{
+		bool Ghost = false,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+		string SerializedGroupName = "5ac6a8acc44b6351:Water",
+		Vec3 Offset = [0, 0, 0],
+		string PhysicsMeshName = "4ee13192dc049505:Cube",
+		bool DrawEdges = true,
+		bool DrawFaces = false,
+		bool DrawFaceNormals = false,
+	},
+},

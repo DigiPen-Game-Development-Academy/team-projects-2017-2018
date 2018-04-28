@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "SandLevel_Labyrinth_TileMap03",
+		uint64 ResourceId = 5a2d66187e121cd8,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "5a2d67691a5bd1bf:SandLevel_Labyrinth",
+	},
+},

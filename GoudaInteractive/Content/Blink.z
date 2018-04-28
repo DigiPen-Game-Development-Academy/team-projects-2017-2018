@@ -1,0 +1,26 @@
+class Blink : ZilchComponent
+{
+    [Property] var On : Boolean = false;
+    [Property] var TimeBetweenSwitch : Real = 0.25;
+    var TimeTillSwitch : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.TimeTillSwitch += event.Dt;
+        
+        if (this.TimeTillSwitch >= this.TimeBetweenSwitch && this.On == true)
+        {
+            if (this.Owner.Sprite.Visible == false)
+                this.Owner.Sprite.Visible = true;
+            else
+                this.Owner.Sprite.Visible = false;
+            
+            this.TimeTillSwitch = 0.0;
+        }
+    }
+}

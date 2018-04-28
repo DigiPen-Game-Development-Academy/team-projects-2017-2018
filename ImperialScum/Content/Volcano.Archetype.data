@@ -1,0 +1,153 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "VOLCANO",
+	},
+	Archetyped = 
+	{
+		string Name = "5a0f870d74f359b8:Volcano",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [7.84179592, -13.9873943, 0],
+		Vec3 Scale = [1, 1, 40],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5a0f808719822c7c:VolcanoBase",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	BoxCollider = 
+	{
+		bool Ghost = true,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+		string SerializedGroupName = "5a555413406871b5:CurrentZone",
+		Vec3 Offset = [0, 0, 0],
+		Vec3 Size = [0.5, 0.75, 0.5],
+	},
+	Hierarchy = 
+	{
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 2,
+			},
+			Named = 
+			{
+				string Name = "BasicParticleEffect",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-0.00922775269, -0.347584307, 0],
+				Vec3 Scale = [0.277472943, 0.178374305, 0.0122243771],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			SpriteParticleSystem = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = false,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				SystemChildMode ChildMode = Independent,
+				SystemSpace SystemSpace = WorldSpace,
+				uint DrawOrder = 0,
+				Vec4 Tint = [1, 1, 1, 1],
+				float WarmUpTime = 0,
+				ParticleGeometry GeometryMode = Billboarded,
+				ParticleRenderMode RenderMode = Blended,
+				ParticleSortMode SortMode = Youngest,
+				ParticleAnimation ParticleAnimation = Single,
+				string Texture = "5a0f809016faceca:VolcanoSmoke",
+				float VelocityScale = 1,
+				float LengthScale = 1,
+				float MaxParticleSize = 50,
+				Vec3 SystemSize = [4, 4, 4],
+			},
+			SphericalParticleEmitter = 
+			{
+				bool Active = true,
+				uint EmitCount = 0,
+				float EmitRate = 10,
+				float EmitVariance = 0,
+				float Size = 0.5,
+				float SizeVariance = 0.5,
+				float Lifetime = 1,
+				float LifetimeVariance = 0.200000003,
+				float Spin = 0,
+				float SpinVariance = 50,
+				bool RandomSpin = true,
+				float Fill = 1,
+				float EmitterVelocityPercent = 0,
+				Vec3 StartVelocity = [0, 20, 0],
+				Vec3 RandomVelocity = [5, 5, 10],
+				Vec3 TangentVelocity = [0, 0, 0],
+				Vec3 EmitterSize = [0, 0, 0],
+				bool FastMovingEmitter = false,
+			},
+			LinearParticleAnimator = 
+			{
+				Vec3 Force = [0, 0, 0],
+				Vec3 RandomForce = [0, 0, 0],
+				float Torque = 0,
+				float Growth = 0,
+				float Dampening = 0,
+				Vec3 Twist = [0, 0, 0],
+			},
+			ParticleColorAnimator = 
+			{
+				Vec4 Color0 = [1, 0.75, 0, 0],
+				Vec4 Color1 = [1, 0.2700001, 0, 1],
+				Vec4 Color2 = [1, 0, 0, 1],
+				Vec4 Color3 = [0.345000029, 0.107967749, 0.0845250189, 1],
+				Vec4 Color4 = [0.350000024, 0.187250018, 0.187250018, 0],
+			},
+			BoxCollider = 
+			{
+				bool Ghost = true,
+				bool SendsMessages = true,
+				bool Seamless = true,
+				string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+				string SerializedGroupName = "5a555413406871b5:CurrentZone",
+				Vec3 Offset = [0, -3.5, 0],
+				Vec3 Size = [2, 0.5, 0.5],
+			},
+			Volcano = 
+			{
+			},
+			Region = 
+			{
+				bool WakeUpOnEffectChange = false,
+			},
+			GravityEffect = 
+			{
+				bool Active = true,
+				bool WakeUpOnChange = true,
+				bool LocalSpaceDirection = false,
+				float Strength = 800,
+				Vec3 Direction = [0, 1, 0],
+			},
+		},
+	},
+},

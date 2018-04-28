@@ -1,0 +1,74 @@
+//Jacob Burke
+
+//This is the code that destroys the key and picks it up
+
+class Key : ZilchComponent
+{
+    [Property]
+    var KeySFX:SoundCue;
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.PlayerController != null)
+        {
+            
+            KeyPickUp.IsPickedUp = true;
+            this.Owner.Destroy();
+            
+            this.Space.SoundSpace.PlayCue(this.KeySFX);
+            
+            this.Space.CreateAtPosition(Archetype.HitExplode, this.Owner.Transform.Translation);
+            this.Space.CreateAtPosition(Archetype.SparkleExplode, this.Owner.Transform.Translation);
+            this.Space.CreateAtPosition(Archetype.KeyText, this.Owner.Transform.Translation);
+            
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}
+
+class KeyPickUp : ZilchComponent
+{
+    [Static]
+    var IsPickedUp:Boolean = false;
+}
+
+class Door : ZilchComponent
+{
+    [Property]
+    var OpenSFX:SoundCue;
+
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.PlayerController != null)
+        {
+            var posistion = this.Owner.Transform.Translation;
+            
+            if(KeyPickUp.IsPickedUp == true)
+            {
+                KeyPickUp.IsPickedUp = false;
+                
+                var seq = Action.Sequence(this.Owner.Actions);
+                
+                this.Space.SoundSpace.PlayCue(this.OpenSFX);
+                
+                Action.Property
+                (seq, @this.Owner.Transform.Translation, posistion + Real3(0,3,0), 4, Ease.QuadInOut);
+            }
+        }
+    }
+}
+    

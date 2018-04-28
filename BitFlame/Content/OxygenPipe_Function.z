@@ -1,0 +1,241 @@
+/*************************************
+Filename:  OxygenPipe_Function.z
+Author: Jakob McFarland
+Contributors: NULL
+Last modified: 2/24/18
+Brief: This Component connects the owner to other oxygen pipes and controls their visual effects
+******************************************/
+
+class OxygenPipe_Function : ZilchComponent
+{
+    [Dependency] var Transform : Transform = null;
+    
+    [Property] 
+    //enter as range squared
+    var ConnectingRange : Integer = 0;
+    
+    [Property] var Origin : Boolean = false;
+    
+    var Connected : Boolean = false;
+    
+    [Property] var Ship : CogPath;
+    
+    [Property] var SafetyShield : CogPath;
+    
+    var ConnectedTo : Cog;
+    
+    var ConnectionFound : Cog; 
+    
+    var HasConnected : Boolean = false;
+    
+    var ConnectionDistance : Real;
+    
+    var ConnectionChanged : Boolean = false;
+    
+    var ConnectedToChanged : Cog = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.ConnectedTo = this.Owner;
+        Zero.Connect(this.Space, Events.BlockUpdate, this.OnBlockUpdate);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.GameSession, Events.BuildingRecall, this.OnBuildingRecall);
+    }
+
+    function OnBuildingRecall(event : ZilchEvent)
+    {
+        if(!this.Origin)
+        {
+            this.GameSession.GameVars.PlayerPipes += 1;
+            this.Owner.Destroy();
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.ConnectedTo != null)
+        {   
+            var end = this.ConnectedTo.Transform.Translation;
+            //end.Y -= 1;
+                
+            //Console.WriteLine("Test line");
+                
+            var debugLine = DebugLine();
+            //Sets parameters for the debug line
+            debugLine.Start(this.Transform.Translation);
+            debugLine.End(end);
+            debugLine.Float4Color(Real4(0.55, 0.92, 0.96, 1));
+            debugLine.Width(Real(4));
+            //draw it
+            debugLine.Draw();
+        }
+        
+        if(this.Connected != this.ConnectionChanged)
+        {
+            this.ConnectionChanged = this.Connected;
+            var blockUpdate = BlockUpdate();
+            blockUpdate.Translation = this.Transform.Translation;
+            this.Space.DispatchEvent(Events.BlockUpdate, blockUpdate);
+        }
+        
+        if(this.ConnectedTo != this.ConnectedToChanged)
+        {
+            this.ConnectedToChanged = this.ConnectedTo;
+            var blockUpdate = BlockUpdate();
+            blockUpdate.Translation = this.Transform.Translation;
+            this.Space.DispatchEvent(Events.BlockUpdate, blockUpdate);
+        }
+        
+        if(this.ConnectedTo == null) 
+        {
+            this.Connected = false;
+        }
+        else if(this.ConnectedTo != null && this.ConnectedTo.OxygenPipe_Function.Connected == false) 
+        {
+            this.Connected = false;
+        }
+        if(!this.Connected)
+        {
+            this.ConnectedTo = null;
+        }
+    }
+
+    function OnBlockUpdate(event : BlockUpdate)
+    {
+        var connectingVector = event.Translation - this.Transform.Translation;
+        
+        var connectingLength = (connectingVector.X * connectingVector.X) + (connectingVector.Y * connectingVector.Y);
+        
+        if(connectingLength > 196)
+        {
+            return;
+        }
+        
+        
+        var field = this.Owner.FindChildByName("Oxygen_Field");
+      
+        if(this.Origin)
+        {
+            this.Connected = true;
+            return;
+        }          
+       
+        //Console.WriteLine(this.Connected);
+        
+        if(!this.Connected)
+        {      
+            //Console.WriteLine("test");
+            
+            if(field.Oxygen_Regen_Field != null)
+            {
+                field.Oxygen_Regen_Field.Active = false;
+                field.Collider.SendsEvents = false;
+            }
+            
+            //check all the oxygen pipes
+            foreach(var objects in this.Space.FindAllObjectsByName("OxygenPipe"))
+            {    
+                //try connecting them
+                this.PipeConnect(objects);
+            }   
+            //check if connection was found
+            if(this.HasConnected && this.ConnectionFound.OxygenPipe_Function.ConnectedTo != this.Owner)
+            {
+                this.Connected = true;
+                this.ConnectedTo = this.ConnectionFound;             
+            }
+            this.HasConnected = false;
+        }
+        
+        if(this.Connected)
+        {  
+            if(field.Oxygen_Regen_Field != null)
+            {
+                
+                field.Oxygen_Regen_Field.Active = true;
+                field.Collider.SendsEvents = true;
+                
+            }
+            
+            if(this.ConnectedTo != null)
+            {                  
+                var pipe = this.Owner.FindChildByName("PipeSprite");
+                
+                if(pipe != null)
+                {                    
+                    //var length = this.ConnectionDistance;
+        
+                    //var width = this.SpriteWidth;
+
+                   // var size = Real2(length, width);
+
+                    // We set the Area component's size based on these length and width values
+                    //pipe.Area.Size = size;
+                    
+                    // The SetEulerAnglesXYZ function expects angles in radians
+                    //pipe.Orientation.LookAtDirection(end);
+                }
+            }
+            
+            //check all the oxygen pipes
+            foreach(var objects in this.Space.FindAllObjectsByName("OxygenPipe"))
+            {    
+                //try connecting them
+                this.PipeConnect(objects);
+            }
+            //check if connection wasn't found
+            if(!this.HasConnected)
+            {
+                this.Connected = false;
+            }
+            this.HasConnected = false;
+        }
+    }
+    
+    function PipeConnect(object : Cog)
+    {
+        var connectingVector = object.Transform.Translation - this.Transform.Translation;
+        
+        var connectingLength = (connectingVector.X * connectingVector.X) + (connectingVector.Y * connectingVector.Y);
+       
+        //Console.WriteLine("Test 4"); 
+        //only connect to other pipes that are already connected
+        if(object.OxygenPipe_Function.Connected == true)
+        {   
+            //Console.WriteLine("Test 3");
+            //make sure the other pipe is in range
+            if(connectingLength <= this.ConnectingRange)
+            { 
+                this.RayCast(this.Transform.Translation, connectingVector, object);
+            }
+        }
+    }
+    
+    function RayCast(start : Real3, end : Real3, object : Cog)
+    {
+        //create a ray cast in the direction of the other object
+        var ray = Ray();
+        ray.Start = start;
+        ray.Direction = end;
+        
+        var filter = CastFilter();  
+        filter.IgnoreDynamic = true;  
+        filter.IgnoreCog = this.Ship.Cog;  
+        filter.IgnoreCog = this.SafetyShield.Cog;        
+                        
+        var castResult = this.Space.PhysicsSpace.CastRayFirstFiltered(ray, filter);
+        
+        var objectHit = castResult.ObjectHit;
+        //Console.WriteLine("Test 2");
+        //make sure the object hit is the other pipe, if it's not then there's something in the way
+        if(objectHit == object)
+        {
+            //Console.WriteLine("Test 1");
+            this.ConnectionFound = object;
+            this.HasConnected = true;
+            this.ConnectionDistance = castResult.Distance;
+        }
+    }
+}
+
+    

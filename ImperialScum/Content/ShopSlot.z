@@ -1,0 +1,59 @@
+class ShopSlot : ZilchComponent
+{
+    [Property]
+    var Cost:Integer;
+    
+    [Property]
+    var Name:String;
+    
+    [Property]
+    var OnlyBuyOnce:Boolean = true;
+    
+    
+    var SoundToPlay : SoundCue = SoundCue.GearPickup;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.LeftMouseDown, this.OnLeftMouseDown);
+    }
+
+    function OnLeftMouseDown(event : ViewportMouseEvent)
+    {
+       if(event.HitObject == this.Owner && AdvInventory.PlayerInventory["Gears"] >= this.Cost)
+       {
+           
+           AdvInventory.PlayerInventory["Gears"] -= this.Cost;
+           AdvInventory.PlayerInventory[this.Name] += 1;
+          Resources.PlaySound = true;
+       }
+       else if(event.HitObject == this.Owner && AdvInventory.PlayerInventory["Gears"] < this.Cost)
+       {
+           PlayerMovement.PlayErrorSound = true;
+       }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.OnlyBuyOnce == true)
+        {
+        if (AdvInventory.PlayerInventory[this.Name] > 0)
+        {
+            this.Owner.Destroy();
+        }
+        }
+    }
+}
+class GearAmount: ZilchComponent
+{
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Owner.SpriteText.Text = ("`AdvInventory.PlayerInventory["Gears"]`");
+    }
+}

@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "PlaySoundOnEmmiterStart",
+		uint64 ResourceId = 5a2292b565eeea22,
+	},
+},

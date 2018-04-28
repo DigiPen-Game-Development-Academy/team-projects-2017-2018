@@ -1,0 +1,9 @@
+DataContent = 
+{
+	RichAnimationBuilder = 
+	{
+		string Name = "YachtBossAnim",
+		uint64 ResourceId = 5ab6aed21fccc1d2,
+		string PreviewArchetype = "",
+	},
+},

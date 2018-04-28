@@ -1,0 +1,48 @@
+class HiveSpawner : ZilchComponent
+{
+    [Property] var Alien : Archetype = null;
+    
+    [Property] var Amount : Real = 0.0;
+    
+    [Property] var FireRate : Real = 0.0;
+    
+    [Property] var OutputSpeed : Real = 0.0;
+    
+    [Property] var Range : Real = 0.0;
+    
+    var Timer : Real = 0.0;
+    
+    var RandomGenerator : Random = Random();
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var player = this.Space.FindObjectByName("Player");
+        
+        if(player != null)
+        {
+            if(Math.Distance(this.Owner.Transform.Translation, this.Space.FindObjectByName("Player").Transform.Translation) <= this.Range)
+            {
+                if(this.Timer >= this.FireRate)
+                {
+                    for(var i = 0.0; i < this.Amount; ++i)
+                    {
+                        var alien = this.Space.CreateAtPosition(this.Alien, this.Owner.Transform.Translation);
+                        
+                        alien.RigidBody.Velocity += Real3(this.RandomGenerator.Range(-1,1), this.RandomGenerator.Range(-1,1), 0) * this.OutputSpeed;
+                    }
+                    
+                    this.Timer = 0.0;
+                }
+                else
+                {
+                    this.Timer += event.Dt;
+                }
+            }
+        }
+    }
+}

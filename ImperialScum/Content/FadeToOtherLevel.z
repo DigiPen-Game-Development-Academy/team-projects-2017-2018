@@ -1,0 +1,103 @@
+class FadeEvent : ZilchEvent
+{
+    sends Fade : FadeEvent;
+    
+    var LevelToLoad : Level;
+    var TimeToLoad : Real;
+    var StartColor : Real4;
+    var EndColor : Real4;
+    
+    constructor(levelToLoad : Level, timeToLoad : Real, startColor : Real4, endColor : Real4) : base()
+    {
+        this.LevelToLoad = levelToLoad;
+        this.TimeToLoad = timeToLoad;
+        this.StartColor = startColor;
+        this.EndColor = endColor;
+    }
+    
+}
+
+class FadeToOtherLevel : ZilchComponent
+{
+    [Property] var OnlyVisual : Boolean;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.GameSession, Events.Fade, this.OnFade);
+        Zero.Connect(this.Space, Events.Fade, this.OnFade);
+        Zero.Connect(this.Owner, Events.Fade, this.OnFade);
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    var LevelToLoad : Level;
+    
+    function OnFade(event : FadeEvent)
+    {
+        var sequence = Actions.Sequence(this.Owner.Actions);
+        
+        if(this.OnlyVisual)
+        {
+            this.Owner.Sprite.Color = event.StartColor;
+            Action.Property(sequence, @this.Owner.Sprite.Color, event.EndColor, event.TimeToLoad, Ease.Linear);
+        }
+        else
+        {
+            this.LevelToLoad = event.LevelToLoad;
+            Action.Delay(sequence, event.TimeToLoad);
+            Action.Call(sequence, this.Load);
+        }
+            
+    }
+    
+    function Load()
+    {
+        if(this.LevelToLoad == null)
+        return;
+        
+        this.Space.LoadLevel(this.LevelToLoad);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (Zero.Keyboard.KeyIsDown(Keys.One) && Zero.Keyboard.KeyIsPressed(Keys.Zero))
+        {
+            this.GameSession.DispatchEvent
+            (Events.Fade, FadeEvent(Level.ThisIsTheCodeLevel, 1, Real4.Zero, Real4(0,0,0,1)));
+        }
+    }
+}
+
+class MakeFadeSpace : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.GameSession, Events.GameSetup, this.OnGameSetup);
+        
+    }
+
+    function OnGameSetup(event : GameEvent)
+    {
+        if (this.GameSession.FindSpaceByName("FadeSpace") == null)
+        {
+            var space = this.GameSession.CreateNamedSpace("FadeSpace", Archetype.Space);
+            space.LoadLevel(Level.FadeLevel);
+        }
+    }
+}
+class Unfade : ZilchComponent
+{
+    var Once:Boolean = false;
+    
+    var Timer:Real = 0.3;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.GameSession.DispatchEvent
+        (Events.Fade, FadeEvent(null, 1, Real4(0,0,0,1), Real4(0,0,0,0)));
+    }
+
+
+
+    
+}

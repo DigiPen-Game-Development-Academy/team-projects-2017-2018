@@ -1,0 +1,149 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class ButtonLevelSwitcher : ZilchComponent {
+    
+    [Property] var Level : Level = null;
+    [Property] var Delay : Real = 0.0;
+    [Property] var DefaultColor : Real3 = Real3(1.0);
+    [Property] var HoverColor : Real3 = Real3(1.0);
+    [Property] var UIAnimateEnabled : Boolean = true;
+    [Property] var ResumeButton : Boolean = false;
+    [Property] var RespawnButton : Boolean = false;
+    [Property] var LoadSaveButton : Boolean = false;
+    [Property] var ForceAnimation : Boolean = false;
+    [Property] var QuitButton : Boolean = false;
+    
+    var CurrDelay : Real = 0.0;
+    
+    var ButtonClicked : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        
+        Relocation.ButtonFadeout = false;
+        
+        Zero.Connect(this.Owner, Events.MouseUpdate, this.OnMouseUpdate);
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+    }
+    
+    function OnMouseUpdate(event : ViewportMouseEvent) {
+        if(event.Mouse.IsButtonDown(MouseButtons.Left)) {
+            this.ButtonClicked = true;
+            Relocation.ButtonFadeout = true;
+        }
+    }
+    
+    function OnMouseEnter(event : ViewportMouseEvent) {
+        if(!Relocation.ButtonFadeout) {
+            this.Owner.SpriteText.Color = Real4(this.HoverColor, this.Owner.SpriteText.Color.W);
+        }
+        Relocation.CursorType = "Hover";
+    }
+    
+    function OnMouseExit(event : ViewportMouseEvent) {
+        if(!Relocation.ButtonFadeout) {
+            this.Owner.SpriteText.Color = Real4(this.DefaultColor, this.Owner.SpriteText.Color.W);
+        }
+        Relocation.CursorType = "Default";
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.UIAnimateEnabled) {
+            if(Relocation.ButtonFadeout && !this.ButtonClicked) {
+                this.Owner.RemoveComponentByName("UIAnimate");
+                this.Owner.AddComponentByName("UIAnimate");
+                this.Owner.UIAnimate.FadeOut(event.Dt, 2.0);
+            } else if(Relocation.ButtonFadeout && this.CurrDelay > this.Delay / 2) {
+                this.Owner.RemoveComponentByName("UIAnimate");
+                this.Owner.AddComponentByName("UIAnimate");
+                this.Owner.UIAnimate.FadeOut(event.Dt, 2.0);
+            }
+        }
+        
+        if(this.ButtonClicked) {
+            
+            /*Console.WriteLine("----------Level To Load: `this.LevelSettings.SaveLoadData.PlayerData.SavedData.CurrentWorld`----------");
+            
+            if(this.LevelSettings.SaveLoadData.PlayerData.SavedData.CurrentWorld == "SurfaceWorld")
+                Console.WriteLine("Loading Level With Name \"`Level.Find("SurfaceWorld")`\"");
+            else if(this.LevelSettings.SaveLoadData.PlayerData.SavedData.CurrentWorld == "CaveWorld")
+                Console.WriteLine("Loading Level With Name \"`Level.Find("CaveWorld")`\"");
+            else if(this.LevelSettings.SaveLoadData.PlayerData.SavedData.CurrentWorld == "Tutorial")
+                Console.WriteLine("Loading Level With Name \"`Level.Find("Tutorial")`\"");
+            else
+                Console.WriteLine("Loading Level With Name \"`Level.Find(this.Level.Name)`\"");
+            */
+            if(((GameSetting.EnableUIAnimations || this.ForceAnimation) && this.CurrDelay > this.Delay) || (!GameSetting.EnableUIAnimations && this.CurrDelay > 0.25)) {
+                
+                Relocation.ButtonFadeout = false;
+                Relocation.CursorType = "Default";
+                
+                if(!this.QuitButton && !this.ResumeButton && !this.RespawnButton && !this.LoadSaveButton) {
+                    if(this.Level != null) {
+                        if(Relocation.UISpace != null) {
+                            Relocation.Space.TimeSpace.Paused = false;
+                            Relocation.Space.LoadLevel(this.Level);
+                            Relocation.UISpace.Destroy();
+                        } else {
+                            this.Space.TimeSpace.Paused = false;
+                            this.Space.LoadLevel(this.Level);
+                        }
+                    }
+                } else if(this.QuitButton) {
+                    Console.WriteLine("[Game Session] Quitting game...");
+                    this.Space.GameSession.Quit();
+                } else if(this.ResumeButton) {
+                    if(this.Owner.Parent.Parent.PauseMenu != null) {
+                        this.Owner.Parent.Parent.PauseMenu.PauseMenuEnabled = false;
+                        Relocation.Space.TimeSpace.Paused = false;
+                    }
+                } else if(this.RespawnButton) {
+                    Relocation.Space.TimeSpace.Paused = false;
+                    Relocation.UISpace.Destroy();
+                    Relocation.Space.ReloadLevel();
+                } else if(this.LoadSaveButton) {
+                    if(Relocation.UISpace != null) {
+                        
+                        Relocation.ShouldLoadLevel = true;
+                        Relocation.Space.TimeSpace.Paused = false;
+                        Relocation.Space.LoadLevel(this.Level);
+                        Relocation.UISpace.Destroy();
+                        
+                    } else {
+                        
+                        Relocation.ShouldLoadLevel = true;
+                        this.Space.TimeSpace.Paused = false;
+                        
+                        if(this.LevelSettings.SaveLoadData.PlayerData.SavedData.CurrentWorld == "SurfaceWorld") {
+                            Console.WriteLine("Loading Level With Name \"`Level.Find("SurfaceWorld")`\"");
+                            this.Space.LoadLevel(Level.SurfaceWorld);
+                        } else if(this.LevelSettings.SaveLoadData.PlayerData.SavedData.CurrentWorld == "CaveWorld") {
+                            Console.WriteLine("Loading Level With Name \"`Level.Find("CaveWorld")`\"");
+                            this.Space.LoadLevel(Level.CaveWorld);
+                        } else if(this.LevelSettings.SaveLoadData.PlayerData.SavedData.CurrentWorld == "Tutorial") {
+                            Console.WriteLine("Loading Level With Name \"`Level.Find("Tutorial")`\"");
+                            this.Space.LoadLevel(Level.Tutorial);
+                        } else {
+                            Console.WriteLine("Loading Level With Name \"`Level.Find(this.Level.Name)`\"");
+                            this.Space.LoadLevel(this.Level);
+                        }
+                        
+                    }
+                }
+                
+                this.ButtonClicked = false;
+                this.Owner.SpriteText.Color = Real4(this.DefaultColor, this.Owner.SpriteText.Color.W);
+                
+            } else {
+                this.CurrDelay += event.Dt;
+            }
+            
+        }
+        
+    }
+    
+}

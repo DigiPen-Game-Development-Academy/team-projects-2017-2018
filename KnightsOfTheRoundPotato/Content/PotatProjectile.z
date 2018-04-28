@@ -1,0 +1,88 @@
+class PotatProjectile : ZilchComponent {
+    
+    var MovSpd : Real = 3;
+    var Target : Real3 = Real3(0);
+    var Damage : Real = 25;
+    var ImpactSize : Real = 3;
+    var ArcIntencity : Real = 0.75;
+    var Set : Boolean = false;
+    var SoundRad : Real = 10;
+    var ExplodeSound : SoundCue;
+    var SoundRange : Real = 10;
+    
+    var OscilationSpeed : Real = 0;
+    var OscilationIntencity : Real = 0;
+    
+    var Explosion : Archetype = Archetype.PotatExplotion;
+    
+    var Timer : Real = 0;
+    
+    [Dependency]
+    var Orientation : Orientation;
+    var StartDist : Real = 0;
+    
+    var DamageMSG : String = "";
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(!this.Set)
+            return;
+        
+        this.Timer += event.Dt;
+        
+        this.Orientation.LookAtPoint(this.Target);
+        
+        this.Owner.Transform.SetEulerAnglesXYZ(0, 0, this.Owner.Transform.EulerAngles.Z + Math.Sin(this.OscilationSpeed * this.Timer)*this.OscilationIntencity);
+        
+        var dist = Math.Distance(this.Owner.Transform.WorldTranslation.XY, this.Target.XY);
+        
+        var dir = Real3(0);
+        
+        dir = Real3(Math.Cos(this.Owner.Transform.EulerAngles.Z), Math.Sin(this.Owner.Transform.EulerAngles.Z), 0);
+        
+        dir = Real3(dir.XY, 0);
+        
+        if(this.StartDist == 0)
+            this.StartDist = dist;
+        
+        if(this.StartDist == 0) {
+            if(dist < event.Dt * this.MovSpd) {
+                var dmg = Damage();
+                dmg.Damage = this.Damage;
+                var res = this.Space.PhysicsSpace.DispatchWithinSphere(this.Owner.Transform.WorldTranslation, this.ImpactSize, Events.Damage, dmg);
+                this.Owner.Destroy();
+                var exp = this.Space.CreateAtPosition(Archetype.PotatExplotion, this.Owner.Transform.WorldTranslation + Real3(0,0,1));
+                exp.Transform.Scale = Real3(this.ImpactSize);
+            }
+            return;
+        }
+        
+        var scale = (Math.Sin((dist/this.StartDist)*4)*this.ArcIntencity) + 0.75;
+        
+        this.Owner.Transform.Scale = Real3(scale, scale, 0);
+        
+        this.Owner.Transform.WorldTranslation += dir * event.Dt * this.MovSpd;
+        this.Owner.Transform.WorldTranslation = Real3(this.Owner.Transform.WorldTranslation.XY, 0);
+        
+        if(dist < event.Dt * this.MovSpd) {
+            Utilities.SendSound(this.SoundRad, this.Owner.Transform.WorldTranslation);
+            var dmg = Damage();
+            dmg.Damage = this.Damage;
+            dmg.DeathMSG = this.DamageMSG;
+            var res = this.Space.PhysicsSpace.DispatchWithinSphere(this.Owner.Transform.WorldTranslation, this.ImpactSize, Events.Damage, dmg);
+            this.Owner.FindChildByName("Trail").SphericalParticleEmitter.Active = false;
+            this.Owner.FindChildByName("Trail").DetachRelative();
+            this.Owner.Destroy();
+            var exp = this.Space.CreateAtPosition(this.Explosion, this.Owner.Transform.WorldTranslation + Real3(0,0,1));
+            exp.Transform.Scale = Real3(this.ImpactSize);
+            exp.AddComponentByName("SoundEmitter");
+            exp.SoundEmitter.Volume = GlobalVariables.Settings.SettingsSave.SFXvol - Math.Clamp(GlobalVariables.Settings.SettingsSave.SFXvol, 0, 
+            Math.Distance(GlobalVariables.Player.Transform.WorldTranslation, this.Owner.Transform.WorldTranslation)/this.SoundRange);
+            exp.SoundEmitter.PlayCue(this.ExplodeSound);
+        }
+    }
+}

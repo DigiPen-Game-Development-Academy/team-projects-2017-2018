@@ -1,0 +1,107 @@
+// Author: Eli Miller
+// Purpose: Takes keyboard input to control the player's movement and turret placement.
+
+class PlayerController : ZilchComponent
+{
+    [Dependency] var RigidBody : RigidBody;
+    
+    var Active : Boolean = true;
+    [Property] var Speed : Real = 10;
+    [Property] var Acceleration : Real = 5;
+    [Property] var Deceleration : Real = 10;
+    
+    var Reversed : Boolean;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.GameSession.Globals.SingletonPlayer = this;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Space, Events.Animation, this.OnAnimation);
+    }
+    function OnAnimation(event : AnimationEvent)
+    {
+        this.Active =!event.Starting;
+    }
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.Active ==false) return;
+        
+        var vel = Real2();
+        if(Zero.Keyboard.KeyIsDown(Keys.D)) vel.X += 1;
+        if(Zero.Keyboard.KeyIsDown(Keys.A)) vel.X -= 1;
+        if(Zero.Keyboard.KeyIsDown(Keys.W)) vel.Y += 1;
+        if(Zero.Keyboard.KeyIsDown(Keys.S)) vel.Y -= 1;
+        
+        if (vel == Real2.Zero)
+        {
+            this.RigidBody.Velocity = Math.Lerp(this.RigidBody.Velocity, Real3.Zero, this.Deceleration * event.Dt);
+            
+        }
+        else
+        {
+            if (this.Reversed) vel = -vel;
+            this.RigidBody.Velocity = Math.Lerp(this.RigidBody.Velocity, Real3(vel * this.Speed, 0), this.Acceleration * event.Dt);
+        }
+    }
+}
+class PlayerAnimator : ZilchComponent
+{
+    var Previous : Real2;
+    
+    // We want to be able to set the sound to play in the editor
+    [Property]
+    var WalkingSoundToPlay : SoundCue;
+    // We will set the sound that is currently playing in code
+    var WalkingSoundPlaying : SoundInstance;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.Previous = this.Owner.Transform.WorldTranslation.XY;
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var movement = this.Owner.Transform.WorldTranslation.XY - this.Previous;
+        var moveSpeedSq = Math.LengthSq(movement);
+        
+        var input = Zero.Keyboard.KeyIsDown(Keys.W) || Zero.Keyboard.KeyIsDown(Keys.A) || Zero.Keyboard.KeyIsDown(Keys.S) || Zero.Keyboard.KeyIsDown(Keys.D);
+        var chariotExists = this.GameSession.Globals.SingletonChariot != null;
+       
+        
+        if (chariotExists || !input || moveSpeedSq < 0.001)
+        {
+            if (this.Owner.Sprite.SpriteSource != SpriteSource.Swords)
+            {
+                this.Owner.Sprite.SpriteSource = SpriteSource.Swords;
+            }
+        }
+        
+        if (!chariotExists && input && moveSpeedSq > 0.01)
+        {
+            if (this.Owner.Sprite.SpriteSource != SpriteSource.KingOS_Run)
+            {
+                this.Owner.Sprite.SpriteSource = SpriteSource.KingOS_Run;
+            }
+            
+            // If the sound isn't playing
+            if (this.WalkingSoundPlaying == null || this.WalkingSoundPlaying.IsPlaying == false)
+            {
+                // Play the sound and remember which sound is playing (includes looping)
+                this.WalkingSoundPlaying = this.Space.SoundSpace.PlayCue(this.WalkingSoundToPlay);
+            }
+        }
+        else
+        {
+            // If the sound is playing
+            if (this.WalkingSoundPlaying != null && this.WalkingSoundPlaying.IsPlaying)
+            {
+                // Stop the sound that is playing
+                this.WalkingSoundPlaying.Stop();
+            }
+        }
+        
+        this.Previous = this.Owner.Transform.WorldTranslation.XY;
+    }
+}

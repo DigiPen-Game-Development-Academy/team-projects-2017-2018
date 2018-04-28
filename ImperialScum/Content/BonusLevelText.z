@@ -1,0 +1,22 @@
+class BonusLevelText : ZilchComponent
+//Elena
+{
+    [Property]
+    var BonusLevelText : Archetype = Archetype.BonusLevelText;
+    
+    function Initialize(init : CogInitializer)
+    {
+        var player = this.Space.FindObjectByName("Player");
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        if(this.Space.CurrentLevel == Level.ElenaDunesLevel)
+        this.Space.CreateAtPosition(Archetype.BonusLevelText, this.Owner.Transform.Translation);
+        
+        if(this.Space.CurrentLevel == Level.Level2)
+        this.Space.CreateAtPosition(Archetype.BonusLevelText, this.Owner.Transform.Translation);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

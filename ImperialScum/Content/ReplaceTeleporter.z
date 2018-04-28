@@ -1,0 +1,16 @@
+class ReplaceTeleporter : ZilchComponent
+{
+    //Author - Jessica
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(ContinueTimer.LevelNumber > 5)
+        {
+            this.Owner.Transform.Translation += Real3(100,100,0);
+        }
+    }
+}

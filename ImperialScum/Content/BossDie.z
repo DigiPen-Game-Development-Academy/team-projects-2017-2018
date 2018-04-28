@@ -1,0 +1,29 @@
+class BossDie : ZilchComponent
+{
+    [Property]
+    var ExplodeSFX:SoundCue;
+    
+    var Timer:Integer = 15;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Timer -= 1;
+        
+        var random = new Random();
+        var randomHor = random.DieRoll(5)-3;
+        var randomVer = random.DieRoll(3)-2;
+        
+        if (this.Timer == 0)
+        {
+            this.Timer = 15;
+            this.Space.SoundSpace.PlayCue(this.ExplodeSFX);
+            this.Space.CreateAtPosition(Archetype.ExplodeBubbles, this.Owner.Transform.Translation + Real3(randomHor,randomVer,0));
+            this.Space.CreateAtPosition(Archetype.LegendaryExplode, this.Owner.Transform.Translation + Real3(randomHor,randomVer,0));
+        }
+    }
+}

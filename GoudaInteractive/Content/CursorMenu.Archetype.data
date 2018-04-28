@@ -1,0 +1,49 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Cursor",
+	},
+	Archetyped = 
+	{
+		string Name = "5acaf72266c512aa:CursorMenu",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 10, 5],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5a3bd208fba8aefb:Cursor",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	CustomCursor = 
+	{
+		string DefaultCursor = "5acaf71e6daf6949:CursorDotHover",
+		string HoverCursor = "5acaf7b50bbabd5d:CursorDot",
+		string HoverTooltipCursor = "5acaf7b50bbabd5d:CursorDot",
+		string HoverItemCursor = "5acaf71e6daf6949:CursorDotHover",
+		string ClickCursor = "5acaf71e6daf6949:CursorDotHover",
+		string TextCursor = "5aeba223f7830399:CursorText",
+		bool ShowCustomCursor = true,
+	},
+},

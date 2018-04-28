@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "LandingPoofParticleController",
+		uint64 ResourceId = 5aadd14c2a50791c,
+	},
+},

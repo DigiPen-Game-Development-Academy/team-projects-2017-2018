@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "PassiveAI",
+		uint64 ResourceId = 5acc634b67dc2171,
+	},
+},

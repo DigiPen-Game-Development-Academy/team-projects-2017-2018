@@ -1,0 +1,21 @@
+class MenuVisibilityController : ZilchComponent {
+    var Vis : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.Owner.Parent == null)
+            return;
+        
+        if(this.Owner.Parent.MenuVisibilityController != null)
+            this.Vis = this.Owner.Parent.MenuVisibilityController.Vis;
+        else if(this.Owner.Parent.MenuVisibilitySprite != null)
+            this.Vis = this.Owner.Parent.Sprite.Visible;
+        else if(this.Owner.Parent.MenuVisibilitySpriteText != null)
+            this.Vis = this.Owner.Parent.SpriteText.Visible;
+        
+    }
+}

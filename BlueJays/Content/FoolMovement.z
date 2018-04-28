@@ -1,0 +1,60 @@
+//Author: Christian Yan
+//Purpose: Fool Movement
+class FoolMovement : ZilchComponent
+{
+    [Property] var PaceSpeed : Real = 5.0;
+    [Property] var MaxX : Real = 10.0;
+    [Property] var MaxY : Real = 7.0;
+    [Property] var MinY : Real = -7.0;
+    [Property] var MinX : Real = -10.0;
+    var Active : Boolean = true;
+    
+    var StartPosition : Real3;
+    var Direction : Real3;
+    
+    
+    function OnAnimation(event : AnimationEvent)
+    {
+        this.Active =!event.Starting;
+    }
+    
+    function Initialize(init : CogInitializer)
+    {
+        // update the fool whenever this updates
+        Zero.Connect(this.Space, Events.LogicUpdate, this.PaceBackAndForth);
+        // track where the fool started and how far he has moved
+        this.StartPosition = this.Owner.Transform.Translation;
+        this.Owner.RigidBody.Velocity = Real3(0,1,0);
+        Zero.Connect(this.Space, Events.Animation, this.OnAnimation);
+    }
+
+    function PaceBackAndForth(event: UpdateEvent)
+    {
+        if (this.Active ==false) return;
+        
+        var pos = this.Owner.Transform.WorldTranslation;
+        
+        if (this.Direction == Real3.Zero)
+        {
+            this.Direction = Real3(1, 0, 0);
+        }
+        else if (this.Direction == Real3(1,0,0) && pos.X >= this.MaxX)
+        {
+            this.Direction = Real3(0,-1,0);
+        }
+        else if (this.Direction == Real3(0,-1,0) && pos.Y <= this.MinY)
+        {
+            this.Direction = Real3(-1,0,0);
+        }
+        else if (this.Direction == Real3(-1,0,0) && pos.X <= this.MinX)
+        {
+            this.Direction = Real3(0,1,0);
+        }
+        else if (this.Direction == Real3(0,1,0) && pos.Y >= this.MaxY)
+        {
+            this.Direction = Real3(1,0,0);
+        }
+        
+        this.Owner.RigidBody.Velocity = this.Direction * this.PaceSpeed;
+    }
+}

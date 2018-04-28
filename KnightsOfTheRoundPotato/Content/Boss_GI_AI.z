@@ -1,0 +1,276 @@
+//Author Brandon Wolenetz
+
+enum GIState {
+    Idle,
+    Spray,
+    Spread,
+    Spin,
+    Wind
+}
+
+class Boss_GI_AI : ZilchComponent {
+    
+    //*****Dependencies*****
+    [Dependency] var Health : Health;
+    
+    //*****Properties*****
+    //Rate of fire at full health
+    [Property] var FireRateFull : Real = 10;
+    //Rate of fire at no health
+    [Property] var FireRateEmpty : Real = 15;
+    //Passive Rate of fire at full health
+    [Property] var PFireRateFull : Real = 3;
+    //Passive Rate of fire at no health
+    [Property] var PFireRateEmpty : Real = 5;
+    //time between entering fire state at full health
+    [Property] var FireCooldownMax : Real = 6;
+    //time between entering fire state at no health
+    [Property] var FireCooldownMin : Real = 4;
+    //Randomness for time between entering fire states
+    [Property] var FireCooldownRand : Real = 0.1;
+    //Time to spray
+    [Property] var SprayLength : Real = 3.25;
+    //spray speed at full health
+    [Property] var SpraySpeedMax : Real = 2;
+    //spray speed at no health
+    [Property] var SpraySpeedMin : Real = 5;
+    //spray angle at full health
+    [Property] var SprayAngleMax : Real = 90;
+    //spray angle at no health
+    [Property] var SprayAngleMin : Real = 25;
+    //Spread at full health
+    [Property] var SpreadMax : Real = 10;
+    //Spread at no health
+    [Property] var SpreadMin : Real = 5;
+    //Spread bullets at full health
+    [Property] var SpreadNumMax : Real = 5;
+    //Spread bullets at no health
+    [Property] var SpreadNumMin : Real = 20;
+    //Number of times to spin at full health
+    [Property] var SpinFull : Real = 1;
+    //Number of times to spin at no health
+    [Property] var SpinEmpty : Real = 3;
+    //Speed to spin at full health
+    [Property] var SpinSpeedFull : Real = 25;
+    //Speed to spin at no health
+    [Property] var SpinSpeedEmpty : Real = 45;
+    //Spin fire rate at full health
+    [Property] var SpinFireRateFull : Real = 10;
+    //Spin fire rate at no health
+    [Property] var SpinFireRateEmpty : Real = 15;
+    //speed of bullets at full health
+    [Property] var BSpeedFull : Real = 3;
+    //speed of bullets at no health
+    [Property] var BSpeedEmpty : Real = 7;
+    //Bullet damage at full health
+    [Property] var DamageFull : Real = 10;
+    //Bullet damage at no health
+    [Property] var DamageEmpty : Real = 25;
+    //what health percentage to start using spread attack
+    [Property] var SpreadHealth : Real = 0.75;
+    //what health percentage to start using spin attack
+    [Property] var SpinHealth : Real = 0.5;
+    //cooldown between idle and special attack at full health
+    [Property] var WindCooldownFull : Real = 1;
+    //cooldown between idle and special attack at no health
+    [Property] var WindCooldownEmpty : Real = 1;
+    //death message if player is defeated by boss
+    [Property] var DamageMSG : String = "";
+    
+    //*****Variables*****
+    //current boss state
+    var State : GIState = GIState.Idle;
+    //Timer used for delays and sutch
+    var Timer : Real = 0;
+    //Timer used for fire rates
+    var ShotTimer : Real = 0;
+    //the current facing direction
+    var Facing : Real3 = Real3(0);
+    //Random() used for randomness
+    var Rand : Random;
+    //is the ai currently active?
+    var Active : Boolean = true;
+    
+    function Initialize(init : CogInitializer) {
+        
+        //set collision table so enemies do not collide
+        if(this.Space.PhysicsSpace.CollisionTable != CollisionTable.CollisionTable) {
+            this.Space.PhysicsSpace.CollisionTable = CollisionTable.CollisionTable;
+        }
+        
+        this.Rand = Random();
+        this.ShotTimer = Math.Lerp(1/this.FireRateEmpty, 1/this.FireRateFull, this.Health.Percent);
+        this.ResetTimerForIdle();
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if (!this.Active)
+            return;
+        
+        //run current state
+        if (this.State == GIState.Idle) {
+            this.Idle(event.Dt);
+        } else if (this.State == GIState.Spin) {
+            this.Spin(event.Dt);
+        } else if (this.State == GIState.Spray) {
+            this.Spray(event.Dt);
+        } else if (this.State == GIState.Spread) {
+            this.Spread(event.Dt);
+        } else if (this.State == GIState.Wind) {
+            this.Wind(event.Dt);
+        }
+        
+    }
+    
+    function ResetTimerForIdle () {
+        this.Timer = Math.Lerp(this.FireCooldownMin, this.FireCooldownMax, this.Health.Percent) + this.Rand.Range(-this.FireCooldownRand, this.FireCooldownRand);
+    }
+    
+    //fire bullet in facing direction
+    function Fire () {
+        
+        var bullet = this.Space.CreateAtPosition(Archetype.Bullet, this.Owner.Transform.WorldTranslation);
+        
+        if (bullet != null) {
+            
+            bullet.RigidBody.Velocity = this.Facing * Math.Lerp(this.BSpeedEmpty, this.BSpeedFull, this.Health.Percent);
+            bullet.Transform.SetEulerAnglesXYZ(0, 0, Math.ATan2(this.Facing.Y, this.Facing.X));
+            bullet.SloMoBossBullet.Damage = Math.Lerp(this.DamageEmpty, this.DamageFull, this.Health.Percent);
+            bullet.SloMoBossBullet.DamageMSG = this.DamageMSG;
+            bullet.Transform.WorldTranslation += this.Facing;
+            
+        }
+        
+    }
+    
+    //*****State Functions*****
+    
+    //shoot at player occasionally
+    function Idle(dt : Real) {
+        
+        this.ShotTimer -= dt;
+        this.Timer -= dt;
+        
+        this.Facing = Math.Normalize(GlobalVariables.Player.Transform.WorldTranslation - this.Owner.Transform.WorldTranslation);
+        
+        if (this.ShotTimer <= 0) {
+            
+            this.ShotTimer = Math.Lerp(1/this.PFireRateEmpty, 1/this.PFireRateFull, this.Health.Percent);
+            
+            this.Fire();
+            
+        }
+        
+        if (this.Timer <= 0) {
+            
+            this.State = GIState.Wind;
+            this.Timer = Math.Lerp(this.WindCooldownEmpty, this.WindCooldownFull, this.Health.Percent);
+            
+            
+        }
+        
+    }
+    
+    //send spray of bullets at player
+    function Spray(dt : Real) {
+        
+        this.Timer -= dt;
+        this.ShotTimer -= dt;
+        
+        var dir = GlobalVariables.Player.Transform.WorldTranslation - this.Owner.Transform.WorldTranslation;
+        var angle = Math.ATan2(dir.Y, dir.X);
+        angle += Math.Sin(this.Timer*Math.Lerp(this.SpraySpeedMin, this.SpraySpeedMax, this.Health.Percent)) * Math.ToRadians(Math.Lerp(this.SprayAngleMin, this.SprayAngleMax, this.Health.Percent));
+        this.Facing = Real3(Math.Cos(angle), Math.Sin(angle), 0);
+        
+        if (this.ShotTimer <= 0) {
+            this.ShotTimer = Math.Lerp(1/this.FireRateEmpty, 1/this.FireRateFull, this.Health.Percent);
+            
+            this.Fire();
+            
+        }
+        
+        if (this.Timer <= 0) {
+            
+            this.State = GIState.Idle;
+            this.ResetTimerForIdle();
+            
+        }
+        
+    }
+    
+    //shotgun-like shot at player
+    function Spread(dt : Real) {
+        
+        var shots = Math.Lerp(this.SpreadNumMin, this.SpreadNumMax, this.Health.Percent) as Integer;
+        var spread = Math.ToRadians(Math.Lerp(this.SpreadMin, this.SpreadMax, this.Health.Percent));
+        var dir = GlobalVariables.Player.Transform.WorldTranslation - this.Owner.Transform.WorldTranslation;
+        var angle = Math.ATan2(dir.Y, dir.X);
+        angle -= (shots * spread) / 2;
+        
+        for (var i = 0; i < shots; ++i) {
+            
+            this.Facing = Real3(Math.Cos(angle), Math.Sin(angle), 0);
+            
+            this.Fire();
+            
+            angle += spread;
+            
+        }
+        
+        this.Facing = dir;
+        
+        this.State = GIState.Idle;
+        this.ResetTimerForIdle();
+        
+    }
+    
+    //send spiral of bullets in all directions
+    function Spin(dt : Real) {
+        
+        this.ShotTimer -= dt;
+        
+        var angle = Math.ATan2(this.Facing.Y, this.Facing.X);
+        var toAdd = Math.ToRadians(dt * Math.Lerp(this.SpinSpeedEmpty, this.SpinSpeedFull, this.Health.Percent));
+        angle += toAdd;
+        this.Facing = Real3(Math.Cos(angle), Math.Sin(angle), 0);
+        this.Timer += toAdd;
+        
+        if (this.ShotTimer <= 0) {
+            this.ShotTimer = Math.Lerp(1/this.SpinFireRateEmpty, 1/this.SpinFireRateFull, this.Health.Percent);
+            
+            this.Fire();
+            
+        }
+        
+        if (this.Timer >= Math.ToRadians(Math.Lerp(this.SpinEmpty, this.SpinFull, this.Health.Percent)*360)) {
+            
+            this.State = GIState.Idle;
+            this.ResetTimerForIdle();
+            
+        }
+        
+    }
+    
+    //delay before special attack
+    function Wind (dt : Real) {
+        
+        //wait until done winding up
+        this.Timer -= dt;
+        
+        if (this.Timer <= 0) {
+            
+            if (this.Rand.Probability(0.333) && this.Health.Percent <= this.SpreadHealth) {
+                this.State = GIState.Spread;
+            } else if (this.Rand.Probability(0.333) && this.Health.Percent <= this.SpinHealth) {
+                this.State = GIState.Spin;
+                this.Timer = 0;
+            } else {
+                this.State = GIState.Spray;
+                this.Timer = this.SprayLength;
+                this.ShotTimer = 0;
+            }
+        }
+    }
+}

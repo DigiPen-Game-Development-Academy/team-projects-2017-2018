@@ -1,0 +1,14 @@
+class AlwaysSpotted : ZilchComponent {
+    
+    [Dependency] var AI : EnemyAI;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        this.AI.State = State.Spotted;
+        
+    }
+}

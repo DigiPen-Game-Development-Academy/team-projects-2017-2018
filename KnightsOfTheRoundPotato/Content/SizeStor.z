@@ -1,0 +1,3 @@
+class SizeStor : ZilchComponent {
+    var Size : Real2 = Real2(3);
+}

@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "Boss_Rusher_AI",
+		uint64 ResourceId = 5a531c0e753d4b1b,
+	},
+},

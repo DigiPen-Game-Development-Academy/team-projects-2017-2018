@@ -1,0 +1,91 @@
+class WeaponDisplay : ZilchComponent {
+    
+    var Progress : Cog;
+    var ItemS : Cog;
+    var Name : Cog;
+    var Ammo : Cog;
+    
+    function Initialize(init : CogInitializer){
+        
+        this.Progress = this.Owner.FindChildByName("Progress");
+        this.ItemS = this.Owner.FindChildByName("Item");
+        this.Name = this.Owner.FindChildByName("Name");
+        this.Ammo = this.Owner.FindChildByName("Ammo");
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent){
+        
+        var item = Item();
+        
+        if(this.Owner.Name == "Primary") {
+            item = GlobalVariables.UseWeapon.Primary;
+        } else if (this.Owner.Name == "Secondary") {
+            item = GlobalVariables.UseWeapon.Secondary;
+        } else if (this.Owner.Name == "Utility") {
+            item = GlobalVariables.UseWeapon.Utility;
+        } else {
+            if(GlobalVariables.UseWeapon.PrimarySelected) {
+                item = GlobalVariables.UseWeapon.Primary;
+            } else {
+                item = GlobalVariables.UseWeapon.Secondary;
+            }
+        }
+        
+        if(item == null) {
+            this.ItemS.Sprite.Visible = false;
+            if(this.Progress != null) {
+                this.Progress.Sprite.Visible = false;
+            }
+            if(this.Ammo != null) {
+                this.Ammo.SpriteText.Visible = false;
+            }
+            if(this.Name != null) {
+                this.Name.SpriteText.Visible = false;
+            }
+        } else {
+            this.ItemS.Sprite.Visible = true;
+            
+            this.ItemS.Sprite.SpriteSource = item.Icon;
+            
+            if(this.Name != null) {
+                this.Name.SpriteText.Text = "`item.Name`";
+            }
+            
+            if(this.Progress != null) {
+                this.Progress.Sprite.Visible = true;
+                if(item.MagSize == -1) {
+                    this.Progress.Area.Size = Real2(item.Timer / (1/item.FireRate), 1);
+                    if(item.Timer < 0)
+                            this.Progress.Area.Size = Real2(0, 1);
+                    if(this.Ammo != null) {
+                        this.Ammo.SpriteText.Visible = false;
+                    }
+                } else {
+                    if(this.Ammo != null) {
+                        this.Ammo.SpriteText.Visible = true;
+                    }
+                    if(item.Reloading) {
+                        this.Progress.Area.Size = Real2(item.Timer / item.RelodTime, 1);
+                        if(this.Ammo != null) {
+                            this.Ammo.SpriteText.Text = "Reloading...";
+                        }
+                    } else {
+                        this.Progress.Area.Size = Real2(item.Timer / (1/item.FireRate), 1);
+                        if(item.Timer < 0)
+                            this.Progress.Area.Size = Real2(0, 1);
+                        if(this.Ammo != null) {
+                            this.Ammo.SpriteText.Text = "`item.CurrentMag` / `Math.Round(GlobalVariables.UseWeapon.GetAmmoCount() / item.AmmoPerShot)`";
+                        }
+                    }
+                }
+            }
+            
+            if (this.Progress != null && this.Progress.Area.Size.X > 1) {
+                this.Progress.Area.Size = Real2(1,1);
+            }
+            
+        }
+    }
+}

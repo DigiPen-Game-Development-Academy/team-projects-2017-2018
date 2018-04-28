@@ -1,0 +1,17 @@
+class SetChest : ZilchComponent {
+    [Dependency]
+    var Reactive : Reactive;
+    
+    [Property]  var Slot1ID : String = "";
+    [Property]  var Slot2ID : String = "";
+    [Property]  var Slot3ID : String = "";
+    [Property]  var Slot4ID : String = "";
+    [Property]  var Slot5ID : String = "";
+    [Property]  var Slot6ID : String = "";
+    [Property]  var Slot7ID : String = "";
+    [Property]  var Slot8ID : String = "";
+    
+    [Serialized]
+    var Items : Array[Item];
+    
+}

@@ -1,0 +1,200 @@
+//Author: Hunter Fosler
+//Purpose: Shooting for the Lovers.
+
+class BossShoot : ZilchComponent
+{
+    [Property] var TimeBetweenShots : Real = 1;
+    [Property] var ShootSpeed : Real = 1;
+    [Property] var ShootSpin : Real = 90;
+    [Property] var Projectile : Archetype = Archetype.Arrow;
+    var TimeTillShoot : Real;
+    var Active : Boolean = true;
+    
+    var RNG : Random = new Random();
+    
+        function OnAnimation(event : AnimationEvent)
+    {
+        this.Active =!event.Starting;
+    }
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.TimeTillShoot = this.TimeBetweenShots;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Space, Events.Animation, this.OnAnimation);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.Active ==false) return;
+        
+        var player = this.GameSession.Globals.SingletonPlayer;
+        if (player == null) return;
+        
+        //couting down timer
+        this.TimeTillShoot -= event.Dt;
+        //check if we can shoot
+        if (this.TimeTillShoot <= 0)
+        {
+            var vel = (player.Owner.Transform.Translation - this.Owner.Transform.Translation);
+            vel = Math.Normalize(vel) * this.ShootSpeed;
+            
+            //Create the bullet
+            var arrow = this.Space.CreateAtPosition(this.Projectile, this.Owner.Transform.WorldTranslation + vel / 100);
+            if (arrow == null && arrow.RigidBody == null) return;
+            
+            arrow.Transform.SetEulerAnglesXYZ(0, 0, this.RNG.Range(Math.Pi, -Math.Pi));
+            
+            //Launch the bullet
+            arrow.RigidBody.Velocity = vel;
+            var spin = Math.ToRadians(this.ShootSpin);
+            arrow.RigidBody.AngularVelocity = Real3(0, 0, this.RNG.Range(-spin, spin));
+            
+            //Reset our time
+            this.TimeTillShoot = this.TimeBetweenShots;
+        }
+    }
+}
+
+class BossUltimate : ZilchComponent
+{
+    var Active : Boolean = true;
+    
+    [Property] var Projectile : Archetype;
+    
+    [Property] var RandomRoseLocationSize : Real2 = Real2(10, 7.5);
+    
+    [Property] var RadiusStart : Real = 20;
+    [Property] var RadiusEndMax : Real = 10;
+    [Property] var RadiusEndMin : Real = 4;
+    [Property] var RadiusEndTransition : SampleCurve;
+    
+    [Property] var AmountOfRosesTotal : Integer = 10;
+    [Property] var AmountOfRosesTransition : SampleCurve;
+    var AmountOfRosesSpawnedSoFar : Integer;
+    
+    [Property] var Cooldown : Real = 15;
+    [Property] var Duration : Real = 5;
+    var Timer : Real;
+    var Attacking : Boolean;
+    
+    var RNG : Random = Random();
+    
+    var RandomRoseLocation : Real3;
+    
+    function OnAnimation(event : AnimationEvent)
+    {
+        this.Active =!event.Starting;
+    }
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.GameSession.Globals.SingletonFool = this;
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.Active ==false) return;
+
+        if (this.Attacking)
+        {
+            this.Timer -= event.Dt;
+            if (this.Timer < 0)
+            {
+                this.Attacking = false;
+                this.Timer = this.Cooldown;
+            }
+            else this.UpdateAttack();
+        }
+        else
+        {
+            this.Timer -= event.Dt;
+            if (this.Timer < 0)
+            {
+                this.Attacking = true;
+                this.Timer = this.Duration;
+                
+                var x = this.RNG.RangeInclusiveMax(-1, 1) * this.RandomRoseLocationSize.X;
+                var y = this.RNG.RangeInclusiveMax(-1, 1) * this.RandomRoseLocationSize.Y;
+                this.RandomRoseLocation = Real3(x, y, 0);
+                this.UpdateAttack();
+            }
+        }
+    }
+    
+    function UpdateAttack()
+    {
+        var ratio = (this.Duration - this.Timer) / this.Duration;
+        var endRadius = Math.Lerp(this.RadiusEndMax, this.RadiusEndMin, this.RadiusEndTransition.Sample(ratio));
+        var roses = Math.Round(this.AmountOfRosesTotal * this.AmountOfRosesTransition.Sample(ratio)) as Integer;
+        var rosesToSpawn = roses - this.AmountOfRosesSpawnedSoFar;
+        this.AmountOfRosesSpawnedSoFar = roses;
+        
+        for (var i = 0; i < rosesToSpawn; ++i)
+        {
+            var spawnDirection = Real3(this.RNG.UnitReal2(), 0);
+            var start = spawnDirection * this.RadiusStart;
+            var end = spawnDirection * endRadius;
+            var velocity = spawnDirection * (endRadius - this.RadiusStart);
+            var projectile = this.Space.CreateAtPosition(this.Projectile, start);
+            if (projectile == null || projectile.BossUltimateRoseController == null) continue;
+            projectile.BossUltimateRoseController.TargetPosition = end;
+        }
+    }
+}
+
+class BossUltimateRoseController : ZilchComponent
+{
+    [Dependency] var Transform : Transform;
+    [Dependency] var RigidBody : RigidBody;
+    [Dependency] var DoOnCollide : DoOnCollide;
+    
+    [Property] var MinTimeToArrive : Real = 1;
+    [Property] var MaxTimeToArrive : Real = 1.5;
+    var TimeToArrive : Real;
+    var TimeTillArrive : Real;
+    
+    var OriginalPosition : Real3;
+    
+    // Set inside BossUltimate
+    var TargetPosition : Real3;
+    
+    [Property] var TrajectoryArcHeight : Real = 2;
+    [Property] var TrajectoryArcShape : SampleCurve;
+    
+    [Property] var RotationOffset : Real = 90;
+    
+    var RNG : Random = Random();
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.TimeToArrive = this.RNG.Range(this.MinTimeToArrive, this.MaxTimeToArrive);
+        this.TimeTillArrive = this.TimeToArrive;
+        this.OriginalPosition = this.Transform.WorldTranslation;
+    }
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.TimeTillArrive -= event.Dt;
+        if (this.TimeTillArrive <= 0)
+        {
+            this.Transform.WorldTranslation = this.TargetPosition;
+            this.RigidBody.Velocity = Real3.Zero;
+            this.DoOnCollide.HealthToChange = 0;
+            return;
+        }
+        
+        var ratio = (this.TimeToArrive - this.TimeTillArrive) / this.TimeToArrive;
+        var previousPosition = this.Transform.WorldTranslation;
+        var arcHeight = this.TrajectoryArcHeight * this.TrajectoryArcShape.Sample(ratio);
+        var linearMotion = Math.Lerp(this.OriginalPosition, this.TargetPosition, ratio);
+        var nextPosition = linearMotion + Real3.YAxis * arcHeight;
+        var motion = nextPosition - previousPosition;
+        if (event.Dt != 0) this.RigidBody.Velocity = motion / event.Dt;
+        
+        this.Transform.SetEulerAnglesXYZ(0, 0, Math.ATan2(motion.Y, motion.X) + Math.ToRadians(this.RotationOffset));
+    }
+}

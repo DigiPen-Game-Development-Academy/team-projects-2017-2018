@@ -1,0 +1,96 @@
+//Author Brandon Wolenetz
+//this is a data type use for pathfinding optamization
+
+class Heap {
+    var Items : Array[NavNode];
+    var CurrItemCount : Integer;
+    
+    constructor(maxHeapSize : Integer) {
+        
+        this.Items = new Array[NavNode]();
+        this.Items.Resize(maxHeapSize);
+        
+    }
+    
+    function Add(item : NavNode) {
+        item.HeapIndex = this.CurrItemCount;
+        this.Items[this.CurrItemCount] = item;
+        this.SortUp(item);
+        ++this.CurrItemCount;
+    }
+    
+    function RemoveFirst() : NavNode {
+        
+        var firstItem = this.Items[0];
+        --this.CurrItemCount;
+        this.Items[0] = this.Items[this.CurrItemCount];
+        this.Items[0].HeapIndex = 0;
+        this.SortDown(this.Items[0]);
+        return firstItem;
+        
+    }
+    
+    function UpdateItem(item : NavNode) {
+        this.SortUp(item);
+    }
+    
+    var Count : Integer {
+        get {
+            return this.CurrItemCount;
+        }
+    }
+    
+    function Contains(item : NavNode) : Boolean {
+        return this.Items[item.HeapIndex] == item;
+    }
+    
+    function SortDown(item : NavNode) {
+        
+        while(true) {
+            
+            var chIndexL = (item.HeapIndex *2) +1;
+            var chIndexR = (item.HeapIndex *2) +2;
+            var swapIndex = 0;
+            
+            
+            if(chIndexL <= this.CurrItemCount) {
+                swapIndex = chIndexL;
+                
+                if(chIndexR <= this.CurrItemCount) {
+                    if(this.Items[chIndexL].FCost > this.Items[chIndexR].FCost) {
+                        swapIndex = chIndexR;
+                    }
+                }
+                
+                if(item.FCost > this.Items[swapIndex].FCost)
+                    this.Swap(item, this.Items[swapIndex]);
+                else
+                    return;
+            } else
+                return;
+        }
+        
+    }
+    
+    function SortUp(item : NavNode) {
+        
+        var parentIndex = (item.HeapIndex-1)/2;
+        while (parentIndex >= 0) {
+            var parentItem = this.Items[parentIndex];
+            if(item.FCost < parentItem.FCost)
+                this.Swap(item, parentItem);
+            else
+                break;
+            parentIndex = (item.HeapIndex-1)/2;
+        }
+        
+    }
+    function Swap(itemA : NavNode, itemB : NavNode) {
+        var indexA = itemA.HeapIndex;
+        var indexB = itemB.HeapIndex;
+        this.Items[indexA] = itemB;
+        this.Items[indexB] = itemA;
+        this.Items[indexA].HeapIndex = indexA;
+        this.Items[indexB].HeapIndex = indexB;
+    }
+}

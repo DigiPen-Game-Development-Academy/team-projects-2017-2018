@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "HiveSpawner",
+		uint64 ResourceId = 5a1c278be374eab3,
+	},
+},

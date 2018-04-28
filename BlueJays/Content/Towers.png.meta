@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "Towers",
+		uint64 ResourceId = 5a08ee9cd242c646,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 170,
+		uint FrameSizeY = 216,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 85,
+		float OriginY = 108,
+		float PixelsPerUnit = 24,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

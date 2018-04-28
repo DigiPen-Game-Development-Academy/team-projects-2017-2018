@@ -1,0 +1,19 @@
+class PointTowardsAndSetLength : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Owner.Parent.UpgradePathLogic.PreviousUpgrade.Cog != null)
+        {
+            this.Owner.Orientation.LookAtPointWithUp(this.Owner.Parent.UpgradePathLogic.PreviousUpgrade.Cog.Transform.Translation, Real3(0.0,0.0,1.0));
+            
+            this.Owner.Area.Size = Real2(Math.Distance(this.Owner.Transform.WorldTranslation, this.Owner.Parent.UpgradePathLogic.PreviousUpgrade.Cog.Transform.Translation), 1.0);
+        }
+        
+        this.Owner.RemoveComponentByName("PointTowardsAndSetLength");
+    }
+}

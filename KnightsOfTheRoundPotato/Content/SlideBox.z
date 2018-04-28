@@ -1,0 +1,70 @@
+//Author Brandon Wolenetz
+
+class SlideBox : ZilchComponent {
+    [Dependency] var Area : Area;
+    
+    var Down : Boolean = false;
+    
+    var Value : Real = 1;
+    
+    var StartSize : Real2 = Real2(0);
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.MouseMove, this.OnMouseMove);
+        Zero.Connect(this.Owner.Parent, Events.MouseDown, this.OnMouseDown);
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+        Zero.Connect(this.Space, Events.MouseUp, this.OnMouseUp);
+        
+        this.StartSize = this.Area.Size;
+        
+        this.Apply();
+        
+    }
+    
+    function OnMouseUp(event : ViewportMouseEvent) {
+        this.Down = false;
+    }
+    
+    //get mouse pos and call "ApplyVal()"
+    function OnMouseDown(event : ViewportMouseEvent) {
+        this.Down = true;
+        
+        var mPos = this.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 0);
+        mPos = Real3(mPos.X, mPos.Y, 0);
+        
+        this.ApplyVal(mPos);
+        
+    }
+    
+    //apply scale to slider
+    function Apply() {
+        this.Area.Size = Real2(this.Value*this.StartSize.X, this.StartSize.Y);
+    }
+
+    //get mouse pos and call "ApplyVal()"
+    function OnMouseMove(event : ViewportMouseEvent) {
+        
+        if(!this.Down)
+            return;
+        
+        var mPos = event.CameraViewport.ScreenToWorldZPlane(event.Position, 0);
+        mPos = Real3(mPos.X, mPos.Y, 0);
+        
+        this.ApplyVal(mPos);
+    }
+    
+    //change value and apply
+    function ApplyVal (mPos : Real3) {
+        //slide stuffage
+        
+        this.Value = (mPos.X - this.Owner.Transform.Translation.X)/this.StartSize.X;
+        
+        if(this.Value < 0)
+            this.Value = 0;
+        else if(this.Value > 1)
+            this.Value = 1;
+        
+        this.Apply();
+    }
+
+}

@@ -1,0 +1,74 @@
+//Jacob Burke
+
+//Displays the player's current health on the HUD
+
+class DisplayHealth : ZilchComponent
+{
+    
+    var InitSize:Real;
+
+    var LowHealth:Boolean = false;
+    
+    var RegularColor:Real4;
+    
+    [Property]
+    var RedColor:Real4;
+    
+    var Timer:Real = 0.5;
+    
+    var UltraLow:Real= 0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.RegularColor = this.Owner.Sprite.Color;
+        
+        this.InitSize = this.Owner.Area.Size.X;
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        //var newSize = this.InitSize * (Health.CurrentHealth/19.0);
+        var newSize = this.InitSize * (Health.CurrentHealth/(Health.MaxHealth-1));
+        this.Owner.Area.Size = Real2(newSize, 1);
+        
+        if(Health.CurrentHealth <= 5)
+        {
+            this.LowHealth = true;
+        }
+        else
+        {
+            this.LowHealth = false;
+            this.Owner.Sprite.Color = this.RegularColor;
+        }
+        
+        if(Health.CurrentHealth <= 2)
+        {
+            this.UltraLow = 0.7;
+        }
+        else if(Health.CurrentHealth <= 3)
+        {
+            this.UltraLow = 0.5;
+        }
+        else
+        {
+            this.UltraLow = 0;
+        }
+        
+        if(this.LowHealth == true)
+        {
+            this.Timer -= event.Dt;
+        
+        if(this.Timer <= 0)
+        {
+            this.Owner.Sprite.Color = this.RegularColor;
+            this.Timer += 1 - this.UltraLow;
+        }
+        else
+        this.Owner.Sprite.Color = this.RedColor;
+        }
+        
+    }
+}

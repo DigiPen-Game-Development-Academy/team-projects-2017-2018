@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "GoToCursor",
+		uint64 ResourceId = 5af8f1d321d75cc6,
+	},
+},

@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "CreateUI",
+		uint64 ResourceId = 5a1c3221d05c5229,
+	},
+},

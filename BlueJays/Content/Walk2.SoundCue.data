@@ -1,0 +1,38 @@
+SoundCue = 
+{
+	SoundPlayMode PlayMode = Single,
+	float Volume = 0.399999976,
+	float VolumeVariation = 0,
+	float VolumeDB = -7.95880079,
+	bool UseVolumeDB = false,
+	float VolumeDBVariation = 0,
+	float Pitch = -1.10000002,
+	float PitchSemitones = -13.1899996,
+	bool UsePitchSemitones = false,
+	float PitchVariation = 0.100000001,
+	float PitchSTVariation = 0,
+	float MinDistance = 1,
+	float MaxDistance = 70,
+	float MinAttenuatedVolume = 0,
+	uint MaxPlaybacks = 10,
+	Array Sounds = 
+	[
+		{
+			string SoundName = "5ab6afe44763abb0:Walk2",
+			string GeneratedSoundName = "55017c595ef88bf0:DefaultGeneratedSound",
+			WhichSoundType WhichToUse = FromFile,
+			float Weight = 1,
+			float LoopEndTime = 0,
+			float LoopStartTime = 0,
+		},
+	],
+	Array SoundTags = 
+	[
+		{
+			string SoundTagName = "551c2d5a29ce571d:DefaultSoundTag",
+		},
+	],
+	string RolloffCurveName = "5a9f7bfdc4b9eb66:RoseThrowRadius",
+	int Version = 1,
+	RolloffCurveType RolloffCurveType = Linear,
+},

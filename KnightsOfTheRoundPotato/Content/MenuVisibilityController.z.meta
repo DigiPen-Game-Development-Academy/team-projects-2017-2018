@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "MenuVisibilityController",
+		uint64 ResourceId = 5a9a889c43551c49,
+	},
+},

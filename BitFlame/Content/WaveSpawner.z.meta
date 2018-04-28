@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "WaveSpawner",
+		uint64 ResourceId = 5a60d46394bbee4a,
+	},
+},

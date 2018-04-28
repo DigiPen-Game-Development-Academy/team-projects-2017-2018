@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "IntroLevel_Logic",
+		uint64 ResourceId = 5a3783015c7c770b,
+	},
+},

@@ -1,0 +1,112 @@
+class Health : ZilchComponent {
+    
+    [Property] var InitialHealth : Real = 100;
+    [Property] var Cooldown : Real = 3;
+    [Property] var RegenRate : Real = 0.3333333333333;
+    [Property] var FlashLength : Real = 0.1;
+    
+    var FlashTimer : Real = 0;
+    
+    var OriginalRegenRate : Real;
+    
+    var DeathMSG : String = "";
+    var Timer : Real = 0;
+    var CooldownTimer : Real = 0;
+    var CurrentHealth : Real = 0;
+    var Locked : Boolean = false;
+    var EffectTimer : Real = 0;
+    
+    //info for effects
+    var RegenEffectActive : Boolean = false;
+    var RegenMultiplier : Real = 1;
+    
+    
+    var Percent : Real {
+        get {
+            return this.CurrentHealth / this.InitialHealth;
+        }
+    }
+    
+    function Initialize(init : CogInitializer) {
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.Damage, this.OnDamage);
+        this.CurrentHealth = this.InitialHealth;
+        this.OriginalRegenRate = this.RegenRate;
+        
+    }
+    
+    function RegenEffect(time : Real, regenRateMultiplier : Real) {
+        
+        this.EffectTimer = time;
+        this.RegenRate = this.OriginalRegenRate * regenRateMultiplier;
+        this.RegenMultiplier = regenRateMultiplier;
+        this.RegenEffectActive = true;
+        
+    }
+
+    function OnDamage(event : Damage) {
+        
+        if(!this.Locked) {
+            
+            this.CurrentHealth  -= event.Damage;
+            this.DeathMSG = event.DeathMSG;
+            
+            if (this.CurrentHealth <= 0) {
+                var nh = NoHealth();
+                nh.DeathMSG = this.DeathMSG;
+                this.Owner.DispatchEvent(Events.NoHealth, nh);
+            }
+            
+            if (this.CurrentHealth < 0) {
+                this.CurrentHealth = 0;
+            }
+            
+            this.CooldownTimer = this.Cooldown;
+            
+            this.FlashTimer = this.FlashLength;
+            this.Owner.Sprite.Color = Real4(1, 0, 0, 1);
+            
+        }
+        
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.EffectTimer <= 0) {
+            this.RegenRate = this.OriginalRegenRate;
+            this.RegenEffectActive = false;
+        } else {
+            this.EffectTimer -= event.Dt;
+            this.CooldownTimer = 0;
+        }
+        
+        if(this.Owner.Sprite.Color != Real4(1) && this.FlashTimer <= 0) {
+            
+            this.Owner.Sprite.Color = Real4(1);
+            
+        } else if(this.Owner.Sprite.Color != Real4(1)) {
+            this.FlashTimer -= event.Dt;
+        }
+        
+        if(this.CurrentHealth >= this.InitialHealth)
+            return;
+        
+        if (this.Timer >= 0 && this.CooldownTimer <= 0) {
+            this.Timer -= event.Dt;
+        }
+        
+        if (this.CooldownTimer >= 0) {
+            this.CooldownTimer -= event.Dt;
+        }
+        
+        if (this.Timer <= 0) {
+            
+            this.Timer = (1/this.RegenRate)/2;
+            
+            if (this.CurrentHealth + 0.5 <= this.InitialHealth * 0.75 || (this.RegenEffectActive && this.CurrentHealth + 0.5 <= this.InitialHealth)) {
+                this.CurrentHealth += 0.5;
+            }
+        }
+    }
+}

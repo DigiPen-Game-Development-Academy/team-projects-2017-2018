@@ -1,0 +1,23 @@
+class MusicZone : ZilchComponent {
+    
+    [Property] var Music : SoundCue;
+    [Property] var FadeSpeed : Real = 1;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionPersisted);
+    }
+
+    function OnCollisionPersisted(event : CollisionEvent) {
+        
+        if (event.OtherObject == GlobalVariables.Player) {
+            if (this.LevelSettings.BattleMusic != null) {
+                if (!this.LevelSettings.BattleMusic.ActualSpotted) {
+                    MusicUtils.PlayFade(this.Music, this.FadeSpeed);
+                }
+            } else {
+                MusicUtils.PlayFade(this.Music, this.FadeSpeed);
+            }
+        }
+        
+    }
+}

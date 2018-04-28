@@ -1,0 +1,40 @@
+class ErrorMessages : ZilchComponent
+{
+    //Author - Jessica - SCRIPT NOT IN USE!
+    
+    /* This is the code you would put in the shop script... if I could find it and AdvInventory doesn't work for it before y'all start saying I should put it in there
+    else if(-presumably something goes here-)
+        {
+            Console.WriteLine("fires");
+            ErrorMessages.BuyFail = true;
+        }
+    */
+    [Static] var EatFail : Boolean = false;
+    [Static] var HealFail : Boolean = false;
+    [Static] var BuyFail : Boolean = false;
+    
+    var FailTimer : Real = 0.5;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(ErrorMessages.BuyFail == true)
+        {
+            this.Owner.SpriteText.Text = "Not enough Gears";
+            this.Owner.SpriteText.Visible = true;
+            
+            this.FailTimer -= event.Dt;
+            if(this.FailTimer <= 0)
+            {
+                ErrorMessages.BuyFail = false;
+                this.Owner.SpriteText.Visible = false;
+                this.FailTimer = 0.5;
+            }
+            
+        }
+    }
+}

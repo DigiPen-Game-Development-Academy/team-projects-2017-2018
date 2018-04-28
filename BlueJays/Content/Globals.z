@@ -1,0 +1,201 @@
+class SavedStats : ZilchComponent
+{
+    [Serialized] var TotalRuns : Real = 0;
+    [Serialized] var Deaths : Real = 0;
+    [Serialized] var Wins : Real = 0;
+    [Serialized] var FoolsBeaten : Real = 0;
+    [Serialized] var LoversBeaten : Real = 0;
+    [Serialized] var Spawns : Real = 0;
+    [Serialized] var KnightSpawns : Real = 0;
+    [Serialized] var StationarySpawns : Real = 0;
+    [Serialized] var UniqueSpawns : Real = 0;
+    [Serialized] var AchUnlocks : String = "";
+    var PrevHealth : Real = 0;
+}
+
+[RunInEditor]
+class Globals : ZilchComponent
+{
+    // Enabled by holding ALT (also enables cheats)
+    var DebugMode : Boolean;
+    
+    // The space where gameplay happens
+    var GameSpace : Space;
+    // The space where HUD is stored
+    var HUDSpace : Space;
+    
+    // Saves should be persistent across games
+    var SavedStats : SavedStats;
+    
+    // Only one should ever exist at a time
+    var SingletonCursor : CursorLogic;
+    var SingletonChariot : ChariotLogic;
+    var SingletonPlayer : PlayerController;
+    var SingletonFool : BossUltimate;
+    
+    // Stats should be persistent across levels
+    
+    // Health and Fate
+    [Property] var PlayerMaxHealth : Real = 10;
+    [Property] var PlayerMaxFate : Real = 10;
+    [Property] var BossMaxHealth : Real = 100;
+    [Property] var BossMaxFate : Real = 10;
+    
+    var PlayerCurrentHealth : Real;
+    var PlayerCurrentFate : Real;
+    var BossCurrentHealth : Real;
+    var BossCurrentFate : Real;
+    
+    [Property] var PlayerRegenHealth : Real = 0;
+    [Property] var PlayerRegenFate : Real = 1;
+    [Property] var BossRegenHealth : Real = 2;
+    [Property] var BossRegenFate : Real = 0;
+    
+    // Turrets
+    [Property] var ArchetypeKnight : Archetype = Archetype.Knight;
+    [Property] var ArchetypeTower : Archetype = Archetype.Tower;
+    [Property] var ArchetypeChariot : Archetype = Archetype.Chariot;
+    
+    [Property] var CostKnight : Real = 1;
+    [Property] var CostTower : Real = 3;
+    [Property] var CostChariot : Real = 5;
+    
+    [Property] var RadiusKnight : Real = 3;
+    [Property] var RadiusTower : Real = 3;
+    [Property] var RadiusChariot : Real = 3;
+    
+    [Property] var MaxChariotCooldown : Real = 10;
+    var CurrentChariotCooldown : Real;
+    
+    var Turrets : Array[Turret];
+    var PRIVATE_CurrentTurretIndex : Integer = 0;
+    var CurrentTurretIndex : Integer {
+        get { var wrapped = this.PRIVATE_CurrentTurretIndex % this.Turrets.Count; if (wrapped < 0) return wrapped + this.Turrets.Count; return wrapped; }
+        set { this.PRIVATE_CurrentTurretIndex = value; }
+    }
+    function GetCurrentTurret() : Turret
+    {
+        return this.Turrets[this.CurrentTurretIndex];
+    }
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.GameSession, Events.GameSetup, this.OnGameSetup);
+    }
+    function OnGameSetup(event : GameEvent)
+    {
+        // Set up spaces
+        this.GameSpace = this.GameSession.CreateNamedSpace("GameSpace", Archetype.Space);
+        this.GameSpace.LoadLevel(Level.Start );
+        this.HUDSpace = this.GameSession.CreateNamedSpace("HUDSpace", Archetype.Space);
+        this.HUDSpace.LoadLevel(Level.HUDLevel);
+        Console.WriteLine("Game Setup {");
+        foreach (var space in this.GameSession.AllSpaces) Console.WriteLine("\t[`space` : `space.CurrentLevel`],");
+Console.WriteLine("}");
+        
+        // Set up cursor
+    var obj = this.HUDSpace.CreateAtPosition(Archetype.Cursor, Real3.Zero);
+    this.SingletonCursor = obj.CursorLogic;
+        
+        // Set up stats
+        this.PlayerCurrentHealth = this.PlayerMaxHealth;
+        this.PlayerCurrentFate = this.PlayerMaxFate;
+        
+        // Set up turrets
+        this.Turrets = new Array[Turret]()
+        {
+            Turret(this.ArchetypeKnight, this.CostKnight, this.RadiusKnight),
+            Turret(this.ArchetypeTower, this.CostTower, this.RadiusTower),
+            Turret(this.ArchetypeChariot, this.CostChariot, this.RadiusChariot),
+        };
+        
+        // Deny quit with escape
+        Zero.Connect(this.GameSession, Events.GameRequestQuit, this.OnGameRequestQuit);
+        
+        // Update global logic, like stats
+        Zero.Connect(this.GameSpace, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        // Cheats
+        Zero.Connect(Zero.Keyboard, Events.KeyUp, this.OnKeyUp);
+        Zero.Connect(Zero.Keyboard, Events.KeyDown, this.OnKeyDown);
+    }
+    
+    function OnGameRequestQuit(event : GameEvent)
+    {
+        event.Handled = true;
+        Zero.Mouse.Cursor = Cursor.Invisible;
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        // Regen stats
+        this.PlayerCurrentHealth += this.PlayerRegenHealth * event.Dt;
+        this.PlayerCurrentFate += this.PlayerRegenFate * event.Dt;
+        
+        // Clamp to max stats
+        this.PlayerCurrentHealth = Math.Min(this.PlayerCurrentHealth, this.PlayerMaxHealth);
+        this.PlayerCurrentFate = Math.Min(this.PlayerCurrentFate, this.PlayerMaxFate);
+        
+        //Decresse cooldown for chorit
+        
+        this.CurrentChariotCooldown-= event.Dt;
+    }
+    
+    function OnKeyUp(event : KeyboardEvent)
+    {
+        // Press ALT to enter debug mode
+        if (event.Key == Keys.Alt) this.DebugMode = false;
+    }
+    function OnKeyDown(event : KeyboardEvent)
+    {
+        // Press ALT to enter debug mode
+        if (event.Key == Keys.Alt) this.DebugMode = true;
+        
+        // Hold ALT to cheat!
+        if (event.AltPressed == false) return;
+        
+        // Instant Restart
+        if (event.Key == Keys.R) this.GameSpace.ReloadLevel();
+        // Instant Health
+        else if (event.Key == Keys.H)
+        {
+            if (event.ShiftPressed) this.PlayerRegenHealth = 1000000000;
+            else this.PlayerCurrentHealth = this.PlayerMaxHealth;
+        }
+        // Instant Fate
+        else if (event.Key == Keys.F)
+        {
+            if (event.ShiftPressed) this.PlayerRegenFate = 1000000000;
+            else this.PlayerCurrentFate = this.PlayerMaxFate;
+        }
+    }
+    
+    function LoadStats()
+    {
+        var obj = Zero.ObjectStore.RestoreOrArchetype("Stats", Archetype.SavedStats, this.HUDSpace);
+        this.SavedStats = obj.SavedStats;
+    }
+    function SaveStats()
+    {
+        Zero.ObjectStore.Store("Stats", this.SavedStats.Owner);
+    }
+    
+    [Static]
+    function GetTarget(nearestTo : Cog, targetTeam : Team) : Cog
+    {
+        var closest : Cog = null;
+        var distanceSquared : Real = Real.PositiveMax;
+        
+        foreach (var obj in nearestTo.Space.AllObjects())
+        {
+            if (obj.Health == null) continue;
+            if (obj.Health.Team != targetTeam) continue;
+            if (obj.Transform == null) continue;
+            var tempDistanceSquared = Math.DistanceSq(nearestTo.Transform.WorldTranslation.XY, obj.Transform.WorldTranslation.XY);
+            if (tempDistanceSquared >= distanceSquared) continue;
+            distanceSquared = tempDistanceSquared;
+            closest = obj;
+        }
+        return closest;
+    }
+}

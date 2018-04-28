@@ -1,0 +1,207 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class WeaponManager : ZilchComponent {
+    
+    var WeaponCount         : Integer = 12;
+    
+    var IsHoldingWeapon     : Boolean = false;
+    var MouseClick          : Boolean = false;
+    
+    // ACTIVE WEAPON
+    var ActiveWeapon        : Weapon = null;
+    
+    // HAND
+    var WeaponHand          : Weapon = null;
+    
+    // WEAPONS (RANGED)
+    var WeaponPistol        : Weapon = null;
+    var WeaponRevolver      : Weapon = null;
+    var WeaponRock          : Weapon = null;
+    var WeaponShotgun       : Weapon = null;
+    var WeaponBoulder       : Weapon = null;
+    var WeaponMinigun       : Weapon = null;
+    var WeaponSniper        : Weapon = null;
+    var WeaponGouda         : Weapon = null;
+    
+    // TOOLS
+    var ToolDrillCopper     : Weapon = null;
+    var ToolDrillIron       : Weapon = null;
+    var ToolDrillTitanium   : Weapon = null;
+    var ToolDrillPlatinum   : Weapon = null;
+    
+    function Initialize(init : CogInitializer) {
+        
+        // WEAPON DATA
+        if(Relocation.FillAmmoOnLoad) PlayerData.WeaponData = new Array[Integer](this.WeaponCount);
+        
+        // HAND
+        this.WeaponHand = new Weapon(this.Space, "Hand", 0, false);
+        
+        // RANGED WEAPONS
+        this.WeaponPistol = new Weapon(this.Space, "Pistol", 1, true, 0.75, 1.0);
+        this.WeaponRevolver = new Weapon(this.Space, "Revolver", 2, true, 1.25, 1.5);
+        this.WeaponRock = new Weapon(this.Space, "Rock", 3, true, 0.5, 0.75);
+        
+        this.WeaponShotgun = new Weapon(this.Space, "Shotgun", 4, true, 1.5, 1.0);
+        this.WeaponBoulder = new Weapon(this.Space, "Boulder", 5, true, 1.0, 1.25);
+        
+        this.WeaponMinigun = new Weapon(this.Space, "Minigun", 6, true, 0.05, 0.5);
+        this.WeaponSniper = new Weapon(this.Space, "Sniper", 7, true, 1.75, 5.0);
+        this.WeaponGouda = new Weapon(this.Space, "Gouda", 8, true, 1.25, 15.0);
+        
+        // TOOLS
+        this.ToolDrillCopper = new Weapon(this.Space, "Hand", 9, false, 0.1, 0.0);
+        this.ToolDrillIron = new Weapon(this.Space, "Hand", 10, false, 0.075, 0.0);
+        this.ToolDrillTitanium = new Weapon(this.Space, "Hand", 11, false, 0.05, 0.0);
+        this.ToolDrillPlatinum = new Weapon(this.Space, "Hand", 12, false, 0.025, 0.0);
+        
+        // SET AS DRILL
+        this.ToolDrillCopper.IsDrill = true;
+        this.ToolDrillIron.IsDrill = true;
+        this.ToolDrillTitanium.IsDrill = true;
+        this.ToolDrillPlatinum.IsDrill = true;
+        
+        // SET WEAPON TIER
+        this.WeaponShotgun.SetTier(2);
+        this.WeaponBoulder.SetTier(2);
+        
+        this.WeaponMinigun.SetTier(3);
+        this.WeaponSniper.SetTier(3);
+        this.WeaponGouda.SetTier(3);
+        
+        // SET ACCURACY
+        this.WeaponPistol.SetAccuracy(0.45);
+        this.WeaponRevolver.SetAccuracy(0.25);
+        this.WeaponRock.SetAccuracy(0.75);
+        
+        this.WeaponShotgun.SetAccuracy(1.6);
+        this.WeaponBoulder.SetAccuracy(0.75);
+        
+        this.WeaponMinigun.SetAccuracy(0.6);
+        this.WeaponSniper.SetAccuracy(0.05);
+        this.WeaponGouda.SetAccuracy(0.25);
+        
+        // SET AMMO AMOUNT
+        this.WeaponPistol.SetMaxAmmoAmount(-1, Relocation.FillAmmoOnLoad);
+        this.WeaponRevolver.SetMaxAmmoAmount(6, Relocation.FillAmmoOnLoad);
+        this.WeaponRock.SetMaxAmmoAmount(1, Relocation.FillAmmoOnLoad);
+        
+        this.WeaponShotgun.SetMaxAmmoAmount(12, Relocation.FillAmmoOnLoad);
+        this.WeaponBoulder.SetMaxAmmoAmount(1, Relocation.FillAmmoOnLoad);
+        
+        this.WeaponMinigun.SetMaxAmmoAmount(350, Relocation.FillAmmoOnLoad);
+        this.WeaponSniper.SetMaxAmmoAmount(4, Relocation.FillAmmoOnLoad);
+        this.WeaponGouda.SetMaxAmmoAmount(1, Relocation.FillAmmoOnLoad);
+        
+        Relocation.FillAmmoOnLoad = false;
+        
+        // SET AMMO TYPE
+        this.WeaponPistol.SetAmmoType(Relocation.ItemManager.GetIDByName("ItemAmmoPistol"));
+        this.WeaponRevolver.SetAmmoType(Relocation.ItemManager.GetIDByName("ItemAmmoPistol"));
+        this.WeaponRock.SetAmmoType(Relocation.ItemManager.GetIDByName("ItemRock"));
+        
+        this.WeaponShotgun.SetAmmoType(Relocation.ItemManager.GetIDByName("ItemAmmoShotgun"));
+        this.WeaponBoulder.SetAmmoType(Relocation.ItemManager.GetIDByName("ItemBoulder"));
+        
+        this.WeaponMinigun.SetAmmoType(Relocation.ItemManager.GetIDByName("ItemAmmoMinigun"));
+        this.WeaponSniper.SetAmmoType(Relocation.ItemManager.GetIDByName("ItemAmmoSniper"));
+        this.WeaponGouda.SetAmmoType(Relocation.ItemManager.GetIDByName("ItemGouda"));
+        
+        // SET RELOAD TIME
+        this.WeaponRock.ReloadTime = 0;
+        this.WeaponBoulder.ReloadTime = 0;
+        this.WeaponGouda.ReloadTime = 0;
+        
+        // SET BULLET SPAWN LOCATION
+        //this.WeaponPistol.SetBulletSpawnPosition(0.45);
+        //this.WeaponRevolver.SetBulletSpawnPosition(0.25);
+        //this.WeaponRock.SetBulletSpawnPosition(0.75);
+        
+        //this.WeaponShotgun.SetBulletSpawnPosition(0.6);
+        //this.WeaponBoulder.SetBulletSpawnPosition(0.75);
+        
+        //this.WeaponMinigun.SetBulletSpawnPosition(Real2(0.0, -0.2));
+        //this.WeaponSniper.SetBulletSpawnPosition(0.05);
+        //this.WeaponGouda.SetBulletSpawnPosition(0.25);
+        
+        // SET AS SHOTGUN
+        this.WeaponShotgun.IsShotgun = true;
+        
+        // SET ACTIVE WEAPON
+        this.ActiveWeapon = this.WeaponPistol;
+        
+        // CONNECT LOGIC UPDATE
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(!Relocation.UISpace.FindObjectByName("DebugCommand").FindChildByName("TextEntry").TextEntry.CaptureKeys) {
+            
+            if(this.Owner.Inventory.CheckForItemMainHand(0)) {
+                this.ActiveWeapon = this.WeaponHand;
+            } else if(this.Owner.Inventory.CheckForItemMainHand(Relocation.ItemManager.GetIDByName("ItemPistol"))) {
+                this.ActiveWeapon = this.WeaponPistol;
+            } else if(this.Owner.Inventory.CheckForItemMainHand(Relocation.ItemManager.GetIDByName("ItemRevolver"))) {
+                this.ActiveWeapon = this.WeaponRevolver;
+            } else if(this.Owner.Inventory.CheckForItemMainHand(Relocation.ItemManager.GetIDByName("ItemRock"))) {
+                this.ActiveWeapon = this.WeaponRock;
+            } else if(this.Owner.Inventory.CheckForItemMainHand(Relocation.ItemManager.GetIDByName("ItemShotgun"))) {
+                this.ActiveWeapon = this.WeaponShotgun;
+            } else if(this.Owner.Inventory.CheckForItemMainHand(Relocation.ItemManager.GetIDByName("ItemBoulder"))) {
+                this.ActiveWeapon = this.WeaponBoulder;
+            } else if(this.Owner.Inventory.CheckForItemMainHand(Relocation.ItemManager.GetIDByName("ItemMinigun"))) {
+                this.ActiveWeapon = this.WeaponMinigun;
+            } else if(this.Owner.Inventory.CheckForItemMainHand(Relocation.ItemManager.GetIDByName("ItemSniper"))) {
+                this.ActiveWeapon = this.WeaponSniper;
+            } else if(this.Owner.Inventory.CheckForItemMainHand(Relocation.ItemManager.GetIDByName("ItemGouda"))) {
+                this.ActiveWeapon = this.WeaponGouda;
+            } else if(this.Owner.Inventory.CheckForItemMainHand(Relocation.ItemManager.GetIDByName("ItemDrillCopper"))) {
+                this.ActiveWeapon = this.ToolDrillCopper;
+            } else if(this.Owner.Inventory.CheckForItemMainHand(Relocation.ItemManager.GetIDByName("ItemDrillIron"))) {
+                this.ActiveWeapon = this.ToolDrillIron;
+            } else if(this.Owner.Inventory.CheckForItemMainHand(Relocation.ItemManager.GetIDByName("ItemDrillTitanium"))) {
+                this.ActiveWeapon = this.ToolDrillTitanium;
+            } else if(this.Owner.Inventory.CheckForItemMainHand(Relocation.ItemManager.GetIDByName("ItemDrillPlatinum"))) {
+                this.ActiveWeapon = this.ToolDrillPlatinum;
+            } else {
+                this.ActiveWeapon = this.WeaponHand;
+            }
+            
+            if(this.ActiveWeapon == this.WeaponHand) {
+                this.IsHoldingWeapon = false;
+            } else {
+                this.IsHoldingWeapon = true;
+            }
+            
+            // UPDATE ACTIVE WEAPON
+            this.ActiveWeapon.UpdateWeapon(event.Dt);
+            
+            if(!Relocation.InventoryOpen) {
+                if(this.ActiveWeapon.ItemName != "Hand" && this.IsHoldingWeapon) {
+                    this.Owner.FindChildByName("EntityHand").Sprite.Visible = true;
+                    this.Owner.FindChildByName("EntityHand").Sprite.SpriteSource = SpriteSource.Find(String.Concatenate("Weapon", this.ActiveWeapon.ItemName));
+                } else {
+                    var currID = this.Owner.Inventory.GetItemInMainHand();
+                    if(this.Owner.Inventory.GetItemInMainHand() != 0) {
+                        this.Owner.FindChildByName("EntityHand").Sprite.Visible = true;
+                        this.Owner.FindChildByName("EntityHand").Sprite.SpriteSource = Relocation.Items[currID].Sprite;
+                        if(Zero.Mouse.IsButtonDown(MouseButtons.Left) && !this.MouseClick) {
+                            Relocation.Items[currID].Update(event.Dt);
+                            this.MouseClick = true;
+                        } else if(!Zero.Mouse.IsButtonDown(MouseButtons.Left)) {
+                            this.MouseClick = false;
+                        }
+                    } else {
+                        this.Owner.FindChildByName("EntityHand").Sprite.Visible = false;
+                    }
+                }
+            }
+            
+        }
+        
+    }
+    
+}

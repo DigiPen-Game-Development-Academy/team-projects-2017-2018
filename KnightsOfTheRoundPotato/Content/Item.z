@@ -1,0 +1,83 @@
+//author Brandon Wolenetz
+
+enum ItemType {
+    Weapon,
+    Utility,
+    Ammo,
+    Consumable
+}
+
+class Item {
+    
+    var Type : ItemType = ItemType.Weapon;
+    
+    var Icon : SpriteSource;
+    
+    var HoldingSprite : SpriteSource;
+    
+    var GroundSprite : SpriteSource;
+    
+    var WakeSprite : Archetype = Archetype.Wake;
+    
+    var Stackable : Boolean = false;
+    
+    var Ammount : Integer = 1;
+    var StackSize : Integer = 100;
+    
+    var Name : String = "null";
+    
+    var FireRate : Real = 4;
+    
+    var MagSize : Integer = 20;
+    var CurrentMag : Integer = 0;
+    var Reloading : Boolean = false;
+    
+    var MaxRange : Real = 10;
+    
+    var RelodTime : Real = 3;
+    
+    var DamagePer : Real = 1;
+    
+    var Timer : Real = 0;
+    
+    var AmmoPerShot : Integer = 1;
+    
+    var Sound : SoundCue;
+    
+    var SoundDistance : Real = 10;
+    
+    var ID : String = "NULLITEM";
+    
+    var Auto : Boolean = true;
+    
+    //defines how random (inaccurate) the shots are
+    var RandAngle : Real = 5;
+    
+    [Virtual]
+    function Init () {
+        Console.WriteLine("`this.Name` Will Not Initialize Properly!");
+        Utilities.ConsoleSend("`this.Name` Will Not Initialize Properly!", Real4(1));
+    }
+    
+    [Virtual]
+    function ReturnLore () : String {
+        return "";
+    }
+    
+    [Virtual]
+    function ReturnDeathMSG () : String {
+        return "You where defeated!";
+    }
+    
+    [Virtual]
+    function UseReleased () {
+        
+    }
+    
+    [Virtual]
+    function Use (radAngle : Real) {
+        Console.WriteLine("`this.Name` Does Not Do Anything!");
+        Utilities.ConsoleSend("`this.Name` Does Not Do Anything!", Real4(1));
+    }
+    
+}

@@ -1,0 +1,193 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class EntityRocket : ZilchComponent {
+    
+    [Property] var Rider : String = "EntityPlayer";
+    [Property] var VehicleSpeed : Real = 400;
+    [Property] var VehicleTurboSpeed : Real = 1000;
+    [Property] var Enabled : Boolean = true;
+    
+    var RiderDefaultSpeed : Real = 150;
+    var RiderDefaultRunSpeed : Real = 250;
+    
+    var IsRidingRover : Boolean = false;
+    
+    var Velocity : Real3 = Real3(0.0);
+    var HoverVelocity : Real3 = Real3(0.0);
+    
+    var HoverGravSwitchTime : Real = 0.5;
+    var CurrHoverGravSwitchTime : Real = 0.0;
+    
+    var LockVelocity : Boolean = false;
+    
+    var HasHiddenRocketFire : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.MouseUpdate, this.OnMouseUpdate);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnMouseUpdate(event : ViewportMouseEvent) {
+        
+        if(this.Enabled) {
+            
+            if(GameSetting.EnemyTooltip) {
+                
+                Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.ShowTooltip(true);
+                
+                if(Zero.Keyboard.KeyIsDown(Keys.Control)) {
+                    Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.TooltipText(
+                        "Big \"Rover\"",
+                        "HP: `this.Owner.Health.CurrentHealth` / `this.Owner.Health.MaxHealth`",
+                        Real4(0.0, 1.0, 0.0, 1.0),
+                        Real4(1.0, 0.0, 0.0, 1.0)
+                    );
+                } else {
+                    Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.TooltipText(
+                        "Big \"Rover\" (Ctrl)",
+                        "R to Enter",
+                        Real4(0.0, 1.0, 0.0, 1.0),
+                        Real4(1.0)
+                    );
+                }
+                
+            }
+            
+            if(Zero.Keyboard.KeyIsReleased(Keys.R) && !this.IsRidingRover) {
+                
+                var rider = this.Space.FindObjectByName(this.Rider);
+                
+                if(rider != null) {
+                    
+                    rider.Transform.WorldTranslation = Real3(this.Owner.Transform.WorldTranslation.XY, rider.Transform.WorldTranslation.Z);
+                    
+                    this.IsRidingRover = true;
+                    this.Owner.SoundObject.PlayCue(SoundCue.DefaultCue);
+                    
+                    /*if(rider.Movement != null) {
+                        this.RiderDefaultSpeed = rider.Movement.Speed;
+                        this.RiderDefaultRunSpeed = rider.Movement.RunSpeed;
+                        rider.Movement.Speed = this.VehicleSpeed;
+                        rider.Movement.RunSpeed = this.VehicleTurboSpeed;
+                    }*/
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    function OnMouseExit(event : ViewportMouseEvent) {
+        Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.ShowTooltip(false);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.IsRidingRover && this.Enabled) {
+            
+            this.Space.FindObjectByName(this.Rider).Transform.WorldTranslation = Real3(this.Owner.Transform.WorldTranslation.XY, 2.0);
+            
+            var rider = this.Space.FindObjectByName(this.Rider);
+            
+            if(rider != null) {
+                
+                if(rider.Sprite != null) {
+                    rider.Sprite.AnimationActive = false;
+                }
+                
+                if(rider.Movement != null) {
+                    
+                    var speed = this.VehicleSpeed;
+                    
+                    if(Zero.Keyboard.KeyIsDown(Keys.Shift) || this.LockVelocity) {
+                        this.LockVelocity = true;
+                        speed = this.VehicleTurboSpeed;
+                        this.Owner.SoundEmitter.PlayCue(SoundCue.Damage);
+                        this.Owner.Transform.Rotation = Quaternion(0, 0, 1, 1);
+                        
+                        this.Velocity = Real3(0.0, 1.0 * event.Dt * speed, 0.0);
+                    } else {
+                        this.Velocity = Math.Lerp(this.Velocity, Real3(0.0, 0.0, 0.0), event.Dt * 2);
+                    }
+                    
+                    if(Zero.Keyboard.KeyIsDown(Keys.W) && Zero.Keyboard.KeyIsDown(Keys.D)) {
+                        
+                        this.Owner.Transform.Rotation = Quaternion(0, 0, 0.5, 1);
+                        
+                        this.Velocity = Real3(1.0 * event.Dt * speed, 1.0 * event.Dt * speed, 0.0);
+                        
+                    } else if(Zero.Keyboard.KeyIsDown(Keys.W) && Zero.Keyboard.KeyIsDown(Keys.A)) {
+                        
+                        this.Owner.Transform.Rotation = Quaternion(0, 0, -6.05, -3);
+                        
+                        this.Velocity = Real3(-1.0 * event.Dt * speed, 1.0 * event.Dt * speed, 0.0);
+                        
+                    } else if(Zero.Keyboard.KeyIsDown(Keys.W)) {
+                        
+                        this.Owner.Transform.Rotation = Quaternion(0, 0, 1, 1);
+                        
+                        this.Velocity = Real3(0.0, 1.0 * event.Dt * speed, 0.0);
+                        
+                    } else if(Zero.Keyboard.KeyIsDown(Keys.S)) {
+                        
+                        this.Owner.Transform.Rotation = Quaternion(0, 0, 1, 1);
+                        
+                        this.Velocity = Real3(0.0, -1.0 * event.Dt * speed, 0.0);
+                        
+                    } else if(!Zero.Keyboard.KeyIsDown(Keys.Shift)) {
+                        this.Velocity = Math.Lerp(this.Velocity, Real3(0.0, 0.0, 0.0), event.Dt * 2);
+                    }
+                    
+                    this.Owner.RigidBody.Velocity = this.Velocity;
+                    
+                }
+                
+                rider.FindChildByName("Camera").Camera.Size = 35;
+                
+            }
+            
+            // GO TO DEFAULT SPEED
+            if(Zero.Keyboard.KeyIsPressed(Keys.R)) {
+                
+                /*if(rider != null && rider.Movement != null) {
+                    rider.Movement.Speed = this.RiderDefaultSpeed;
+                    rider.Movement.RunSpeed = this.RiderDefaultRunSpeed;
+                }*/
+                
+                rider.FindChildByName("Camera").Camera.Size = 8;
+                
+                this.Space.FindObjectByName(this.Rider).Transform.WorldTranslation = Real3(this.Owner.Transform.WorldTranslation.XY, 0.0);
+                
+                this.IsRidingRover = false;
+                
+            }
+            
+        } else if(this.Enabled) {
+            
+            this.Owner.SoundEmitter.Stop();
+            
+            // HOVER ANIMATION
+            
+            if(this.CurrHoverGravSwitchTime < this.HoverGravSwitchTime) {
+                this.CurrHoverGravSwitchTime += event.Dt;
+            } else {
+                this.CurrHoverGravSwitchTime = -this.HoverGravSwitchTime;
+            }
+            
+            this.HoverVelocity = Math.Sin(Real3(this.Owner.RigidBody.Velocity.X, this.CurrHoverGravSwitchTime, 0.0));
+            
+            this.Owner.RigidBody.Velocity = this.HoverVelocity;
+            
+        } else if(!this.HasHiddenRocketFire) {
+            foreach(var obj in this.Owner.FindAllChildrenByName("ParticleEngine"))
+                obj.SphericalParticleEmitter.Active = false;
+            this.HasHiddenRocketFire = true;
+        }
+        
+    }
+    
+}

@@ -1,0 +1,96 @@
+//Author Brandon Wolenetz
+
+class CreateUI : ZilchComponent {
+    
+    [Property]
+    var UILevel : Level = null;
+    
+    [Property]
+    var DialogLevel : Level = null;
+    
+    [Property]
+    var MouseLevel : Level = null;
+    
+    [Property]
+    var MusicLevel : Level = null;
+    
+    var UISpace : Space = null;
+    
+    function Initialize(init : CogInitializer) {
+        
+        GlobalVariables.GameSpace = this.Space;
+        
+        Zero.Connect(this.Space, Events.LevelStarted, this.OnLevelStarted);
+        
+        SaveLoad.LoadSettings();
+        
+    }
+
+    function OnLevelStarted(event : GameEvent) {
+        if( (this.UILevel == null || event.LevelName != this.UILevel.Name) && 
+            (this.DialogLevel == null || event.LevelName != this.DialogLevel.Name) &&
+            (this.MouseLevel == null || event.LevelName != this.MouseLevel.Name)) {
+            
+            if(this.UILevel != null) {
+                if(this.GameSession.FindSpaceByName("UI") != null) {
+                    this.GameSession.FindSpaceByName("UI").Destroy();
+                }
+                
+                this.UISpace = this.GameSession.CreateNamedSpace("UI", Archetype.UISpace);
+                
+                this.UISpace.LoadLevel(this.UILevel);
+            }
+            
+            if(this.DialogLevel != null) {
+                if(this.GameSession.FindSpaceByName("Dialog") != null) {
+                    this.GameSession.FindSpaceByName("Dialog").Destroy();
+                }
+                
+                this.UISpace = this.GameSession.CreateNamedSpace("Dialog", Archetype.UISpace);
+                
+                this.UISpace.LoadLevel(this.DialogLevel);
+            }
+            
+            if(this.DialogLevel != null) {
+                if(this.GameSession.FindSpaceByName("Mouse") != null) {
+                    this.GameSession.FindSpaceByName("Mouse").Destroy();
+                }
+                
+                this.UISpace = this.GameSession.CreateNamedSpace("Mouse", Archetype.UISpace);
+                
+                this.UISpace.LoadLevel(this.MouseLevel);
+                
+                if(this.GameSession.FindSpaceByName("SFX") != null) {
+                    this.GameSession.FindSpaceByName("SFX").Destroy();
+                }
+                
+                this.UISpace = this.GameSession.CreateNamedSpace("SFX", Archetype.UISpace);
+                
+                this.UISpace.LoadLevel(Level.SFX);
+                
+                GlobalVariables.SFXSpace = this.UISpace;
+                
+                
+                
+            }
+            
+            //create music space if music space is null
+            if (this.MusicLevel != null) {
+                
+                if(MusicUtils.MusicSpace == null) {
+                    
+                    //Console.WriteLine("Creating music space");
+                    
+                    MusicUtils.MusicSpace = this.GameSession.CreateNamedSpace("Music", Archetype.UISpace);
+                    
+                    MusicUtils.MusicSpace.LoadLevel(this.MusicLevel);
+                    
+                    MusicUtils.MusicSoundSpace = MusicUtils.MusicSpace.SoundSpace;
+                    
+                    MusicUtils.MusicController = MusicUtils.MusicSpace.LevelSettings.MusicController;
+                    
+                }
+            }
+        }
+    }
+}

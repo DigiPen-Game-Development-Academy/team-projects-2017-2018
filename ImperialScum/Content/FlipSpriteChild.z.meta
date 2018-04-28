@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "FlipSpriteChild",
+		uint64 ResourceId = 5aba8aa974739190,
+	},
+},

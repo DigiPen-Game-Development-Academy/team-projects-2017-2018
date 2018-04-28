@@ -1,0 +1,9 @@
+DataContent = 
+{
+	RichAnimationBuilder = 
+	{
+		string Name = "CBAnimation",
+		uint64 ResourceId = 5a681ecb88d2eb20,
+		string PreviewArchetype = "",
+	},
+},

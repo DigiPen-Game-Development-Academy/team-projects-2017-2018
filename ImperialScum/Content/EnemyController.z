@@ -1,0 +1,100 @@
+//Jacob Burke
+
+//Enemy Controller (for the enemy crab)
+
+class EnemyController : ZilchComponent
+{
+    var Active:Boolean = false;
+    
+    var LosingPlayer:Boolean = false;
+    
+    var TimerTillNotFollow:Real = 3;
+    
+    var Jump:Boolean = false;
+    
+    
+    var JumpTime:Real = 0;
+    
+    [Property]
+    var Speed:Integer = 3;
+    
+    var JumpSpeed:Integer = 10;
+    
+    var Timer:Integer = 20;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.SwordBoomerangMove != null || event.OtherObject.Spear != null)
+        {
+            this.Active = true;
+        }
+    }
+    
+    var Following : Real = 0;
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Active == true)
+        this.Following = 2;
+        else
+        this.Following -= event.Dt;
+        
+        if (this.Following <= 0)
+        return;
+        
+        var target = this.Space.FindObjectByName("Player");
+        
+        if(target == null)
+        return;
+        
+        if(target.Transform.WorldTranslation.X < this.Owner.Transform.WorldTranslation.X)
+        {
+            var velocity = this.Owner.RigidBody.Velocity;
+            
+            if (this.Timer == 1)
+            velocity.X = -this.Speed;
+            
+            this.Owner.RigidBody.Velocity = velocity;
+        }
+        else if(target.Transform.WorldTranslation.X > this.Owner.Transform.WorldTranslation.X)
+        {
+            var velocity = this.Owner.RigidBody.Velocity;
+            
+            if (this.Timer == 1)
+            velocity.X = this.Speed;
+            
+            this.Owner.RigidBody.Velocity= velocity;
+        }
+        
+        
+        if(this.Jump == true && this.Active == true && this.JumpTime <= 0)
+        {
+                this.Jump = false;
+                var velocity = this.Owner.RigidBody.Velocity;
+                
+                velocity.Y += this.JumpSpeed;
+                this.Owner.RigidBody.Velocity = velocity;
+                
+                this.JumpTime += 1;
+        }
+        
+        if(this.JumpTime > 0)
+        {
+            this.JumpTime -= event.Dt;
+        }
+
+        //Sam's CRAYZY TIMER
+        this.Timer -= 1;
+        
+        if (this.Timer == 0)
+        {
+            this.Timer = 30;
+        }
+    }
+
+}

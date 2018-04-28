@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "LagControl",
+		uint64 ResourceId = 5a052f1909a5ee2f,
+	},
+},

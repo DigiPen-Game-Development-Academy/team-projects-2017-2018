@@ -1,0 +1,70 @@
+class PlayerHealth : ZilchComponent {
+    [Dependency]
+    var Health : Health;
+    
+    [Property] var OnMainLevel : Boolean = true;
+    [Property] var MainLevel : Level = Level.Mainworld;
+    
+    var Dialog : Cog = null;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.NoHealth, this.OnNoHealth);
+    }
+    
+    function OnDialogEnded(event : DialogEnded) {
+        
+        if (event.Type == DialogReturn.YES) {
+            
+            GlobalVariables.Enemies.Clear();
+            GlobalVariables.Chests.Clear();
+            GlobalVariables.GroundItems.Clear();
+            for(var i = 0; i < GlobalVariables.Items.Count; ++i) {
+                GlobalVariables.Items[i] = null;
+            }
+            GlobalVariables.Save.Destroy();
+            GlobalVariables.Save = null;
+            
+            if (this.OnMainLevel) {
+                
+                this.Space.ReloadLevel();
+                
+            } else {
+                
+                this.Space.LoadLevel(this.MainLevel);
+                
+            }
+            
+        } else {
+            
+            var uiSpace = this.GameSession.FindSpaceByName("UI");
+            
+            if(uiSpace != null) {
+                uiSpace.Destroy();
+            }
+            
+            GlobalVariables.GameSpace.LoadLevel(Level.MainMenu);
+            GlobalVariables.GameSpace.TimeSpace.Paused = false;
+            
+            Zero.Mouse.Trapped = false;
+        }
+        
+        Zero.Disconnect(this.Owner, Events.DialogEnded, this.Dialog);
+        
+    }
+
+    function OnNoHealth(event : NoHealth) {
+        
+        GlobalVariables.DeathMSG = event.DeathMSG;
+        if(event.DeathMSG == null) {
+            GlobalVariables.DeathMSG = "You Were Defeated!";
+        }
+        
+        //open dialog box and wait for confirmation
+        var dialog = Utilities.Dialog("`GlobalVariables.DeathMSG`\nContinue from last save?", DialogTypes.YESNO, 15);
+        if(dialog != null) {
+            this.Dialog = dialog;
+            Zero.Connect(this.Dialog, Events.DialogEnded, this.OnDialogEnded);
+            MusicUtils.MusicSoundSpace.StopAllSounds();
+        }
+    }
+}

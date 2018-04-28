@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "LeftClick()",
+		uint64 ResourceId = 5a749947adc1ead0,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 32,
+		uint FrameSizeY = 32,
+		uint FrameCount = 2,
+		float FrameDelay = 0.333333343,
+		float OriginX = 16,
+		float OriginY = 16,
+		float PixelsPerUnit = 16,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

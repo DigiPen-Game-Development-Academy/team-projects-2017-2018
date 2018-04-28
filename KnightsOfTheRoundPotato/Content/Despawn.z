@@ -1,0 +1,19 @@
+class Despawn : ZilchComponent {
+    [Property] var Timer : Real = 1;
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        this.Timer -= event.Dt;
+        if(this.Timer <= 0) {
+            if(this.Owner.Sprite != null && this.Owner.Sprite.AnimationActive) {
+                if(this.Owner.Sprite.CurrentFrame == this.Owner.Sprite.SpriteSource.FrameCount-1) {
+                    this.Owner.Destroy();
+                }
+            } else {
+                this.Owner.Destroy();
+            }
+        }
+    }
+}

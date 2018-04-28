@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "BitFlame_Player_HurtEffect_Animated",
+		uint64 ResourceId = 5a4b4a0688ae2287,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 32,
+		uint FrameSizeY = 32,
+		uint FrameCount = 9,
+		float FrameDelay = 0.0416666679,
+		float OriginX = 16,
+		float OriginY = 16,
+		float PixelsPerUnit = 32,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

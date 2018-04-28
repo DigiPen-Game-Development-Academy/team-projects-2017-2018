@@ -1,0 +1,137 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class UIAnimate : ZilchComponent {
+    
+    [Property] var AnimationEnabled : Boolean = true;
+    [Property] var AnimationType : String = "FadeIn";
+    [Property] var AnimationSpeed : Real = 1.0;
+    [Property] var AnimationDelay : Real = 0.0;
+    [Property] var MultiAnimationDelay : Real = 0.5;
+    
+    var AnimationFunctionFinish : Boolean = false;
+    var AnimationFinished : Boolean = false;
+    
+    var CurrDelayTime : Real = 0.0;
+    var CurrMultiDelayTime : Real = 0.0;
+    
+    function Initialize(init : CogInitializer) {
+        
+        if(GameSetting.EnableUIAnimations) {
+            
+            if(this.AnimationType.ToLower() == "fadein") {
+                if(this.Owner.Sprite != null) {
+                    this.Owner.Sprite.Visible = false;
+                    this.Owner.Sprite.Color = Real4(this.Owner.Sprite.Color.XYZ, 0.0);
+                } else if(this.Owner.SpriteText != null) {
+                    this.Owner.SpriteText.Visible = false;
+                    this.Owner.SpriteText.Color = Real4(this.Owner.SpriteText.Color.XYZ, 0.0);
+                }
+            } else if(this.AnimationType.ToLower() == "fadeout") {
+                if(this.Owner.Sprite != null) {
+                    this.Owner.Sprite.Visible = true;
+                } else if(this.Owner.SpriteText != null) {
+                    this.Owner.SpriteText.Visible = true;
+                }
+            } else if(this.AnimationType.ToLower() == "fadeinout") {
+                if(this.Owner.Sprite != null) {
+                    this.Owner.Sprite.Visible = false;
+                    this.Owner.Sprite.Color = Real4(this.Owner.Sprite.Color.XYZ, 0.0);
+                } else if(this.Owner.SpriteText != null) {
+                    this.Owner.SpriteText.Visible = false;
+                    this.Owner.SpriteText.Color = Real4(this.Owner.SpriteText.Color.XYZ, 0.0);
+                }
+            }
+            
+            Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+            
+        }
+        
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.AnimationEnabled && GameSetting.EnableUIAnimations) {
+            
+            if(this.CurrDelayTime > this.AnimationDelay) {
+                
+                if(this.AnimationType.ToLower() == "fadein" && !this.AnimationFinished) {
+                    
+                    this.FadeIn(event.Dt, 1.0);
+                    
+                } else if(this.AnimationType.ToLower() == "fadeout" && !this.AnimationFinished) {
+                    
+                    this.FadeOut(event.Dt, 1.0);
+                    
+                } else if(this.AnimationType.ToLower() == "fadeinout") {
+                    
+                    if(!this.AnimationFunctionFinish) {
+                        this.FadeIn(event.Dt, 2.0);
+                        this.AnimationFinished = false;
+                    } else if(this.CurrMultiDelayTime > this.MultiAnimationDelay) {
+                        this.FadeOut(event.Dt, 2.0);
+                    } else {
+                        this.CurrMultiDelayTime += event.Dt;
+                    }
+                    
+                }
+                
+            } else {
+                this.CurrDelayTime += event.Dt;
+            }
+            
+        }
+        
+    }
+    
+    function FadeIn(dt : Real, speedMultiplier : Real) {
+        
+        if(GameSetting.EnableUIAnimations) {
+            if(this.Owner.Sprite != null) {
+                this.Owner.Sprite.Visible = true;
+                this.Owner.Sprite.Color = Real4(this.Owner.Sprite.Color.XYZ, this.Owner.Sprite.Color.W + dt * (this.AnimationSpeed * speedMultiplier));
+                if(this.Owner.Sprite.Color.W >= 1.0) {
+                    this.AnimationFinished = true;
+                    this.AnimationFunctionFinish = true;
+                    this.Owner.Sprite.Color = Real4(this.Owner.Sprite.Color.XYZ, 1.0);
+                }
+            } else if(this.Owner.SpriteText != null) {
+                this.Owner.SpriteText.Visible = true;
+                this.Owner.SpriteText.Color = Real4(this.Owner.SpriteText.Color.XYZ, this.Owner.SpriteText.Color.W + dt * (this.AnimationSpeed * speedMultiplier));
+                if(this.Owner.SpriteText.Color.W >= 1.0) {
+                    this.AnimationFinished = true;
+                    this.AnimationFunctionFinish = true;
+                    this.Owner.SpriteText.Color = Real4(this.Owner.SpriteText.Color.XYZ, 1.0);
+                }
+            }
+        }
+        
+    }
+    
+    function FadeOut(dt : Real, speedMultiplier : Real) {
+        
+        if(GameSetting.EnableUIAnimations) {
+            if(this.Owner.Sprite != null) {
+                this.Owner.Sprite.Visible = true;
+                this.Owner.Sprite.Color = Real4(this.Owner.Sprite.Color.XYZ, this.Owner.Sprite.Color.W - dt * (this.AnimationSpeed * speedMultiplier));
+                if(this.Owner.Sprite.Color.W <= 0.0) {
+                    this.AnimationFinished = true;
+                    this.AnimationFunctionFinish = true;
+                    this.Owner.Sprite.Visible = false;
+                    this.Owner.Sprite.Color = Real4(this.Owner.Sprite.Color.XYZ, 0.0);
+                }
+            } else if(this.Owner.SpriteText != null) {
+                this.Owner.SpriteText.Visible = true;
+                this.Owner.SpriteText.Color = Real4(this.Owner.SpriteText.Color.XYZ, this.Owner.SpriteText.Color.W - dt * (this.AnimationSpeed * speedMultiplier));
+                if(this.Owner.SpriteText.Color.W <= 0.0) {
+                    this.AnimationFinished = true;
+                    this.AnimationFunctionFinish = true;
+                    this.Owner.SpriteText.Visible = false;
+                    this.Owner.SpriteText.Color = Real4(this.Owner.SpriteText.Color.XYZ, 0.0);
+                }
+            }
+        }
+        
+    }
+    
+}

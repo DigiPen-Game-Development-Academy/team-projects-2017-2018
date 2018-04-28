@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "Player_Upgrade_Logic",
+		uint64 ResourceId = 5a87a264f67e9729,
+	},
+},

@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "SKeyPrompt",
+		uint64 ResourceId = 5a109a7bbc777fc2,
+	},
+},

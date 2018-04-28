@@ -1,0 +1,12 @@
+/**
+Filename: PlayerUpgradeEvent.z
+Author: Jakob McFarland
+Contributors: NULL
+Last modified: 3/4/2018
+Brief: This script is the definition of the block update event
+******************************************/
+class PlayerUpgradeEvent : ZilchEvent
+{  
+    //player upgrade event
+    sends PlayerUpgradeEvent : ZilchEvent;   
+}

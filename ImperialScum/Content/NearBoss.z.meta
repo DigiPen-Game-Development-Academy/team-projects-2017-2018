@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "NearBoss",
+		uint64 ResourceId = 5a10debf260a893d,
+	},
+},

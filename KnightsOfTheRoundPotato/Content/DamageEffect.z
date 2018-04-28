@@ -1,0 +1,55 @@
+class DamageEffect : ZilchComponent {
+    
+    var FlashPercent : Real = 0.25;
+    var FlashSpeed : Real = 5;
+    
+    var FadeSpeed : Real = 2;
+    
+    var Timer : Real = 0;
+    
+    var LastHealth : Real = 100;
+    
+    function Initialize(init : CogInitializer) {
+        GlobalVariables.DamageEffect = this;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(GlobalVariables.Player.Health.Percent <= this.FlashPercent) {
+            
+            this.Timer += event.Dt;
+            this.Owner.Sprite.Color = Real4(this.Owner.Sprite.Color.XYZ, (Math.Sin(this.Timer * this.FlashSpeed)/2)+0.5);
+            
+            if(this.LastHealth > GlobalVariables.Player.Health.CurrentHealth) {
+                
+                this.Owner.Sprite.Color = Real4(this.Owner.Sprite.Color.XYZ, 1);
+                this.Timer = 0.5;
+                
+            }
+            
+            this.LastHealth = GlobalVariables.Player.Health.CurrentHealth;
+            
+        } else {
+            
+            this.Timer = 0;
+            this.Owner.Sprite.Color -= Real4(0, 0, 0, event.Dt * this.FadeSpeed);
+            if(this.Owner.Sprite.Color.W < 0) {
+                this.Owner.Sprite.Color = Real4(this.Owner.Sprite.Color.XYZ, 0);
+            }
+            
+            if(this.LastHealth > GlobalVariables.Player.Health.CurrentHealth) {
+                
+                this.Owner.Sprite.Color = Real4(this.Owner.Sprite.Color.XYZ, 1);
+                
+            }
+            
+            this.LastHealth = GlobalVariables.Player.Health.CurrentHealth;
+            
+        }
+        
+    }
+    
+    
+    
+}

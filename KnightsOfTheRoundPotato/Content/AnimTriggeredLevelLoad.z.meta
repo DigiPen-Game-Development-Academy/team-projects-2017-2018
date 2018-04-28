@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "AnimTriggeredLevelLoad",
+		uint64 ResourceId = 5a7e76ff84146e5c,
+	},
+},

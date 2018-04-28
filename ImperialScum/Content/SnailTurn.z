@@ -1,0 +1,28 @@
+//Jacob Burke
+
+//Changes the Ballista Snail's direction when he hits a wall
+
+class SnailTurn : ZilchComponent
+{
+    [Property]
+    var Direction:Boolean;
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionPersisted);
+    }
+
+    function OnCollisionPersisted(event : CollisionEvent)
+    {
+        if(event.OtherObject.Name == ("DefaultTile") || event.OtherObject.EnemyController != null)
+        {
+            this.Owner.Parent.BallistaSnail.Direction = this.Direction;
+        
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "DynamicLight2D",
+		uint64 ResourceId = 5a1a81e064624e42,
+	},
+},

@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "UpgradePathLogic",
+		uint64 ResourceId = 5af8faf26fbc00e0,
+	},
+},

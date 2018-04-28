@@ -1,0 +1,17 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class Credits : ZilchComponent {
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(Zero.Keyboard.KeyIsPressed(Keys.Escape) || Zero.Mouse.IsButtonDown(MouseButtons.Left))
+            this.Space.LoadLevel(Level.MainMenu);
+        
+    }
+    
+}

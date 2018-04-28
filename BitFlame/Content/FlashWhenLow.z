@@ -1,0 +1,51 @@
+class FlashWhenLow : ZilchComponent
+{
+    [Property] var FlashNumber : Real = 0.0;
+    
+    [Property] var FlashColor : Real4 = Real4.Zero;
+    
+    [Property] var FlashTime : Real = 0.0;
+    
+    var DefaultColor : Real4 = Real4.Zero;
+    
+    var Flash : Boolean = false;
+    
+    var Timer : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.DefaultColor = this.Owner.Sprite.Color;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Owner.OxygenGauge.CurrentOxygen <= this.FlashNumber)
+        {
+            if(this.Timer >= this.FlashTime)
+            {
+                this.Timer = 0.0;
+                
+                this.Flash = !this.Flash;
+            }
+            else
+            {
+                this.Timer += event.Dt;
+            }
+            
+            if(this.Flash)
+            {
+                this.Owner.Sprite.Color = this.DefaultColor;
+            }
+            else
+            {
+                this.Owner.Sprite.Color = this.FlashColor;
+            }
+        }
+        else
+        {
+            this.Owner.Sprite.Color = this.DefaultColor;
+        }
+    }
+}

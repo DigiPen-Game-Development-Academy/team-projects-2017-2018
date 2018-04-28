@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "AnimSpritesDir",
+		uint64 ResourceId = 5a3dd00300e2070c,
+	},
+},

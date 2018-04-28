@@ -1,0 +1,78 @@
+enum Pos {
+    Top,
+    Topleft,
+    Left,
+    Bottomleft,
+    Bottom,
+    Bottomright,
+    Right,
+    Topright,
+}
+class ScreenAlign : ZilchComponent {
+    [Dependency] var Area : Area;
+    [Property] var Pos : Pos;
+    [Property] var Offset : Real3;
+    [Property] var RelOffset : Real2;
+    var Viewport : CameraViewport;
+    var ScreenSize : Real2;
+    function Initialize(init : CogInitializer) {
+        this.Viewport = this.LevelSettings.CameraViewport;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    var Off : Real3 {
+        get {
+            var oX = this.Area.Size.X + this.RelOffset.X;
+            var oY = this.Area.Size.Y + this.RelOffset.Y;
+            
+            if(this.Pos == Pos.Topright || this.Pos == Pos.Right || this.Pos == Pos.Bottomright) {
+                oX = -oX;
+            }
+            
+            if(this.Pos == Pos.Topleft || this.Pos == Pos.Top || this.Pos == Pos.Topright) {
+                oY = -oY;
+            }
+            
+            if(this.Pos == Pos.Top || this.Pos == Pos.Bottom) {
+                oX = 0;
+            }
+            
+            if(this.Pos == Pos.Left || this.Pos == Pos.Right) {
+                oY = 0;
+            }
+            
+            return Real3(oX/2, oY/2, 0) + this.Offset;
+            
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        var viewportSize = this.Viewport.ViewportResolution;
+        this.ScreenSize = this.Viewport.ViewportResolution;
+        var transform = this.Owner.Transform;
+        var pos = Real2(0);
+        
+        if(this.Pos == Pos.Top) {
+            pos = Real2(this.ScreenSize.X/2, 0);
+        } else if(this.Pos == Pos.Topleft) {
+            pos = Real2(0, 0);
+        } else if(this.Pos == Pos.Left) {
+            pos = Real2(0, this.ScreenSize.Y/2);
+        } else if(this.Pos == Pos.Bottomleft) {
+            pos = Real2(0, this.ScreenSize.Y);
+        } else if(this.Pos == Pos.Bottom) {
+            pos = Real2(this.ScreenSize.X/2, this.ScreenSize.Y);
+        } else if(this.Pos == Pos.Bottomright) {
+            pos = Real2(this.ScreenSize.X, this.ScreenSize.Y);
+        } else if(this.Pos == Pos.Right) {
+            pos = Real2(this.ScreenSize.X, this.ScreenSize.Y/2);
+        } else if(this.Pos == Pos.Topright) {
+            pos = Real2(this.ScreenSize.X, 0);
+        }
+        
+        pos = this.Viewport.ViewportToScreen(pos);
+        
+        transform.WorldTranslation = this.Viewport.ScreenToWorldZPlane(pos, this.Owner.Transform.WorldTranslation.Z) + this.Off;
+        
+    }
+}

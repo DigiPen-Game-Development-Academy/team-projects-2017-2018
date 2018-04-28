@@ -1,0 +1,23 @@
+//Jacob Burke
+
+//Goes on the enemy crab "Jump Sensors" and will tell the crab when to jump
+class EnemyJump : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionPersisted);
+    }
+
+    function OnCollisionPersisted(event : CollisionEvent)
+    {
+        if(event.OtherObject.Name == ("DefaultTile"))
+        {
+        this.Owner.Parent.EnemyController.Jump = true;
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

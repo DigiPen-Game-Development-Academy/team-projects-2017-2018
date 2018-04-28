@@ -1,0 +1,11 @@
+DataContent = 
+{
+	DataBuilder = 
+	{
+		string Name = "BonusLevelText",
+		uint64 ResourceId = 5ac4a098aa655574,
+		string LoaderType = "SpriteLayerOrder",
+		uint Version = 0,
+		bool ShowInEditor = true,
+	},
+},

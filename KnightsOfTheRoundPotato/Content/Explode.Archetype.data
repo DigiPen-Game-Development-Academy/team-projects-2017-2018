@@ -1,0 +1,84 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Explode",
+	},
+	Archetyped = 
+	{
+		string Name = "5ac6cba6cfca8846:Explode",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [-18.2667236, 28.1309586, -0.900001526],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	SpriteParticleSystem = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		SystemChildMode ChildMode = Independent,
+		SystemSpace SystemSpace = WorldSpace,
+		uint DrawOrder = 0,
+		Vec4 Tint = [1, 1, 1, 1],
+		float WarmUpTime = 0,
+		ParticleGeometry GeometryMode = Billboarded,
+		ParticleRenderMode RenderMode = Blended,
+		ParticleSortMode SortMode = Youngest,
+		ParticleAnimation ParticleAnimation = Single,
+		string Texture = "5274db4c2e7c11f9:Circle",
+		float VelocityScale = 1,
+		float LengthScale = 1,
+		float MaxParticleSize = 100,
+		Vec3 SystemSize = [4, 4, 4],
+	},
+	SphericalParticleEmitter = 
+	{
+		bool Active = true,
+		uint EmitCount = 50,
+		float EmitRate = 1000,
+		float EmitVariance = 0,
+		float Size = 0.5,
+		float SizeVariance = 0.25,
+		float Lifetime = 0.899999976,
+		float LifetimeVariance = 0.200000003,
+		float Spin = 0,
+		float SpinVariance = 50,
+		bool RandomSpin = true,
+		float Fill = 1,
+		float EmitterVelocityPercent = 0,
+		Vec3 StartVelocity = [0, 0, 0],
+		Vec3 RandomVelocity = [5, 5, 2],
+		Vec3 TangentVelocity = [0, 0, 0],
+		Vec3 EmitterSize = [0, 0, 0],
+		bool FastMovingEmitter = false,
+	},
+	LinearParticleAnimator = 
+	{
+		Vec3 Force = [0, 0, 0],
+		Vec3 RandomForce = [0, 0, 0],
+		float Torque = 0,
+		float Growth = 0.25,
+		float Dampening = 5,
+		Vec3 Twist = [0, 0, 0],
+	},
+	ParticleColorAnimator = 
+	{
+		Vec4 Color0 = [0.9799999, 1, 0, 0.999899983],
+		Vec4 Color1 = [1, 0.509999871, 0, 0.705000043],
+		Vec4 Color2 = [0.295000017, 0.295000017, 0.295000017, 0.350000024],
+		Vec4 Color3 = [0.379999995, 0.379999995, 0.379999995, 0.125],
+		Vec4 Color4 = [0.544999957, 0.544999957, 0.544999957, 0],
+	},
+	Despawn = 
+	{
+		float Timer = 30,
+	},
+},

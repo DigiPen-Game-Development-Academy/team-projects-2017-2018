@@ -1,0 +1,110 @@
+class Shield : ZilchComponent {
+    
+    [Property] var TurnSpeed : Real = 2.5;
+    [Property] var FlashSpeed : Real = 5;
+    [Property] var Shoot : Boolean = true;
+    
+    var RayShooting : EnemyRayShooting;
+    
+    var Timer : Real = 0;
+    
+    var ReloadTime : Real = 0;
+    
+    var FlashTimer : Real = 0;
+    
+    var Shooting : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        if(this.Shoot) {
+            this.RayShooting = this.Owner.Parent.EnemyRayShooting;
+            this.ReloadTime = this.RayShooting.ReloadTime;
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.Owner.Parent.BasicPathFollowAI != null && !this.Owner.Parent.BasicPathFollowAI.Active) {
+            return;
+        }
+        
+        var tDir = Real3(0);
+        
+        if(this.Owner.Parent.EnemyAI.State == State.Spotted) {
+            tDir = GlobalVariables.Player.Transform.WorldTranslation - this.Owner.Transform.WorldTranslation;
+        } else {
+            tDir = this.Owner.Parent.EnemyAI.ViewDirection;
+        }
+        
+        var tAngle = Math.ATan2(tDir.Y, tDir.X);
+        
+        var angle = this.Owner.Transform.EulerAngles.Z;
+        
+        var a = Math.ATan2(Math.Sin(tAngle-angle), Math.Cos(tAngle-angle));
+        if(Math.ToDegrees(a) > 180)
+            a -= Math.ToRadians(360);
+        if(Math.ToDegrees(a) < -180)
+            a += Math.ToRadians(360);
+        //Console.WriteLine(Math.ToDegrees(a));
+        if(Math.Abs(a - angle) < this.TurnSpeed*event.Dt)
+            angle = tAngle;
+        else if(a > 0) {
+            angle += this.TurnSpeed*event.Dt;
+        } else {
+            angle += -this.TurnSpeed*event.Dt;
+        }
+        
+        
+        this.Owner.Transform.SetEulerAnglesXYZ(0,0,angle);
+        
+        //shooting
+        
+        if(!this.Shoot)
+            return;
+        
+        if(this.Owner.Parent.EnemyAI.State != State.Spotted) {
+            this.Timer = this.ReloadTime;
+            this.Owner.FindChildByName("Blocker").Sprite.Color = Real4(this.Owner.FindChildByName("Blocker").Sprite.Color.XYZ, 1);
+            this.Owner.FindChildByName("Blocker").BoxCollider.Ghost = false;
+            this.FlashTimer = 0;
+            return;
+        }
+        
+        if(this.Timer <= this.ReloadTime*0.25) {
+            
+            this.FlashTimer += event.Dt;
+            this.Owner.FindChildByName("Blocker").Sprite.Color = Real4(this.Owner.FindChildByName("Blocker").Sprite.Color.XYZ, (Math.Sin(this.FlashTimer*this.FlashSpeed)+1)/2);
+            
+        } else {
+            this.Owner.FindChildByName("Blocker").Sprite.Color = Real4(this.Owner.FindChildByName("Blocker").Sprite.Color.XYZ, 1);
+            
+            this.FlashTimer = 0;
+        }
+        
+        if(this.Timer <= 0) {
+            this.Owner.FindChildByName("Blocker").Sprite.Color = Real4(this.Owner.FindChildByName("Blocker").Sprite.Color.XYZ, 0);
+            this.Owner.FindChildByName("Blocker").BoxCollider.Ghost = true;
+            
+            if(!this.Shooting) {
+                this.Shooting = true;
+                this.RayShooting.Reloading = false;
+                this.RayShooting.CurrentMag = this.RayShooting.MagSize;
+            }
+            
+            if(this.RayShooting.CurrentMag <= 0) {
+                this.Shooting = false;
+                this.Timer = this.ReloadTime + 1;
+            }
+            
+        } else {
+            this.Owner.FindChildByName("Blocker").BoxCollider.Ghost = false;
+            
+            this.RayShooting.Reloading = true;
+            this.RayShooting.CurrentMag = 0;
+            
+            this.Timer -= event.Dt;
+            
+        }
+        Console.WriteLine(this.Timer);
+    }
+}

@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "Muted",
+		uint64 ResourceId = 5a6818c493ec1571,
+	},
+},

@@ -1,0 +1,41 @@
+//Jacob Burke
+
+//This will make the buttons change color when the mouse is over them
+
+class ButtonLogic : ZilchComponent
+{
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Owner, Events.LeftMouseDown, this.OnLeftMouseDown);
+        Zero.Connect(this.Owner, Events.LeftMouseUp, this.OnLeftMouseUp);
+    }
+
+    function OnLeftMouseUp(event : ViewportMouseEvent)
+    {
+        this.Owner.Transform.Scale = Real3(1.5,1.5,1.5);
+    }
+
+    function OnLeftMouseDown(event : ViewportMouseEvent)
+    {
+        this.Owner.Transform.Scale = Real3(2,2,2);
+    }
+
+    function OnMouseExit(event : ViewportMouseEvent)
+    {
+        this.Owner.Transform.Scale = Real3(1,1,1);
+    }
+
+    function OnMouseEnter(event : ViewportMouseEvent)
+    {
+        this.Owner.Transform.Scale = Real3(1.5,1.5,1.5);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

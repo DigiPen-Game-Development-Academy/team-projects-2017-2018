@@ -1,0 +1,35 @@
+//Author Brandon Wolenetz
+
+class TriggerObjective : ZilchComponent {
+    
+    [Property] var ObjectiveIndex : Integer = 0;
+    [Property] var Prompt : Boolean = true;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent) {
+        
+        if (event.OtherObject == GlobalVariables.Player) {
+            Utilities.SetQuest(this.ObjectiveIndex, this.Prompt);
+        }
+        
+    }
+}
+
+class Objective {
+    
+    [Static] var Quests : Array[String] = Array[String] () {
+        "this island is abundant with potatoes\n mabye i should pick one up as a weapon\n TAB or ESCAPE to access inventory.",
+        "This is a save point, save as much as possible.",
+        "This is a chest, collect resources here.",
+        "This is a enemy, sneak up and R.K.O. him from BEHIND\nRemember to be stealthy, dont run and make noise.",
+        "Unlike the other enemy this enemy is real, good luck!",
+        "explore the island to find boat parts nessesary for escape",
+        "Rebuild the bridge",
+        "Find more parts to fix your yacht",
+        "Return to your yacht to repair it!"
+    };
+    
+}

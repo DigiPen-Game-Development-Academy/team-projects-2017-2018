@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "CustomCursorScript",
+		uint64 ResourceId = 5a7f72a87162d224,
+	},
+},

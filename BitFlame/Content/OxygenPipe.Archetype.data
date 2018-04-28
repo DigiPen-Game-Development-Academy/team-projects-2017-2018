@@ -1,0 +1,151 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "OxygenPipe",
+	},
+	Archetyped = 
+	{
+		string Name = "5a62ce81be38d76e:OxygenPipe",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [10.3937092, 3.81507707, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 0.999899983],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5a908111afce96ff:Oxygen_Pipe_Block_Animation",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	RigidBody = 
+	{
+		bool Static = true,
+		bool Asleep = false,
+		bool Kinematic = false,
+		bool RotationLocked = false,
+		bool Mode2D = true,
+		bool AllowSleep = true,
+		bool Inherit2DMode = true,
+		Vec3 Velocity = [0, 0, 0],
+		Vec3 AngularVelocity = [0, 0, 0],
+	},
+	SphereCollider = 
+	{
+		bool Ghost = false,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+		string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+		Vec3 Offset = [0, 0, 0],
+		float Radius = 1,
+	},
+	OxygenPipe_Function = 
+	{
+		int ConnectingRange = 400,
+		bool Origin = false,
+		CogPath Ship = 
+		{
+			string Path = ":/Ship",
+			bool ErrorOnResolveToNull = false,
+			bool ErrorOnPathCantCompute = false,
+			bool ErrorOnDirectLinkFail = false,
+			bool UpdateCogOnPathChange = true,
+			bool UpdatePathOnCogChange = true,
+			bool UpdateCogOnInitialize = true,
+			bool ResolvedNullErrorOccurred = false,
+			uint ResolvedCog = 2,
+			CogPathPreference PathPreference0 = CogRelative,
+			CogPathPreference PathPreference1 = SpaceRelative,
+			CogPathPreference PathPreference2 = Absolute,
+		},
+		CogPath SafetyShield = 
+		{
+			string Path = ":/Ship/RespawnSafeShield",
+			bool ErrorOnResolveToNull = false,
+			bool ErrorOnPathCantCompute = false,
+			bool ErrorOnDirectLinkFail = false,
+			bool UpdateCogOnPathChange = true,
+			bool UpdatePathOnCogChange = true,
+			bool UpdateCogOnInitialize = true,
+			bool ResolvedNullErrorOccurred = false,
+			uint ResolvedCog = 3,
+			CogPathPreference PathPreference0 = CogRelative,
+			CogPathPreference PathPreference1 = SpaceRelative,
+			CogPathPreference PathPreference2 = Absolute,
+		},
+	},
+	Health = 
+	{
+		float Health = 5,
+		string ArchetypetoSpawnOnDeath1 = "5ae3d8a67e1466bb:Game_Pipe_Pickup",
+		string ArchetypetoSpawnOnDeath2 = "",
+		string ArchetypetoSpawnOnDeath3 = "",
+		string ExplosionSound = "",
+		bool Unbreakable = false,
+		bool Random3Drop = false,
+	},
+	Asteroid_Mining = 
+	{
+		string ArchetypetoSpawnOnDamage = "",
+		float DropAmount = 0,
+		float ShrinkAmount = 200,
+		string AluminiumSprite = "5ab82aff8f3ef818:Asteroid_TileMap_Ores000",
+		string CopperSprite = "5ab82aff8f353da5:Asteroid_TileMap_Ores002",
+		string IronSprite = "5ab82aff8f317c0c:Asteroid_TileMap_Ores004",
+		string TitaniumSprite = "5ab82aff8f33a0ea:Asteroid_TileMap_Ores005",
+		string AluminiumArchetype = "",
+		string CopperArchetype = "",
+		string IronArchetype = "",
+		string TitaniumArchetype = "",
+		float AluminiumProbability = 0,
+		float CopperProbability = 0,
+		float IronProbability = 0,
+		float TitaniumProbability = 0,
+		float EmptyProbability = 0,
+	},
+	Hierarchy = 
+	{
+		ArchetypeInstance = 
+		{
+			string Name = "5afe50e870042ebb:Oxygen_Field",
+			LinkId = 
+			{
+				uint Id = 4,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0, 0, 0],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Area = 
+			{
+				Vec2 Size = [10, 10],
+				Location Origin = Center,
+			},
+			Named = 
+			{
+				string Name = "Oxygen_Field",
+			},
+		},
+	},
+},

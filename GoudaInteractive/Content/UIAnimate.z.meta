@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "UIAnimate",
+		uint64 ResourceId = 5aca00c8eb7cab1a,
+	},
+},

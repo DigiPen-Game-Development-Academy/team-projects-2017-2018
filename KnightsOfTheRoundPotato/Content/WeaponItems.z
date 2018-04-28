@@ -1,0 +1,865 @@
+class Potato : Item {
+    
+    function Init () {
+        this.Type = ItemType.Weapon;
+        this.Icon = SpriteSource.Icon_Weapon_Potato;
+        this.GroundSprite = SpriteSource.Icon_Weapon_Potato;
+        this.Stackable = false;
+        this.MagSize = -1;
+        this.Name = " pointy Potato";
+        this.ID = "Potato";
+        this.DamagePer = 10;
+        this.FireRate = 2.5;
+        
+    }
+    
+    function ReturnDeathMSG() : String {
+        return "POTATO";
+    }
+    
+    function ReturnLore () : String {
+        var lore = Array[String]();
+        lore.Add("A generic frozen potato");
+        lore.Add("Ye olde potat");
+        lore.Add("The Irish dream");
+        lore.Add("The United States population consumes 1.5 billion pounds of potatoes per year");
+        lore.Add("The potatoe's allegiance is with you");
+        lore.Add("Legend says that four large lifeforms killed by a\npotato will reward the user with a legendary weapon");
+        lore.Add("Every year potatoes are gruesomely turned into fries,\nthis cruelty needs to stop. Support the no potato left behind movement");
+        lore.Add("The potato is a starchy, tuberous crop from the perennial nightshade\nSolanum tuberosum.\nPotato may be applied to both the plant and the edible tuber.");
+        lore.Add("Today potatoes are grown in all 50 states of the USA and in about 125\ncountries throughout the world.");
+        lore.Add("The potato is about 80 percent water and 20 percent solids.");
+        lore.Add("An 8 ounce baked or boiled potato has only about 100 calories.");
+        lore.Add("The average American eats about 124 pounds of potatoes per year while\nGermans eat about twice as much.");
+        lore.Add("The largest potato grown was 18 pounds and 4 ounces according to the\nGuinness Book of World Records. It was grown in England in 1795.");
+        lore.Add("In October 1995, the potato became the first\nvegetable to be grown in space.");
+        var rand = Random();
+        return lore[Math.Round(rand.Range(0, lore.Count-1)) as Integer];
+    }
+    
+    function Use (radAngle : Real) {
+        var dir = Real3(Math.Cos(radAngle), Math.Sin(radAngle), 0);
+        var res = Utilities.Raycast(GlobalVariables.Player.Transform.WorldTranslation, dir, GlobalVariables.GameSpace.PhysicsSpace, 1);
+        
+        if(res != null) {
+            Utilities.Damage(res.ObjectHit, this.DamagePer, this.ReturnDeathMSG());
+            if(res.ObjectHit.Health != null) {
+                if(res.ObjectHit.EnemyAI != null && (
+                        (res.ObjectHit.EnemyAI.State == State.Spotted && res.ObjectHit.EnemyAI.Timer > 0) || 
+                        (res.ObjectHit.EnemyAI.State != State.Suspitious && res.ObjectHit.EnemyAI.State != State.Spotted) || 
+                        (res.ObjectHit.EnemyAI.State == State.Suspitious && res.ObjectHit.EnemyAI.Timer > 0))) {
+                            
+                    GlobalVariables.Player.Transform.WorldTranslation += dir * (res.Distance);
+                    Utilities.SendSoundWeapon(5, res.ObjectHit.Transform.WorldTranslation);
+                    res.ObjectHit.DispatchEvent(Events.NoHealth, NoHealth());
+                    GlobalVariables.Player.PlayerMovment.Freeze(1);
+                    Utilities.MeleeFX(this.Icon, 15, -90, 45, 0.35, true);
+                    return;
+                }
+            }
+        }
+        
+        Utilities.MeleeFX(this.Icon, 15, -90, 45, 0.25, false);
+        
+    }
+    
+}
+// BOOMERANG     
+//
+class Boomerang : Item {
+    
+    var Boomerang : Cog;
+    
+    function Init () {
+        this.Type = ItemType.Weapon;
+        this.Icon = SpriteSource.Boomerang;
+        this.GroundSprite = SpriteSource.Boomerang;
+        this.Stackable = false;
+        this.MagSize = -1;
+        this.Name = "Boomerang";
+        this.ID = "Boomerang";
+        this.DamagePer = 25;
+        this.FireRate = -1;
+        this.SoundDistance = 1;
+    }
+    
+    function ReturnLore () : String {
+        var lore = Array[String]();
+        lore.Add("Kangaroo's worst fear");
+        lore.Add("The weapon from down under");
+        lore.Add("I don't remember what this is for but it will come back to me"); 
+        lore.Add("These things are dangerous!");
+        lore.Add("If you can dodge a boomerang, you can dodge a bullet");
+        lore.Add("An only childs game of catch");
+        lore.Add("Great for removing whale parasites");
+        var rand = Random();
+        return lore[Math.Round(rand.Range(0, lore.Count-1)) as Integer];
+    }
+    
+    function Use (radAngle : Real) {
+        if(this.Boomerang == null || this.Boomerang.BoomerangScript == null) {
+            this.Boomerang = GlobalVariables.GameSpace.CreateAtPosition(Archetype.Boomerang, GlobalVariables.Player.Transform.WorldTranslation);
+            this.Boomerang.BoomerangScript.StartDir = Real3(Math.Cos(radAngle), Math.Sin(radAngle), 0);
+            this.Boomerang.BoomerangScript.AngleDir = radAngle;
+            this.Boomerang.BoomerangScript.Damage = this.DamagePer;
+            this.Boomerang.RigidBody.Velocity = Real3(Math.Cos(radAngle), Math.Sin(radAngle), 0) * this.Boomerang.BoomerangScript.MovSpeed;
+            this.Boomerang.BoomerangScript.SoundDist = this.SoundDistance;
+            Utilities.SendSoundWeapon(this.SoundDistance);
+        }
+    }
+    
+}
+//PLASMA_PISTOL
+//
+class Plasma_Pistol : Item {
+    
+    function Init () {
+        this.Type = ItemType.Weapon;
+        this.Icon = SpriteSource.Icon_Weapon_Pistol;
+        this.GroundSprite = SpriteSource.Icon_Weapon_Pistol;
+        this.HoldingSprite = SpriteSource.Pistol_Overlay;
+        this.WakeSprite = Archetype.Wake;
+        this.Stackable = false;
+        this.MagSize = 15;
+        this.Name = "Plasma pistol";
+        this.ID = "Pistol";
+        this.DamagePer = 15;
+        this.FireRate = 8;
+        this.AmmoPerShot = 1;
+        this.RelodTime = 1;
+        this.Sound = SoundCue.Shot;
+        this.SoundDistance = 10;
+        this.MaxRange = 7;
+        this.Auto = false;
+    }
+    
+    function ReturnLore () : String {
+        var lore = Array[String]();
+        lore.Add("pew pew");
+        lore.Add("A peashooter of unknown origin");
+        var rand = Random();
+        return lore[Math.Round(rand.Range(0, lore.Count-1)) as Integer];
+    }
+    
+    function Use (radAngle : Real) {
+        //Console.WriteLine("Plasma Pistol");
+        
+        radAngle += Math.ToRadians(Random().Range(-this.RandAngle/2, this.RandAngle/2));
+        
+        var dir = Real3(Math.Cos(radAngle), Math.Sin(radAngle), 0);
+        var filter = CastFilter();
+        filter.CollisionGroup = CollisionGroup.PlayerBullet;
+        var res = Utilities.Raycast(GlobalVariables.Player.Transform.WorldTranslation, dir, GlobalVariables.GameSpace.PhysicsSpace, this.MaxRange, filter);
+        
+        if(res != null && !GlobalVariables.SloMo){
+            Utilities.Damage(res.ObjectHit, this.DamagePer, this.ReturnDeathMSG());
+            var wake = GlobalVariables.GameSpace.CreateAtPosition(this.WakeSprite, GlobalVariables.Player.Transform.WorldTranslation);
+            wake.Transform.EulerAngles = Real3(0,0,radAngle+ Math.ToRadians(-90));
+            wake.Transform.Scale = Real3(0.05, res.Distance, 0);
+            wake.Wake.DamagePer = this.DamagePer;
+        }else{
+            var wake = GlobalVariables.GameSpace.CreateAtPosition(this.WakeSprite, GlobalVariables.Player.Transform.WorldTranslation);
+            wake.Transform.EulerAngles = Real3(0,0,radAngle+ Math.ToRadians(-90));
+            wake.Transform.Scale = Real3(0.05, this.MaxRange, 0);
+            wake.Wake.DamagePer = this.DamagePer;
+        }
+        
+        Utilities.SendSoundWeapon(this.SoundDistance);
+        
+        Utilities.PlaySFX(this.Sound);
+        
+        Utilities.ScreenShake(3, 10);
+        
+    }
+    
+}
+
+
+//PLASMA SWORD
+//
+class PlasmaSword : Item {
+    
+    function Init () {
+        this.Type = ItemType.Weapon;
+        this.Icon = SpriteSource.FlareSaberAlpha;
+        this.GroundSprite = SpriteSource.FlareSaberAlpha;
+        this.Stackable = false;
+        this.MagSize = 10;
+        this.Name = "Plasma Sword";
+        this.ID = "Sword";
+        this.DamagePer = 25;
+        this.FireRate = 8;
+        this.AmmoPerShot = 3;
+        this.RelodTime = 2;
+        this.SoundDistance = 0;
+    }
+    
+    function ReturnLore () : String {
+        var lore = Array[String]();
+        lore.Add("Hi guys, Billy Mays here, this laser sword cuts potatoes easillly");
+        lore.Add("Slice and dice");
+        lore.Add("Legend has it, this very blade was wielded by the legendary Darth Potater");
+        var rand = Random();
+        return lore[Math.Round(rand.Range(0, lore.Count-1)) as Integer];
+    }
+    
+    function Use (radAngle : Real) {
+        var dir = Real3(Math.Cos(radAngle), Math.Sin(radAngle), 0);
+        var filter = CastFilter();
+        filter.CollisionGroup = CollisionGroup.PlayerBullet;
+        var res = Utilities.Raycast(GlobalVariables.Player.Transform.WorldTranslation, dir, GlobalVariables.GameSpace.PhysicsSpace, 2, filter);
+        
+        if(res != null) {
+            Utilities.Damage(res.ObjectHit, this.DamagePer, this.ReturnDeathMSG());
+            if(res.ObjectHit.Health != null) {
+                if(res.ObjectHit.EnemyAI != null && (
+                        (res.ObjectHit.EnemyAI.State == State.Spotted && res.ObjectHit.EnemyAI.Timer > 0) || 
+                        (res.ObjectHit.EnemyAI.State != State.Suspitious && res.ObjectHit.EnemyAI.State != State.Spotted) || 
+                        (res.ObjectHit.EnemyAI.State == State.Suspitious && res.ObjectHit.EnemyAI.Timer > 0))) {
+                            
+                    GlobalVariables.Player.Transform.WorldTranslation += dir * (res.Distance);
+                    Utilities.SendSoundWeapon(5, res.ObjectHit.Transform.WorldTranslation);
+                    res.ObjectHit.DispatchEvent(Events.NoHealth, NoHealth());
+                    GlobalVariables.Player.PlayerMovment.Freeze(1);
+                    Utilities.MeleeFX(this.Icon, 15, -135, 45, 0.35, true);
+                    return;
+                }
+            }
+        }
+        
+        Utilities.MeleeFX(this.Icon, 15, -90, 45, 0.25, false);
+        
+        Utilities.SendSoundWeapon(this.SoundDistance);
+    }
+}
+//TERRIBLE ASSAULT RIFLE 
+//
+class TerribleAssaultRifle : Item {
+    
+    function Init () {
+        this.Type = ItemType.Weapon;
+        this.Icon = SpriteSource.Icon_Weapon_TRifle;
+        this.GroundSprite = SpriteSource.Icon_Weapon_TRifle;
+        this.HoldingSprite = SpriteSource.TRifleHolding;
+        this.Stackable = false;
+        this.MagSize = 20;
+        this.Name = "Ramshackle Rifle";
+        this.ID = "Rifle";
+        this.DamagePer = 29;
+        this.FireRate = 8; 
+        this.AmmoPerShot = 1;
+        this.RelodTime = 3;
+        this.MaxRange = 12;
+        this.SoundDistance = 15;
+        this.Sound = SoundCue.Terribleas;
+    }
+    
+    function ReturnLore () : String {
+        var lore = Array[String]();
+        lore.Add("Not a very good assault rifle, but it will get the job done... probably");
+        var rand = Random();
+        return lore[Math.Round(rand.Range(0, lore.Count-1)) as Integer];
+    }
+    
+    function Use (radAngle : Real) {
+        //Console.WriteLine("weathered laser rifle");
+        
+        radAngle += Math.ToRadians(Random().Range(-this.RandAngle/2, this.RandAngle/2));
+        
+        var dir = Real3(Math.Cos(radAngle), Math.Sin(radAngle), 0);
+        
+        var filter = CastFilter();
+        filter.CollisionGroup = CollisionGroup.PlayerBullet;
+        var res = Utilities.Raycast(GlobalVariables.Player.Transform.WorldTranslation, dir, GlobalVariables.GameSpace.PhysicsSpace, this.MaxRange, filter);
+        
+        if(res != null && !GlobalVariables.SloMo){
+            Utilities.Damage(res.ObjectHit, this.DamagePer, this.ReturnDeathMSG());
+            var wake = GlobalVariables.GameSpace.CreateAtPosition(this.WakeSprite, GlobalVariables.Player.Transform.WorldTranslation);
+            wake.Transform.EulerAngles = Real3(0,0,radAngle+ Math.ToRadians(-90));
+            wake.Transform.Scale = Real3(0.05, res.Distance, 0);
+            wake.Wake.DamagePer = this.DamagePer;
+        }else{
+            var wake = GlobalVariables.GameSpace.CreateAtPosition(this.WakeSprite, GlobalVariables.Player.Transform.WorldTranslation);
+            wake.Transform.EulerAngles = Real3(0,0,radAngle+ Math.ToRadians(-90));
+            wake.Transform.Scale = Real3(0.05, this.MaxRange, 0);
+            wake.Wake.DamagePer = this.DamagePer;
+        }
+        
+        Utilities.SendSoundWeapon(this.SoundDistance);
+        
+        Utilities.ScreenShake(2, 10);
+        
+        Utilities.PlaySFX(this.Sound);
+    }
+    
+}
+//SLUG SHOT GUN 
+//
+class SlugShotgun : Item {
+    
+    function Init () {
+        this.Type = ItemType.Weapon;
+        this.Icon = SpriteSource.DrakshotAlpha;
+        this.GroundSprite = SpriteSource.DrakshotAlpha;
+        this.HoldingSprite = SpriteSource.ShotgunHold;
+        this.Stackable = false;
+        this.MagSize = 2;
+        this.Name = "Shotgun";
+        this.ID = "Shotgun";
+        this.DamagePer = 50;
+        this.FireRate = 4; 
+        this.AmmoPerShot = 4;
+        this.RelodTime = 5;
+        this.MaxRange = 3;
+        this.RandAngle = 20;
+        this.SoundDistance = 16;
+        this.Sound = SoundCue.Shotgun;
+    }
+    
+    function ReturnLore () : String {
+        var lore = Array[String]();
+        lore.Add("Texan bb gun");
+        lore.Add("A rather big laser");
+        lore.Add("This is my boom stick");
+        var rand = Random();
+        return lore[Math.Round(rand.Range(0, lore.Count-1)) as Integer];
+    }
+    
+    function Use (radAngle : Real) {
+        //Console.WriteLine("Shotgun");
+        for(var i = 0; i<4; ++i){
+            radAngle += Math.ToRadians(Random().Range(-this.RandAngle/2, this.RandAngle/2));
+            
+            var dir = Real3(Math.Cos(radAngle), Math.Sin(radAngle), 0);
+            
+            var filter = CastFilter();
+            filter.CollisionGroup = CollisionGroup.PlayerBullet;
+            var res = Utilities.Raycast(GlobalVariables.Player.Transform.WorldTranslation, dir, GlobalVariables.GameSpace.PhysicsSpace, this.MaxRange, filter);
+            
+            if(res != null && !GlobalVariables.SloMo){
+                Utilities.Damage(res.ObjectHit, this.DamagePer, this.ReturnDeathMSG());
+              
+                var wake = GlobalVariables.GameSpace.CreateAtPosition(this.WakeSprite, GlobalVariables.Player.Transform.WorldTranslation);
+                wake.Transform.EulerAngles = Real3(0,0,radAngle+ Math.ToRadians(-90));
+                wake.Transform.Scale = Real3(0.05, res.Distance, 0);
+                wake.Wake.DamagePer = this.DamagePer;
+                
+                
+            }else{
+                var wake = GlobalVariables.GameSpace.CreateAtPosition(this.WakeSprite, GlobalVariables.Player.Transform.WorldTranslation);
+                wake.Transform.EulerAngles = Real3(0,0,radAngle+ Math.ToRadians(-90));
+                wake.Transform.Scale = Real3(0.05, this.MaxRange, 0);
+                wake.Wake.DamagePer = this.DamagePer;
+            }
+        }
+        Utilities.SendSoundWeapon(this.SoundDistance);
+        
+        Utilities.ScreenShake(4, 10);
+        
+        Utilities.PlaySFX(this.Sound);
+    
+    }
+    
+}
+//LASER  BEAM 
+//
+class Laserbeam : Item {
+    
+    var Laser : Cog = null;
+    
+    function Init () {
+        this.Type = ItemType.Weapon;
+        this.Icon = SpriteSource.NovaBeam;
+        this.GroundSprite = SpriteSource.NovaBeam;
+        this.HoldingSprite = SpriteSource.BeamOverlayActuallyFixed;
+        this.Stackable = false;
+        //use mag size for ammount of seconds active before reload
+        this.MagSize = 10;
+        this.Name = "Laser Beam";
+        this.ID = "Laser_Beam";
+        this.DamagePer = 75;
+        this.FireRate = 3; 
+        this.AmmoPerShot = 3;
+        this.RelodTime = 5;
+        this.Auto = false;
+        this.SoundDistance = 12;
+    }
+    
+    function ReturnLore () : String {
+        var lore = Array[String]();
+        lore.Add("The 11 year old extraterrestrial's best friend");
+        lore.Add("Ima firin mah laser baaaaaaaa!");
+        lore.Add("Wow, it  really shoots");
+        var rand = Random();
+        return lore[Math.Round(rand.Range(0, lore.Count-1)) as Integer];
+    }
+    
+    function Use (radAngle : Real) {
+        this.Laser = GlobalVariables.GameSpace.CreateAtPosition(Archetype.BeamLaser, GlobalVariables.Player.Transform.WorldTranslation);
+        this.Laser.LazerNoArea.Damage = this.DamagePer;
+        this.Laser.LazerNoArea.DeathMSG = this.ReturnDeathMSG();
+        this.Laser.LazerNoArea.SoundRange = this.SoundDistance;
+        this.Laser.LazerNoArea.Range = this.MaxRange;
+    }
+    
+}
+//STUN M 
+//
+class StunMissile : Item {
+    
+    var Circle : Cog;
+    var ImpactRange : Real = 3;
+    var MoveSpd : Real = 3;
+    var ArcIntencity : Real = 0.75;
+    var ExpSoundDist : Real = 10;
+    var ImpactSpd : Real = 4;
+    var StunTime : Real = 4;
+    
+    function Init () {
+        this.Type = ItemType.Weapon;
+        this.Icon = SpriteSource.Weapon_Stun_Launcher;
+        this.GroundSprite = SpriteSource.Weapon_Stun_Launcher;
+        this.HoldingSprite = SpriteSource.Grenade_Overlay;
+        this.Stackable = false;
+        this.MagSize = 6;
+        this.Name = "Stun Missile";
+        this.ID = "Stun_m";
+        this.DamagePer = 0;
+        this.FireRate = 1; 
+        this.AmmoPerShot = 8;
+        this.RelodTime = 5;
+        this.Auto = false;
+        this.SoundDistance = 8;
+    }
+    
+    function UseReleased () {
+        
+        if(this.Circle != null)
+            this.Circle.Destroy();
+        
+        Utilities.SendSoundWeapon(this.SoundDistance);
+        
+        var stn = GlobalVariables.GameSpace.CreateAtPosition(Archetype.StunProj, GlobalVariables.Player.Transform.WorldTranslation);
+        
+        stn.StunProjectile.Target = GlobalVariables.GameSpace.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 1);
+        stn.StunProjectile.StartDist = 0;
+        stn.StunProjectile.MovSpd = this.MoveSpd;
+        stn.StunProjectile.StnTime = this.StunTime;
+        stn.StunProjectile.ImpactSize = this.ImpactRange;
+        stn.StunProjectile.ArcIntencity = this.ArcIntencity;
+        stn.StunProjectile.SoundRad = this.ExpSoundDist;
+        stn.StunProjectile.Set = true;
+        Utilities.ScreenShake(1, 10);
+        
+    }
+    
+    function ReturnLore () : String {
+        var lore = Array[String]();
+        lore.Add("It's shocking how effective this is");
+        lore.Add("Where are you going to find ammo for this?");
+        lore.Add("Only three percent of people are smart enough to shoot this, if you can see this, call a doctor");
+        var rand = Random();
+        return lore[Math.Round(rand.Range(0, lore.Count-1)) as Integer];
+    }
+    
+    function Use (radAngle : Real) {
+        this.Circle = GlobalVariables.GameSpace.CreateAtPosition(Archetype.GlowyCircle, GlobalVariables.GameSpace.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 1));
+        this.Circle.Transform.Scale = Real3(this.ImpactRange);
+    }
+    
+}
+//SAW LASER
+//
+class SawLaser  : Item {
+    
+    function Init () {
+        this.Type = ItemType.Weapon;
+        this.Icon = SpriteSource.DragonRoarAlpha;
+        this.GroundSprite = SpriteSource.DragonRoarAlpha;
+        this.HoldingSprite = SpriteSource.Pistol_Overlay;
+        this.Sound = SoundCue.Shot;
+        this.Stackable = false;
+        this.MagSize = 50;
+        this.Name = "Saw laser";
+        this.ID = "Saw_Laser";
+        this.DamagePer = 45;
+        this.FireRate = 10; 
+        this.AmmoPerShot = 1;
+        this.RelodTime = 5;
+        this.MaxRange = 11;
+        this.SoundDistance = 19;
+    }
+    
+    function ReturnLore() : String {
+        var lore = Array[String]();
+        lore.Add("Your foes will be vanquished, as will your ammo");
+        lore.Add("Use your ammo unwisely");
+        lore.Add("A weaponized saw");
+        var rand = Random();
+        return lore[Math.Round(rand.Range(0, lore.Count-1)) as Integer];
+    }
+    
+    function Use(radAngle : Real) {
+        radAngle += Math.ToRadians(Random().Range(-this.RandAngle/2, this.RandAngle/2));
+             
+        var dir = Real3(Math.Cos(radAngle), Math.Sin(radAngle), 0);
+        
+        var filter = CastFilter();
+        filter.CollisionGroup = CollisionGroup.PlayerBullet;
+        var res = Utilities.Raycast(GlobalVariables.Player.Transform.WorldTranslation, dir, GlobalVariables.GameSpace.PhysicsSpace, this.MaxRange, filter);
+        
+        if(res != null && !GlobalVariables.SloMo){
+            Utilities.Damage(res.ObjectHit, this.DamagePer, this.ReturnDeathMSG());
+            var wake = GlobalVariables.GameSpace.CreateAtPosition(this.WakeSprite, GlobalVariables.Player.Transform.WorldTranslation);
+            wake.Transform.EulerAngles = Real3(0,0,radAngle+ Math.ToRadians(-90));
+            wake.Transform.Scale = Real3(0.05, res.Distance, 0);
+            wake.Wake.DamagePer = this.DamagePer;
+        }else{
+            var wake = GlobalVariables.GameSpace.CreateAtPosition(this.WakeSprite, GlobalVariables.Player.Transform.WorldTranslation);
+            wake.Transform.EulerAngles = Real3(0,0,radAngle+ Math.ToRadians(-90));
+            wake.Transform.Scale = Real3(0.05, this.MaxRange, 0);
+            wake.Wake.DamagePer = this.DamagePer;
+        }
+        
+        Utilities.SendSoundWeapon(this.SoundDistance);
+        
+        Utilities.ScreenShake(1.5, 10);
+        
+        Utilities.PlaySFX(this.Sound);
+
+    }
+    
+}
+//LASER SNIPER
+//
+class Lasersniper  : Item {
+    
+    var Aim : Boolean = false;
+    
+    var Lazer : Cog;
+    
+    function Init () {
+        this.Type = ItemType.Weapon;
+        this.Icon = SpriteSource.InfernoSniperAlpha;
+        this.GroundSprite = SpriteSource.InfernoSniperAlpha;
+        this.HoldingSprite = SpriteSource.SniperHolding;
+        this.Sound = SoundCue.Sniper;
+        this.Stackable = false;
+        this.Auto = false;
+        this.MagSize = 30;
+        this.Name = "Laser Sniper";
+        this.ID = "Sniper";
+        this.DamagePer = 222;
+        this.FireRate = 2; 
+        this.AmmoPerShot = 6;
+        this.RelodTime = 4;
+        this.MaxRange = 100;
+        this.RandAngle = 0;
+        this.SoundDistance = 9;
+    }
+
+    function UseReleased() {
+        
+        this.Aim = false;
+        
+        if(this.Lazer != null)
+            this.Lazer.Destroy();
+        
+        GlobalVariables.CamSense = 6;
+        
+        var dir = Math.Normalize(GlobalVariables.GameSpace.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 0) - GlobalVariables.Player.Transform.WorldTranslation);
+        
+        var radAngle = Math.ATan2(dir.Y, dir.X);
+        
+        radAngle += Math.ToRadians(Random().Range(-this.RandAngle/2, this.RandAngle/2));
+        
+        var filter = CastFilter();
+        filter.CollisionGroup = CollisionGroup.PlayerBullet;
+        var res = Utilities.Raycast(GlobalVariables.Player.Transform.WorldTranslation, dir, GlobalVariables.GameSpace.PhysicsSpace, this.MaxRange, filter);
+        
+        if(res != null && !GlobalVariables.SloMo){
+            Utilities.Damage(res.ObjectHit, this.DamagePer, this.ReturnDeathMSG());
+            var wake = GlobalVariables.GameSpace.CreateAtPosition(this.WakeSprite, GlobalVariables.Player.Transform.WorldTranslation);
+            wake.Transform.EulerAngles = Real3(0,0,radAngle+ Math.ToRadians(-90));
+            wake.Transform.Scale = Real3(0.05, res.Distance, 0);
+            wake.Wake.DamagePer = this.DamagePer;
+        }else{
+            var wake = GlobalVariables.GameSpace.CreateAtPosition(this.WakeSprite, GlobalVariables.Player.Transform.WorldTranslation);
+            wake.Transform.EulerAngles = Real3(0,0,radAngle+ Math.ToRadians(-90));
+            wake.Transform.Scale = Real3(0.05, this.MaxRange, 0);
+            wake.Wake.DamagePer = this.DamagePer;
+        }
+        
+        Utilities.SendSoundWeapon(this.SoundDistance);
+        
+        Utilities.ScreenShake(4.25, 25);
+        
+        Utilities.PlaySFX(this.Sound);
+        
+        
+    }
+    
+    function ReturnLore () : String {
+        var lore = Array[String]();
+        lore.Add("Scoped savior");
+        lore.Add("Shoot far stick");
+        var rand = Random();
+        return lore[Math.Round(rand.Range(0, lore.Count-1)) as Integer];
+    }
+    
+    function Use (radAngle : Real) {
+        this.Aim = true;
+        GlobalVariables.CamSense = 1.4;
+        this.Lazer = GlobalVariables.GameSpace.CreateAtPosition(Archetype.Lazer, GlobalVariables.Player.Transform.WorldTranslation);
+    }
+    
+}
+//JAV-MISSILE
+//
+class Missile  : Item {
+    
+    var Circle : Cog;
+    var ImpactRange : Real = 3;
+    var MissileMoveSpd : Real = 10;
+    var ArcIntencity : Real = 0.75;
+    var ExpSoundDist : Real = 10;
+    
+    function Init () {
+        this.Type = ItemType.Weapon;
+        this.Icon = SpriteSource.RocketLauncher;
+        this.GroundSprite = SpriteSource.RocketLauncher;
+        this.HoldingSprite = SpriteSource.MissileOverlay;
+        this.Stackable = false;
+        this.MagSize = 1;
+        this.Name = "Rocket Launcher";
+        this.ID = "Missile";
+        this.DamagePer = 500;
+        this.FireRate = 0.1; 
+        this.AmmoPerShot = 15;
+        this.RelodTime = 10;
+        this.SoundDistance = 22;
+        this.Auto = false;
+    }
+    
+    function UseReleased () {
+        
+        GlobalVariables.CamSense = 6;
+        
+        if(this.Circle != null)
+            this.Circle.Destroy();
+        
+        Utilities.SendSoundWeapon(this.SoundDistance);
+        
+        var missile = GlobalVariables.GameSpace.CreateAtPosition(Archetype.MissileProjectile, GlobalVariables.Player.Transform.WorldTranslation);
+        
+        missile.PotatProjectile.Target = GlobalVariables.GameSpace.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 1);
+        missile.PotatProjectile.StartDist = 0;
+        missile.PotatProjectile.MovSpd = this.MissileMoveSpd;
+        missile.PotatProjectile.Damage = this.DamagePer;
+        missile.PotatProjectile.ImpactSize = this.ImpactRange;
+        missile.PotatProjectile.ArcIntencity = this.ArcIntencity;
+        missile.PotatProjectile.SoundRad = this.ExpSoundDist;
+        missile.PotatProjectile.DamageMSG = this.ReturnDeathMSG();
+        missile.PotatProjectile.Set = true;
+        missile.Sprite.SpriteSource = SpriteSource.Missile;
+        missile.AddComponentByName("MissileSound");
+        missile.MissileSound.Sound = SoundCue.RocketFlying;
+        missile.MissileSound.Initialize(null);
+        missile.MissileSound.SoundRange = 15;
+        missile.PotatProjectile.SoundRange = 15;
+        missile.PotatProjectile.ExplodeSound = SoundCue.Explode;
+        missile.PotatProjectile.OscilationSpeed = 15;
+        missile.PotatProjectile.OscilationIntencity = 0.25;
+        missile.PotatProjectile.Explosion = Archetype.Explode;
+        Utilities.ScreenShake(1.1, 5);
+        
+        //GlobalVariables.SFXSpace.SoundSpace.PlayCue(SoundCue.Rockettravelsound);
+        
+    }
+    
+    function ReturnLore () : String {
+        var lore = Array[String]();
+        lore.Add("Be careful with this thing");
+        lore.Add("Use your ammo wisely");
+        lore.Add("Biggest boom of them all");
+        lore.Add("Arnold Schwarzenegger's prized possesion");
+        var rand = Random();
+        return lore[Math.Round(rand.Range(0, lore.Count-1)) as Integer];
+    }
+    
+    function Use (radAngle : Real) {
+        
+        this.Circle = GlobalVariables.GameSpace.CreateAtPosition(Archetype.GlowyCircle, GlobalVariables.GameSpace.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 1));
+        this.Circle.Transform.Scale = Real3(this.ImpactRange);
+        GlobalVariables.CamSense = 1.4;
+        
+    }
+    
+}
+//POTATO-CANNON
+//
+class Potatocannon  : Item {
+    
+    var Circle : Cog;
+    var ImpactRange : Real = 3;
+    var PotatoMoveSpd : Real = 10;
+    var ArcIntencity : Real = 0.75;
+    var ExpSoundDist : Real = 10;
+    
+    function Init () {
+        this.Type = ItemType.Weapon;
+        this.Icon = SpriteSource.PotatoLauncher;
+        this.GroundSprite = SpriteSource.PotatoLauncher;
+        this.HoldingSprite = SpriteSource.Potater_Overlay;
+        this.Stackable = false;
+        this.SoundDistance = 4;
+        this.MagSize = 5;
+        this.Name = "Potato Cannon";
+        this.ID = "Potato_cannon";
+        this.DamagePer = 100;
+        this.FireRate = 19;
+        this.AmmoPerShot = 1;
+        this.RelodTime = 0.1;
+        this.Auto = false;
+    }
+    
+    function UseReleased () {
+        
+        if(this.Circle != null)
+            this.Circle.Destroy();
+        
+        Utilities.SendSoundWeapon(this.SoundDistance);
+        
+        var potat = GlobalVariables.GameSpace.CreateAtPosition(Archetype.PotatProjectile, GlobalVariables.Player.Transform.WorldTranslation);
+        
+        potat.PotatProjectile.Target = GlobalVariables.GameSpace.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 1);
+        potat.PotatProjectile.StartDist = 0;
+        potat.PotatProjectile.MovSpd = this.PotatoMoveSpd;
+        potat.PotatProjectile.Damage = this.DamagePer;
+        potat.PotatProjectile.ImpactSize = this.ImpactRange;
+        potat.PotatProjectile.ArcIntencity = this.ArcIntencity;
+        potat.PotatProjectile.SoundRad = this.ExpSoundDist;
+        potat.PotatProjectile.DamageMSG = this.ReturnDeathMSG();
+        potat.PotatProjectile.Set = true;
+        Utilities.ScreenShake(1, 10);
+        
+    }
+    
+    function ReturnLore () : String {
+        var lore = Array[String]();
+        lore.Add("Irish food processor");
+        lore.Add("You have read the weapon lore");
+        lore.Add("Helping hashbrown");
+        lore.Add("Alien weapons all around and you chose this...nice.");
+        lore.Add("Potatus Prime");
+        var rand = Random();
+        return lore[Math.Round(rand.Range(0, lore.Count-1)) as Integer];
+    }
+    
+    function Use (radAngle : Real) {
+        
+        this.Circle = GlobalVariables.GameSpace.CreateAtPosition(Archetype.GlowyCircle, GlobalVariables.GameSpace.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 1));
+        this.Circle.Transform.Scale = Real3(this.ImpactRange);
+        
+    }
+    
+}
+//Scan_Snipe
+//
+class MMS_Sniper  : Item {
+    
+    var Aim : Boolean = false;
+    
+    var Lazer : Cog;
+    
+    function Init() {
+        this.Type = ItemType.Weapon;
+        this.Icon = SpriteSource.InfernoSniperAlpha;
+        this.GroundSprite = SpriteSource.InfernoSniperAlpha;
+        this.HoldingSprite = SpriteSource.SniperHolding;
+        this.Sound = SoundCue.Sniper2;
+        this.Stackable = false;
+        this.MagSize = 10;
+        this.Name = "MMS Sniper";
+        this.ID = "MMS_Sniper";
+        this.DamagePer = 250;
+        this.FireRate = 3; 
+        this.AmmoPerShot = 5;
+        this.RelodTime = 7;
+        this.RandAngle = 0;
+        this.Auto = false;
+        this.SoundDistance = 5;
+        this.MaxRange = 100;
+    }
+    
+    function UseReleased() {
+        
+        var toSend = UseRadar();
+        toSend.Timer = 0;
+        GlobalVariables.GameSpace.DispatchEvent(Events.UseRadar, toSend);
+        
+        GlobalVariables.CamSense = 6;
+        GlobalVariables.CamFollow.Owner.Transform.Translation = Real3(0, 0, GlobalVariables.CamFollow.Owner.Transform.Translation.Z);
+        Utilities.TimeTimerSet(1, 0, 1);
+        
+        this.Aim = false;
+        
+        if(this.Lazer != null)
+            this.Lazer.Destroy();
+        
+        
+        var dir = Math.Normalize(GlobalVariables.GameSpace.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 0) - GlobalVariables.Player.Transform.WorldTranslation);
+        
+        var radAngle = Math.ATan2(dir.Y, dir.X);
+        
+        //Console.WriteLine("Laser Sniper");
+        
+        radAngle += Math.ToRadians(Random().Range(-this.RandAngle/2, this.RandAngle/2));
+        
+        var filter = CastFilter();
+        filter.CollisionGroup = CollisionGroup.PlayerBullet;
+        var res = Utilities.Raycast(GlobalVariables.Player.Transform.WorldTranslation, dir, GlobalVariables.GameSpace.PhysicsSpace, this.MaxRange, filter);
+        
+        if(res != null){
+            Utilities.Damage(res.ObjectHit, this.DamagePer, this.ReturnDeathMSG());
+            var wake = GlobalVariables.GameSpace.CreateAtPosition(this.WakeSprite, GlobalVariables.Player.Transform.WorldTranslation);
+            wake.Transform.EulerAngles = Real3(0,0,radAngle+ Math.ToRadians(-90));
+            wake.Transform.Scale = Real3(0.05, res.Distance, 0);
+            wake.Wake.DamagePer = this.DamagePer;
+        }else{
+            var wake = GlobalVariables.GameSpace.CreateAtPosition(this.WakeSprite, GlobalVariables.Player.Transform.WorldTranslation);
+            wake.Transform.EulerAngles = Real3(0,0,radAngle+ Math.ToRadians(-90));
+            wake.Transform.Scale = Real3(0.05, this.MaxRange, 0);
+            wake.Wake.DamagePer = this.DamagePer;
+        }
+        
+        Utilities.SendSoundWeapon(this.SoundDistance);
+        
+        Utilities.ScreenShake(5, 30);
+        
+        Utilities.PlaySFX(this.Sound);
+        
+    }
+    
+    function ReturnLore () : String {
+        var lore = Array[String]();
+        lore.Add("Scoped savior");
+        lore.Add("Shoot far stick");
+        var rand = Random();
+        return lore[Math.Round(rand.Range(0, lore.Count-1)) as Integer];
+    }
+    
+    function Use (radAngle : Real) {
+        
+        var toSend = UseRadar();
+        toSend.Timer = Real.PositiveMax;
+        GlobalVariables.GameSpace.DispatchEvent(Events.UseRadar, toSend);
+        
+        Utilities.TimeTimerSet(0.05, Real.PositiveMax, 1);
+        
+        this.Aim = true;
+        GlobalVariables.CamSense = 1.4;
+        this.Lazer = GlobalVariables.GameSpace.CreateAtPosition(Archetype.Lazer, GlobalVariables.Player.Transform.WorldTranslation);
+    }
+    
+}

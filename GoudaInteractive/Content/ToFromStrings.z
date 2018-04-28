@@ -1,0 +1,191 @@
+// AUTHOR: MYLES
+// CONTRIBUTORS: HUDSON GREEN
+
+class ToFromStrings : ZilchComponent {
+    
+    // Int array to/from strings:
+    [Static] function ShortIntArrayToString(array : Array[Integer]) : String {
+        
+        var str = "";
+        
+        for(var i = 0; i < array.Count; ++i)
+            str = "`str``String.FromChar(array[i])`";
+            
+        return str;
+        
+    }
+    
+    [Static] function IntArrayToString(array : Array[Integer]) : String {
+        
+        var stringBuilder = new StringBuilder();
+        
+        for(var slot = 0; slot < array.Count; ++slot) {
+            stringBuilder.Write("`array[slot]`");
+            if(slot < array.Count - 1)
+                stringBuilder.Write(",");
+        }
+        
+        return stringBuilder.ToString();
+        
+    }
+    
+    [Static] function StringToShortIntArray(string : String) : Array[Integer] {
+        
+        string = ToFromStrings.StripCommas(string);
+        
+        var array = Array[Integer]();
+        
+        for(var i = 0; i < string.Count; ++i)
+            array.Add(string[i]);
+        
+        return array;
+        
+    }
+    
+    [Static] function StringToIntArray(string : String) : Array[Integer] {
+        
+        var array = Array[Integer]();
+        
+        while(string.Count > 0) {
+            
+            var currentComma = string.FindFirstOf(",");
+            
+            if(currentComma.IsNotEmpty) {
+                array.Add(Integer.Parse(string.SubStringFromRuneIndices(0, currentComma.Begin.ByteIndex)));
+                string = string.SubStringFromRuneIndices(currentComma.End.ByteIndex, string.End.ByteIndex);
+            } else {
+                array.Add(Integer.Parse(string));
+                break;
+            }
+            
+        }
+        
+        return array;
+        
+    }
+    
+    // Real array to/from strings:
+    [Static] function RealArrayToString(array : Array[Real]) : String {
+        
+        var str = "";
+        
+        for(var i = 0; i < array.Count; ++i)
+            str = "`str``String.FromChar(Math.Round(array[i]) as Integer)`";
+        
+        return str;
+        
+    }
+    
+    [Static] function StringToRealArray(string : String) : Array[Real] {
+        
+        string = ToFromStrings.StripCommas(string);
+        
+        var array = new Array[Real]();
+        
+        for(var i = 0; i < string.Count; ++i)
+            array.Add(string[i]);
+        
+        return array;
+        
+    }
+    
+    // Real3 to/from string
+    [Static] function Real3ToString(r3 : Real3) : String {
+        return "`r3.X`,`r3.Y`,`r3.Z`";
+    }
+    
+    [Static] function StringToReal3(string : String) : Real3 {
+        
+        var r3 = Real3(0.0, 0.0, 0.0);
+        var timesRun = 0;
+        
+        while(string.Count > 0) {
+            
+            var currentComma = string.FindFirstOf(",");
+            
+            if(currentComma.IsNotEmpty) {
+                
+                if(timesRun == 0)
+                    r3.X = Real.Parse(string.SubStringFromRuneIndices(0, currentComma.Begin.ByteIndex));
+                else if(timesRun == 1)
+                    r3.Y = Real.Parse(string.SubStringFromRuneIndices(0, currentComma.Begin.ByteIndex));
+                
+                string = string.SubStringFromRuneIndices(currentComma.End.ByteIndex, string.End.ByteIndex);
+                
+            } else {
+                r3.Z = Real.Parse(string.SubStringFromRuneIndices(0, currentComma.Begin.ByteIndex));
+                break;
+            }
+            
+            ++timesRun;
+        }
+        
+        return r3;
+        
+    }
+    
+    // HashMap[Integer2, Integer] to/from string
+    [Static] function HashMapInt2IntToString(hashmap : HashMap[Integer2, Integer]) : String {
+        
+        var array = Array[Integer]();
+        
+        foreach (var val in hashmap) {
+            array.Add(val.Key.X);
+            array.Add(val.Key.Y);
+            array.Add(val.Value);
+        }
+        
+        return ToFromStrings.ShortIntArrayToString(array);
+        
+    }
+    
+    [Static] function StringToHashMapInt2Int(string : String) : HashMap[Integer2, Integer] {
+        
+        var hashMap = HashMap[Integer2, Integer]();
+        var array = ToFromStrings.StringToShortIntArray(string);
+        
+        for(var index = 0; index < array.Count; index += 3)
+            hashMap.Add(Integer2(array[index], array[index + 1]), array[index + 2]);
+        
+        return hashMap;
+        
+    }
+    
+    // HashMap[Integer2 Real2] to/from string
+    [Static] function HashMapInt2Real2ToString(hashmap : HashMap[Integer2, Real2]) : String {
+        
+        var array = Array[Real]();
+        
+        foreach(var val in hashmap) {
+            array.Add(val.Key.X);
+            array.Add(val.Key.Y);
+            array.Add(val.Value.X);
+            array.Add(val.Value.Y);
+        }
+        
+        return ToFromStrings.RealArrayToString(array);
+        
+    }
+    
+    [Static] function StringToHashMapInt2Real2(string : String) : HashMap[Integer2, Real2] {
+        
+        var hashMap = HashMap[Integer2, Real2]();
+        var array = ToFromStrings.StringToRealArray(string);
+        
+        for(var index = 0; index < array.Count; index += 4)
+            hashMap.Add(Integer2(array[index] as Integer, array[index + 1] as Integer), Real2(array[index + 2], array[index + 3]));
+        
+        return hashMap;
+        
+    }
+    
+    [Static] function StripCommas(str : String) : String {
+        
+        if(str.Contains(","))
+            str.Replace(",", "");
+        
+        return str;
+        
+    }
+    
+}

@@ -1,0 +1,187 @@
+class TurretLogic : ZilchComponent
+{
+    [Property] var Projectile : Archetype = null;
+    [Property] var Speed : Real;
+    [Property] var CoolDown : Real;
+    [Property] var Range : Real;
+    [Property] var EnemyCollide : CollisionGroup;
+    [Property] var ChargingCollide : CollisionGroup;
+    var Timer : Real = 0.5;
+    var CheckTimer : Real = 0.5;
+    var Target : Cog;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.GameSession, Events.BuildingRecall, this.OnBuildingRecall);
+    }
+    
+    function OnBuildingRecall(event : ZilchEvent)
+    {
+        this.GameSession.GameVars.PlayerTurrets += 1;
+        this.Owner.Destroy();
+    }
+    
+    function FindTarget()
+    {
+        //this finds the target, usually works by finding the closest object, with the Enemies collision group,
+        //and within the set range.
+        var lastObj : Cog = null;
+        var bestObj : Cog = null;
+        var bestDist : Real = 0;
+        foreach(var obj in this.Space.AllObjects())
+        {
+          //new target finding
+          if (obj.Collider != null)
+          {
+             if (obj.Collider.CollisionGroup == this.EnemyCollide || obj.Collider.CollisionGroup == this.ChargingCollide)
+             {
+               var distance : Real = Math.Distance(obj.Transform.WorldTranslation, this.Owner.Transform.WorldTranslation);
+               
+               if (lastObj == null)
+               {
+                 bestObj = obj;
+                 bestDist = distance;
+               }
+               else if (distance < bestDist && distance < this.Range)
+               {
+                 bestObj = obj;
+                 bestDist = distance;
+               }
+               
+               lastObj = obj;
+             }
+           }
+          //old target finding
+            //if (obj.Collider != null)
+            //{
+            //    if (obj.Collider.CollisionGroup == this.EnemyCollide || obj.Collider.CollisionGroup == this.ChargingCollide)
+            //    {
+            //        var distance = obj.Transform.WorldTranslation - this.Owner.Transform.WorldTranslation;
+            //        if (distance.X < 0) distance.X *= -1;
+            //        if (distance.Y < 0) distance.Y *= -1;
+            //        var distance2 : Real = distance.X + distance.Y;
+            //        
+            //        if(lastObj == null)
+            //        {
+            //            bestObj = obj;
+            //            bestDist = distance;
+            //            bestDist2 = distance2;
+            //        }
+            //        else if (distance2 < bestDist2 && distance2 < this.Range)
+            //        {
+            //            bestObj = obj;
+            //            bestDist = distance;
+            //            bestDist2 = distance2;
+            //        }
+            //        
+            //        lastObj = obj;
+            //        //Console.WriteLine(bestObj.Name);
+            //    }
+            //}
+        }
+        if (bestDist < this.Range)
+        {
+            this.Target = bestObj;
+        }
+        else 
+        {
+            this.Target = null;
+        }
+    }
+    
+    function Turret(event : UpdateEvent)
+    {   
+        //finds the target
+        
+        
+        var cannon = this.Owner.FindChildByName("LaserTurret_Cannon");
+        var barrel = this.Owner.FindChildByName("LaserTurret_Barrel");
+        
+        cannon.TurretRotation.OnRotation();
+        
+        this.Timer -= event.Dt;
+        
+        if (this.Timer < 0 && this.Target != null)
+        {
+            barrel.Turret_Barrel.Shoot();
+            
+            this.Timer = this.CoolDown;
+        }
+        else if (this.Timer < 0)
+        {
+            this.Timer = this.CoolDown;
+        }
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.CheckTimer -= event.Dt;
+        
+        this.Turret(event);
+        
+        if (this.CheckTimer < 0)
+        {
+            this.FindTarget();
+            this.CheckTimer = 0.8;
+        }
+    }
+}
+
+class TurretRotation : ZilchComponent
+{
+    var Target : Cog;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.Owner.Orientation.LookAtPoint(Real3(this.Owner.Transform.WorldTranslation.X,
+        this.Owner.Transform.WorldTranslation.Y + 5, this.Owner.Transform.WorldTranslation.Z));
+    }
+
+    function OnRotation()
+    {
+        this.Target = this.Owner.Parent.TurretLogic.Target;
+        if (this.Target != null)
+        {
+        var screenPos = Zero.Mouse.ScreenPosition;
+        
+        var mousePos = this.LevelSettings.CameraViewport.ScreenToWorldZPlane(screenPos, 0.0);
+        
+        this.Owner.Orientation.LookAtPoint(this.Target.Transform.Translation);
+        }
+        else 
+        {
+            this.Owner.Orientation.LookAtPoint(Real3(this.Owner.Transform.WorldTranslation.X,
+            this.Owner.Transform.WorldTranslation.Y + 5, this.Owner.Transform.WorldTranslation.Z));
+        }
+    }
+}
+
+class Turret_Barrel : ZilchComponent
+{
+    var Projectile : Archetype;
+    var Target : Cog;
+    var BulletSpeed : Real;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.Projectile = this.Owner.Parent.Parent.TurretLogic.Projectile;
+        this.BulletSpeed = this.Owner.Parent.Parent.TurretLogic.Speed;
+        
+    }
+
+    function Shoot ()
+    {
+        this.Target = this.Owner.Parent.Parent.TurretLogic.Target;
+        if (this.Target != null)
+        {
+            var targetDirection = this.Target.Transform.WorldTranslation - this.Owner.Transform.WorldTranslation;
+            targetDirection = Math.Normalize(targetDirection);
+            var fireVelocity = targetDirection * this.BulletSpeed * 2;
+            var createdProjectile = this.Space.CreateAtPosition(this.Projectile, Real3(this.Owner.Transform.WorldTranslation.XY,
+                                                                this.Owner.Transform.WorldTranslation.Z - 0.1));
+            createdProjectile.RigidBody.Velocity = fireVelocity;
+            createdProjectile.Orientation.LookAtPoint(this.Target.Transform.WorldTranslation);
+        }
+    }
+} 

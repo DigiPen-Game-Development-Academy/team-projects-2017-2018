@@ -1,0 +1,13 @@
+class HUDSpaceReferences : ZilchComponent
+{
+    var MainSpaceRef : Space = null;
+    
+    [Property]
+    var HealthBarRef : CogPath = null;
+    
+    [Property]
+    var OxygenBarRef : CogPath = null;
+    
+    [Property]
+    var MaterialIndicatorRef : CogPath = null;
+}

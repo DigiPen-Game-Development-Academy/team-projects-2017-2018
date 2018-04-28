@@ -1,0 +1,21 @@
+//Sam
+//This object will randomly flucuate in size
+
+class SizeFluctuate : ZilchComponent
+{
+    var RandomSize:Real = 1;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var random = new Random();
+                
+        this.RandomSize = random.Range(0.1, 0.5);
+        this.Owner.Area.Size =
+        Real2(0.2,0.2) + Real2( 1 + this.RandomSize,1 + this.RandomSize);
+    }
+}

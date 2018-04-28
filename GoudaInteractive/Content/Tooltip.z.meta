@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "Tooltip",
+		uint64 ResourceId = 5ace18d151c1c425,
+	},
+},

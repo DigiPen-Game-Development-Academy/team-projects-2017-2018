@@ -1,0 +1,34 @@
+
+
+class SPotato : Item {
+    
+    
+    function Init () {
+        this.Type = ItemType.Consumable;
+        this.Stackable = false;
+        this.GroundSprite = SpriteSource.Sus;
+        this.Icon = SpriteSource.Sus;
+        this.Name = "Suspicious Looking Potato";
+    }
+    
+    function ReturnLore () : String {
+        
+        var lore = Array[String]();
+        lore.Add("A suspicious frozen potato");
+        lore.Add("Looks evil in a way");
+        lore.Add("Looks suspicious");
+        lore.Add("Maybe you should eat it?");
+        lore.Add("The potatoe's allegiance is unclear");
+        lore.Add("Looks very powerful");
+        var rand = Random();
+        return lore[Math.Round(rand.Range(0, lore.Count-1)) as Integer];
+        
+    }
+    
+    function Use (radAngle : Real) {
+        Utilities.ConsoleSend("The Potatos Have Granted You...1000000% health!", Real4(0,1,0,1));
+        GlobalVariables.Player.Health.CurrentHealth = GlobalVariables.Player.Health.InitialHealth * 1000000;
+    }
+    
+    
+}

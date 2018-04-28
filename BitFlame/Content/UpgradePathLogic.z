@@ -1,0 +1,126 @@
+class UpgradePathLogic : ZilchComponent
+{
+    [Property] var UpgradeName : String = "Name";
+    
+    [Property] var Cost : Integer = 0;
+    
+    [Property] var Unlocked : Boolean = false;
+    
+    [Property] var Purchased : Boolean  = false;
+    
+    [Property] var PreviousUpgrade : CogPath = null;
+    
+    [Property] var PurchasedColor : Real4  = Real4.Zero;
+    
+    [Property] var UnlockedColor : Real4  = Real4.Zero;
+    
+    [Property] var LockedColor : Real4  = Real4.Zero;
+    
+    var Shake : Boolean = false;
+    
+    var OriginalSize : Real2 = Real2.Zero;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+        
+        Zero.Connect(this.Owner, Events.MouseUp, this.OnMouseUp);
+        
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        
+        this.OriginalSize = this.Owner.Area.Size;
+        
+    }
+
+    function OnMouseExit(event : ViewportMouseEvent)
+    {
+        this.Space.FindObjectByName("ToolTip").Sprite.Visible = false;
+        
+        this.Space.FindObjectByName("ToolTip").FindChildByName("Text").SpriteText.Visible = false;
+        
+        this.Space.FindObjectByName("ToolTip").FindChildByName("Cost Shower").SpriteText.Visible = false;
+        
+        this.Space.FindObjectByName("ToolTip").FindChildByName("CostIndicator").SpriteText.Visible = false;
+        
+        this.Space.FindObjectByName("ToolTip").FindChildByName("Sprite").Sprite.Visible = false;
+    }
+
+    function OnMouseEnter(event : ViewportMouseEvent)
+    {
+        
+        this.Space.FindObjectByName("ToolTip").FindChildByName("Text").SpriteText.Text = this.UpgradeName;
+        
+        this.Space.FindObjectByName("ToolTip").FindChildByName("CostIndicator").SpriteText.Text = "`this.Cost`";
+        
+        this.Space.FindObjectByName("ToolTip").FindChildByName("Text").SpriteText.Visible = true;
+        
+        this.Space.FindObjectByName("ToolTip").FindChildByName("Cost Shower").SpriteText.Visible = true;
+        
+        this.Space.FindObjectByName("ToolTip").FindChildByName("CostIndicator").SpriteText.Visible = true;
+        
+        this.Space.FindObjectByName("ToolTip").FindChildByName("Sprite").Sprite.Visible = true;
+        
+        this.Space.FindObjectByName("ToolTip").Sprite.Visible = true;
+    }
+
+    function OnMouseUp(event : ViewportMouseEvent)
+    {
+        if(!this.Purchased)
+        {
+            this.Owner.Area.Size += Real2(0.1,0.1);
+        }
+    }
+
+    function OnMouseDown(event : ViewportMouseEvent)
+    {
+        if(!this.Purchased)
+        {
+            this.Owner.Area.Size -= Real2(0.1,0.1);
+            
+            if(this.GameSession.GameVars.PlayerUpgradePoints >= this.Cost && this.Unlocked)
+            {
+                this.Purchased = true;
+                
+                this.Owner.Sprite.Color = this.PurchasedColor;
+                
+                this.GameSession.GameVars.PlayerUpgradePoints -= this.Cost;
+            }
+        }
+
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+        if(this.PreviousUpgrade.Cog != null)
+        {
+            if(this.PreviousUpgrade.Cog.UpgradePathLogic.Purchased == true)
+            {
+                this.Unlocked = true;
+                
+                Action.Property(this.Owner.Actions, @this.Owner.Area.Size,
+                                Real2(2.0,2.0), 0.5, Ease.SinOut);
+            }
+        }
+        else
+        {
+            this.Unlocked = true;
+            
+            Action.Property(this.Owner.Actions, @this.Owner.Area.Size,
+                                Real2(2.0,2.0), 0.5, Ease.SinOut);
+        }
+        
+        if(this.Unlocked && !this.Purchased)
+        {
+            this.Owner.Sprite.Color = this.UnlockedColor;
+        }
+        else if(this.Unlocked == false && !this.Purchased)
+        {
+            this.Owner.Sprite.Color = this.LockedColor;
+        }
+    }
+}

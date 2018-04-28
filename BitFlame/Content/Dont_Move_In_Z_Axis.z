@@ -1,0 +1,16 @@
+class Dont_Move_In_Z_Axis : ZilchComponent
+{
+    [Property] var Z_Position : Integer = 0;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var x_Position = this.Owner.Transform.Translation.X;
+        var y_Position = this.Owner.Transform.Translation.Y;
+        this.Owner.Transform.Translation = Real3(x_Position, y_Position, this.Z_Position);
+        
+    }
+}

@@ -1,0 +1,30 @@
+class ClearSaveFileButton : ZilchComponent {
+    
+    [Dependency] var Button : Button;
+    
+    var Dialog : Cog;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+    }
+    
+    function OnDialogEnded(event : DialogEnded) {
+        
+        if(event.Type == DialogReturn.YES) {
+            Zero.ObjectStore.ClearStore();
+        }
+        
+        Zero.Disconnect(this.Owner, Events.DialogEnded, this.Dialog);
+        
+    }
+
+    function OnMouseDown(event : ViewportMouseEvent) {
+        
+        var dialog = Utilities.Dialog("Are you sure you want to clear your save?\nYou CANNOT undo this!", DialogTypes.YESNO, 10);
+        if(dialog != null) {
+            this.Dialog = dialog;
+            Zero.Connect(this.Dialog, Events.DialogEnded, this.OnDialogEnded);
+        }
+        
+    }
+}

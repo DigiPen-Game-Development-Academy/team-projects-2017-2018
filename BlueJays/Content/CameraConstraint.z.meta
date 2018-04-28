@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "CameraConstraint",
+		uint64 ResourceId = 5a3d2a84800867e6,
+	},
+},

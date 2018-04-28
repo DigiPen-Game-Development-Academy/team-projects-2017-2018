@@ -1,0 +1,7 @@
+ContentLibrary = 
+{
+	string Name = "Substeam",
+	uint64 LibraryId = 5aa8c197c2b42baa,
+	string SourceControlType = "",
+	bool ReadOnly = false,
+},

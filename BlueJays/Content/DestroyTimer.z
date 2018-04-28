@@ -1,0 +1,21 @@
+//Author: Eli Miller
+//Purpose: Destroys this object in a given number of seconds.
+
+class DestroyTimer : ZilchComponent
+{
+    [Property] var Timer : Real = 1;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Timer -= event.Dt;
+        if(this.Timer <= 0)
+        {
+            this.Owner.DispatchEvent("Destroying",ZilchEvent());
+            this.Owner.Destroy();
+        }
+    }
+}

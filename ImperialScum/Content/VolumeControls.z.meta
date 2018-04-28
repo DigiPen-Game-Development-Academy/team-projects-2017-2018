@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "VolumeControls",
+		uint64 ResourceId = 5a4a5520797d2bd9,
+	},
+},

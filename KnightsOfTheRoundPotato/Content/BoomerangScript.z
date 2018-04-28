@@ -1,0 +1,73 @@
+class BoomerangScript : ZilchComponent {
+    
+    var StartDir : Real3;
+    
+    var AngleDir : Real;
+    
+    var Damage : Real;
+    
+    var Returning : Boolean = false;
+    
+    var SpinSpeed : Real = 20;
+    
+    var MaxDist : Real = 5;
+    
+    var MovSpeed : Real = 10;
+    
+    var StartPos : Real3;
+    
+    var SoundDist : Real;
+    
+    function Initialize(init : CogInitializer) {
+        this.StartPos = this.Owner.Transform.WorldTranslation;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent) {
+        
+        if(event.OtherObject == GlobalVariables.Player && !this.Returning)
+            return;
+        else if (event.OtherObject == GlobalVariables.Player) {
+            this.Owner.Destroy();
+            return;
+        }
+        
+        var damage = Damage();
+        damage.Damage = this.Damage;
+        event.OtherObject.DispatchEvent(Events.Damage, damage);
+        Utilities.SendSound(this.SoundDist);
+        
+        if(this.Returning)
+            return;
+        
+        if(event.OtherObject.RigidBody == null || (event.OtherObject.RigidBody != null && event.OtherObject.RigidBody.DynamicState != RigidBodyDynamicState.Dynamic)) {
+            if(event.OtherObject.BoxCollider != null && event.OtherObject.BoxCollider.Ghost)
+                return;
+            this.Returning = true;
+            this.Owner.RigidBody.Velocity = -this.Owner.RigidBody.Velocity;
+        }
+        
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        this.Owner.RigidBody.AngularVelocity = Real3(0, 0, this.SpinSpeed);
+        
+        if(Math.Distance(this.Owner.Transform.WorldTranslation, this.StartPos) >= this.MaxDist) {
+            this.Returning = true;
+        }
+        
+        if(this.Returning) {
+            
+            this.Owner.RigidBody.Velocity += (Math.Normalize(GlobalVariables.Player.Transform.WorldTranslation - this.Owner.Transform.WorldTranslation) * this.MovSpeed*3) * event.Dt;
+            
+        } else {
+            
+            this.Owner.RigidBody.Velocity += (this.StartDir * this.MovSpeed * event.Dt);
+            //Console.WriteLine(this.StartDir);
+            
+        }
+        
+    }
+}

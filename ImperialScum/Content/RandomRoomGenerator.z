@@ -1,0 +1,63 @@
+//Jacob Burke
+
+//This moves the player to a random room after they leave the current level
+
+class RandomRoomGenerator : ZilchComponent
+{
+    var Level : Level = null;
+    [Property] var LoadingLevel : Level;
+    var Timer : Real = 3.3;
+    
+    var BossLevel : Level = Level.BossLevel;
+    
+    [Static]
+    var FinishedLevel : Array[Level] = new Array[Level]();
+
+    [Static]
+    var AllLevels : Array[Level] = new Array[Level]()
+    {
+      Level.Level,
+      Level.JacobsTerribleLevel,
+      Level.BaseLevel,
+      Level.ElenaLevelSpikes
+    };
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.PlayerController != null)
+        {
+            RandomRoomGenerator.FinishedLevel.Add(this.Space.CurrentLevel);
+            
+            var remainingLevels = RandomRoomGenerator.AllLevels;
+            do
+            {
+                var count = remainingLevels.Count;
+                if(count == 0)
+                {
+                    this.Space.LoadLevel(this.BossLevel);
+                    return;
+                }
+                var rand = new Random();
+                var index = rand.DieRoll(count) - 1;
+                this.Level = remainingLevels[index];
+                remainingLevels.RemoveAt(index);
+                
+            } while (RandomRoomGenerator.FinishedLevel.FindFirstIndex(this.Level) >= 0)
+            
+            //start loading screen
+            this.Space.LoadLevel(this.Level);
+        }
+    }
+
+
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+
+    }
+}

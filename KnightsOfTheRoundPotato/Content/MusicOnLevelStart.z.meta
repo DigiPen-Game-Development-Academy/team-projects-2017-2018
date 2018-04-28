@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "MusicOnLevelStart",
+		uint64 ResourceId = 5a518e1feb6c9d24,
+	},
+},

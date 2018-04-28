@@ -1,0 +1,20 @@
+//Jacob Burke
+
+//Displays the Player's current hunger on the HUD
+class DisplayHunger : ZilchComponent
+{
+    var InitSize:Real;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.InitSize = this.Owner.Area.Size.X;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var newSize = this.InitSize * (Hunger.Hunger/120);
+        this.Owner.Area.Size = Real2(newSize, 1);
+        
+    }
+}

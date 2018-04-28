@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "FlipToPlayer",
+		uint64 ResourceId = 5a4a85f0b4c08d7d,
+	},
+},

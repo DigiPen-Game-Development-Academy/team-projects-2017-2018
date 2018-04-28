@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "ElenasOldLevel_TileMap00",
+		uint64 ResourceId = 5a74da7b26b03f49,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "5a74da023a1c07f9:ElenasOldLevel",
+	},
+},

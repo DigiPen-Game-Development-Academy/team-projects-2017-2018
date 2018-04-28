@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "TurretLogic",
+		uint64 ResourceId = 5a33d15596fc454f,
+	},
+},

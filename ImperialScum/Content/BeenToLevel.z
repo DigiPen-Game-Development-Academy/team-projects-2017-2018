@@ -1,0 +1,8 @@
+//Author: Sam Stearns
+//Purpose: Initialize the level array (To make sure you don't go back to the same levels)
+
+class BeenToLevel : ZilchComponent
+{
+    [Static]
+    var FinishedLevel : Array[Level] = new Array[Level]();
+}

@@ -1,0 +1,2627 @@
+Level = 
+{
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 1,
+		},
+		Named = 
+		{
+			string Name = "LevelSettings",
+		},
+		CameraViewport = 
+		{
+			bool Background = true,
+			Vec2 Offset = [0, 0],
+			Vec2 Size = [1, 1],
+			int Layer = 0,
+			bool Active = true,
+			bool Blocking = true,
+			CogPath Renderer = 
+			{
+				string Path = ".",
+				bool ErrorOnResolveToNull = false,
+				bool ErrorOnPathCantCompute = false,
+				bool ErrorOnDirectLinkFail = false,
+				bool UpdateCogOnPathChange = true,
+				bool UpdatePathOnCogChange = true,
+				bool UpdateCogOnInitialize = true,
+				bool ResolvedNullErrorOccurred = false,
+				uint ResolvedCog = 1,
+				CogPathPreference PathPreference0 = CogRelative,
+				CogPathPreference PathPreference1 = SpaceRelative,
+				CogPathPreference PathPreference2 = Absolute,
+			},
+			CogPath Camera = 
+			{
+				string Path = ":/EntityPlayer/Camera",
+				bool ErrorOnResolveToNull = false,
+				bool ErrorOnPathCantCompute = false,
+				bool ErrorOnDirectLinkFail = false,
+				bool UpdateCogOnPathChange = true,
+				bool UpdatePathOnCogChange = true,
+				bool UpdateCogOnInitialize = true,
+				bool ResolvedNullErrorOccurred = false,
+				uint ResolvedCog = 2,
+				CogPathPreference PathPreference0 = CogRelative,
+				CogPathPreference PathPreference1 = SpaceRelative,
+				CogPathPreference PathPreference2 = Absolute,
+			},
+			ViewportScaling Scaling = Fill,
+			Vec2 Resolution = [1280, 720],
+			Vec4 MarginColor = [0, 0, 0, 1],
+		},
+		ForwardRenderer = 
+		{
+			Vec4 ClearColor = [0.155000001, 0.155000001, 0.155000001, 1],
+			bool DrawNonVisible = false,
+			bool DrawDebugObjects = true,
+			bool DrawEditorIcons = true,
+			bool EditorIconDepth = true,
+			bool Wireframe = false,
+		},
+		GridDraw = 
+		{
+			bool Active = true,
+			bool HalfCellOffset = false,
+			float CellSize = 1,
+			GridAxis Axis = ZAxis,
+			int Lines = 100,
+			bool DrawAxisOrigins = true,
+			bool AlwaysDrawInEditor = true,
+			bool DrawInGame = false,
+			Vec4 GridColor = [0.5, 0.5, 0.5, 0.400000006],
+			Vec4 GridHiLight = [0, 0, 0, 0.400000006],
+			int HilightInterval = 10,
+			bool FollowEditorCamera = false,
+		},
+		ItemManager = 
+		{
+		},
+		SaveLoadData = 
+		{
+		},
+		UICreator = 
+		{
+			string UILevel = "5a0b73429c761ee6:UILevel",
+			string UIArchetype = "554cea0f94af6dc4:Space",
+			bool ReloadIfSameLevel = true,
+		},
+		Tutorial = 
+		{
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 3,
+		},
+		Named = 
+		{
+			string Name = "EditorCamera",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [11.186944, 14.327261, 42.9553108],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [-0, -1.09278471e-08, 0, 1],
+		},
+		Camera = 
+		{
+			ProjectionMode ProjectionMode = Orthographic,
+			Facing Facing = NegativeZ,
+			CameraTransparentSort TransparentSort = ZDepth,
+			float FieldOfView = 45,
+			float NearPlane = 0.5,
+			float FarPlane = 500,
+			float Size = 13.5335226,
+		},
+		EditorCameraController = 
+		{
+			ControlMode ControlMode = ZPlane,
+			float LookDistance = 50,
+			float VerticalAngle = 0,
+			float HorizontalAngle = 0,
+			Vec3 LookTarget = [11.186944, 14.327261, -7.04469013],
+			float MoveSensitivity = 1,
+		},
+		EditorRenderer = 
+		{
+			Vec4 ClearColor = [0.155000001, 0.155000001, 0.155000001, 1],
+			bool DrawNonVisible = true,
+			bool DrawDebugObjects = true,
+			bool DrawEditorIcons = true,
+			bool Wireframe = false,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 4,
+		},
+		Named = 
+		{
+			string Name = "EntityPlayer",
+		},
+		Archetyped = 
+		{
+			string Name = "5a1a8ffcc9bbe2f5:EntityPlayer",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [0, -6, 0],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Sprite = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = true,
+			bool CastShadows = false,
+			Vec4 Color = [1, 1, 1, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string SpriteSource = "5ab403c40b27f5b9:EntityPlayer",
+			bool RenderMask = false,
+			bool FlipX = false,
+			bool FlipY = false,
+			bool AnimationActive = false,
+			float AnimationSpeed = 1,
+			uint StartFrame = 0,
+		},
+		RigidBody = 
+		{
+			bool Static = false,
+			bool Asleep = false,
+			bool Kinematic = false,
+			bool RotationLocked = true,
+			bool Mode2D = true,
+			bool AllowSleep = true,
+			bool Inherit2DMode = true,
+			Vec3 Velocity = [0, 0, 0],
+			Vec3 AngularVelocity = [0, 0, 0],
+		},
+		CapsuleCollider = 
+		{
+			bool Ghost = false,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "5ac291505ccfd608:PlayerPhysicsMaterial",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			float Radius = 0.400000006,
+			float Height = 0.150000006,
+			AxisDirection Direction = Y,
+			CapsuleScalingMode ScalingMode = PreserveScale,
+		},
+		SoundEmitter = 
+		{
+			float Volume = 1,
+			float Pitch = 0,
+			float PitchSemitones = 0,
+			bool UsePitchSemitones = false,
+			bool Positional = true,
+			int Version = 1,
+		},
+		SoundObject = 
+		{
+			Enum SoundCategory = Sound,
+		},
+		Movement = 
+		{
+			float Speed = 150,
+			float RunSpeed = 250,
+			Enum Up = W,
+			Enum Left = A,
+			Enum Down = S,
+			Enum Right = D,
+			Enum Sprint = Shift,
+			Enum OpenMap = Tab,
+		},
+		WeaponManager = 
+		{
+		},
+		Health = 
+		{
+			float MaxHealth = 50,
+			bool IsInvincible = false,
+			bool NaturalRegen = true,
+			Vec4 DamagedColor = [1, 0.498039246, 0.498039246, 1],
+			string DeathAnimation = "",
+			int EndOfAnimation = 0,
+		},
+		Inventory = 
+		{
+			Enum InventoryButton = E,
+			Enum CraftingButton = C,
+			Enum SwapOffHandButton = F,
+		},
+		Crafting = 
+		{
+		},
+		PlayerProperties = 
+		{
+			string PlayerName = "Astronaut Zero",
+			int PlayerSkin = 0,
+			Vec3 SpawnPosition = [-20.5, 4.5, 0],
+			bool IsInWater = false,
+			bool IsInUnauthorizedZone = false,
+			bool IsDead = false,
+			float Balance = 0,
+		},
+		Reactive = 
+		{
+			bool Active = true,
+			bool CaptureMouse = false,
+		},
+		FollowTarget = 
+		{
+		},
+		Hierarchy = 
+		{
+			ArchetypeInstance = 
+			{
+				string Name = "5ac2f42e2dbfb0ab:EntityHand",
+				LinkId = 
+				{
+					uint Id = 5,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [0, -0.200000003, 0],
+					Vec3 Scale = [0.349999994, 0.349999994, 0.349999994],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "EntityHand",
+				},
+			},
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 2,
+				},
+				Named = 
+				{
+					string Name = "Camera",
+				},
+				Transform = 
+				{
+					Vec3 Translation = [0, 0, 40],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Camera = 
+				{
+					ProjectionMode ProjectionMode = Orthographic,
+					Facing Facing = NegativeZ,
+					CameraTransparentSort TransparentSort = InheritFromSpace,
+					float FieldOfView = 45,
+					float NearPlane = 0.5,
+					float FarPlane = 200,
+					float Size = 8,
+				},
+				SoundListener = 
+				{
+					bool Active = true,
+					float Volume = 1,
+				},
+			},
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 6,
+				},
+				Named = 
+				{
+					string Name = "ParticleWater",
+				},
+				Transform = 
+				{
+					Vec3 Translation = [0, -0.400000006, 1],
+					Vec3 Scale = [0.5, 0.5, 0.5],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				SpriteParticleSystem = 
+				{
+					bool Visible = false,
+					bool VisibilityCulling = true,
+					bool VisibilityEvents = true,
+					bool CastShadows = false,
+					SystemChildMode ChildMode = Independent,
+					SystemSpace SystemSpace = WorldSpace,
+					uint DrawOrder = 0,
+					Vec4 Tint = [0, 0.680000007, 0.578000128, 1],
+					float WarmUpTime = 0,
+					ParticleGeometry GeometryMode = Billboarded,
+					ParticleRenderMode RenderMode = Blended,
+					ParticleSortMode SortMode = Youngest,
+					ParticleAnimation ParticleAnimation = Looping,
+					string Texture = "5310e87946edb371:WhiteCloud",
+					float VelocityScale = 1,
+					float LengthScale = 1,
+					float MaxParticleSize = 100,
+					Vec3 SystemSize = [0.5, 0.5, 0.5],
+				},
+				SphericalParticleEmitter = 
+				{
+					bool Active = true,
+					uint EmitCount = 0,
+					float EmitRate = 300,
+					float EmitVariance = 250,
+					float Size = 0.25,
+					float SizeVariance = 0,
+					float Lifetime = 0.5,
+					float LifetimeVariance = 0.200000003,
+					float Spin = 5,
+					float SpinVariance = 50,
+					bool RandomSpin = true,
+					float Fill = 1,
+					float EmitterVelocityPercent = 4,
+					Vec3 StartVelocity = [0, 0, 0],
+					Vec3 RandomVelocity = [0, 0, 0],
+					Vec3 TangentVelocity = [0.100000001, 0.100000001, 0],
+					Vec3 EmitterSize = [0.75, 0.200000003, 1],
+					bool FastMovingEmitter = true,
+				},
+				LinearParticleAnimator = 
+				{
+					Vec3 Force = [0, 0, 0],
+					Vec3 RandomForce = [0, 0, 0],
+					float Torque = 0,
+					float Growth = 0,
+					float Dampening = 0,
+					Vec3 Twist = [0, 0, 0],
+				},
+				ParticleColorAnimator = 
+				{
+					Vec4 Color0 = [1, 1, 1, 1],
+					Vec4 Color1 = [1, 1, 1, 1],
+					Vec4 Color2 = [1, 1, 1, 1],
+					Vec4 Color3 = [1, 1, 1, 1],
+					Vec4 Color4 = [1, 1, 1, 1],
+				},
+				Hierarchy = 
+				{
+					Cog = 
+					{
+						LinkId = 
+						{
+							uint Id = 7,
+						},
+						Named = 
+						{
+							string Name = "ParticleWaterSplash",
+						},
+						Transform = 
+						{
+							Vec3 Translation = [0, -0.168491751, 0],
+							Vec3 Scale = [1, 1, 1],
+							Quat Rotation = [0, 0, 0, 1],
+						},
+						SpriteParticleSystem = 
+						{
+							bool Visible = false,
+							bool VisibilityCulling = true,
+							bool VisibilityEvents = true,
+							bool CastShadows = false,
+							SystemChildMode ChildMode = Independent,
+							SystemSpace SystemSpace = WorldSpace,
+							uint DrawOrder = 0,
+							Vec4 Tint = [0, 0.680000007, 0.578000128, 1],
+							float WarmUpTime = 0,
+							ParticleGeometry GeometryMode = Billboarded,
+							ParticleRenderMode RenderMode = Additive,
+							ParticleSortMode SortMode = Youngest,
+							ParticleAnimation ParticleAnimation = Looping,
+							string Texture = "5310e87a46e5001e:SmallRock0",
+							float VelocityScale = 1,
+							float LengthScale = 1,
+							float MaxParticleSize = 100,
+							Vec3 SystemSize = [0.5, 0.5, 0.5],
+						},
+						SphericalParticleEmitter = 
+						{
+							bool Active = true,
+							uint EmitCount = 0,
+							float EmitRate = 100,
+							float EmitVariance = 0,
+							float Size = 0.100000001,
+							float SizeVariance = 0,
+							float Lifetime = 0.5,
+							float LifetimeVariance = 0.200000003,
+							float Spin = 5,
+							float SpinVariance = 50,
+							bool RandomSpin = true,
+							float Fill = 1,
+							float EmitterVelocityPercent = 4,
+							Vec3 StartVelocity = [0.200000003, 1, 0],
+							Vec3 RandomVelocity = [0, 0, 0],
+							Vec3 TangentVelocity = [0, 1, 0],
+							Vec3 EmitterSize = [0.200000003, 0, 1],
+							bool FastMovingEmitter = true,
+						},
+						LinearParticleAnimator = 
+						{
+							Vec3 Force = [0, 0, 0],
+							Vec3 RandomForce = [0, 0, 0],
+							float Torque = 0,
+							float Growth = 0,
+							float Dampening = 0,
+							Vec3 Twist = [0, 0, 0],
+						},
+						ParticleColorAnimator = 
+						{
+							Vec4 Color0 = [1, 1, 1, 0],
+							Vec4 Color1 = [1, 1, 1, 1],
+							Vec4 Color2 = [1, 1, 1, 1],
+							Vec4 Color3 = [1, 1, 1, 1],
+							Vec4 Color4 = [1, 1, 1, 0],
+						},
+					},
+				},
+			},
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 8,
+				},
+				Named = 
+				{
+					string Name = "FootstepParticle",
+				},
+				Transform = 
+				{
+					Vec3 Translation = [0, -0.400000006, -0.100000001],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				SpriteParticleSystem = 
+				{
+					bool Visible = true,
+					bool VisibilityCulling = true,
+					bool VisibilityEvents = true,
+					bool CastShadows = false,
+					SystemChildMode ChildMode = Independent,
+					SystemSpace SystemSpace = WorldSpace,
+					uint DrawOrder = 0,
+					Vec4 Tint = [1, 1, 1, 1],
+					float WarmUpTime = 0,
+					ParticleGeometry GeometryMode = Billboarded,
+					ParticleRenderMode RenderMode = Additive,
+					ParticleSortMode SortMode = Youngest,
+					ParticleAnimation ParticleAnimation = Single,
+					string Texture = "5a16e724289bd87b:FootstepAnimated",
+					float VelocityScale = 1,
+					float LengthScale = 1,
+					float MaxParticleSize = 100,
+					Vec3 SystemSize = [1, 1, 4],
+				},
+				SphericalParticleEmitter = 
+				{
+					bool Active = true,
+					uint EmitCount = 0,
+					float EmitRate = 6,
+					float EmitVariance = 0,
+					float Size = 0.300000012,
+					float SizeVariance = 0.0500000007,
+					float Lifetime = 1,
+					float LifetimeVariance = 0.200000003,
+					float Spin = 0,
+					float SpinVariance = 50,
+					bool RandomSpin = false,
+					float Fill = 1,
+					float EmitterVelocityPercent = 0,
+					Vec3 StartVelocity = [0, 0, 0],
+					Vec3 RandomVelocity = [0, 0, 0],
+					Vec3 TangentVelocity = [0, 0, 0],
+					Vec3 EmitterSize = [0.100000001, 0.100000001, 0],
+					bool FastMovingEmitter = false,
+				},
+				LinearParticleAnimator = 
+				{
+					Vec3 Force = [0, 0, 0],
+					Vec3 RandomForce = [0, 0, 0],
+					float Torque = 0,
+					float Growth = 0,
+					float Dampening = 0,
+					Vec3 Twist = [0, 0, 0],
+				},
+				ParticleColorAnimator = 
+				{
+					Vec4 Color0 = [1, 1, 1, 0],
+					Vec4 Color1 = [1, 1, 1, 0.5],
+					Vec4 Color2 = [1, 1, 1, 0.5],
+					Vec4 Color3 = [1, 1, 1, 0.5],
+					Vec4 Color4 = [1, 1, 1, 0],
+				},
+				FootstepScript = 
+				{
+					float FootstepCooldown = 0.300000012,
+				},
+			},
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 9,
+		},
+		Named = 
+		{
+			string Name = "TileMap",
+		},
+		EditorFlags = 
+		{
+			bool Locked = true,
+			bool Hidden = false,
+		},
+		Transform = 
+		{
+			Vec3 Translation = [0, 0, -0.5],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		MultiSprite = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = true,
+			bool CastShadows = false,
+			Vec4 Color = [1, 1, 1, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		},
+		TileMap = 
+		{
+			string SourceName = "5a2723461cf8046a:Tutorial_TileMap00",
+			string PaletteName = "5ab768a14394894f:Tutorial",
+			float UnitsPerTile = 1,
+			float MeshThickness = 1.20000005,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 10,
+		},
+		Named = 
+		{
+			string Name = "TutorialExit",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [16, 2.5, 0],
+			Vec3 Scale = [1.5, 1.5, 1.5],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Sprite = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = true,
+			bool CastShadows = false,
+			Vec4 Color = [1, 1, 1, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string SpriteSource = "5a3bd0e01dee97bf:Arrow",
+			bool RenderMask = false,
+			bool FlipX = true,
+			bool FlipY = false,
+			bool AnimationActive = false,
+			float AnimationSpeed = 1,
+			uint StartFrame = 0,
+		},
+		RigidBody = 
+		{
+			bool Static = true,
+			bool Asleep = false,
+			bool Kinematic = false,
+			bool RotationLocked = true,
+			bool Mode2D = true,
+			bool AllowSleep = true,
+			bool Inherit2DMode = true,
+			Vec3 Velocity = [0, 0, 0],
+			Vec3 AngularVelocity = [0, 0, 0],
+		},
+		SphereCollider = 
+		{
+			bool Ghost = false,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			float Radius = 0.5,
+		},
+		CaveEnteranceExit = 
+		{
+			string LevelToLoad = "5a3bc4c73a7e1106:SurfaceWorld",
+			Vec3 SpawnPosition = [21.5, -4, 0],
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 11,
+		},
+		Named = 
+		{
+			string Name = "ItemDrop",
+		},
+		Archetyped = 
+		{
+			string Name = "5af7fde237047217:ItemDrop",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [0.5, 11.5, 0],
+			Vec3 Scale = [0.5, 0.5, 0.5],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Sprite = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = true,
+			bool CastShadows = false,
+			Vec4 Color = [1, 1, 1, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string SpriteSource = "5a3849374ee23b35:MissingTexture",
+			bool RenderMask = false,
+			bool FlipX = false,
+			bool FlipY = false,
+			bool AnimationActive = false,
+			float AnimationSpeed = 1,
+			uint StartFrame = 0,
+		},
+		RigidBody = 
+		{
+			bool Static = false,
+			bool Asleep = false,
+			bool Kinematic = false,
+			bool RotationLocked = false,
+			bool Mode2D = true,
+			bool AllowSleep = true,
+			bool Inherit2DMode = true,
+			Vec3 Velocity = [0, 0, 0],
+			Vec3 AngularVelocity = [0, 0, 0],
+		},
+		SphereCollider = 
+		{
+			bool Ghost = true,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "5adf616aaa719908:MaterialRover",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			float Radius = 0.5,
+		},
+		ItemDrop = 
+		{
+			int ItemID = 60,
+			int ItemAmount = 1,
+			float DespawnTime = 1000000,
+		},
+		Reactive = 
+		{
+			bool Active = true,
+			bool CaptureMouse = false,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 12,
+		},
+		Named = 
+		{
+			string Name = "ItemDrop",
+		},
+		Archetyped = 
+		{
+			string Name = "5af7fde237047217:ItemDrop",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [8.5, 16.5, 0],
+			Vec3 Scale = [0.5, 0.5, 0.5],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Sprite = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = true,
+			bool CastShadows = false,
+			Vec4 Color = [1, 1, 1, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string SpriteSource = "5a3849374ee23b35:MissingTexture",
+			bool RenderMask = false,
+			bool FlipX = false,
+			bool FlipY = false,
+			bool AnimationActive = false,
+			float AnimationSpeed = 1,
+			uint StartFrame = 0,
+		},
+		RigidBody = 
+		{
+			bool Static = false,
+			bool Asleep = false,
+			bool Kinematic = false,
+			bool RotationLocked = false,
+			bool Mode2D = true,
+			bool AllowSleep = true,
+			bool Inherit2DMode = true,
+			Vec3 Velocity = [0, 0, 0],
+			Vec3 AngularVelocity = [0, 0, 0],
+		},
+		SphereCollider = 
+		{
+			bool Ghost = true,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "5adf616aaa719908:MaterialRover",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			float Radius = 0.5,
+		},
+		ItemDrop = 
+		{
+			int ItemID = 40,
+			int ItemAmount = 1,
+			float DespawnTime = 1000000,
+		},
+		Reactive = 
+		{
+			bool Active = true,
+			bool CaptureMouse = false,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 13,
+		},
+		Named = 
+		{
+			string Name = "ItemDrop",
+		},
+		Archetyped = 
+		{
+			string Name = "5af7fde237047217:ItemDrop",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [12.5, 13, 0],
+			Vec3 Scale = [0.5, 0.5, 0.5],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Sprite = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = true,
+			bool CastShadows = false,
+			Vec4 Color = [1, 1, 1, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string SpriteSource = "5a3849374ee23b35:MissingTexture",
+			bool RenderMask = false,
+			bool FlipX = false,
+			bool FlipY = false,
+			bool AnimationActive = false,
+			float AnimationSpeed = 1,
+			uint StartFrame = 0,
+		},
+		RigidBody = 
+		{
+			bool Static = false,
+			bool Asleep = false,
+			bool Kinematic = false,
+			bool RotationLocked = false,
+			bool Mode2D = true,
+			bool AllowSleep = true,
+			bool Inherit2DMode = true,
+			Vec3 Velocity = [0, 0, 0],
+			Vec3 AngularVelocity = [0, 0, 0],
+		},
+		SphereCollider = 
+		{
+			bool Ghost = true,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "5adf616aaa719908:MaterialRover",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			float Radius = 0.5,
+		},
+		ItemDrop = 
+		{
+			int ItemID = 42,
+			int ItemAmount = 1,
+			float DespawnTime = 1000000,
+		},
+		Reactive = 
+		{
+			bool Active = true,
+			bool CaptureMouse = false,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 14,
+		},
+		Named = 
+		{
+			string Name = "Sprite",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [25.5, 10.5, 0],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Sprite = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = true,
+			bool CastShadows = false,
+			Vec4 Color = [1, 1, 1, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string SpriteSource = "5ab690419101fc56:DummyDemonstration000",
+			bool RenderMask = false,
+			bool FlipX = false,
+			bool FlipY = false,
+			bool AnimationActive = true,
+			float AnimationSpeed = 1,
+			uint StartFrame = 0,
+		},
+		ShootDemonstration = 
+		{
+			string WhatToSpawn = "5a2aaeb9ccb96785:EntityBullet",
+			float SpawnTime = 2,
+			float BulletSpeed = 10,
+		},
+	},
+	ArchetypeInstance = 
+	{
+		string Name = "5a9e47cedcf53d25:Target",
+		LinkId = 
+		{
+			uint Id = 15,
+		},
+		Transform = 
+		{
+			Vec3 Translation = [20.5, 17.5, 0],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Named = 
+		{
+			string Name = "Target",
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 16,
+		},
+		Named = 
+		{
+			string Name = "TargetExample",
+		},
+		Archetyped = 
+		{
+			string Name = "5a9e47cedcf53d25:Target",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [25.5, 17.5, 0],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Sprite = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = true,
+			bool CastShadows = false,
+			Vec4 Color = [1, 1, 1, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string SpriteSource = "5a9e478fc47215ad:Target",
+			bool RenderMask = false,
+			bool FlipX = false,
+			bool FlipY = false,
+			bool AnimationActive = true,
+			float AnimationSpeed = 1,
+			uint StartFrame = 0,
+		},
+		Health = 
+		{
+			float MaxHealth = 5,
+			bool IsInvincible = true,
+			bool NaturalRegen = false,
+			Vec4 DamagedColor = [1, 0.498039275, 0.498039246, 1],
+			string DeathAnimation = "",
+			int EndOfAnimation = 0,
+		},
+		SphereCollider = 
+		{
+			bool Ghost = false,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			float Radius = 0.5,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 17,
+		},
+		Named = 
+		{
+			string Name = "Door",
+		},
+		Archetyped = 
+		{
+			string Name = "5ab68facaf05b4c6:Door",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [16.5, 14.5, 0],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Door = 
+		{
+			Enum DoorState = Locked,
+			Enum DoorDir = West,
+			Enum DoorPerms = Any,
+			bool OneWayDoor = false,
+			bool DebugMode = false,
+			string OpenDoorSound = "5a6a63169f6c37f7:DoorOpen",
+		},
+		BoxCollider = 
+		{
+			bool Ghost = true,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			Vec3 Size = [1, 1, 1],
+		},
+		DoorCondition = 
+		{
+			Enum Condition = HasItem,
+			string Item = "ItemPistol",
+			int ItemAmount = 1,
+			string EntityName = "Target",
+			Enum Message = TutorialComplete,
+			bool Debug = false,
+		},
+		Hierarchy = 
+		{
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 18,
+				},
+				Named = 
+				{
+					string Name = "Door",
+				},
+				Transform = 
+				{
+					Vec3 Translation = [0, 0, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Sprite = 
+				{
+					bool Visible = true,
+					bool VisibilityCulling = true,
+					bool VisibilityEvents = true,
+					bool CastShadows = false,
+					Vec4 Color = [1, 1, 1, 1],
+					BlendMode BlendMode = Alpha,
+					SpriteGeometryMode GeometryMode = ZPlane,
+					string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+					string SpriteSource = "5a9cc3790421529b:DoorVertical",
+					bool RenderMask = false,
+					bool FlipX = false,
+					bool FlipY = false,
+					bool AnimationActive = false,
+					float AnimationSpeed = 1,
+					uint StartFrame = 0,
+				},
+				BoxCollider = 
+				{
+					bool Ghost = false,
+					bool SendsMessages = true,
+					bool Seamless = true,
+					string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+					string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+					Vec3 Offset = [0, 0, 0],
+					Vec3 Size = [0.5, 0.5, 0.5],
+				},
+			},
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 19,
+		},
+		Named = 
+		{
+			string Name = "Door",
+		},
+		Archetyped = 
+		{
+			string Name = "5ab68facaf05b4c6:Door",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [16.5, 2.5, 0],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Door = 
+		{
+			Enum DoorState = Locked,
+			Enum DoorDir = East,
+			Enum DoorPerms = Any,
+			bool OneWayDoor = false,
+			bool DebugMode = false,
+			string OpenDoorSound = "5a6a63169f6c37f7:DoorOpen",
+		},
+		BoxCollider = 
+		{
+			bool Ghost = true,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			Vec3 Size = [1, 1, 1],
+		},
+		DoorCondition = 
+		{
+			Enum Condition = EntityDeath,
+			string Item = "ItemPistol",
+			int ItemAmount = 1,
+			string EntityName = "EntityEnemy",
+			Enum Message = TutorialComplete,
+			bool Debug = false,
+		},
+		Hierarchy = 
+		{
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 20,
+				},
+				Named = 
+				{
+					string Name = "Door",
+				},
+				Transform = 
+				{
+					Vec3 Translation = [0, 0, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Sprite = 
+				{
+					bool Visible = true,
+					bool VisibilityCulling = true,
+					bool VisibilityEvents = true,
+					bool CastShadows = false,
+					Vec4 Color = [1, 1, 1, 1],
+					BlendMode BlendMode = Alpha,
+					SpriteGeometryMode GeometryMode = ZPlane,
+					string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+					string SpriteSource = "5a9cc3790421529b:DoorVertical",
+					bool RenderMask = false,
+					bool FlipX = false,
+					bool FlipY = false,
+					bool AnimationActive = false,
+					float AnimationSpeed = 1,
+					uint StartFrame = 0,
+				},
+				BoxCollider = 
+				{
+					bool Ghost = false,
+					bool SendsMessages = true,
+					bool Seamless = true,
+					string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+					string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+					Vec3 Offset = [0, 0, 0],
+					Vec3 Size = [0.5, 0.5, 0.5],
+				},
+			},
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 21,
+		},
+		Named = 
+		{
+			string Name = "Door",
+		},
+		Archetyped = 
+		{
+			string Name = "5ab68facaf05b4c6:Door",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [21.5, 8, 0],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Door = 
+		{
+			Enum DoorState = Locked,
+			Enum DoorDir = North,
+			Enum DoorPerms = PlayerOnly,
+			bool OneWayDoor = false,
+			bool DebugMode = false,
+			string OpenDoorSound = "5a6a63169f6c37f7:DoorOpen",
+		},
+		BoxCollider = 
+		{
+			bool Ghost = true,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			Vec3 Size = [1, 1, 1],
+		},
+		DoorCondition = 
+		{
+			Enum Condition = EntityDeath,
+			string Item = "ItemCopper",
+			int ItemAmount = 1,
+			string EntityName = "Target",
+			Enum Message = TutorialComplete,
+			bool Debug = false,
+		},
+		Hierarchy = 
+		{
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 22,
+				},
+				Named = 
+				{
+					string Name = "Door",
+				},
+				Transform = 
+				{
+					Vec3 Translation = [0, 0, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Sprite = 
+				{
+					bool Visible = true,
+					bool VisibilityCulling = true,
+					bool VisibilityEvents = true,
+					bool CastShadows = false,
+					Vec4 Color = [1, 1, 1, 1],
+					BlendMode BlendMode = Alpha,
+					SpriteGeometryMode GeometryMode = ZPlane,
+					string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+					string SpriteSource = "5a9cc319087790c8:DoorHorizontal",
+					bool RenderMask = false,
+					bool FlipX = false,
+					bool FlipY = false,
+					bool AnimationActive = false,
+					float AnimationSpeed = 1,
+					uint StartFrame = 0,
+				},
+				BoxCollider = 
+				{
+					bool Ghost = false,
+					bool SendsMessages = true,
+					bool Seamless = true,
+					string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+					string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+					Vec3 Offset = [0, 0, 0],
+					Vec3 Size = [0.5, 0.5, 0.5],
+				},
+			},
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 23,
+		},
+		Named = 
+		{
+			string Name = "Door",
+		},
+		Archetyped = 
+		{
+			string Name = "5ab68facaf05b4c6:Door",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [0.5, 8, 0],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Door = 
+		{
+			Enum DoorState = Locked,
+			Enum DoorDir = North,
+			Enum DoorPerms = Any,
+			bool OneWayDoor = false,
+			bool DebugMode = false,
+			string OpenDoorSound = "5a6a63169f6c37f7:DoorOpen",
+		},
+		BoxCollider = 
+		{
+			bool Ghost = true,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			Vec3 Size = [1, 1, 1],
+		},
+		DoorCondition = 
+		{
+			Enum Condition = HasSeenMessage,
+			string Item = "ItemCopper",
+			int ItemAmount = 1,
+			string EntityName = "Target",
+			Enum Message = TutorialComplete,
+			bool Debug = false,
+		},
+		Hierarchy = 
+		{
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 24,
+				},
+				Named = 
+				{
+					string Name = "Door",
+				},
+				Transform = 
+				{
+					Vec3 Translation = [0, 0, -0.400000006],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Sprite = 
+				{
+					bool Visible = true,
+					bool VisibilityCulling = true,
+					bool VisibilityEvents = true,
+					bool CastShadows = false,
+					Vec4 Color = [1, 1, 1, 1],
+					BlendMode BlendMode = Alpha,
+					SpriteGeometryMode GeometryMode = ZPlane,
+					string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+					string SpriteSource = "5a9cc3790421529b:DoorVertical",
+					bool RenderMask = false,
+					bool FlipX = false,
+					bool FlipY = false,
+					bool AnimationActive = false,
+					float AnimationSpeed = 1,
+					uint StartFrame = 0,
+				},
+				BoxCollider = 
+				{
+					bool Ghost = false,
+					bool SendsMessages = true,
+					bool Seamless = true,
+					string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+					string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+					Vec3 Offset = [0, 0, 0.200000003],
+					Vec3 Size = [0.5, 0.5, 0.5],
+				},
+			},
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 25,
+		},
+		Named = 
+		{
+			string Name = "Rocks",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [0, 0, 0],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Hierarchy = 
+		{
+			ArchetypeInstance = 
+			{
+				string Name = "5a9dc0e5024bdc19:BlockRockCopperTutorial",
+				LinkId = 
+				{
+					uint Id = 26,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [1, 16, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9dc008157b3ecb:BlockRockIronTutorial",
+				LinkId = 
+				{
+					uint Id = 27,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-3, 14, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9dc008157b3ecb:BlockRockIronTutorial",
+				LinkId = 
+				{
+					uint Id = 28,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-4, 11, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 29,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [4, 14, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 30,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-4, 14, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 31,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-3, 16, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 32,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-2, 16, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 33,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-3, 11, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9dc008157b3ecb:BlockRockIronTutorial",
+				LinkId = 
+				{
+					uint Id = 34,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [4, 18, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 35,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-4, 17, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 36,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [3, 17, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 37,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-3, 18, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 38,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-3, 12, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 39,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [4, 15, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9dc0e5024bdc19:BlockRockCopperTutorial",
+				LinkId = 
+				{
+					uint Id = 40,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-2, 15, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 41,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-2, 18, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9dc008157b3ecb:BlockRockIronTutorial",
+				LinkId = 
+				{
+					uint Id = 42,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [4, 16, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9dc0631237b6dc:BlockRockGoldTutorial",
+				LinkId = 
+				{
+					uint Id = 43,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [1, 18, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9dc008157b3ecb:BlockRockIronTutorial",
+				LinkId = 
+				{
+					uint Id = 44,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [0, 15, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 45,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-2, 13, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9dc008157b3ecb:BlockRockIronTutorial",
+				LinkId = 
+				{
+					uint Id = 46,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-1, 15, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9dc008157b3ecb:BlockRockIronTutorial",
+				LinkId = 
+				{
+					uint Id = 47,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-3, 17, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 48,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [3, 18, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 49,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-4, 12, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 50,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-4, 13, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 51,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-2, 14, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 52,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-4, 10, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 53,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-4, 18, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 54,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [3, 16, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 55,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-1, 14, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 56,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [0, 18, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 57,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [0, 17, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 58,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-1, 16, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 59,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [0, 16, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9dc0e5024bdc19:BlockRockCopperTutorial",
+				LinkId = 
+				{
+					uint Id = 60,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [4, 17, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 61,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [2, 16, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 62,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [1, 17, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 63,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [2, 18, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9dc008157b3ecb:BlockRockIronTutorial",
+				LinkId = 
+				{
+					uint Id = 64,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [3, 15, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9dc0631237b6dc:BlockRockGoldTutorial",
+				LinkId = 
+				{
+					uint Id = 65,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-3, 13, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9dc008157b3ecb:BlockRockIronTutorial",
+				LinkId = 
+				{
+					uint Id = 66,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-1, 17, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9dc008157b3ecb:BlockRockIronTutorial",
+				LinkId = 
+				{
+					uint Id = 67,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [2, 17, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9dc008157b3ecb:BlockRockIronTutorial",
+				LinkId = 
+				{
+					uint Id = 68,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-4, 16, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9dc008157b3ecb:BlockRockIronTutorial",
+				LinkId = 
+				{
+					uint Id = 69,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-3, 10, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 70,
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+				Archetyped = 
+				{
+					string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-3, 15, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Sprite = 
+				{
+					bool Visible = true,
+					bool VisibilityCulling = true,
+					bool VisibilityEvents = true,
+					bool CastShadows = false,
+					Vec4 Color = [1, 1, 1, 1],
+					BlendMode BlendMode = Alpha,
+					SpriteGeometryMode GeometryMode = ZPlane,
+					string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+					string SpriteSource = "5a27c0be921480cd:CaveTiles000",
+					bool RenderMask = false,
+					bool FlipX = false,
+					bool FlipY = false,
+					bool AnimationActive = true,
+					float AnimationSpeed = 1,
+					uint StartFrame = 0,
+				},
+				BoxCollider = 
+				{
+					bool Ghost = false,
+					bool SendsMessages = true,
+					bool Seamless = true,
+					string MaterialName = "5adb7fbd40293811:MaterialRock",
+					string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+					Vec3 Offset = [0, 0, 0],
+					Vec3 Size = [0.5, 0.5, 0.5],
+				},
+				TutorialBlock = 
+				{
+					float MaxBlockHealth = 5,
+					string Item = "ItemRock",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 71,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-1, 18, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9cdb9b26e6926e:BlockRockTitaniumTutorial",
+				LinkId = 
+				{
+					uint Id = 72,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-2, 17, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9dc0e5024bdc19:BlockRockCopperTutorial",
+				LinkId = 
+				{
+					uint Id = 73,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-2, 12, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+			ArchetypeInstance = 
+			{
+				string Name = "5a9e51f4ab747c72:BlockRockTutorial",
+				LinkId = 
+				{
+					uint Id = 74,
+				},
+				Transform = 
+				{
+					Vec3 Translation = [-4, 15, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Named = 
+				{
+					string Name = "BlockRockTutorial",
+				},
+			},
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 75,
+		},
+		Named = 
+		{
+			string Name = "EntityEnemy",
+		},
+		Archetyped = 
+		{
+			string Name = "5af2ca606a8a3ea0:EntityFrogg",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [22, 2, 0],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Sprite = 
+		{
+			bool Visible = false,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = true,
+			bool CastShadows = false,
+			Vec4 Color = [1, 1, 1, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string SpriteSource = "5af2c5e8248ed1c5:FroggDown",
+			bool RenderMask = false,
+			bool FlipX = false,
+			bool FlipY = false,
+			bool AnimationActive = false,
+			float AnimationSpeed = 1,
+			uint StartFrame = 0,
+		},
+		RigidBody = 
+		{
+			bool Static = false,
+			bool Asleep = false,
+			bool Kinematic = false,
+			bool RotationLocked = true,
+			bool Mode2D = true,
+			bool AllowSleep = true,
+			bool Inherit2DMode = true,
+			Vec3 Velocity = [0, 0, 0],
+			Vec3 AngularVelocity = [0, 0, 0],
+		},
+		CapsuleCollider = 
+		{
+			bool Ghost = false,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			float Radius = 0.400000006,
+			float Height = 0.150000006,
+			AxisDirection Direction = Y,
+			CapsuleScalingMode ScalingMode = PreserveScale,
+		},
+		Area = 
+		{
+			Vec2 Size = [1, 1],
+			Location Origin = Center,
+		},
+		Orientation = 
+		{
+			Vec3 GlobalUp = [0, 0, 1],
+			Vec3 UpVector = [0, 0, 1],
+			Vec3 ForwardVector = [0, 1, 0],
+			OrientationBases DefaultBases = Custom,
+		},
+		EntityEnemy = 
+		{
+			float AttackCooldown = 2,
+			bool CanShoot = false,
+			bool CanAttackForward = true,
+			float AttackDamage = 2,
+			float AttackWithinRadiusOf = 3,
+			float HitboxSize = 1.75,
+			float HitboxLifetime = 0.100000001,
+			bool CanMove = false,
+			float SightRadius = 5,
+			string LookUp = "5af2ca3d53b98b8d:FroggUp",
+			string LookUpRight = "5af2ca3d53b98b8d:FroggUp",
+			string LookRight = "5af2c5fa26e3ac59:FroggRight",
+			string LookDownRight = "5af2c5e8248ed1c5:FroggDown",
+			string LookDown = "5af2c5e8248ed1c5:FroggDown",
+			float BulletSpeed = 10,
+		},
+		Health = 
+		{
+			float MaxHealth = 10,
+			bool IsInvincible = false,
+			bool NaturalRegen = false,
+			Vec4 DamagedColor = [1, 0.498039275, 0.498039246, 1],
+			string DeathAnimation = "",
+			int EndOfAnimation = 0,
+		},
+		SoundEmitter = 
+		{
+			float Volume = 1.99526238,
+			float Pitch = 0,
+			float PitchSemitones = 0,
+			bool UsePitchSemitones = false,
+			bool Positional = true,
+			int Version = 1,
+		},
+		SoundObject = 
+		{
+			Enum SoundCategory = Sound,
+		},
+		Follower = 
+		{
+			float SearchRange = 15,
+			float SearchFrequency = 0.100000001,
+			float SearchFrequencyVariance = 0.100000001,
+			float MemoryFrequency = 0.100000001,
+			float PredictionTime = 0.200000003,
+			float Straightness = 1,
+			float Speed = 3,
+			float Acceleration = 2,
+		},
+		EntityDrop = 
+		{
+			string ItemName = "ItemGreenBean",
+			int Amount = 2,
+		},
+		EntityFreezer = 
+		{
+			string EntityArchetype = "5af2ca606a8a3ea0:EntityFrogg",
+			float FreezeDistance = 64,
+		},
+		Hierarchy = 
+		{
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 76,
+				},
+				Named = 
+				{
+					string Name = "EnemySprite",
+				},
+				Transform = 
+				{
+					Vec3 Translation = [0, 0, 0],
+					Vec3 Scale = [1, 1, 1],
+					Quat Rotation = [0, 0, 0, 1],
+				},
+				Sprite = 
+				{
+					bool Visible = true,
+					bool VisibilityCulling = true,
+					bool VisibilityEvents = true,
+					bool CastShadows = false,
+					Vec4 Color = [1, 1, 1, 1],
+					BlendMode BlendMode = Alpha,
+					SpriteGeometryMode GeometryMode = ZPlane,
+					string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+					string SpriteSource = "5af2c5e8248ed1c5:FroggDown",
+					bool RenderMask = false,
+					bool FlipX = false,
+					bool FlipY = false,
+					bool AnimationActive = true,
+					float AnimationSpeed = 1,
+					uint StartFrame = 0,
+				},
+				Orientation = 
+				{
+					Vec3 GlobalUp = [0, 0, 1],
+					Vec3 UpVector = [0, 0, 1],
+					Vec3 ForwardVector = [0, 1, 0],
+					OrientationBases DefaultBases = ForwardYUpZ,
+				},
+			},
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 77,
+		},
+		Named = 
+		{
+			string Name = "Sprite",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [14.5, 14.5, -1],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Sprite = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = true,
+			bool CastShadows = false,
+			Vec4 Color = [1, 1, 1, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string SpriteSource = "5a39afefc7e6d3fc:ItemPistol",
+			bool RenderMask = false,
+			bool FlipX = false,
+			bool FlipY = false,
+			bool AnimationActive = true,
+			float AnimationSpeed = 1,
+			uint StartFrame = 0,
+		},
+		AppearIfClose = 
+		{
+			Vec4 CloseColor = [1, 1, 1, 1],
+			Vec4 FarColor = [1, 1, 1, 0],
+			float Radius = 2,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 78,
+		},
+		Named = 
+		{
+			string Name = "Sprite",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [14, 14.5, -0.100000001],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Sprite = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = true,
+			bool CastShadows = false,
+			Vec4 Color = [1, 1, 1, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string SpriteSource = "5a39afefc7e6d3fc:ItemPistol",
+			bool RenderMask = false,
+			bool FlipX = false,
+			bool FlipY = false,
+			bool AnimationActive = true,
+			float AnimationSpeed = 1,
+			uint StartFrame = 0,
+		},
+		AppearIfClose = 
+		{
+			Vec4 CloseColor = [1, 1, 1, 0.349999994],
+			Vec4 FarColor = [1, 1, 1, 0],
+			float Radius = 2,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 79,
+		},
+		Named = 
+		{
+			string Name = "CraftingArea",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [11, 14, 0],
+			Vec3 Scale = [10, 10, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Sprite = 
+		{
+			bool Visible = false,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = true,
+			bool CastShadows = false,
+			Vec4 Color = [1, 1, 1, 1],
+			BlendMode BlendMode = Alpha,
+			SpriteGeometryMode GeometryMode = ZPlane,
+			string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+			string SpriteSource = "5275aa4d802dd6dc:Square",
+			bool RenderMask = false,
+			bool FlipX = false,
+			bool FlipY = false,
+			bool AnimationActive = true,
+			float AnimationSpeed = 1,
+			uint StartFrame = 0,
+		},
+		BoxCollider = 
+		{
+			bool Ghost = true,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			Vec3 Size = [0.5, 0.5, 0.5],
+		},
+		CraftingArea = 
+		{
+		},
+	},
+},

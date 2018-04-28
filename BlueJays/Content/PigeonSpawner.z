@@ -1,0 +1,46 @@
+//Author: Hunter Fosler
+//Purpose: Spawns pigeons.
+
+class PigeonSpawner : ZilchComponent
+{
+     [Property]
+    var Pigeon : Archetype;
+    [Property]
+    var WhatToSpawn : Archetype;
+    [Property]
+    var PigeonLimit : Integer = 5;
+    [Property]
+    var SpawnTime : Real = 1.0;
+
+    var TimeSinceLastSpawn : Real = 0.0;
+
+    function Initialize(init : CogInitializer)
+    {
+        // Connect to LogicUpdate event:
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        // Add the amount of time that has just passed (Delta Time)
+        // to the time since last spawn
+        this.TimeSinceLastSpawn += event.Dt;
+
+        // If enough time has passed, spawn the ball
+        if (this.TimeSinceLastSpawn > this.SpawnTime)
+        {
+            var spawnPosition = this.Owner.Transform.Translation;
+
+            this.Space.CreateAtPosition(this.WhatToSpawn, spawnPosition);
+
+            // Need to reset the value
+            this.TimeSinceLastSpawn = 0.0;
+        }
+                if (this.Space.LevelSettings.PigeonCounter.PigeonCount>= this.PigeonLimit)
+        {
+           
+            this.Owner.Destroy();
+            
+        }
+    }
+}

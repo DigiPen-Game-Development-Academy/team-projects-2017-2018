@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchFragmentBuilder = 
+	{
+		string Name = "GlowyCircle",
+		uint64 ResourceId = 5a75bf1fa1ed4fe2,
+	},
+},

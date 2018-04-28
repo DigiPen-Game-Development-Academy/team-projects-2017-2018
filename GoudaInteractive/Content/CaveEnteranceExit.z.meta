@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "CaveEnteranceExit",
+		uint64 ResourceId = 5a25f071b9a2a969,
+	},
+},

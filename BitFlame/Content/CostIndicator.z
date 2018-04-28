@@ -1,0 +1,65 @@
+/*************************************
+Filename: CostIndicator.z
+Author: Jakob McFarland
+Contributors: NULL
+Last modified: 4/10/18
+Brief: This Component changes the sprite text to display the costs in the crafting menu gui
+******************************************/
+
+class CostIndicator : ZilchComponent
+{
+    [Dependency] var SpriteText : SpriteText = null;
+    
+    [Property] var ItemType : ItemType; 
+    [Property] var Cost : Integer = 0;
+    
+    [Property] var ValidColor : Real4 = Real4(0, 0, 0, 1);
+    [Property] var InvalidColor : Real4 = Real4(0, 0, 0, 1);
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var amount = 0;      
+        var gamevars = this.GameSession.GameVars;
+        
+        //aluminium
+        if(this.ItemType == 0)
+        {
+            amount = gamevars.PlayerAluminium;
+        }
+        //copper
+        else if(this.ItemType == 1)
+        {
+            amount = gamevars.PlayerCopper;
+        }
+        //iron
+        else if(this.ItemType == 2)
+        {
+            amount = gamevars.PlayerResources;
+        }
+        //titanium
+        else if(this.ItemType == 3)
+        {
+            amount = gamevars.PlayerTitanium;
+        }
+        
+        this.SpriteText.Text = "`amount`/`this.Cost`";
+        
+        var color = Real4(0,0,0,1);
+        
+        if(amount >= this.Cost)
+        {
+            color += this.ValidColor;
+        }
+        else
+        {
+            color += this.InvalidColor;
+        }
+        
+        this.SpriteText.Color = color;
+    }
+}

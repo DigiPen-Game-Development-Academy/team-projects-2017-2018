@@ -1,0 +1,42 @@
+//Jacob Burke
+
+//This is the script that controls the movement of the Ballista Snail
+
+class BallistaSnail : ZilchComponent
+{
+    [Property]
+    var Speed:Real = 2;
+    
+    var TimerStart:Boolean = true;
+    
+    var Timer:Real = 0.5;
+    
+    var Direction:Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Direction == false)
+        {
+            var velocity = this.Owner.RigidBody.Velocity;
+            velocity.X = this.Speed;
+            this.Owner.RigidBody.Velocity= velocity;
+            this.Owner.Sprite.FlipX = false;
+        }
+        if(this.Direction == true)
+        {
+            var velocity = this.Owner.RigidBody.Velocity;
+            velocity.X = -this.Speed;
+            this.Owner.RigidBody.Velocity= velocity;
+            this.Owner.Sprite.FlipX = true;
+        }
+    }
+}

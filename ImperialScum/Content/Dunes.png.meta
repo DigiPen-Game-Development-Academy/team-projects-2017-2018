@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "Dunes",
+		uint64 ResourceId = 5adedb095bd23f21,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 192,
+		uint FrameSizeY = 112,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 96,
+		float OriginY = 56,
+		float PixelsPerUnit = 16,
+		bool Smoothing = false,
+		bool Looping = false,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

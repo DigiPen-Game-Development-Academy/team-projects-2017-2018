@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "WakeSpriteSource",
+		uint64 ResourceId = 5a074cc6ca5cf6ea,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 32,
+		uint FrameSizeY = 32,
+		uint FrameCount = 48,
+		float FrameDelay = 0.0399999991,
+		float OriginX = 16,
+		float OriginY = 32,
+		float PixelsPerUnit = 32,
+		bool Smoothing = true,
+		bool Looping = false,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

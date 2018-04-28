@@ -1,0 +1,24 @@
+class Fade : ZilchComponent
+{
+    var FadeTime : Real;
+    var OriginalColor : Real4;
+    [Property] var TotalFadeTime : Real = 1.0;
+    [Property] var Delay : Real = 1.0;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        //this.Owner.Sprite.Visible = true;
+        
+        this.OriginalColor = this.Owner.Sprite.Color;
+        
+    }
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.FadeTime += event.Dt;
+        this.Owner.Sprite.Color = Math.Lerp(this.OriginalColor, Real4.Zero, Math.Clamp((this.FadeTime - this.Delay) / this.TotalFadeTime, 0, 1));
+        if ( (this.FadeTime - this.Delay) > this.TotalFadeTime)
+        {
+            this.Owner.Destroy();
+        }
+    }
+}

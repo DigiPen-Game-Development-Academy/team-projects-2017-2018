@@ -1,0 +1,51 @@
+//Author Brandon Wolenetz
+
+class FinalBossEnd : ZilchComponent {
+    
+    [Property] var Note  : String = "THIS IS A NOTE";
+    [Property] var FinalLevel : Level;
+    
+    var Dialog : Cog;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.NoHealth, this.OnNoHealth);
+    }
+    
+    function OnDialogEnded(event : DialogEnded) {
+        
+        this.LoadTheLevel();
+        
+    }
+
+    function OnNoHealth(event : NoHealth) {
+        
+        if(this.Owner.FinalBoss != null)
+            this.Owner.FinalBoss.Active = false;
+        
+        this.Dialog = Utilities.Dialog("You found a note!  It reads:\n`this.Note`", DialogTypes.OK, 15);
+        
+        Zero.Connect(this.Dialog, Events.DialogEnded, this.OnDialogEnded);
+        
+    }
+    
+    function LoadTheLevel () {
+        
+        if(Utilities.DialogBox != null)
+            return;
+        
+        var uiSpace = this.GameSession.FindSpaceByName("UI");
+        if(uiSpace != null) {
+            uiSpace.Destroy();
+        }
+        if(GlobalVariables.GameSpace == null) {
+            this.Space.LoadLevel(this.FinalLevel);
+            this.Space.TimeSpace.Paused = false;
+        } else {
+            GlobalVariables.GameSpace.LoadLevel(this.FinalLevel);
+            GlobalVariables.GameSpace.TimeSpace.Paused = false;
+        }
+        Zero.Mouse.Trapped = false;
+        
+    }
+    
+}

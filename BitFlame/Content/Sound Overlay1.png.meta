@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "Sound Overlay1",
+		uint64 ResourceId = 5a69d210debd2035,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 396,
+		uint FrameSizeY = 62,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 198,
+		float OriginY = 31,
+		float PixelsPerUnit = 32,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

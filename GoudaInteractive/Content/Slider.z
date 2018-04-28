@@ -1,0 +1,105 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+enum SliderType {
+    Fill, Grabber
+}
+
+class Slider : ZilchComponent {
+    
+    [Property] var SliderType : SliderType = SliderType.Fill;
+    [Property] var Label : String = "Slider";
+    [Property] var CurrentAmount : Real = 50.0;
+    [Property] var MaxAmount : Real = 100.0;
+    [Property] var SliderColor : Real4 = Real4(0.05, 0.75, 0.05, 1.0);
+    
+    var MouseDown : Boolean = false;
+    
+    var CurrScaleAmount : Real = 5.0;
+    var MaxScaleAmount : Real3 = Real3(10.0, 0.75, 1.0);
+    var OriginalTranslation : Real2 = Real2(-5, -0.25);
+    
+    function Initialize(init : CogInitializer) {
+        
+        this.Owner.FindChildByName("Slider").Sprite.Color = this.SliderColor;
+        this.OriginalTranslation = this.Owner.Transform.WorldTranslation.XY;
+        
+        this.MaxScaleAmount = this.Owner.FindChildByName("SliderBG").Transform.Scale;
+        this.CurrScaleAmount = (this.CurrentAmount / this.MaxAmount) * this.MaxScaleAmount.X;
+        
+        if(this.SliderType == SliderType.Fill) {
+            this.Owner.FindChildByName("Slider").Transform.Scale = Real3(this.CurrScaleAmount, this.MaxScaleAmount.YZ);
+            this.Owner.SpriteText.Text = "`this.Label`: `this.CurrentAmount`/`this.MaxAmount`";
+        }
+        
+        Zero.Connect(this.Space, Events.MouseMove, this.OnMouseMove);
+        Zero.Connect(this.Owner.FindChildByName("SliderBG"), Events.MouseDown, this.OnMouseDown);
+        Zero.Connect(this.Owner.FindChildByName("Slider"), Events.MouseDown, this.OnMouseDown);
+        Zero.Connect(this.Space, Events.MouseUp, this.OnMouseUp);
+        
+    }
+    
+    function OnMouseMove(event : ViewportMouseEvent) {
+        if(this.MouseDown)
+            this.SetSliderValue(event);
+    }
+    
+    function OnMouseDown(event : ViewportMouseEvent) {
+        this.MouseDown = true;
+        this.SetSliderValue(event);
+    }
+    
+    function OnMouseUp(event : ViewportMouseEvent) {
+        this.MouseDown = false;
+    }
+    
+    function SetSliderValue(event : ViewportMouseEvent) {
+        
+        var pos = event.CameraViewport.ScreenToWorldZPlane(event.Position, 0);
+        this.UpdateSliderValue(pos, true);
+        
+    }
+    
+    function InitializeSlider(type : SliderType) {
+        this.SliderType = type;
+        this.UpdateSliderValue(Real3(this.CurrentAmount / this.MaxAmount, this.Owner.Transform.WorldTranslation.Y, 0), false);
+    }
+    
+    function UpdateSliderValue(pos : Real3, changeCurrentAmt : Boolean) {
+        
+        pos = Real3(pos.XY - this.Owner.Transform.WorldTranslation.XY, 0.0);
+        
+        this.Owner.FindChildByName("Slider").Sprite.Color = this.SliderColor;
+        
+        this.CurrScaleAmount = pos.X + this.MaxScaleAmount.X / 2;
+        
+        if(this.CurrScaleAmount < 0.0) {
+            this.CurrScaleAmount = 0.0;
+        } else if(this.CurrScaleAmount > this.MaxScaleAmount.X) {
+            this.CurrScaleAmount = this.MaxScaleAmount.X;
+        }
+        
+        if(changeCurrentAmt)
+            this.CurrentAmount = Math.Round(this.CurrScaleAmount.X * this.MaxAmount / 10);
+        
+        var slider = this.Owner.FindChildByName("Slider");
+        var sliderBG = this.Owner.FindChildByName("SliderBG");
+        
+        if(this.SliderType == SliderType.Fill) {
+            slider.Sprite.SpriteSource = SpriteSource.TextSelect;
+            slider.Transform.Scale = Real3((this.CurrentAmount / this.MaxAmount) * this.MaxScaleAmount.X, this.MaxScaleAmount.YZ);
+            this.Owner.SpriteText.Text = "`this.Label`: `this.CurrentAmount`/`this.MaxAmount`";
+        } else {
+            slider.Sprite.SpriteSource = SpriteSource.Square;
+            sliderBG.Transform.Scale = Real3(sliderBG.Transform.Scale.X, 0.25, 1.0);
+            slider.Transform.Scale = Real3(0.5);
+            slider.Transform.Translation = Real3(
+                ((this.CurrentAmount / this.MaxAmount) * this.MaxScaleAmount.X) - this.MaxScaleAmount.X / 2,
+                Real2(-0.375, 0.0)
+            );
+            this.Owner.SpriteText.Text = "";
+        }
+        
+    }
+    
+}

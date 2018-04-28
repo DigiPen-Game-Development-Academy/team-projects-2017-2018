@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "Launch_ToPlayer",
+		uint64 ResourceId = 5a786c94fb124dc9,
+	},
+},

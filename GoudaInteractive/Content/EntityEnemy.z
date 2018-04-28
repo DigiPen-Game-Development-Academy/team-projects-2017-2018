@@ -1,0 +1,167 @@
+// AUTHOR: MYLES BUSIG
+// CONTRIBUTORS: KEVIN PANASYUK, HUDSON GREEN
+
+class EntityEnemy : ZilchComponent
+{
+    [Property] var AttackCooldown : Real = 1.0;
+    [Property] var CanShoot : Boolean = true;
+    [Property] var CanAttackForward : Boolean = true;
+    [Property] var AttackDamage : Real = 2.0;
+    [Property] var AttackWithinRadiusOf : Real = 4.0;
+    [Property] var HitboxSize : Real = 1.0;
+    [Property] var HitboxLifetime : Real = 3.0;
+    [Property] var CanMove : Boolean = true;
+    [Property] var SightRadius : Real = 5.0;
+    var TimeTillAttack : Real = 0.0;
+    var Player : Cog = null;
+    
+    [Property] var LookUp : SpriteSource;
+    [Property] var LookUpRight : SpriteSource;
+    [Property] var LookRight : SpriteSource;
+    [Property] var LookDownRight : SpriteSource;
+    [Property] var LookDown : SpriteSource;
+    
+    [Property] var BulletSpeed : Real = 10.0;
+    
+    var SpawnedFrom : Cog = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        // Find player
+        this.Player = this.Space.FindObjectByName("EntityPlayer");
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        // Check for player
+        if (this.CheckForPlayer() == false)
+            return;
+        
+        this.LookAtPlayer();
+        
+        // Change "EnemySprite"
+        this.ChangeSprite();
+        
+        // Decrease "TimeTillAttack"
+        this.TimeTillAttack -= event.Dt;
+        
+        // Attack
+        if (this.TimeTillAttack <= 0.0)
+            this.Shoot();
+    }
+    
+    function Shoot()
+    {
+        if (this.Owner.Follower.LostSight != true)
+        {
+            var bullet : Cog = null;
+            if (this.Owner.ArchetypeName == "EntityArmadilo")
+                bullet = this.Space.CreateAtPosition(Archetype.Find("EntityNeedle"), Real3(this.Owner.Transform.Translation.XY, 0.0));
+            if (this.Owner.ArchetypeName == "EntityFrogg")
+                bullet = this.Space.CreateAtPosition(Archetype.Find("EntityBubble"), Real3(this.Owner.Transform.Translation.XY, 0.0));
+            else
+                bullet = this.Space.CreateAtPosition(Archetype.Find("EntityBullet"), Real3(this.Owner.Transform.Translation.XY, 0.0));
+            
+            bullet.EntityBullet.FromPlayer = false;
+            
+            var playerPos = this.Space.FindObjectByName(Relocation.EntityPlayer).Transform.WorldTranslation;
+            var enemyPos = this.Owner.Transform.WorldTranslation;
+            
+            var dif = Real2(playerPos.X - enemyPos.X, playerPos.Y - enemyPos.Y);
+            var magnitude = Math.Sqrt(dif.X * dif.X + dif.Y * dif.Y);
+            var velocity = Real3(dif.X / magnitude * this.BulletSpeed, dif.Y / magnitude * this.BulletSpeed, 0.0);
+            
+            bullet.RigidBody.Velocity = velocity;
+            bullet.EntityBullet.FromPlayer = false;
+            bullet.EntityBullet.Damage = 3;
+            if (bullet.ArchetypeName != "EntityBubble" && bullet.ArchetypeName != "EntityNeedle")
+                bullet.FindChildByName("ParticleLaser").SpriteParticleSystem.Tint = Real4(1.0, 0.25, 0.25, 1.0);
+        }
+        
+        this.TimeTillAttack = this.AttackCooldown;
+        
+        //Console.WriteLine("Shoot");
+    }
+    
+    function LookAtPlayer()
+    {
+        // Look at player
+        //this.Owner.Orientation.LookAtPoint(this.Player.Transform.Translation);
+        
+        // Make enemy sprite face up
+        //this.Owner.Children.Current.Orientation.LookAtDirection(Real3(0.0, 1.0, 0.0));
+    }
+    
+    function ChangeSprite()
+    {
+        // Find the sprite child
+        var sprite = this.Owner.Children.Current;
+        
+        // Get the enemy's direction
+        var worldForward = this.Owner.RigidBody.Velocity;
+        // Calculate enemy's direction in radians
+        var radians = Math.AngleBetween(worldForward, Real3.YAxis);
+        // Convert radians to degrees
+        var degrees = Math.ToDegrees(radians);
+        
+        // If enemy's direction is left, Invert degrees
+        if (worldForward.X < 0.0)
+            degrees *= -1;
+        
+        // Change sprite (up, upright, right, downrirght, down, downleft, left, upleft)
+        if (degrees > -26.5651 && degrees < 26.5651 && sprite.Sprite.SpriteSource != this.LookUp)
+        {
+            sprite.Sprite.SpriteSource = this.LookUp;
+            sprite.Sprite.FlipX = false;
+        }
+        else if (degrees > 26.5651 && degrees < 63.4349 && sprite.Sprite.SpriteSource != this.LookUpRight)
+        {
+            sprite.Sprite.SpriteSource = this.LookUpRight;
+            sprite.Sprite.FlipX = false;
+        }
+        else if (degrees > 63.4349 && degrees < 116.565 && sprite.Sprite.SpriteSource != this.LookRight)
+        {
+            sprite.Sprite.SpriteSource = this.LookRight;
+            sprite.Sprite.FlipX = false;
+        }
+        else if (degrees > 116.565 && degrees < 153.435 && sprite.Sprite.SpriteSource != this.LookDownRight)
+        {
+            sprite.Sprite.SpriteSource = this.LookDownRight;
+            sprite.Sprite.FlipX = false;
+        }
+        else if (degrees > 153.435 || degrees < -153.435 && sprite.Sprite.SpriteSource != this.LookDown)
+        {
+            sprite.Sprite.SpriteSource = this.LookDown;
+            sprite.Sprite.FlipX = false;
+        }
+        else if (degrees > -153.435 && degrees < -116.565)
+        {
+            if (sprite.Sprite.SpriteSource != this.LookDownRight)
+                sprite.Sprite.SpriteSource = this.LookDownRight;
+            sprite.Sprite.FlipX = true;
+        }
+        else if (degrees > -116.565 && degrees < -63.4349)
+        {
+            if (sprite.Sprite.SpriteSource != this.LookRight)
+                sprite.Sprite.SpriteSource = this.LookRight;
+            sprite.Sprite.FlipX = true;
+        }
+        else if (degrees > -63.4349 && degrees < -26.5651)
+        {
+            if (sprite.Sprite.SpriteSource != this.LookUpRight)
+                sprite.Sprite.SpriteSource = this.LookUpRight;
+            sprite.Sprite.FlipX = true;
+        }
+    }
+    
+    function CheckForPlayer() : Boolean
+    {
+        //Check for Player
+        if (this.Player == null)
+            return false;
+        else
+            return true;
+    }
+}

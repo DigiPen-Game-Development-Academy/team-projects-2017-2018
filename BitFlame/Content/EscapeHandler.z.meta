@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "EscapeHandler",
+		uint64 ResourceId = 5afd9d544c3d18c6,
+	},
+},

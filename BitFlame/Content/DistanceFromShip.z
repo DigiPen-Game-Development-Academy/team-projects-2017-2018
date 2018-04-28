@@ -1,0 +1,20 @@
+class DistanceFromShip : ZilchComponent
+{
+  [Property] var ShipName : String = "Ship";
+  
+  var Ship : Cog;
+  var Distance : Real;
+  
+  function Initialize(init : CogInitializer)
+  {
+    this.Ship = this.Space.FindObjectByName(this.ShipName);
+    Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+  }
+
+  function OnLogicUpdate(event : UpdateEvent)
+  {
+    this.Distance = Math.Distance(this.Space.FindObjectByName("Player").Transform.WorldTranslation, this.Ship.Transform.WorldTranslation);
+    
+    this.Owner.SpriteText.Text = "`Math.Round(this.Distance) - 1` m.";
+  }
+}

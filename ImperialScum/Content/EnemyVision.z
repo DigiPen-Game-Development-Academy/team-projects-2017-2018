@@ -1,0 +1,61 @@
+class EnemyVision : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Owner, Events.CollisionEnded, this.OnCollisionEnded);
+    }
+
+    function OnCollisionEnded(event : CollisionEvent)
+    {
+        if(event.OtherObject.PlayerController != null)
+        {
+            //Crab
+            if (this.Owner == this.Space.FindObjectByName("CrabVision"))
+            this.Owner.Parent.EnemyController.Active = false;
+            
+            //Shark and Fish
+            if (this.Owner == this.Space.FindObjectByName("SharkVision"))
+            this.Owner.Parent.GearSharkFollow.Aggro = false;
+            
+            //Mechamaid
+            if (this.Owner == this.Space.FindObjectByName("MaidVision"))
+            this.Owner.Parent.Mechamaid.Active = false;
+        }
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+                
+        //Crab
+        if (this.Owner.Name == "CrabVision")
+            {
+            if(event.OtherObject.PlayerController != null)
+            {
+            this.Owner.Parent.EnemyController.Active = true;
+            }
+        }
+        //Shark and Fish
+        if (this.Owner.Name == "SharkVision")
+            {
+            if(event.OtherObject.PlayerController != null)
+            {
+            this.Owner.Parent.GearSharkFollow.Aggro = true;
+            }
+        //Mechamaid
+        if (this.Owner.Name == "MaidVision")
+        {
+            if(event.OtherObject.PlayerController != null)
+            {
+                this.Owner.Parent.Mechamaid.Active = true;
+            }
+        }
+        }
+        
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

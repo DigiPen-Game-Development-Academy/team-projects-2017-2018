@@ -1,0 +1,18 @@
+class ChangeSpriteAnim : ZilchComponent {
+    
+    [Property] var Active : Boolean = false;
+    [Property] var Sprite : SpriteSource;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.Active && this.Owner.Sprite.SpriteSource != this.Sprite) {
+            this.Owner.Sprite.SpriteSource = this.Sprite;
+            this.Owner.Sprite.CurrentFrame = 0;
+        }
+        
+    }
+}

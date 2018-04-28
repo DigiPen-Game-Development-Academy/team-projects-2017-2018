@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "UICreator",
+		uint64 ResourceId = 5a0b6dad5bc5cb01,
+	},
+},

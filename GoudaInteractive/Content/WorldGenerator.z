@@ -1,0 +1,467 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+/* HANDLES WORLD GENERATION. AUTOMATICALLY LOADS/UNLOADS CHUNKS THAT ARE IN RANGE. */
+class WorldGenerator : ZilchComponent {
+    
+    [Property] var Width                    : Integer = 32;
+    [Property] var Height                   : Integer = 32;
+    [Property] var NumberOfSteps            : Integer = 2;
+    
+    [Serialized] var IsSpawnChunk           : Boolean = false;
+    [Serialized] var HasGenerated           : Boolean = false;
+    
+    [Serialized] var ChunkPositionString    : String = "";
+    [Serialized] var WorldMapString         : String = "";
+    [Serialized] var WorldMapDataString     : String = "";
+    
+    var IsLoaded        : Boolean = false;
+    
+    var MaxPossibleID   : Integer = 8;
+    
+    var DeathLimit      : Integer = 3;
+    var BirthLimit      : Integer = 4;
+    
+    var SpawnChance     : Real = 45.0;
+    
+    var CenterCoords    : Integer2 = Integer2(0);
+    
+    var WorldMap        : HashMap[Integer2, Integer] = null;
+    var WorldMapData    : HashMap[Integer2, Real2] = null;
+    
+    function Initialize(init : CogInitializer) {
+        
+        this.CenterCoords = Integer2(this.Width / 2, this.Height / 2);
+        
+        if(this.Owner.Transform.WorldTranslation.XY == Real2(0.0))
+            this.IsSpawnChunk = true;
+        
+        this.GiveUniqueName();
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.HasGenerated) {
+            
+            if(this.Owner.FindChildByName("ChunkWrapper") == null) {
+                var wrapper = this.Space.CreateAtPosition(Archetype.ChunkWrapper, this.Owner.Transform.WorldTranslation);
+                wrapper.AttachToRelative(this.Owner);
+            }
+            
+            if(this.Space.FindObjectByName(Relocation.EntityPlayer) != null) {
+                
+                var playerPos = this.Space.FindObjectByName(Relocation.EntityPlayer).Transform.WorldTranslation;
+                var chunkPos = this.Owner.Transform.WorldTranslation;
+                
+                if(Math.Sqrt(
+                    Math.Pow(chunkPos.X - playerPos.X, 2) + 
+                    Math.Pow(chunkPos.Y - playerPos.Y, 2)
+                ) > this.Width - (this.Width / 16)) {
+                    
+                    this.UnloadMap();
+                    this.IsLoaded = false;
+                    
+                } else if(this.Owner.FindChildByName("ChunkWrapper").FindChildByName("BlockRock") == null) {
+                    this.GenerateMap(false);
+                    this.IsLoaded = true;
+                }
+                
+            }
+            
+        } else if(!this.HasGenerated) {
+            
+            if(this.Space.FindObjectByName(Relocation.EntityPlayer) != null) {
+                
+                var playerPos = this.Space.FindObjectByName(Relocation.EntityPlayer).Transform.WorldTranslation.XY;
+                var chunkPos = this.Owner.Transform.WorldTranslation;
+                
+                if(Math.Sqrt(
+                    Math.Pow(chunkPos.X - playerPos.X, 2) + 
+                    Math.Pow(chunkPos.Y - playerPos.Y, 2)
+                ) <= this.Width) {
+                    
+                    if(!Zero.ObjectStore.IsStored("`SaveLoadData.ChunkPath``this.Owner.Name`")) {
+                        this.CreateMap();
+                        this.GenerateMap(true);
+                        this.HasGenerated = true;
+                    } else {
+                        
+                        var chunk = Zero.ObjectStore.Restore("`SaveLoadData.ChunkPath``this.Owner.Name`", Relocation.UISpace);
+                        
+                        chunk.WorldGenerator.HasGenerated = true;
+                        
+                        if(chunk.WorldGenerator.WorldMapString.Count > 0) {
+                            this.WorldMap = ToFromStrings.StringToHashMapInt2Int(chunk.WorldGenerator.WorldMapString);
+                            this.WorldMapData = ToFromStrings.StringToHashMapInt2Real2(chunk.WorldGenerator.WorldMapDataString);
+                            this.HasGenerated = true;
+                        } else {
+                            Zero.ObjectStore.Erase("`SaveLoadData.ChunkPath``this.Owner.Name`");
+                        }
+                        
+                        chunk.Destroy();
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    function CreateMap() {
+        
+        this.WorldMap = new HashMap[Integer2, Integer]();
+        this.WorldMapData = new HashMap[Integer2, Real2]();
+        
+        var rand = Random();
+        
+        for(var x = 0; x < this.Width; ++x) {
+            for(var y = 0; y < this.Height; ++y) {
+                
+                if(rand.Range(0.0, 100.0) < this.SpawnChance) {
+                    this.WorldMap.Set(Integer2(x, y), this.GenerateID());
+                } else {
+                    this.WorldMap.Set(Integer2(x, y), 0);
+                }
+                
+                this.WorldMapData.Set(Integer2(x, y), Real2(0.0, 5.0));
+                
+            }
+        }
+        
+    }
+    
+    function GenerateMap(firstLoad : Boolean) {
+        
+        if(firstLoad) {
+            
+            for(var i = 0; i < this.NumberOfSteps; ++i)
+                this.DoSimulationStep();
+            
+            if(this.IsSpawnChunk)
+                this.GenerateStructure(0, this.CenterCoords);
+            
+        }
+        
+        for(var x = 0; x < this.Width; ++x) {
+            for(var y = 0; y < this.Height; ++y) {
+                
+                var arch : Archetype = null;
+                
+                // BLOCKS
+                if(this.WorldMap.Get(Integer2(x, y)) == 1) {
+                    arch = Archetype.BlockRock;
+                } else if(this.WorldMap.Get(Integer2(x, y)) == 2) {
+                    arch = Archetype.BlockRock;
+                } else if(this.WorldMap.Get(Integer2(x, y)) == 3) {
+                    arch = Archetype.BlockRockCopper;
+                } else if(this.WorldMap.Get(Integer2(x, y)) == 4) {
+                    arch = Archetype.BlockRockIron;
+                } else if(this.WorldMap.Get(Integer2(x, y)) == 5) {
+                    arch = Archetype.BlockRockGold;
+                } else if(this.WorldMap.Get(Integer2(x, y)) == 6) {
+                    arch = Archetype.BlockRockTitanium;
+                } else if(this.WorldMap.Get(Integer2(x, y)) == 7) {
+                    arch = Archetype.BlockRockPlatinum;
+                } else if(this.WorldMap.Get(Integer2(x, y)) == 8) {
+                    arch = Archetype.BlockRockGoudarium;
+                } else if(this.WorldMap.Get(Integer2(x, y)) == 20) {
+                    arch = Archetype.BlockMetal;
+                } else if(this.WorldMap.Get(Integer2(x, y)) == 21) {
+                    arch = Archetype.BlockFloor;
+                } else if(this.WorldMap.Get(Integer2(x, y)) != 0) {
+                    arch = Archetype.BlockRockIron;
+                }
+                
+                // ENTITIES
+                if(this.WorldMap.Get(Integer2(x, y)) == 0 && Random().Probability(0.01) && !this.IsSpawnChunk) {
+                    this.Owner.EntitySpawner.SpawnEntity(Real3(x - this.Width / 2, y - this.Width / 2, 0.0) + 
+                        Real3(this.Owner.Transform.WorldTranslation.XY, 0.0));
+                }
+                
+                if(arch != null) {
+                    
+                    var obj = this.Space.CreateAtPosition(arch, Real3(x - this.Width / 2, y - this.Width / 2, 1.0) + 
+                        this.Owner.Transform.WorldTranslation);
+                        
+                    obj.AttachToRelative(this.Owner.FindChildByName("ChunkWrapper"));
+                    
+                    this.SetBlockDamage(obj, Integer2(x, y));
+                    
+                }
+                
+            }
+        }
+        
+        this.Owner.Sprite.Visible = true;
+        this.Owner.Area.Size = Real2(this.Width);
+        
+    }
+    
+    function UnloadMap() {
+        if(this.Owner.FindChildByName("ChunkWrapper") != null)
+            this.Owner.FindChildByName("ChunkWrapper").Destroy();
+        this.Owner.Sprite.Visible = false;
+        this.Owner.Area.Size = Real2(1.0);
+    }
+    
+    function DoSimulationStep() {
+        
+        var newMap = new HashMap[Integer2, Integer]();
+        
+        for(var x = 0; x < this.Width; ++x) {
+            for(var y = 0; y < this.Height; ++y) {
+                
+                var nbs = this.CountValidNeighbours(Integer2(x, y));
+                var rand = Random();
+                
+                if(this.WorldMap.Get(Integer2(x, y)) != 0) {
+                    
+                    if(nbs < this.DeathLimit)
+                        newMap.Set(Integer2(x, y), 0);
+                    else
+                        newMap.Set(Integer2(x, y), this.GenerateID());
+                    
+                } else {
+                    
+                    if(nbs > this.BirthLimit)
+                        newMap.Set(Integer2(x, y), this.GenerateID());
+                    else
+                        newMap.Set(Integer2(x, y), 0);
+                    
+                }
+                
+            }
+        }
+        
+        this.WorldMap = newMap;
+        
+    }
+    
+    function CountValidNeighbours(coord : Integer2) : Integer {
+        
+        var count = 0;
+        
+        for(var i = -1; i < 2; ++i) {
+            for(var j = -1; j < 2; ++j) {
+                
+                var neighbourX = coord.X + i;
+                var neighbourY = coord.Y + j;
+                
+                if(i == 0 && j == 0) {
+                    // DO NOTHING
+                } else if(neighbourX < 0 || neighbourY < 0 || neighbourX >= this.Width || neighbourY >= this.Height) {
+                    ++count;
+                } else if(this.WorldMap.Get(Integer2(neighbourX, neighbourY)) != 0) {
+                    ++count;
+                }
+                
+            }
+        }
+        
+        return count;
+        
+    }
+    
+    function GiveUniqueName() {
+        var pos = this.Owner.Transform.WorldTranslation;
+        
+        this.Owner.Name = "c_`pos.X`.`pos.Y`.world";
+    }
+    
+    function GenerateID() : Integer {
+        
+        var rand = Random();
+        var randRangeID = rand.Range(1.0, 10.811);
+        
+        if(randRangeID >= 1.0 && randRangeID <= 5.0)
+            return 1;
+        else if(randRangeID >= 6.0 && randRangeID <= 8.0)
+            return 2;
+        else if(randRangeID >= 9.0 && randRangeID <= 10.0)
+            return 3;
+        else if(randRangeID > 10.0 && randRangeID <= 10.5)
+            return 4;
+        else if(randRangeID > 10.5 && randRangeID <= 10.75)
+            return 5;
+        else if(randRangeID > 10.75 && randRangeID <= 10.8)
+            return 6;
+        else if(randRangeID > 10.8 && randRangeID <= 10.81)
+            return 7;
+        else if(randRangeID > 10.81 && randRangeID <= 10.811)
+            return 8;
+        else
+            return 1;
+        
+        
+    }
+    
+    /*
+        STRUCTURE GENERATION
+    */
+    
+    function GenerateStructure(structureID : Integer, origin : Integer2) {
+        
+        if(structureID == 0) {
+            
+            var structWidth = this.Width / 4;
+            var structHeight = this.Height / 4;
+            
+            // STRUCTURE
+            this.GenerateSquare(Integer2(structWidth, structHeight), origin, 21, true);
+            this.GenerateSquare(Integer2(structWidth, structHeight), origin, 20, false);
+            
+            // DOOR OPENINGS
+            this.GenerateSquare(Integer2(2, structHeight), origin, 21, true);
+            this.GenerateSquare(Integer2(structWidth, 2), origin, 21, true);
+            
+        } else if(structureID == 1) {
+            
+            var structWidth = this.Width / 4;
+            var structHeight = this.Height / 4;
+            
+            // STRUCTURE
+            this.GenerateSquare(Integer2(structWidth, structHeight), origin, 21, true);
+            this.GenerateSquare(Integer2(structWidth, structHeight), origin, 20, false);
+            
+            // DOOR OPENINGS
+            this.GenerateSquare(Integer2(2, structHeight), origin, 21, true);
+            this.GenerateSquare(Integer2(structWidth, 2), origin, 21, true);
+            
+        }
+        
+    }
+    
+    function GenerateSquare(size : Integer2, position : Integer2, material : Integer, fill : Boolean) {
+        
+        for(var x = -(size.X / 2); x <= size.X / 2; ++x) {
+            for(var y = -(size.Y / 2); y <= size.Y / 2; ++y) {
+                
+                if(fill) {
+                    this.WorldMap.Set(Integer2(x + position.X, y + position.Y), material);
+                    continue;
+                } else {
+                    
+                    if(x <= -(size.X / 2) || x >= size.X / 2 || y <= -(size.Y / 2) || y >= size.Y / 2)
+                        this.WorldMap.Set(Integer2(x + position.X, y + position.Y), material);
+                    
+                }
+                
+            }
+        }
+        
+    }
+    
+    /*
+        BLOCK REMOVAL/BLOCK VISUAL CHANGES
+    */
+    
+    function GetBlockScale(block : Cog, coords : Integer2) : Real3 {
+        
+        var chunkCoords = Integer2(coords.X + this.Width / 2, coords.Y + this.Width / 2);
+        var blockData = this.WorldMapData.Get(coords);
+        
+        return Real3(Real2(1.0) - Real2(blockData.X / blockData.Y) / 2, 1.0);
+        
+    }
+    
+    function SetBlockDamage(block : Cog, coords : Integer2) {
+        
+        var chunkCoords = Integer2(coords.X + this.Width / 2, coords.Y + this.Width / 2);
+        var blockData = this.WorldMapData.Get(coords);
+        
+        var blockDamage = Math.Round(((blockData.X / blockData.Y) * 4) - 1) as Integer;
+        
+        if(blockDamage > 0 && block.FindChildByName("BlockRock") == null) {
+            
+            var dmgOverlay = this.Space.CreateAtPosition(Archetype.BlockDamage, Real3(block.Transform.WorldTranslation.XY, 1.0));
+            
+            dmgOverlay.Sprite.CurrentFrame = blockDamage;
+            dmgOverlay.AttachToRelative(block);
+            
+        } else if(block.FindChildByName("BlockRock") != null) {
+            block.FindChildByName("BlockRock").Sprite.CurrentFrame = blockDamage;
+        }
+        
+    }
+    
+    function RemoveBlock(coords : Integer2, dropItem : Boolean) {
+        
+        var chunkCoords = Integer2(coords.X + this.Width / 2, coords.Y + this.Width / 2);
+        var blockID = this.WorldMap.GetOrError(chunkCoords);
+        
+        if(dropItem) {
+            
+            Console.WriteLine("Block ID: `this.WorldMap.GetOrError(chunkCoords)`");
+            
+            var player = this.Space.FindObjectByName(Relocation.EntityPlayer);
+            var itemName = "";
+            
+            if(player != null) {
+                
+                if(blockID == 1 || blockID == 2)
+                    itemName = "ItemRock";
+                else if(blockID == 3)
+                    itemName = "ItemCopperOre";
+                else if(blockID == 4)
+                    itemName = "ItemIronOre";
+                else if(blockID == 5)
+                    itemName = "ItemGoldOre";
+                else if(blockID == 6)
+                    itemName = "ItemTitaniumOre";
+                else if(blockID == 7)
+                    itemName = "ItemPlatinumOre";
+                else if(blockID == 8)
+                    itemName = "ItemGoudariumOre";
+                
+                if(itemName != "") {
+                    
+                    Console.WriteLine("Coords: `Real3(coords.XY, 0) + this.Owner.Transform.WorldTranslation`");
+                    
+                    Relocation.ItemManager.DropItems(
+                        Relocation.ItemManager.GetIDByName(itemName), 1, Real3(coords.XY + this.Owner.Transform.WorldTranslation.XY, 0)
+                    );
+                    
+                }
+                
+            }
+            
+        }
+        
+        this.WorldMap.Set(chunkCoords, 0);
+        
+    }
+    
+    function DamageBlock(block : Cog, damageAmount : Real, dropItem : Boolean) {
+        
+        var coords = Math.Round(block.Transform.Translation.XY) as Integer2;
+        
+        var chunkCoords = Integer2(coords.X + this.Width / 2, coords.Y + this.Width / 2);
+        var blockID = this.WorldMap.GetOrError(chunkCoords);
+        var blockData = this.WorldMapData.Get(chunkCoords);
+        
+        this.WorldMapData.Set(chunkCoords, Real2(blockData.X + damageAmount, blockData.Y));
+        
+        blockData = this.WorldMapData.Get(chunkCoords);
+        
+        if(blockData.X >= blockData.Y) {
+            
+            this.RemoveBlock(coords, dropItem);
+            this.Space.CreateAtPosition(Archetype.ParticleBlockBreak, Real3(block.Transform.WorldTranslation.XY, 2.0));
+            this.Space.SoundSpace.PlayCueAt(SoundCue.Find("Damage"), block.Transform.WorldTranslation);
+            ++PlayerStats.BlocksDestroyed;
+            
+            block.Destroy();
+            
+        } else {
+            this.SetBlockDamage(block, chunkCoords);
+        }
+        
+    }
+    
+}

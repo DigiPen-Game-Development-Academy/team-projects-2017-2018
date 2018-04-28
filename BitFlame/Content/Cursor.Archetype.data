@@ -1,0 +1,42 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Cursor",
+	},
+	Archetyped = 
+	{
+		string Name = "5a7f4db494e9d95c:Cursor",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 5],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "5a7f4c2dbc30f7ff:CursorSpriteLayer",
+		string SpriteSource = "5af4aa398e8f6815:Cursor_Sprite",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	CustomCursorScript = 
+	{
+	},
+},

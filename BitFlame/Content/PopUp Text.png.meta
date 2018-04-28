@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "PopUp Text",
+		uint64 ResourceId = 5a4b6e488c3b1720,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 128,
+		uint FrameSizeY = 80,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 64,
+		float OriginY = 40,
+		float PixelsPerUnit = 64,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

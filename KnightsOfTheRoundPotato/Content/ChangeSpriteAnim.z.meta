@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "ChangeSpriteAnim",
+		uint64 ResourceId = 5ab43a1dbaee3e23,
+	},
+},

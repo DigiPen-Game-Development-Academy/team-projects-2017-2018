@@ -1,0 +1,34 @@
+// AUTHOR: MYLES BUSIG
+// CONTRIBUTORS: HUDSON GREEN
+
+class SavedData : ZilchComponent {
+    
+    // All saved variables MUST BE SERIALIZED
+    // Example:
+    // [Serialized] var Score : Integer;
+    
+    // Player data:
+    [Serialized] var PlayerName         : String;
+    [Serialized] var PlayerPosition     : String;
+    [Serialized] var PlayerHealth       : Real;
+    [Serialized] var PlayerSkin         : Integer;
+    [Serialized] var PlayerBalance      : Real;
+    [Serialized] var PlayerInv          : String;
+    [Serialized] var PlayerInvCount     : String;
+    [Serialized] var PlayerWeaponData   : String;
+    
+    // TODO: World data:
+    [Serialized] var CurrentWorld       : String;
+    [Serialized] var CurrentTime        : Real;
+    [Serialized] var CurrentDay         : Integer;
+    
+    // Settings data:
+    [Serialized] var MenuAnimations     : Boolean = GameSetting.EnableUIAnimations;
+    [Serialized] var Vignette           : Boolean = GameSetting.EnableVignette;
+    [Serialized] var PlayerTooltips     : Boolean = GameSetting.PlayerTooltip;
+    [Serialized] var EnemyTooltips      : Boolean = GameSetting.EnemyTooltip;
+    [Serialized] var MasterVolume       : Real = GameSetting.MasterVolume;
+    [Serialized] var MusicVolume        : Real = GameSetting.MusicVolume;
+    [Serialized] var SoundEffectsVolume : Real = GameSetting.SoundEffectsVolume;
+    
+}

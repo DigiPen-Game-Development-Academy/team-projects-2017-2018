@@ -1,0 +1,129 @@
+/*************************************
+Filename: Ship_Interaction.z
+Author: Jakob McFarland
+Contributors: NULL
+Last modified: 1/30/18
+Brief: This Component allows the owner to be interacted with it 
+******************************************/
+
+class Ship_Interaction : ZilchComponent
+{
+    [Property] var BigCursor : Archetype;
+    
+    [Property] var ShipAccessKey : Keys = Keys.E;
+    
+    // The level that our HUD is contained within
+    [Property]
+    var HUDLevel : Level = null;
+    
+    //The space archetype from which to create the new HUD space
+    [Property]
+    var SpaceArchetype : Archetype = Archetype.Space;
+    
+    //Reference to the Player object
+    [Property]
+    var PlayerRef : CogPath = null;
+    
+    // Store the space where our HUD is so that we can access and destroy it
+    var HUDSpace : Space = null;
+    
+    var HUDCreated : Boolean = false; 
+   
+    var TimeKeeper : Real = 0;
+    
+    function Initialize(init : CogInitializer)
+    {       
+        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionPersisted);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Owner, Events.CollisionEnded, this.OnCollisionEnded);
+        
+        // Create the HUD space and then load our HUD level into it
+        this.HUDSpace = this.GameSession.CreateNamedSpace("HUDSpace", this.SpaceArchetype);
+        
+        //Load the level specified in the HUDLevel Property above
+        this.HUDSpace.LoadLevel(Level.ShipMenuLevel);    
+        
+        
+        this.HUDSpace.LevelSettings.HUDSpaceReferences.MainSpaceRef = this.Space;
+    }
+
+    function OnCollisionPersisted(event : CollisionEvent)
+    {
+        var player = event.OtherObject;
+        
+        if(player.Player_Movement_Script != null)
+        {
+            //put hover feed back here
+            if(this.HUDSpace != null && Zero.Keyboard.KeyIsPressed(this.ShipAccessKey))
+            {
+                this.GameSession.GameVars.SlideIn = !this.GameSession.GameVars.SlideIn;
+                this.Space.SoundSpace.PlayCue(SoundCue.Blip_Hover);
+                Zero.Mouse.Cursor = Cursor.Arrow;
+                var arm = player.FindChildByName("Arm");
+                if(arm != null)
+                {
+                    arm.PlayerShooting.CanShoot = !arm.PlayerShooting.CanShoot; 
+                }
+                
+                if(player.RigidBody != null)
+                {
+                    player.RigidBody.Velocity = Real3(0, 0, 0);
+                }
+            }     
+        }
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.Name == "Player")
+        {
+            event.OtherObject.FindChildByName("E Button").Sprite.Visible = true;
+        }
+    }
+    
+    function OnCollisionEnded(event : CollisionEvent)
+    {
+        
+        var player = this.Space.FindObjectByName("Player");
+        
+        if(player == null)
+        {
+            return;
+        }
+        
+        var playerButton = player.FindChildByName("E Button");
+        
+        if(playerButton == null)
+        {
+            return;
+        }
+        
+        playerButton.Sprite.Visible = false;
+        
+        if(player.Player_Movement_Script != null && event.OtherObject == player)
+        {
+            //end hover feed back here              
+            if(this.HUDSpace != null)
+            {
+                this.GameSession.GameVars.SlideIn = false;      
+                
+                Zero.Mouse.Cursor = Cursor.Invisible;
+                
+                var arm = player.FindChildByName("Arm");
+                if(arm != null)
+                {
+                    arm.PlayerShooting.CanShoot = true;
+                }
+            } 
+        }
+    }
+    
+    function Destroyed()
+    {
+        // Make sure to clean up the HUD space when we get destroyed
+        if(this.HUDSpace != null)
+        {
+            this.HUDSpace.Destroy();
+        }
+    }
+}

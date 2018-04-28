@@ -1,0 +1,65 @@
+class StunProjectile : ZilchComponent {
+    
+    var MovSpd : Real = 3;
+    var Target : Real3 = Real3(0);
+    var StnTime : Real = 5;
+    var ImpactSize : Real = 3;
+    var ArcIntencity : Real = 0.75;
+    var Set : Boolean = false;
+    var SoundRad : Real = 10;
+    var ImpactSpd : Real = 4;
+    
+    [Dependency]
+    var Orientation : Orientation;
+    var StartDist : Real = 0;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(!this.Set)
+            return;
+        
+        this.Orientation.LookAtPoint(this.Target);
+        
+        var dir = Math.Normalize(this.Target - this.Owner.Transform.WorldTranslation);
+        
+        var dist = Math.Distance(this.Owner.Transform.WorldTranslation, this.Target);
+        
+        if(this.StartDist == 0)
+            this.StartDist = dist;
+        
+        if(this.StartDist == 0) {
+            if(dist < event.Dt * this.MovSpd) {
+                Utilities.SendSound(this.SoundRad, this.Owner.Transform.WorldTranslation);
+                var stn = Stun();
+                stn.Time = this.StnTime;
+                this.Space.PhysicsSpace.DispatchWithinSphere(this.Owner.Transform.WorldTranslation, this.ImpactSize, Events.Stun, stn);
+                this.Owner.Destroy();
+                var exp = this.Space.CreateAtPosition(Archetype.StunExp, this.Owner.Transform.WorldTranslation + Real3(0,0,1));
+                exp.StunExp.Size = this.ImpactSize;
+                exp.StunExp.Spd = this.ImpactSpd;
+            }
+            return;
+        }
+        
+        var scale = (Math.Sin((dist/this.StartDist)*4)*this.ArcIntencity) + 0.75;
+        
+        this.Owner.Transform.Scale = Real3(scale, scale, 0);
+        
+        this.Owner.Transform.WorldTranslation += dir * event.Dt * this.MovSpd;
+        
+        if(dist < event.Dt * this.MovSpd) {
+            Utilities.SendSound(this.SoundRad, this.Owner.Transform.WorldTranslation);
+            var stn = Stun();
+            stn.Time = this.StnTime;
+            this.Space.PhysicsSpace.DispatchWithinSphere(this.Owner.Transform.WorldTranslation, this.ImpactSize, Events.Stun, stn);
+            this.Owner.Destroy();
+            var exp = this.Space.CreateAtPosition(Archetype.StunExp, this.Owner.Transform.WorldTranslation + Real3(0,0,1));
+            exp.StunExp.Size = this.ImpactSize;
+            exp.StunExp.Spd = this.ImpactSpd;
+        }
+    }
+}

@@ -1,0 +1,117 @@
+RichAnimation = 
+{
+	float SampleTolerance = 0.0500000007,
+	float Duration = 9.33333302,
+	Object Root = 
+	{
+		TrackType Type = Object,
+		string Name = "Root",
+		string Path = "",
+		bool Disabled = false,
+		uint PropertyTypeId = 0,
+		string PropertyTypeName = "void",
+		Array KeyFrames = 
+		[
+		],
+		Array Children = 
+		[
+			{
+				TrackType Type = Object,
+				string Name = "/",
+				string Path = "/",
+				bool Disabled = false,
+				uint PropertyTypeId = 0,
+				string PropertyTypeName = "",
+				Array KeyFrames = 
+				[
+				],
+				Array Children = 
+				[
+					{
+						TrackType Type = Component,
+						string Name = "SphericalParticleEmitter",
+						string Path = "SphericalParticleEmitter",
+						bool Disabled = false,
+						uint PropertyTypeId = 0,
+						string PropertyTypeName = "",
+						Array KeyFrames = 
+						[
+						],
+						Array Children = 
+						[
+							{
+								TrackType Type = Property,
+								string Name = "Active",
+								string Path = "SphericalParticleEmitter.Active",
+								bool Disabled = false,
+								uint PropertyTypeId = 5,
+								string PropertyTypeName = "bool",
+								Array KeyFrames = 
+								[
+									{
+										float key = 5.16666651,
+										Object value = 
+										{
+											float Time = 5.16666651,
+											bool Value = false,
+											Vec2 TangentIn = [-0.0500000007, 0],
+											Vec2 TangentOut = [0.0500000007, 0],
+											uint EditorFlags = 0,
+										},
+									},
+									{
+										float key = 5.33333349,
+										Object value = 
+										{
+											float Time = 5.33333349,
+											bool Value = true,
+											Vec2 TangentIn = [-0.0500000007, 0],
+											Vec2 TangentOut = [0.0500000007, 0],
+											uint EditorFlags = 0,
+										},
+									},
+									{
+										float key = 5.5,
+										Object value = 
+										{
+											float Time = 5.5,
+											bool Value = true,
+											Vec2 TangentIn = [-0.0500000007, 0],
+											Vec2 TangentOut = [0.0500000007, 0],
+											uint EditorFlags = 0,
+										},
+									},
+									{
+										float key = 9.16666698,
+										Object value = 
+										{
+											float Time = 9.16666698,
+											bool Value = false,
+											Vec2 TangentIn = [-0.0500000007, 0],
+											Vec2 TangentOut = [0.0500000007, 0],
+											uint EditorFlags = 0,
+										},
+									},
+									{
+										float key = 9.33333302,
+										Object value = 
+										{
+											float Time = 9.33333302,
+											bool Value = false,
+											Vec2 TangentIn = [-0.0500000007, 0],
+											Vec2 TangentOut = [0.0500000007, 0],
+											uint EditorFlags = 0,
+										},
+									},
+								],
+								Array Children = 
+								[
+								],
+							},
+						],
+					},
+				],
+			},
+		],
+	},
+},

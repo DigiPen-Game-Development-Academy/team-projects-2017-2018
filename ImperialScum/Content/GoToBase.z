@@ -1,0 +1,25 @@
+class GoToBase : ZilchComponent
+{
+    //Author - Jessica
+    //Heavily edited by Jacob
+    [Property] var LevelToLoad : Level = Level.BaseLevel;
+    
+    [Static]
+    var ThisSpace:Space;
+    
+    function Initialize(init : CogInitializer)
+    {
+        SpawnFruit.Spawn = true;
+        GoToBase.ThisSpace = this.Space;
+        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionPersisted);
+    }
+
+    function OnCollisionPersisted(event : CollisionEvent)
+    {
+        if(event.OtherObject.PlayerController != null)
+        {
+            this.GameSession.DispatchEvent
+            (Events.Fade, FadeEvent(this.LevelToLoad, 1, Real4.Zero, Real4(0,0,0,1)));
+        }
+    }
+}

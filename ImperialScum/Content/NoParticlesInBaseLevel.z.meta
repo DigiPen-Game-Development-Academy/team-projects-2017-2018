@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "NoParticlesInBaseLevel",
+		uint64 ResourceId = 5a9d1bd2c227ef24,
+	},
+},

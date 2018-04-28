@@ -1,0 +1,34 @@
+//Jacob Burke
+
+//The script for the "volcano geysers" things
+
+class Volcano : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Owner, Events.CollisionEnded, this.OnCollisionEnded);
+    }
+
+    function OnCollisionEnded(event : CollisionEvent)
+    {
+        if(event.OtherObject.BoxCollider != null
+        || event.OtherObject.CapsuleCollider != null)
+        this.Owner.SphericalParticleEmitter.EmitRate = 10;
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        
+        if(event.OtherObject.BoxCollider != null
+        || event.OtherObject.CapsuleCollider != null)
+        this.Owner.SphericalParticleEmitter.EmitRate = 250;
+        
+        
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

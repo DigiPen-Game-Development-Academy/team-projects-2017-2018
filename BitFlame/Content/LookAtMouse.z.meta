@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "LookAtMouse",
+		uint64 ResourceId = 5a11affb9808e8dc,
+	},
+},

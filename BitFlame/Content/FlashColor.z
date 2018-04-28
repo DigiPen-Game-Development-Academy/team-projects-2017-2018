@@ -1,0 +1,37 @@
+class FlashColor : ZilchComponent
+{
+    [Property] var FlashTime : Real = 0.0;
+    
+    [Property] var FlashColor : Real4 = Real4.Zero;
+    
+    var DefaultColor : Real4 = Real4.Zero;
+    
+    var Flash : Boolean = false;
+    
+    var Timer : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.DefaultColor = this.Owner.Sprite.Color;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Flash)
+        {
+            this.Owner.Sprite.Color = this.FlashColor;
+            
+            this.Timer +=  event.Dt;
+            
+            if(this.Timer >= this.FlashTime)
+            {
+                this.Owner.Sprite.Color = this.DefaultColor;
+                
+                this.Flash = false;
+                this.Timer = 0.0;
+            }
+        }
+    }
+}

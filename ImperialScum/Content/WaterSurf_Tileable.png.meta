@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "WaterSurf_Tileable",
+		uint64 ResourceId = 5ad2bc99155b54d5,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 16,
+		uint FrameSizeY = 16,
+		uint FrameCount = 9,
+		float FrameDelay = 0.125,
+		float OriginX = 8,
+		float OriginY = 8,
+		float PixelsPerUnit = 16,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

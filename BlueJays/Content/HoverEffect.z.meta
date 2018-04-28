@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "HoverEffect",
+		uint64 ResourceId = 5a6df3376f6322c0,
+	},
+},

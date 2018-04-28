@@ -1,0 +1,38 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Level",
+	},
+	Archetyped = 
+	{
+		string Name = "5a3bdfd9f1f8315a:Level",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [-1.32500005, 1.25, 0],
+		Vec3 Scale = [0.75, 0.75, 0.75],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	SpriteText = 
+	{
+		bool Visible = false,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 0.779999971, 0, 0.75],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string FontName = "5ad9e7ff8459f32e:FontDefaultBold",
+		uint FontSize = 128,
+		string Text = "Level: 1",
+		TextAlign Align = Right,
+		float PixelsPerUnit = 256,
+		bool Smoothing = false,
+	},
+},

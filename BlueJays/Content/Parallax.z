@@ -1,0 +1,35 @@
+class Parallax : ZilchComponent
+{
+    [Property]
+    var RealtiveSpeed : Real;
+    
+    [Property]
+    var PlayerObject : CogPath = null;
+    
+     var PreviousPlayerPosition : Real2 = Real2();
+    var HasPreviousPosition: Boolean;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.PlayerObject == null || this.PlayerObject.Cog == null) return;
+        var player = this.PlayerObject.Cog;
+        if(this.HasPreviousPosition)
+        {
+        var playerPosition = player.Transform.WorldTranslation.XY;
+        var playerMovement = playerPosition - this.PreviousPlayerPosition;
+        var selfMovement = playerMovement * this.RealtiveSpeed;
+        var selfPosition = this.Owner.Transform.WorldTranslation.XY + selfMovement;
+        selfPosition += selfMovement;
+        this.Owner.Transform.WorldTranslation = 
+            Real3(selfPosition,this.Owner.Transform.WorldTranslation.Z);
+       } 
+       
+        this.HasPreviousPosition = true;
+        this.PreviousPlayerPosition = player.Transform.WorldTranslation.XY;
+    }
+}

@@ -1,0 +1,88 @@
+class PlayerStab : ZilchComponent
+{
+    [Property]
+    var SpearArchetype : Archetype;
+    
+    [Property]
+    var Angle : Real = 0;
+    
+    var Spear : Cog;
+    
+    [Static] var PlaySound2 : Boolean = false;
+    
+function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LeftMouseDown, this.OnLeftMouseDown);
+    }
+
+function OnLeftMouseDown(event : ViewportMouseEvent)
+{
+    if (this.Owner.PlayerController.Dead == false)
+    {
+        if(this.Spear == null && Inventory.Exists == false)
+        {
+            var pos = this.Owner.Transform.Translation;
+            this.Spear = this.Space.CreateAtPosition(Archetype.Spear, pos);
+            
+            this.Spear.AttachToRelative(this.Owner);
+            
+            
+            PlayerStab.PlaySound2 = true;
+            
+            //Mousey Stuff
+            var mouseScreen = Zero.Mouse.ScreenPosition;
+            var viewport = this.LevelSettings.CameraViewport;
+            var mouseWorld = viewport.ScreenToWorldZPlane(mouseScreen, 0);
+            
+            var toMouse = mouseWorld - this.Owner.Transform.WorldTranslation;
+            var angle = Math.Angle2D(toMouse);
+            this.Spear.Transform.SetEulerAnglesXYZ(0,0,angle + Math.Pi / -2.0);
+            
+            //Animatey Stuff
+            var sequence = Action.Sequence(this.Owner.Actions);
+            Action.Property(sequence, @this.Spear.Transform.Translation,
+            Math.Normalize(toMouse),0.08,Ease.SinOut);
+            
+            
+            //Player Facey Stuff
+            if (mouseWorld.X > this.Owner.Transform.WorldTranslation.X)
+            {
+                this.Owner.Sprite.FlipX = false;
+            }
+            else
+            {
+                this.Owner.Sprite.FlipX = true;
+            }
+            
+            
+        }
+    }
+}
+
+
+}
+class Spear : ZilchComponent
+{
+    var Timer:Real = 0;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Owner.Transform.Translation.Z = -0.3;
+        this.Timer += event.Dt;
+        
+        if(this.Timer >= 0.3)
+        this.Owner.Destroy();
+        
+        
+        if(Upgrades.SpearUpgrade == 0)
+        this.Owner.Sprite.SpriteSource = SpriteSource.Weap_Spear;
+        if(Upgrades.SpearUpgrade == 1)
+        this.Owner.Sprite.SpriteSource = SpriteSource.Weap_CopperSpear;
+        if(Upgrades.SpearUpgrade >= 2)
+        this.Owner.Sprite.SpriteSource = SpriteSource.Weap_VolcanoSpear;
+    } 
+}

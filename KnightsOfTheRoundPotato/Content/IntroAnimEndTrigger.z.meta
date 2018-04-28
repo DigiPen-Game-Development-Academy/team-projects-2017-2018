@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "IntroAnimEndTrigger",
+		uint64 ResourceId = 5ab69aa0735ef72c,
+	},
+},

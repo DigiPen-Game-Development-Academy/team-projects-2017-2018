@@ -1,0 +1,22 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class DeathScreenMenu : ZilchComponent {
+    
+    var ShowMenu : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.ShowMenu) {
+            this.Owner.Transform.WorldTranslation = Real3(0.0);
+        } else if(Relocation.Space != null) {
+            this.Owner.Transform.WorldTranslation = Real3(0.0, -25, 500);
+        }
+        
+    }
+    
+}

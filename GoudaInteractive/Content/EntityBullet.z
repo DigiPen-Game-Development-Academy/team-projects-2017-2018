@@ -1,0 +1,104 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class EntityBullet : ZilchComponent {
+    
+    [Property] var FromPlayer : Boolean = true;
+    [Property] var DrillBullet : Boolean = false;
+    [Property] var Lifetime : Real = 5.0;
+    [Property] var Damage : Real = 1.0;
+    [Property] var BlockDamageAmount : Real = 1.0;
+    
+    var SpawnedBy : Cog = null;
+    
+    var CurrLifetime : Real = 0.0;
+    
+    function Initialize(init : CogInitializer) {
+        
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+    }
+    
+    function OnCollisionStarted(event : CollisionEvent) {
+        
+        if(event.OtherObject.Name == Relocation.EntityPlayer && !this.FromPlayer && !this.DrillBullet) {
+            
+            if(!event.OtherObject.Health.IsInvincible) {
+                event.OtherObject.Health.DecreaseHealth(this.Damage);
+            }
+            
+            this.Owner.Destroy();
+            
+        } else if(event.OtherObject.Name == this.Owner.Name && !this.DrillBullet) {
+            
+        } else if(event.OtherObject.TutorialBlock != null) {
+            
+            if(!this.DrillBullet)
+                event.OtherObject.TutorialBlock.BlockHealth -= this.Damage;
+            else
+                event.OtherObject.TutorialBlock.BlockHealth -= 0.5;
+            
+            event.OtherObject.TutorialBlock.UpdateDamageSprite();
+            
+            this.Space.CreateAtPosition(Archetype.ParticleBlockBreak, this.Owner.Transform.Translation);
+            
+            this.Owner.Destroy();
+            
+        } else if(this.FromPlayer && event.OtherObject.Name == "BlockRock") {
+            
+            if(event.OtherObject.Parent != null)
+                event.OtherObject.Parent.Parent.WorldGenerator.DamageBlock(event.OtherObject, this.BlockDamageAmount, true);
+            
+            this.Space.CreateAtPosition(Archetype.ParticleBlockBreak, this.Owner.Transform.Translation);
+            
+            this.Owner.Destroy();
+            
+        } else if(event.OtherObject.Name != Relocation.EntityPlayer && this.FromPlayer && !this.DrillBullet && event.OtherObject.Name != "TileWater") {
+            
+            if(event.OtherObject.Health != null) {
+                this.Knockback(event.OtherObject);
+                event.OtherObject.Health.DecreaseHealth(this.Damage);
+            }
+            
+            this.Owner.Destroy();
+            
+        } else if(event.OtherObject.Collider != null && !this.FromPlayer && event.OtherObject.Name != "EntityEnemy" && event.OtherObject.Name != "TileWater") {
+            this.Owner.Destroy();
+        }
+        
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.CurrLifetime > this.Lifetime) {
+            this.Owner.Destroy();
+        }
+        
+        this.CurrLifetime += event.Dt;
+        
+        if (this.Owner.ArchetypeName == "EntityNeedle")
+            this.Owner.Orientation.LookAtDirection(this.Owner.RigidBody.Velocity);
+    }
+    
+    function PostInitialize(obj : Cog) {
+        
+        if(this.SpawnedBy == null)
+            this.SpawnedBy = this.Owner;
+        
+        if(!this.DrillBullet)
+            this.SpawnedBy.SoundObject.PlayCue(SoundCue.Find("BulletSpawn"));
+        else
+            this.SpawnedBy.SoundObject.PlayCue(SoundCue.Find("Drill"));
+        
+    }
+    
+    function Knockback(otherObject : Cog) {
+        
+        if(otherObject.RigidBody != null) {
+            otherObject.RigidBody.ApplyLinearImpulse(this.Owner.RigidBody.Velocity / Real3(5, 5, 1));
+        }
+        
+    }
+    
+}

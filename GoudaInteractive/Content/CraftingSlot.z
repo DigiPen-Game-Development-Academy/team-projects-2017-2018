@@ -1,0 +1,76 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class CraftingSlot : ZilchComponent {
+    
+    [Property] var IsCraftingSlot : Boolean = true;
+    
+    [Property] var InventorySlot : SpriteSource = SpriteSource.InventorySlot;
+    [Property] var InventorySlotHover : SpriteSource = SpriteSource.InventorySlotHover;
+    
+    var ShowRequirementsTimeout : Real = 0.0;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Owner, Events.MouseUpdate, this.OnMouseUpdate);
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+    }
+    
+    function OnMouseEnter(event : ViewportMouseEvent) {
+        
+        if(this.Owner.FindChildByName("SlotIcon").Sprite.Visible) {
+            this.Owner.Sprite.SpriteSource = this.InventorySlotHover;
+            this.Owner.Sprite.Color = Real4(this.Owner.Sprite.Color.XYZ, 1.0);
+        }
+        
+        this.ShowRequirementsTimeout = 0.0;
+        
+    }
+    
+    function OnMouseExit(event : ViewportMouseEvent) {
+        
+        if(this.Owner.FindChildByName("SlotIcon").Sprite.Visible) {
+            this.Owner.Sprite.SpriteSource = this.InventorySlot;
+            this.Owner.Sprite.Color = Real4(this.Owner.Sprite.Color.XYZ, 0.75);
+        }
+        
+        this.ShowRequirementsTimeout = 0.0;
+        
+    }
+    
+    function OnMouseUpdate(event : ViewportMouseEvent) {
+        
+        if(this.Owner.FindChildByName("SlotIcon").Sprite.Visible) {
+            
+            this.Owner.Sprite.SpriteSource = this.InventorySlotHover;
+            this.Owner.Sprite.Color = Real4(this.Owner.Sprite.Color.XYZ, 1.0);
+            
+            if(this.ShowRequirementsTimeout > 0.065) {
+                if(Relocation.Space != null && Relocation.Player != null && this.IsCraftingSlot && Relocation.Player.Inventory.InventoryOpen) {
+                    Relocation.Player.Crafting.SlotHover = Integer.Parse(this.Owner.Name.SubStringFromRuneIndices(12, this.Owner.Name.Count));
+                } else if(Relocation.Space != null && Relocation.Player != null && Relocation.Player.Inventory.InventoryOpen) {
+                    Relocation.Player.Crafting.CRSlotHover = Integer.Parse(this.Owner.Name.SubStringFromRuneIndices(24, this.Owner.Name.Count));
+                }
+            } else {
+                this.ShowRequirementsTimeout += 0.0166;
+            }
+            
+        } else {
+            this.Owner.Sprite.SpriteSource = this.InventorySlot;
+            this.Owner.Sprite.Color = Real4(this.Owner.Sprite.Color.XYZ, 0.75);
+        }
+        
+    }
+    
+    function OnMouseDown(event : ViewportMouseEvent) {
+        
+        if(this.Owner.FindChildByName("SlotIcon").Sprite.Visible) {
+            if(Relocation.Space != null && Relocation.Player != null && this.IsCraftingSlot && Relocation.Player.Inventory.InventoryOpen) {
+                Relocation.Player.Crafting.SlotClicked = Integer.Parse(this.Owner.Name.SubStringFromRuneIndices(12, this.Owner.Name.Count));
+            }
+        }
+        
+    }
+    
+}

@@ -1,0 +1,264 @@
+/***********************
+Ship_Menu_Button.Z
+by: Jakob McFarland
+Contributers: Luke Taranowski
+Date: 2/1/18
+Brief: these components will make a button look good and be functional
+***********************/
+
+class Ship_Menu_Button_Visual : ZilchComponent
+{
+  [Dependency] var Reactive : Reactive = null;
+  [Dependency] var Sprite : Sprite = null;
+  [Dependency] var Transform : Transform = null;
+  
+  [Property] var SelectSound : SoundCue = SoundCue.Find("Blip_Select");
+  [Property] var CantSelect : SoundCue = SoundCue.Find("Blip_CantSelect");
+  [Property] var HoverSound : SoundCue = SoundCue.Find("Blip_Hover");
+  
+  //colors for sits
+  var OriginalColor :Real4 = Real4();
+  
+  [Property] var HoverColor : Real4 = Real4(1, 1, 1, 1);
+
+  [Property] var ClickColor : Real4 = Real4(1.0, 1.0, 1.0, 1);  
+  
+  var OriginalScale : Real3 = Real3();
+  
+  [Property] var HoverScale : Real = 1.2;
+  
+  [Property] var ClickScale : Real = 1.0;
+
+  function Initialize(init : CogInitializer)
+  {
+    this.OriginalColor = this.Sprite.Color;
+    this.OriginalScale = this.Transform.Scale;
+  
+    Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+    Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+    Zero.Connect(this.Owner, Events.LeftMouseDown, this.OnLeftMouseDown);
+    
+  }
+
+  function OnLeftMouseDown(event : ViewportMouseEvent)
+  {
+    this.Owner.Actions.Cancel();
+    var seq = Action.Sequence(this.Owner.Actions);
+    var grp = Action.Group(seq);
+    
+    this.Space.SoundSpace.PlayCue(this.SelectSound);
+    
+    Action.Property(grp, @this.Sprite.Color, this.ClickColor, 0.03, Ease.QuadInOut);
+    Action.Property(grp, @this.Transform.Scale, this.OriginalScale * this.ClickScale, 0.3, Ease.QuadInOut);
+  }
+
+  function OnMouseExit(event : ViewportMouseEvent)
+  {
+    this.Transform.Translation.Z -= 10;
+    this.Owner.Actions.Cancel();
+    var seq = Action.Sequence(this.Owner.Actions);
+    var grp = Action.Group(seq);
+    
+    Action.Property(grp, @this.Sprite.Color, this.OriginalColor, 0.03, Ease.QuadInOut);
+    Action.Property(grp, @this.Transform.Scale, this.OriginalScale, 0.3, Ease.QuadInOut);
+    
+    foreach(var child in this.Owner.FindAllChildrenByName("Icon"))
+    {
+        if(child != null)
+        {
+            Action.Property(grp, @child.Transform.EulerAngles, Real3(0, 0, 0), 0.3, Ease.QuadOut);
+        }
+    }
+  }
+
+  function OnMouseEnter(event : ViewportMouseEvent)
+  {
+    this.Transform.Translation.Z += 10;
+        
+    this.Space.SoundSpace.PlayCue(this.HoverSound);
+        
+    this.Owner.Actions.Cancel();
+    var seq = Action.Sequence(this.Owner.Actions);
+    var grp = Action.Group(seq);
+    
+    Action.Property(grp, @this.Sprite.Color, this.HoverColor, 0.03, Ease.QuadInOut);
+    Action.Property(grp, @this.Transform.Scale, this.OriginalScale * this.HoverScale, 0.3, Ease.QuadInOut);
+    
+    foreach(var child in this.Owner.FindAllChildrenByName("Icon"))
+    {
+        if(child != null)
+        {
+            Action.Property(grp, @child.Transform.EulerAngles, Real3(0, 0, Math.Pi / 4), 0.3, Ease.QuadOut);
+        }
+    }
+  }
+
+}
+
+class Ship_Menu_Button_Function : ZilchComponent
+{
+    //world regen function 
+    sends WorldRegen : ZilchEvent;
+    
+    [Dependency] var Reactive : Reactive = null;
+
+    [Dependency] var Transform : Transform = null;
+
+    [Property] var Camera : CogPath = null; 
+  
+    [Property] var NewCameraPosition : Real3 = Real3(0.0, 0.0, 0.0);
+
+    [Property] var MoveTime : Real = 0.2; 
+
+    [Property] var Reload : Boolean = false; 
+    
+    [Property] var ChangeLevel : Boolean = false;
+    
+    [Property] var LevelToChangeTo : Level = null;
+    
+    [Property] var Respawn : Boolean = false;
+    
+    [Property] var Quit : Boolean = false;  
+    
+    [Property] var WaveGamemode : Boolean = false;
+    
+    [Property] var GamemodeButton : Boolean = false;
+  
+    function Initialize(init : CogInitializer)
+    {
+        this.NewCameraPosition.Z =  this.Camera.Cog.Transform.Translation.Z;
+        Zero.Connect(this.Owner, Events.LeftMouseUp, this.OnLeftMouseUp);     
+    }
+
+    function OnLeftMouseUp(event : ViewportMouseEvent)
+    {
+        if(this.GamemodeButton)
+        {
+            if (this.WaveGamemode)
+            {
+                this.GameSession.GameVars.WaveGamemode = true;
+                this.GameSession.GameVars.WaveTracker = 0;
+            }
+            else
+            {
+                this.GameSession.GameVars.WaveGamemode = false;
+            }
+        }
+    
+        if(this.Quit)
+        {
+            this.GameSession.Quit();
+        }
+                        
+        if(this.Respawn)
+        {
+            this.GameSession.GameVars.DestroyRespawnMenu = true;
+            //return;
+        }
+        
+        if(this.ChangeLevel == true)
+        {
+            var buildingRecall = BuildingRecall();
+            this.GameSession.DispatchEvent(Events.BuildingRecall, buildingRecall);
+            
+            if(this.LevelToChangeTo != null)
+            {
+                this.GameSession.GameVars.NewLevel = this.LevelToChangeTo;
+            }
+        }
+        
+        if(this.Reload)
+        {
+            var buildingRecall = BuildingRecall();
+            this.GameSession.DispatchEvent(Events.BuildingRecall, buildingRecall);
+            
+            this.GameSession.GameVars.WorldRegen = true;
+        }
+        
+        if(this.Camera != null)
+        {
+            this.Camera.Cog.Actions.Cancel();
+            var seq = Action.Sequence(this.Camera.Cog.Actions);
+            var grp = Action.Group(seq);
+            Action.Property(grp, @this.Camera.Cog.Transform.Translation, this.NewCameraPosition, this.MoveTime, Ease.QuadInOut);
+        }
+    }
+}
+
+
+//unused
+class Ship_Menu_Button_Upgrade : ZilchComponent
+{
+    [Property] var Camera : CogPath = null; 
+  
+    [Property] var NewCameraPosition : Real3 = Real3(0.0, 0.0, 0.0);
+
+    [Property] var MoveTime : Real = 0.2; 
+    
+    var UpgradeOnlyOnce : Real = 1;
+    
+    // Determines how many upgrade points player needs
+    [Property] var UpgradePoints_Needed : Integer = 0;
+    
+    // Lets us select the right upgrade for the button
+    [Property] var FireRateI_Upgrade : Boolean = false;
+    [Property] var MaxSpeed_Upgrade : Boolean = false;
+    [Property] var DoubleShot_Upgrade : Boolean = false;
+    [Property] var Acceleration_Upgrade : Boolean = false;
+    [Property] var Vitals_Upgrade : Boolean = false;
+    
+    // INSERT MORE UPGRADES HERE
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.NewCameraPosition.Z =  this.Camera.Cog.Transform.Translation.Z;
+        Zero.Connect(this.Owner, Events.LeftMouseDown, this.OnLeftMouseDown);
+    }
+    
+    // Runs when player has pressed the button
+    function OnLeftMouseDown(event : ViewportMouseEvent)
+    {
+        // Checks if player has enough points to purchase upgrade the amount of points needed is determined by a variable
+        if(this.GameSession.GameVars.PlayerUpgradePoints >= this.UpgradePoints_Needed)
+        {
+            if(this.FireRateI_Upgrade == true && this.UpgradeOnlyOnce >= 1)
+            {
+                // Sets the corresponding variable in GameVars to true
+                //this.GameSession.GameVars.HasUpgrade_FirerateI = this.Upgra;
+                
+                //this.GameSession.GameVars.PlayerUpgradePoints -= this.UpgradePoints_Needed;
+            }
+            
+            if(this.MaxSpeed_Upgrade == true && this.UpgradeOnlyOnce >= 1)
+            {
+                // Sets the corresponding variable in GameVars to true
+                //this.GameSession.GameVars.HasUpgrade_Maxspeed = true;
+                
+                //this.GameSession.GameVars.PlayerUpgradePoints -= this.UpgradePoints_Needed;
+            }
+            
+            if(this.Acceleration_Upgrade == true && this.UpgradeOnlyOnce >= 1)
+            {
+                // Sets the corresponding variable in GameVars to true
+                //this.GameSession.GameVars.HasUpgrade_Acceleration = true;
+                
+                //this.GameSession.GameVars.PlayerUpgradePoints -= this.UpgradePoints_Needed;
+            }
+            
+            if(this.Vitals_Upgrade == true && this.UpgradeOnlyOnce >= 1)
+            {
+               // Sets the corresponding variable in GameVars to true
+                //this.GameSession.GameVars.HasUpgrade_Vitals = true;
+                
+                //this.GameSession.GameVars.PlayerUpgradePoints -= this.UpgradePoints_Needed; 
+            }
+        }
+        else
+        {
+           this.Camera.Cog.Actions.Cancel();
+            var seq = Action.Sequence(this.Camera.Cog.Actions);
+            var grp = Action.Group(seq);
+            Action.Property(grp, @this.Camera.Cog.Transform.Translation, this.NewCameraPosition, this.MoveTime, Ease.QuadInOut); 
+        }
+    }
+}

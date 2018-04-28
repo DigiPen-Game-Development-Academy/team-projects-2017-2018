@@ -1,0 +1,29 @@
+class StunExp : ZilchComponent {
+    
+    var Size : Real = 3;
+    var Spd : Real = 3;
+    var CSize : Real = 0.0001;
+    var Timer : Real = 0;
+    
+    function Initialize(init : CogInitializer) {
+        this.Owner.Transform.Scale = Real3(this.CSize, this.CSize, this.CSize);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.Timer + event.Dt * this.Spd < 1)
+            this.Timer += event.Dt*this.Spd;
+        else {
+            this.Timer = 1;
+            this.Owner.Destroy();
+        }
+        
+        this.CSize = Math.Lerp(0.0001, this.Size, this.Timer);
+        
+        this.Owner.Transform.Scale = Real3(this.CSize, this.CSize, this.CSize);
+        
+        this.Owner.Model.Color = Real4(1,1,1,1-this.Timer);
+        
+    }
+}

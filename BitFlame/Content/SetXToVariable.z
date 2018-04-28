@@ -1,0 +1,60 @@
+enum DisplayType{Iron, Copper, Aluminium, Titanium, UpgradePoints, Health, Pipes}
+
+class SetXToVariable : ZilchComponent
+{
+    [Property] var Type : DisplayType;
+    
+     var PrevIron : Integer;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Type == DisplayType.Iron && this.Owner.SpriteText != null)
+        {
+            this.Owner.SpriteText.Text = "`this.GameSession.GameVars.PlayerResources`";
+            
+            if(this.GameSession.GameVars.PlayerResources > this.PrevIron)
+            {
+            
+                //TODO add action animation for resource collection
+            
+            }
+        
+            this.PrevIron = this.GameSession.GameVars.PlayerResources;
+        }
+        
+        if(this.Type == DisplayType.Copper && this.Owner.SpriteText != null)
+        {
+            this.Owner.SpriteText.Text = "`this.GameSession.GameVars.PlayerCopper`";
+        }
+        
+        if(this.Type == DisplayType.Aluminium && this.Owner.SpriteText != null)
+        {
+            this.Owner.SpriteText.Text = "`this.GameSession.GameVars.PlayerAluminium`";
+        }
+        
+        if(this.Type == DisplayType.Titanium && this.Owner.SpriteText != null)
+        {
+            this.Owner.SpriteText.Text = "`this.GameSession.GameVars.PlayerTitanium`";
+        }
+        
+        if(this.Type == DisplayType.UpgradePoints && this.Owner.SpriteText != null)
+        {
+            this.Owner.SpriteText.Text = "`this.GameSession.GameVars.PlayerUpgradePoints`";
+        }
+        
+        if(this.Type == DisplayType.Health)
+        {
+            this.Owner.Area.Size = Real2((this.GameSession.GameVars.PlayerHealth * this.GameSession.GameVars.PlayerMaxHealth) / this.GameSession.GameVars.PlayerMaxHealth, 1.0);
+        }
+        
+        if(this.Type == DisplayType.Pipes)
+        {
+            this.Owner.SpriteText.Text = "`this.GameSession.GameVars.PlayerPipes`";
+        }
+    }
+}

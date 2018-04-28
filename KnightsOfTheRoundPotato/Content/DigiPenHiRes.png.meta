@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "DigiPenHiRes",
+		uint64 ResourceId = 5a2ab86b7d894135,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 1024,
+		uint FrameSizeY = 247,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 512,
+		float OriginY = 123,
+		float PixelsPerUnit = 128,
+		bool Smoothing = true,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

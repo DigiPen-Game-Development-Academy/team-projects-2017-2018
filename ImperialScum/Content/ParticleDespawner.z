@@ -1,0 +1,28 @@
+class ParticleDespawner : ZilchComponent
+
+//Athour Elena Schefer
+{
+    [Property]
+      
+    var Lifetime : Real = 20.0;
+
+    var Timer : Real;
+   
+    function Initialize(init : CogInitializer)
+    {
+        this.Timer = this.Lifetime;
+           
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Timer -= event.Dt;
+
+        if(this.Timer <= 0.0)
+        {
+            this.Owner.Destroy();
+        }
+        
+    }
+}

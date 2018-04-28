@@ -1,0 +1,55 @@
+class Wake : ZilchComponent {
+    [Dependency]
+    var Area : Area;
+    
+    var DamagePer : Real = 0;
+    
+    var LastSM : Boolean = false;
+    
+    var NoSlowmo : Boolean = false;
+    
+    var DeathMSG : String = "";
+    
+    var Hit : Boolean = false;
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        this.Owner.Sprite.Color -= Real4(0,0,0,event.Dt);
+        if(this.Owner.Sprite.Color.W <= 0) {
+            this.Owner.Destroy();
+        }
+        if(!this.Hit)
+            this.Area.Size += Real2(0, event.Dt*20);
+        if(this.Area.Size.Y > 1)
+            this.Area.Size = Real2(this.Area.Size.X, 1);
+        
+        if(this.Hit || (!GlobalVariables.SloMo && !this.LastSM) || this.NoSlowmo) {
+            this.NoSlowmo = true;
+            return;
+        }
+        
+        if(GlobalVariables.SloMo) {
+            var dir = Math.Normalize(Real3(Math.Cos(this.Owner.Transform.EulerAngles.Z+Math.ToRadians(90)), Math.Sin(this.Owner.Transform.EulerAngles.Z+Math.ToRadians(90)), 0));
+            var res = Utilities.Raycast(this.Owner.Transform.WorldTranslation + dir*(this.Owner.Transform.WorldScale.Y * this.Area.Size.Y), dir, GlobalVariables.GameSpace.PhysicsSpace, event.Dt*1000);
+            if(res != null){
+                Utilities.Damage(res.ObjectHit, this.DamagePer, this.DeathMSG);
+                this.Hit = true;
+                this.Owner.Transform.WorldScale = Real3(this.Owner.Transform.Scale.X, (this.Owner.Transform.WorldScale.Y * this.Area.Size.Y) + res.Distance, this.Owner.Transform.Scale.Z);
+                this.Area.Size = Real2(this.Area.Size.X, 1);
+            }
+        } else if(this.LastSM) {
+            var dir = Real3(Math.Cos(this.Owner.Transform.EulerAngles.Z+Math.ToRadians(90)), Math.Sin(this.Owner.Transform.EulerAngles.Z+Math.ToRadians(90)), 0);
+            var res = Utilities.Raycast(this.Owner.Transform.WorldTranslation + dir*(this.Owner.Transform.WorldScale.Y * this.Area.Size.Y), dir, GlobalVariables.GameSpace.PhysicsSpace, this.Owner.Transform.WorldScale.Y / this.Area.Size.Y);
+            if(res != null){
+                Utilities.Damage(res.ObjectHit, this.DamagePer, this.DeathMSG);
+                this.Owner.Transform.WorldScale = Real3(this.Owner.Transform.Scale.X, (this.Owner.Transform.WorldScale.Y * this.Area.Size.Y) + res.Distance, this.Owner.Transform.Scale.Z);
+            }
+            this.Area.Size = Real2(this.Area.Size.X, 1);
+            this.Hit = true;
+        }
+        
+        this.LastSM = GlobalVariables.SloMo;
+    }
+}

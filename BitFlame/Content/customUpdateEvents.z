@@ -1,0 +1,28 @@
+/**
+Filename: customUpdateEvents.z
+Author: Jakob McFarland
+Contributors: NULL
+Last modified: 3/27/2018
+Brief: This script stores the definitions of some custom events
+******************************************/
+
+ class BlockUpdate : ZilchEvent
+ {  
+    //block update event
+    sends BlockUpdate : ZilchEvent;
+    
+    //this var stores the location that the block update occured at, important for optomization
+    var Translation : Real3 = Real3(0, 0, 0);
+}
+
+class PlayerHurtUpdate : ZilchEvent
+{  
+    //player hurt update event
+    sends PlayerHurtUpdate : ZilchEvent;
+}
+
+class BuildingRecall : ZilchEvent
+{  
+    //send Building recall event
+    sends BuildingRecall : ZilchEvent;
+}

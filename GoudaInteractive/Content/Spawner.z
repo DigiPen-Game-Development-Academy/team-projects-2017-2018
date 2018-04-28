@@ -1,0 +1,94 @@
+//AUTHOR: Kevin P
+//CONTIBUTORS: Matthew Z, MYLES BUSIG
+class Spawner : ZilchComponent
+{
+    // Radius from 0, 0 that enemies will spawn in
+    [Property] var Radius : Real = 14.0;
+    
+    // EntityPlayer
+    var Player : Cog;
+    
+    // Max number of enemies that can be spawned at once
+    var MaxEnemiesSpawned : Integer = 5;
+    // Number of enemies currently spawned
+    var EnemiesSpawned : Integer = 0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        // Set the Player variable
+        this.Player = this.Space.FindObjectByName("EntityPlayer");
+        
+        // Connect to OnLogicUpdate
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        //Console.WriteLine("`this.EnemiesSpawned`");
+        
+        // If there are to little enemies
+        if (this.EnemiesSpawned < this.MaxEnemiesSpawned)
+        {
+            // If the player is not alive, return and don't spawn anything
+            if (this.Player == null)
+            {
+                return;
+            }
+            
+            // Set the camera object
+            var camera = this.Player.FindChildByName("Camera");
+            
+            // Create the spawn position generators
+            var randomGeneratorX = new Random();
+            var randomGeneratorY = new Random();
+            
+            // Set playerPosition variable
+            var playerPosition = this.Player.Transform.Translation;
+            
+            // Create the spawn position
+            var spawnPosition =  Real3(randomGeneratorX.Range(playerPosition.X - this.Radius, playerPosition.X + this.Radius),
+            randomGeneratorY.Range(playerPosition.Y - this.Radius, playerPosition.Y + this.Radius), 0);
+            
+            // If the spawn position is visible within the camera return and don't spawn anything
+            if ((this.Player.Transform.Translation.X >= spawnPosition.X - camera.Camera.Size && 
+                this.Player.Transform.Translation.X <= spawnPosition.X + camera.Camera.Size) &&
+                (this.Player.Transform.Translation.Y >= spawnPosition.Y - camera.Camera.Size && 
+                this.Player.Transform.Translation.Y <= spawnPosition.Y + camera.Camera.Size))
+            {
+                return;
+            }
+            
+            // Check to see if it is okay to spawn a enemy at the generated position
+            if (this.CheckToSeeIfSpawnIsOkay(spawnPosition.X, spawnPosition.Y) == false)
+                return;
+            
+            // Spawn the enemy and set a variable equal to it
+            // NOTE: this will later be changed to spawn a random enemy
+            var enemySpawned = this.Space.CreateAtPosition(Archetype.Find("EntityEnemy"), spawnPosition);
+            
+            // Set the enemies SpawnedFrom variable
+            enemySpawned.EntityEnemy.SpawnedFrom = this.Owner;
+            
+            // Increase the current number of enemies
+            this.EnemiesSpawned += 1;
+        }
+    }
+    
+    function CheckToSeeIfSpawnIsOkay(xPosition : Real, yPosition : Real) : Boolean
+    {
+        // Create sphere variables
+        var center = Real3(xPosition, yPosition, 0.0);
+        var radius = 0.65;
+        var count = 1;
+        var filter = CastFilter();
+        filter.IgnoreCog = this.Owner;
+        
+        // Cast the sphere
+        var castResults = this.Space.PhysicsSpace.CastSphereResults(center, radius, count, filter);
+        
+        Console.WriteLine("`castResults.Empty()`");
+        
+        // Return the results
+        return castResults.Empty();
+    }
+}

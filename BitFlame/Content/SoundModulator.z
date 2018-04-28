@@ -1,0 +1,14 @@
+class SoundModulator : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var textShower = this.Space.FindObjectByName("Text Shower");
+        
+        this.Space.SoundSpace.Volume = Real.Parse(textShower.SpriteText.Text) / 100;
+    }
+}

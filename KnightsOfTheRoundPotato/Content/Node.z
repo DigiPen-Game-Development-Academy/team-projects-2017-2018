@@ -1,0 +1,34 @@
+//Author Brandon Wolenetz
+
+class NavNode {
+    var Walkable : Boolean = true;
+    var CloseToWall : Boolean = false;
+    var WorldPos : Real3 = Real3(0,0,0);
+    
+    var GCost : Integer = 0;
+    var HCost : Integer = 0;
+    
+    var GridX : Integer = 0;
+    var GridY : Integer = 0;
+    var Parent : NavNode;
+    
+    var HeapIndex : Integer;
+    
+    constructor (walkable : Boolean, worldPos : Real3, gridX : Integer, gridY : Integer, closeToWall : Boolean) {
+        
+        this.Walkable = walkable;
+        this.WorldPos = worldPos;
+        this.GridX = gridX;
+        this.GridY = gridY;
+        this.CloseToWall = closeToWall;
+        if(!walkable) this.CloseToWall = false;
+    }
+    
+    var FCost : Integer {
+        
+        get {
+            return this.GCost + this.HCost;
+        }
+        
+    }
+}

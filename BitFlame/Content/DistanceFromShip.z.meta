@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "DistanceFromShip",
+		uint64 ResourceId = 5a6630a0b1486398,
+	},
+},

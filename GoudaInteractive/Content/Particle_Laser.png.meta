@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "Particle_Laser",
+		uint64 ResourceId = 5af6a019ea0abcf5,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 12,
+		uint FrameSizeY = 12,
+		uint FrameCount = 6,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 6,
+		float OriginY = 6,
+		float PixelsPerUnit = 32,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

@@ -1,0 +1,8 @@
+FontContent = 
+{
+	FontBuilder = 
+	{
+		string Name = "AGENCYB",
+		uint64 ResourceId = 5a395c1f9df087a4,
+	},
+},

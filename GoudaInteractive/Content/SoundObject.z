@@ -1,0 +1,41 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+enum SoundType {
+    Music, Sound
+}
+
+class SoundObject : ZilchComponent {
+    
+    [Dependency] var SoundEmitter : SoundEmitter = null;
+    
+    [Property] var SoundCategory : SoundType = SoundType.Sound;
+    
+    var CanModPitch : Boolean = true;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        this.UpdateSoundVolume();
+    }
+    
+    function UpdateSoundVolume() {
+        
+        if(this.SoundCategory == SoundType.Music)
+            this.Owner.SoundEmitter.Volume = GameSetting.MusicVolume;
+        else
+            this.Owner.SoundEmitter.Volume = GameSetting.SoundEffectsVolume;
+        
+        if(this.CanModPitch)
+            this.Owner.SoundEmitter.Pitch = GameSetting.PitchValue;
+        
+    }
+    
+    function PlayCue(cue : SoundCue) : SoundInstance {
+        this.UpdateSoundVolume();
+        return this.Owner.SoundEmitter.PlayCue(cue);
+    }
+    
+}

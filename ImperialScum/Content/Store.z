@@ -1,0 +1,30 @@
+//Jacob Burke
+
+//Creates the store
+
+class Store : ZilchComponent
+{
+    [Static]
+    var InStore:Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Space, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Space, Events.CollisionEnded, this.OnCollisionEnded);
+        
+    }
+
+    function OnCollisionEnded(event : CollisionEvent)
+    {
+        if(event.OtherObject.PlayerController != null)
+        Store.InStore = false;
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.PlayerController != null)
+        Store.InStore = true;
+    }
+
+}

@@ -1,0 +1,30 @@
+/*************************************
+Filename: PlayerShooting
+Author: Sage Dupuy
+Contributors: 
+-
+-
+-
+-
+Last modified: 1/23/2018
+Brief:
+Looks at the player
+******************************************/
+
+class Player_LookAt : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var player = this.Space.FindObjectByName("Player");
+        
+        if(player != null)
+        {
+            this.Owner.Orientation.LookAtPointWithUp(this.Space.FindObjectByName("Player").Transform.Translation, Real3(0.0,0.0,1.0));
+        }
+    }
+}

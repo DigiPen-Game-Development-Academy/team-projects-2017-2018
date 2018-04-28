@@ -1,0 +1,54 @@
+//Author Brandon Wolenetz
+
+enum DialogReturn {
+    OK,
+    CANCEL,
+    YES,
+    NO,
+    EXIT
+}
+
+enum DialogTypes {
+    OK,
+    OKCANCEL,
+    YESNO,
+    SETTINGS
+}
+
+class DialogBox : ZilchComponent {
+    [Property] var Margin : Real = 0.125;
+    [Property] var ButtonSpace : Real = 10;
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.GameSession.FindSpaceByName("UI") != null)
+            this.GameSession.FindSpaceByName("UI").TimeSpace.Paused = true;
+        GlobalVariables.GameSpace.TimeSpace.Paused = true;
+        
+        this.Owner.Area.Size = this.Owner.FindChildByName("TXT").SpriteText.MeasureText() + Real2(this.Margin, this.Margin+this.ButtonSpace);
+        
+        this.Owner.FindChildByName("TXT").Transform.Translation = Real3(0, (this.ButtonSpace+this.Owner.FindChildByName("TXT").SpriteText.MeasureText().Y)/2, 1);
+        
+        var ok = this.Owner.FindChildByName("OK");
+        
+        ok.Area.Size = Real2(this.ButtonSpace * 1.5, this.ButtonSpace) * this.Owner.Transform.WorldScale.XY;
+        ok.Transform.Translation = Real3((this.Owner.Area.Size.X / 2) - ok.Area.Size.X + this.Margin, -((this.Owner.Area.Size.Y / 2) - (this.ButtonSpace / 1.25)), 2);
+        ok.Button.Scaling = false;
+        ok.Transform.Scale = Real3(1);
+        var smallest = this.ButtonSpace * this.Owner.Transform.WorldScale.Y;
+        if(ok.Area.Size.X * this.Owner.Transform.WorldScale.X < smallest) {
+            smallest = ok.Area.Size.X * this.Owner.Transform.WorldScale.X;
+        }
+        ok.FindChildByName("TXTOK").Transform.WorldScale = Real3(smallest);
+        
+        //alter size
+        var scale = 0.75;
+        ok.Transform.WorldScale *= scale;
+        ok.Button.StartSize *= scale;
+        ok.Button.TargetSize *= scale;
+        
+    }
+}

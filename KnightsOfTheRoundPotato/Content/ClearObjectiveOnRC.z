@@ -1,0 +1,12 @@
+class ClearObjectiveOnRC : ZilchComponent {
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+    }
+
+    function OnMouseDown(event : ViewportMouseEvent) {
+        
+        if(event.Button == MouseButtons.Right) {
+            Utilities.ClearQuest();
+        }
+    }
+}

@@ -1,0 +1,39 @@
+//Author:  Sam Stearns / Zero Tutorial
+//Purpose: To make the backgrounds scroll slower than the foreground
+
+class ParallaxBK : ZilchComponent
+{
+    //Initalize properties for the scrolling itself
+    [Property]
+    var RealitiveSpeed : Real = 0.5;
+    
+    [Property]
+    var PlayerObject : CogPath = null;
+
+    var PreviousPlayerLocation : Real3 = Real3();
+    
+    
+    //This comment is green.
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        //Initalize variables
+        var currentPlayerPosition = this.PlayerObject.Cog.Transform.Translation;
+        var displacement = currentPlayerPosition.X - this.PreviousPlayerLocation.X;
+        
+        //Update Position
+        var movement = displacement * this.RealitiveSpeed;
+        var newPosition = this.Owner.Transform.Translation;
+        
+        newPosition.X -= movement;
+        
+        this.Owner.Transform.Translation = newPosition;
+        
+        this.PreviousPlayerLocation = currentPlayerPosition;
+    }
+}

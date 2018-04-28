@@ -1,0 +1,19 @@
+class OnClickChangeSliderBar : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+    }
+
+    function OnMouseDown(event : ViewportMouseEvent)
+    {
+        var backboard = this.Owner.Parent.FindChildByName("Backboard");
+        
+        var textShower = backboard.FindChildByName("Text Shower");
+        var soundBar = backboard.FindChildByName("SoundBar");
+        
+        textShower.Transform.Translation = Real3(this.Owner.Transform.Translation.X / 100, 1.2, 1.0);
+        soundBar.Area.Size = Real2(this.Owner.Transform.Translation.X + 50.0, 1.0);
+        textShower.SpriteText.Text = "`soundBar.Area.Size.X`";
+    }
+}

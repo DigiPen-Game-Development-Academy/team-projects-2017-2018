@@ -1,0 +1,153 @@
+//Author: Callie (with Jeffrey's Help)
+//Purpose: automatically calculate Z coordinate
+
+[RunInEditor]
+class AutoDepth : ZilchComponent
+{
+    [Property] var Local : Boolean;
+    [Property] var Offset : Real;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.FrameUpdate, this.OnFrameUpdate);
+    }
+    function OnFrameUpdate(event : UpdateEvent)
+    {
+        if (this.Local && this.Owner.Parent != null)
+        {
+            var adjusted = this.Owner.Transform.WorldTranslation;
+            adjusted.Z = this.Offset + this.Owner.Parent.Transform.WorldTranslation.Z;
+            this.Owner.Transform.WorldTranslation = adjusted;
+        }
+        else
+        {
+            var adjusted = this.Owner.Transform.WorldTranslation;
+            adjusted.Z = this.Offset - adjusted.Y*0.01;
+            this.Owner.Transform.WorldTranslation = adjusted;
+        }
+    }
+
+}
+class SpriteFlip : ZilchComponent
+{
+    var PreviousX : Real;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.PreviousX = this.Owner.Transform.WorldTranslation.X;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var movementX = this.Owner.Transform.WorldTranslation.X - this.PreviousX;
+        
+        if(movementX > 0.05)
+        {
+            this.Owner.Transform.SetEulerAnglesXYZ(0, Math.Pi, 0);
+        }
+        else if(movementX < -0.05)
+        {
+            this.Owner.Transform.SetEulerAnglesXYZ(0, 0, 0);
+        }
+        
+        this.PreviousX = this.Owner.Transform.WorldTranslation.X;
+    }
+}
+class AutoRotate : ZilchComponent
+{
+    [Property] var Offset : Real = 90;
+    
+    var PreviousPosition : Real3;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.PreviousPosition = this.Owner.Transform.WorldTranslation;
+    }
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var velocity = this.Owner.Transform.WorldTranslation - this.PreviousPosition;
+        if (velocity == Real3.Zero) return;
+        this.Owner.Transform.SetEulerAnglesXYZ(0, 0, Math.ATan2(velocity.Y, velocity.X) + Math.ToRadians(this.Offset));
+        this.PreviousPosition = this.Owner.Transform.WorldTranslation;
+    }
+}
+[RunInEditor]
+class AutoStretch : ZilchComponent
+{
+    [Dependency] var Transform : Transform;
+    [Dependency] var ObjectLink : ObjectLink;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.FrameUpdate, this.OnFrameUpdate);
+    }
+    function OnFrameUpdate(event : UpdateEvent)
+    {
+        if (this.ObjectLink.ObjectA == null || this.ObjectLink.ObjectB == null) return;
+        
+        this.Transform.WorldTranslation = (this.ObjectLink.WorldPointA + this.ObjectLink.WorldPointB) / 2;
+        var difference = this.ObjectLink.WorldPointB - this.ObjectLink.WorldPointA;
+        this.Transform.WorldRotation = Math.RotationQuaternionBetween(Real3.XAxis, difference);
+        this.Transform.Scale = this.ObjectLink.ObjectB.Transform.Scale;
+        var scale = this.Transform.WorldScale;
+        scale.X = Math.Length(difference);
+        this.Transform.WorldScale = scale;
+    }
+}
+[RunInEditor]
+class AutoFollow : ZilchComponent
+{
+    [Dependency] var Transform : Transform;
+    [Property] var ToFollow : CogPath;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.FrameUpdate, this.OnFrameUpdate);
+    }
+    function OnFrameUpdate(event : UpdateEvent)
+    {
+        if (this.ToFollow == null || this.ToFollow.Cog == null || this.ToFollow.Cog.Transform == null) return;
+        this.Transform.WorldTranslation = this.ToFollow.Cog.Transform.WorldTranslation;
+    }
+}
+class CopyParent : ZilchComponent
+{
+    [Property] var Content : Boolean = true;
+    [Property] var Visible : Boolean = true;
+    [Property] var Color : Boolean;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.Owner.Parent == null) return;
+        if (this.Owner.Sprite != null && this.Owner.Parent.Sprite != null)
+        {
+            if (this.Content)
+            {
+                this.Owner.Sprite.SpriteSource = this.Owner.Parent.Sprite.SpriteSource;
+                this.Owner.Sprite.CurrentFrame = this.Owner.Parent.Sprite.CurrentFrame;
+                this.Owner.Sprite.FlipX = this.Owner.Parent.Sprite.FlipX;
+                this.Owner.Sprite.FlipY = this.Owner.Parent.Sprite.FlipY;
+            }
+            if (this.Visible) this.Owner.Sprite.Visible = this.Owner.Parent.Sprite.Visible;
+            if (this.Color) this.Owner.Sprite.Color = this.Owner.Parent.Sprite.Color;
+        }
+        if (this.Owner.SpriteText != null && this.Owner.Parent.SpriteText != null)
+        {
+            if (this.Content)
+            {
+                this.Owner.SpriteText.Text = this.Owner.Parent.SpriteText.Text;
+                this.Owner.SpriteText.Align = this.Owner.Parent.SpriteText.Align;
+            }
+            if (this.Visible) this.Owner.SpriteText.Visible = this.Owner.Parent.SpriteText.Visible;
+            if (this.Color) this.Owner.SpriteText.Color = this.Owner.Parent.SpriteText.Color;
+        }
+    }
+}

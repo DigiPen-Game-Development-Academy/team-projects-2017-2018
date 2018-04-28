@@ -1,0 +1,87 @@
+//Jacob Burke
+
+//This is in charge of the hunger
+
+class Hunger : ZilchComponent
+{
+    [Static]
+    var Hunger:Real = 120;
+    
+    [Static]
+    var MaxHunger:Real;
+    
+    [Property]
+    var Timer:Real = 5;
+    
+    var GodMode : Boolean = false;
+    
+    [Static] var NeverStarve : Boolean = false;
+
+   
+    
+    function Initialize(init : CogInitializer)
+    {
+        Hunger.MaxHunger = Hunger.Hunger;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(Hunger.Hunger > 0)
+        {
+            if(this.Space.CurrentLevel != Level.BaseLevel && Hunger.NeverStarve == false)
+            Hunger.Hunger -= event.Dt;
+        }
+        
+        //Health Regen by Jessica
+        if(this.Timer > 0)
+        {
+            
+        this.Timer -= event.Dt;
+        
+        }
+        
+        else if(this.Timer <= 0)
+        {
+            if (Hunger.Hunger >= 70 && Health.CurrentHealth <= 15 && Health.RegenOff != true)
+            {
+                Health.CurrentHealth += 1;
+                if(AdvInventory.PlayerInventory["Ring_Regen"] >= 1)
+                Health.CurrentHealth += 2;
+            }
+            
+            this.Timer += 5;
+        }
+        
+        //Starve Button
+        if(Zero.Keyboard.KeyIsDown(Keys.Alt) && Zero.Keyboard.KeyIsDown(Keys.B))
+        {
+            Hunger.Hunger -= 1;
+        }
+        
+        //Don't Starve button
+        if(Zero.Keyboard.KeyIsDown(Keys.Alt) && Zero.Keyboard.KeyIsPressed(Keys.O))
+        {
+            Hunger.NeverStarve = true;
+        }
+        
+        //God Mode by Jessica. - REMOVED FOR BETA
+        if(Zero.Keyboard.KeyIsDown(Keys.G) && Zero.Keyboard.KeyIsDown(Keys.Alt))
+        {
+            Hunger.MaxHunger += 1000;
+            Hunger.Hunger += 1000;
+            this.GodMode = true;
+        }
+        
+        if(Health.CurrentHealth <= 500 && this.GodMode == true)
+        {
+            Health.CurrentHealth += 1000;
+        }
+        
+        if(Hunger.Hunger <= 500 && this.GodMode == true)
+        {
+            Hunger.MaxHunger += 1000;
+            Hunger.Hunger += 1000;
+        }
+    }
+}

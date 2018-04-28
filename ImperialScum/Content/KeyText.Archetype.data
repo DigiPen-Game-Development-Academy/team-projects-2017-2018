@@ -1,0 +1,146 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "KeyText",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0.0303731058, 0.483408093, 0],
+		Vec3 Scale = [0.5, 0.5, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	SpriteText = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string FontName = "5a0f895ab1e49e19:DraftGameFont",
+		uint FontSize = 16,
+		string Text = "Key",
+		TextAlign Align = Center,
+		float PixelsPerUnit = 16,
+		bool Smoothing = false,
+	},
+	MoveUp = 
+	{
+	},
+	DestroyTimer = 
+	{
+		int Time = 80,
+	},
+	Hierarchy = 
+	{
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 2,
+			},
+			Named = 
+			{
+				string Name = "SpriteText",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0, -1, 1],
+				Vec3 Scale = [1, 1, 0.5],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			SpriteText = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string FontName = "5a0f895ab1e49e19:DraftGameFont",
+				uint FontSize = 16,
+				string Text = "Obtained!",
+				TextAlign Align = Center,
+				float PixelsPerUnit = 16,
+				bool Smoothing = false,
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 3,
+			},
+			Named = 
+			{
+				string Name = "SpriteText",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0.0632368326, -1.07998157, -1],
+				Vec3 Scale = [1, 1, 0.5],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			SpriteText = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [0, 0, 0, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string FontName = "5a0f895ab1e49e19:DraftGameFont",
+				uint FontSize = 16,
+				string Text = "Obtained!",
+				TextAlign Align = Center,
+				float PixelsPerUnit = 16,
+				bool Smoothing = false,
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 4,
+			},
+			Named = 
+			{
+				string Name = "SpriteText",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0.06264247, -0.0778492689, -1],
+				Vec3 Scale = [1, 1, 0.5],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			SpriteText = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [0, 0, 0, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string FontName = "5a0f895ab1e49e19:DraftGameFont",
+				uint FontSize = 16,
+				string Text = "Key",
+				TextAlign Align = Center,
+				float PixelsPerUnit = 16,
+				bool Smoothing = false,
+			},
+		},
+	},
+},

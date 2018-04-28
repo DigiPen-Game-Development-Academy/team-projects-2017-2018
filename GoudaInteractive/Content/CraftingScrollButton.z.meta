@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "CraftingScrollButton",
+		uint64 ResourceId = 5a985aab3705644a,
+	},
+},

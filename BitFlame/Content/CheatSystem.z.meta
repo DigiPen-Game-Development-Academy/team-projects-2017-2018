@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "CheatSystem",
+		uint64 ResourceId = 5a01bc1073330fa4,
+	},
+},

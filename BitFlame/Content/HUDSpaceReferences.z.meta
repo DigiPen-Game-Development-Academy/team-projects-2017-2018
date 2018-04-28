@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "HUDSpaceReferences",
+		uint64 ResourceId = 5a11ba0c02dbd715,
+	},
+},

@@ -1,0 +1,396 @@
+//Author Brandon Wolenetz
+
+enum RState {
+    Idle,
+    Normal,
+    Rush,
+    AngryRush,
+    Dazed,
+    Winding
+}
+
+class Boss_Rusher_AI : ZilchComponent {
+    
+    //*****Dependencies*****
+    [Dependency] var Health : Health;
+    [Dependency] var PathFollow : GenericPathFollowAI;
+    [Dependency] var PathFind : EnemyPathFind;
+    [Dependency] var RigidBody : RigidBody;
+    
+    //*****Properties*****
+    //how fast to move when in 'normal' state
+    [Property] var MovSpeed : Real = 2;
+    //how fast to dash
+    [Property] var DashSpeed : Real = 7;
+    //how fast to angry dash
+    [Property] var AngryDashSpeed : Real = 7;
+    //wind up time before dash at full health
+    [Property] var WindUpTimeMax : Real = 1.5;
+    //wind up time before dash at no health
+    [Property] var WindUpTimeMin : Real = 0.5;
+    //how far to travel with normal dash
+    [Property] var DashDistance : Real = 7;
+    //how long to chase player with angry dash
+    [Property] var AngryDashTime : Real = 4;
+    //ammount of time to be dazed after running into wall
+    [Property] var DazeTime : Real = 4;
+    //% of health to switch from dashing to angry dashing (0-1)
+    [Property] var AngryDashHealth : Real = 0.25;
+    //speed to turn twareds player when angry dashing
+    [Property] var AngryTurnSpeed : Real = 10;
+    //damage dealt when hit player with dash
+    [Property] var DashDamage : Real = 50;
+    //damage dealt per second while toutching player
+    [Property] var PassiveDamage : Real = 50;
+    //time between entering dash state at full health
+    [Property] var DashCooldownMax : Real = 6;
+    //time between entering dash state at no health
+    [Property] var DashCooldownMin : Real = 4;
+    //Randomness for time between entering dash states
+    [Property] var DashCooldownRand : Real = 0.1;
+    //range at whitch to start the boss fight
+    [Property] var StartRange : Real = 10;
+    //death message if player is defeated by boss using dash
+    [Property] var DashDamageMSG : String = "You where run over by a giant rusher!";
+    //death message if player is defeated by boss using passive damage
+    [Property] var PassiveDamageMSG : String = "Wait...  did that rusher just sit on you?!?";
+    //Sprites for the boss
+    [Property] var North      : SpriteSource;
+    [Property] var NorthEast  : SpriteSource;
+    [Property] var East       : SpriteSource;
+    [Property] var SouthEast  : SpriteSource;
+    [Property] var South      : SpriteSource;
+    [Property] var SouthWest  : SpriteSource;
+    [Property] var West       : SpriteSource;
+    [Property] var NorthWest  : SpriteSource;
+    
+    //*****Variables*****
+    //current boss state
+    var State : RState = RState.Idle;
+    //Timer used for delays and sutch
+    var Timer : Real = 0;
+    //Random() used for randomness
+    var Rand : Random;
+    //used to only set dash speed and start pos at start of dash
+    var DashOnce : Boolean = false;
+    //the start position of a dash
+    var DashStart : Real3 = Real3(0);
+    //the direction of a dash
+    var DashDir : Real3 = Real3(0);
+    //is the ai currently acive?
+    var Active : Boolean = true;
+    //exclaim point
+    var Ex : Cog;
+    //stars
+    var Stars : Cog;
+    
+    function Initialize(init : CogInitializer) {
+        
+        //set collision table so enemies do not collide
+        if(this.Space.PhysicsSpace.CollisionTable != CollisionTable.CollisionTable) {
+            this.Space.PhysicsSpace.CollisionTable = CollisionTable.CollisionTable;
+        }
+        
+        this.Rand = Random();
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionPersisted);
+    }
+
+    function OnCollisionPersisted(event : CollisionEvent) {
+        
+        //damage player over time while colliding
+        if (event.OtherObject == GlobalVariables.Player) {
+            //deal damage to player
+            var damage = Damage();
+            damage.Damage = this.PassiveDamage * this.Space.TimeSpace.Dt;
+            damage.DeathMSG = this.PassiveDamageMSG;
+            GlobalVariables.Player.DispatchEvent(Events.Damage, damage);
+        }
+        
+    }
+
+    function OnCollisionStarted(event : CollisionEvent) {
+        
+        //if dashing
+        if (this.State == RState.Rush || this.State == RState.AngryRush) {
+            
+            if (event.OtherObject == GlobalVariables.Player) {  //run into player
+                
+                //set state to normal
+                this.State = RState.Normal;
+                //set timer for dash cooldown
+                this.Timer = Math.Lerp(this.DashCooldownMin, this.DashCooldownMax, this.Health.Percent) + this.Rand.Range(-this.DashCooldownRand, this.DashCooldownRand);
+                //deal damage to player
+                var damage = Damage();
+                damage.Damage = this.DashDamage;
+                damage.DeathMSG = this.DashDamageMSG;
+                GlobalVariables.Player.DispatchEvent(Events.Damage, damage);
+                
+            } else {                                            //run into wall
+                
+                //set state to dazed
+                this.State = RState.Dazed;
+                //set timer for dazed state
+                this.Timer = this.DazeTime;
+                
+            }
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(!this.Active) {
+            this.Health.Locked = false;
+            
+            return;
+        }
+        
+        //prevent all damage
+        this.Health.Locked = true;
+        
+        //run current state
+        if (this.State == RState.Idle) {
+            this.Idle(event.Dt);
+        } else if (this.State == RState.Normal) {
+            this.Normal(event.Dt);
+        } else if (this.State == RState.Rush) {
+            this.Rush(event.Dt);
+        } else if (this.State == RState.AngryRush) {
+            this.AngryRush(event.Dt);
+        } else if (this.State == RState.Dazed) {
+            this.Dazed(event.Dt);
+        } else if (this.State == RState.Winding) {
+            this.Wind(event.Dt);
+        }
+        
+    }
+    
+    function SetSprite(dir : Real3) {
+        this.SetSprite(dir, true);
+    }
+    
+    function SetSprite(dir : Real3, animspeed : Boolean) {
+        
+        var angle = Math.ToDegrees(Math.ATan2(dir.Y, dir.X));
+        if(angle >= 22.5)
+            angle -= 360;
+        if(angle < 22.5 && angle > -22.5) {
+            if(this.Owner.Sprite.SpriteSource != this.East)
+                this.Owner.Sprite.SpriteSource = this.East;
+        } else if(angle < -22.5 && angle > -67.5) {
+            if(this.Owner.Sprite.SpriteSource != this.SouthEast)
+                this.Owner.Sprite.SpriteSource = this.SouthEast;
+        } else if(angle < -67.5 && angle > -112.5) {
+            if(this.Owner.Sprite.SpriteSource != this.South)
+                this.Owner.Sprite.SpriteSource = this.South;
+        } else if(angle < -112.5 && angle > -157.5) {
+            if(this.Owner.Sprite.SpriteSource != this.SouthWest)
+                this.Owner.Sprite.SpriteSource = this.SouthWest;
+        } else if(angle < -157.5 && angle > -202.5) {
+            if(this.Owner.Sprite.SpriteSource != this.West)
+                this.Owner.Sprite.SpriteSource = this.West;
+        } else if(angle < -202.5 && angle > -247.5) {
+            if(this.Owner.Sprite.SpriteSource != this.NorthWest)
+                this.Owner.Sprite.SpriteSource = this.NorthWest;
+        } else if(angle < -247.5 && angle > -292.5) {
+            if(this.Owner.Sprite.SpriteSource != this.North)
+                this.Owner.Sprite.SpriteSource = this.North;
+        } else {
+            if(this.Owner.Sprite.SpriteSource != this.NorthEast)
+                this.Owner.Sprite.SpriteSource = this.NorthEast;
+        }
+        
+        if(animspeed) {
+        
+            this.Owner.Sprite.AnimationSpeed = Math.Distance(Real3(0), this.Owner.RigidBody.Velocity) * 0.5;
+            
+            if(Math.Distance(Real3(0), this.Owner.RigidBody.Velocity) == 0) {
+                this.Owner.Sprite.AnimationActive = false;
+                this.Owner.Sprite.CurrentFrame = 0;
+            } else {
+                this.Owner.Sprite.AnimationActive = true;
+            }
+        }
+        
+    }
+    
+    //*****State Functions*****
+    
+    //pre boss fight, wait until player gets close
+    function Idle (dt : Real) {
+        this.RigidBody.Velocity = Real3(0);
+        
+        this.SetSprite(Real3(0, -1, 0));
+        
+        if(Math.Distance(this.Owner.Transform.WorldTranslation, GlobalVariables.Player.Transform.WorldTranslation) <= this.StartRange) {
+            //set state to normal
+            this.State = RState.Normal;
+            //set timer for dash cooldown
+            this.Timer = Math.Lerp(this.DashCooldownMin, this.DashCooldownMax, this.Health.Percent) + this.Rand.Range(-this.DashCooldownRand, this.DashCooldownRand);
+        }
+    }
+    
+    //follow the player around slowly
+    function Normal (dt : Real) {
+        //go towards player
+        this.PathFollow.SetTarget(GlobalVariables.Player.Transform.WorldTranslation);
+        this.RigidBody.Velocity *= this.MovSpeed;
+        
+        this.SetSprite(this.RigidBody.Velocity);
+        
+        //count down to wind timer
+        this.Timer -= dt;
+        
+        //go to wind state
+        if (this.Timer <= 0) {
+            
+            this.State = RState.Winding;
+            
+            //set wind timer
+            this.Timer = Math.Lerp(this.WindUpTimeMin, this.WindUpTimeMax, this.Health.Percent);
+            //setup dash variables (we do this here so that enemy will dash in the direction that the player was in when the wind-up started)
+            this.DashOnce = false;
+            this.DashStart = this.Owner.Transform.WorldTranslation;
+            this.DashDir = Math.Normalize(GlobalVariables.Player.Transform.WorldTranslation - this.Owner.Transform.WorldTranslation);
+            
+        }
+    }
+    
+    //dash in the direction of the player
+    function Rush (dt : Real) {
+        
+        //go in dash direction
+        this.RigidBody.Velocity = this.DashDir * this.DashSpeed;
+        
+        this.SetSprite(this.RigidBody.Velocity);
+        
+        //go back to normal when traveled far enugh
+        if (Math.Distance(this.Owner.Transform.WorldTranslation, this.DashStart) > this.DashDistance) {
+            
+            //set state to normal
+            this.State = RState.Normal;
+            //setup cooldown timer
+            this.Timer = Math.Lerp(this.DashCooldownMin, this.DashCooldownMax, this.Health.Percent) + this.Rand.Range(-this.DashCooldownRand, this.DashCooldownRand);
+            
+        }
+        
+    }
+    
+    //dash turning to the player
+    function AngryRush (dt : Real) {
+        
+        //go in dash direction
+        this.RigidBody.Velocity = this.DashDir * this.DashSpeed;
+        
+        this.SetSprite(this.RigidBody.Velocity);
+        
+        //turn dash direction twards player
+        var tdir = GlobalVariables.Player.Transform.WorldTranslation - this.Owner.Transform.WorldTranslation;
+        var angle = Math.ATan2(this.RigidBody.Velocity.Y, this.RigidBody.Velocity.X);
+        var tAngle = Math.ATan2(tdir.Y, tdir.X);
+        var a = Math.ATan2(Math.Sin(tAngle-angle), Math.Cos(tAngle-angle));
+        
+        if(Math.ToDegrees(a) > 180) {
+            a -= Math.ToRadians(360);
+        }
+        
+        if(Math.ToDegrees(a) < -180) {
+            a += Math.ToRadians(360);
+        }
+        
+        if(Math.Abs(a - angle) < this.AngryTurnSpeed*dt)
+            angle = tAngle;
+        else if(a > 0) {
+            angle += Math.ToRadians(this.AngryTurnSpeed)*dt;
+        } else {
+            angle += -Math.ToRadians(this.AngryTurnSpeed)*dt;
+        }
+        
+        this.DashDir = Real3(Math.Cos(angle), Math.Sin(angle), 0);
+        
+        //go back to normal when chasing for long enugh
+        this.Timer -= dt;
+        if (this.Timer <= 0) {
+            
+            //set state to normal
+            this.State = RState.Normal;
+            //setup cooldown timer
+            this.Timer = Math.Lerp(this.DashCooldownMin, this.DashCooldownMax, this.Health.Percent) + this.Rand.Range(-this.DashCooldownRand, this.DashCooldownRand);
+            
+        }
+        
+    }
+    
+    //sit there dazed, this is the only time when the player can deal damage
+    function Dazed (dt : Real) {
+        
+        if(this.Stars == null) {
+            this.Stars = this.Space.CreateAtPosition(Archetype.Stars, Real3(0, 0.4, 0.25));
+            this.Stars.AttachTo(this.Owner);
+            this.Stars.Despawn.Timer = this.DazeTime;
+        }
+        this.Owner.Sprite.AnimationSpeed = 0;
+        //allow damage when dazed
+        this.Health.Locked = false;
+        
+        //dont move when dazed
+        this.RigidBody.Velocity = Real3(0);
+        
+        //sit still until no longer dazer
+        this.Timer -= dt;
+        if (this.Timer <= 0) {
+            
+            //set state to normal
+            this.State = RState.Normal;
+            //setup cooldown timer
+            this.Timer = Math.Lerp(this.DashCooldownMin, this.DashCooldownMax, this.Health.Percent) + this.Rand.Range(-this.DashCooldownRand, this.DashCooldownRand);
+            
+        }
+        
+    }
+    
+    //wind up before rushing
+    function Wind (dt : Real) {
+        
+        if(this.Ex == null) {
+            this.Ex = this.Space.CreateAtPosition(Archetype.Exclaim, Real3(0, 1, 0));
+            this.Ex.AttachTo(this.Owner);
+            this.Ex.Despawn.Timer = Math.Lerp(this.WindUpTimeMin, this.WindUpTimeMax, this.Health.Percent)+0.5;
+        }
+        
+        //wait until done winding up
+        this.Timer -= dt;
+        
+        //dont move while winding
+        this.RigidBody.Velocity = Real3(0);
+        this.PathFind.Path = null;
+        
+        if(this.Timer < Math.Lerp(this.WindUpTimeMin, this.WindUpTimeMax, this.Health.Percent) * 0.25) {
+            this.Owner.Sprite.AnimationSpeed = 0;
+        } else {
+            this.DashDir = Math.Normalize(GlobalVariables.Player.Transform.WorldTranslation - this.Owner.Transform.WorldTranslation);
+            this.SetSprite(this.DashDir, false);
+            this.Owner.Sprite.AnimationSpeed = Math.Lerp(this.WindUpTimeMin, this.WindUpTimeMax, this.Health.Percent) / this.Timer;
+        }
+        
+        if (this.Timer <= 0) {
+            
+            //set to dash if over angry dash health, otherwise set to angry dash
+            if (this.Health.Percent < this.AngryDashHealth) {
+                
+                //set state to angry dash
+                this.State = RState.AngryRush;
+                //set up timer for angry dash
+                this.Timer = this.AngryDashTime;
+                
+            } else {
+                
+                //set state to dash
+                this.State = RState.Rush;
+                
+            }
+        }
+    }
+    
+}

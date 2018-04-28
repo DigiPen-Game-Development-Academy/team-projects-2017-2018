@@ -1,0 +1,68 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "SlimeGib",
+	},
+	Archetyped = 
+	{
+		string Name = "5a78aa09621f375f:SlimeGib",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0.931673825, -1.36599278, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5a78aa3295119254:SlimeGib",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	RigidBody = 
+	{
+		bool Static = false,
+		bool Asleep = false,
+		bool Kinematic = false,
+		bool RotationLocked = true,
+		bool Mode2D = true,
+		bool AllowSleep = true,
+		bool Inherit2DMode = true,
+		Vec3 Velocity = [0, 0, 0],
+		Vec3 AngularVelocity = [0, 0, 0],
+	},
+	DestroyTimer = 
+	{
+		int Time = 20,
+	},
+	Gibs = 
+	{
+	},
+	BoxCollider = 
+	{
+		bool Ghost = false,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "5a78abd047c6faa3:Slime",
+		string SerializedGroupName = "5a5911dc2040a4ae:Resources",
+		Vec3 Offset = [0.0250000004, -0.0250000004, 0],
+		Vec3 Size = [0.100000001, 0.100000001, 0.100000001],
+	},
+},

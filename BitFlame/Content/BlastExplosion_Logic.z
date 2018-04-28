@@ -1,0 +1,46 @@
+/***
+BlastExplosion_Logic.z
+by: jakob Mcfarland
+last edit: 3/6/2018 by jakob
+brief: basicly DamageOnHit (bullet logic) except with a short timed death, meant for blast explosion effect
+***/
+
+class BlastExplosion_Logic : ZilchComponent
+{
+    [Property] var Damage : Real = 10.0;
+    
+    [Property] var Penatrating : Boolean = false;
+    
+    [Property] var EnemyBullet : Boolean = false;
+    
+    var Timer : Real = 0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Timer += event.Dt;
+        if(this.Timer >= 0.5)
+            this.Owner.Destroy();
+    }
+    
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        Console.WriteLine("test");
+        
+        
+        if(event.OtherObject.Health != null)
+        {
+            event.OtherObject.Health.Health -= this.Damage;
+        }
+        else if(this.EnemyBullet && event.OtherObject.Name == "Player")
+        {
+            this.GameSession.GameVars.PlayerHealth -= this.Damage as Integer;                
+        }
+    }
+}
+

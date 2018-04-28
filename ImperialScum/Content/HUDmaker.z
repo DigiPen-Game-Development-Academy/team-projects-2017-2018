@@ -1,0 +1,51 @@
+//Jacob Burke
+
+//This script makes the HUD and prints it over the current level
+
+class HUDmaker : ZilchComponent
+{
+    
+    [Property]
+    var HUDlevel:Level = Level.HUD;
+    
+    var HUDSpace:Space;
+    
+    
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.HUDSpace = this.GameSession.CreateNamedSpace("HUD", Archetype.Space);
+        
+        
+        this.HUDSpace.LoadLevel(this.HUDlevel);
+        this.HUDSpace.LevelSettings.AddComponentByName("HUDTag");
+        this.HUDSpace.LevelSettings.HUDTag.OriginalSpace = this.Space;
+        
+        
+        
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+    
+    
+    function Destroyed()
+    {
+        
+        if(this.HUDSpace != null)
+        {
+            
+            this.HUDSpace.Destroy();
+            
+        }
+    
+    }       
+    
+}
+class HUDTag : ZilchComponent
+{
+    var OriginalSpace : Space = null;
+}

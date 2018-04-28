@@ -1,0 +1,37 @@
+class BossMusic : ZilchComponent
+/* Author: Jessica,
+   Purpose: To play boss music when you enter the boss room and stop the normal background music.
+   */
+{
+      [Property]
+        var BossGameMusic : SoundCue;
+        
+        [Static]
+        var BossMusicStart : Boolean = false;
+        
+          var BossMenuMusicSpace : Space;
+          
+          var PlayOnce : Integer = 0;
+          
+          var Timer : Integer = 10;
+  
+    function Initialize(init : CogInitializer)
+    {
+          Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+          Zero.Connect(this.Owner, Events.CollisionEnded, this.OnCollisionEnded);
+    }
+    
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        BossMusic.BossMusicStart = true;
+    }
+
+    function OnCollisionEnded(event : CollisionEvent)
+    {
+        if(this.PlayOnce <= 1)
+        {
+        this.Owner.SoundEmitter.PlayCue(this.BossGameMusic);
+        this.PlayOnce += 5;
+        }
+    }
+}

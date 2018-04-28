@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "LazerNoArea",
+		uint64 ResourceId = 5a7d87ff836064ee,
+	},
+},

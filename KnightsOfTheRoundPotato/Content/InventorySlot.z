@@ -1,0 +1,298 @@
+//author Brandon Wolenetz
+
+class InventorySlot : ZilchComponent
+{
+    
+    var Index : Integer;
+    
+    var ItemSprite : Cog;
+    
+    var AmmountSprite : Cog;
+    
+    var InitialColor : Real4;
+    
+    var HotbarSlot : Boolean = false;
+    
+    var Item : Item;
+    
+    var LorePanel : Cog;
+    
+    var MSlot : Cog;
+    
+    function Initialize(init : CogInitializer)
+    {
+        
+        this.LorePanel = this.Owner.Parent.FindChildByName("LorePanel");
+        this.MSlot = this.Space.FindObjectByName("MouseSlot");
+        
+        this.InitialColor = this.Owner.Sprite.Color;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+        
+    }
+
+    function OnMouseDown(event : ViewportMouseEvent)
+    {
+        
+        /*Dragging Around Inventory*/
+        if(!Zero.Keyboard.KeyIsDown(Keys.Shift)){
+            
+            if(!this.HotbarSlot) {
+                if(GlobalVariables.Items[this.Index] != null && this.MSlot.MouseSlot.Item != null && this.MSlot.MouseSlot.Item.Name == GlobalVariables.Items[this.Index].Name && this.MSlot.MouseSlot.Item.Stackable) {
+                    
+                    if(this.MSlot.MouseSlot.Item.Ammount + GlobalVariables.Items[this.Index].Ammount > this.MSlot.MouseSlot.Item.StackSize) {
+                        this.MSlot.MouseSlot.Item.Ammount -= this.MSlot.MouseSlot.Item.StackSize - GlobalVariables.Items[this.Index].Ammount;
+                        GlobalVariables.Items[this.Index].Ammount = GlobalVariables.Items[this.Index].StackSize;
+                    } else {
+                        GlobalVariables.Items[this.Index].Ammount += this.MSlot.MouseSlot.Item.Ammount;
+                        delete this.MSlot.MouseSlot.Item;
+                        this.MSlot.MouseSlot.Item = null;
+                    }
+                    
+                } else {
+                    var temp = GlobalVariables.Items[this.Index];
+                    GlobalVariables.Items[this.Index] = this.MSlot.MouseSlot.Item;
+                    this.MSlot.MouseSlot.Item = temp;
+                }
+            } else {
+                if(this.Owner.Name == "PrimarySlot" || this.Owner.Name == "SecondarySlot") {
+                    if(this.MSlot.MouseSlot.Item == null || this.MSlot.MouseSlot.Item.Type == ItemType.Weapon) {
+                        var temp = this.Item;
+                        this.Item = this.MSlot.MouseSlot.Item;
+                        this.MSlot.MouseSlot.Item = temp;
+                    }
+                } else {
+                    if(this.MSlot.MouseSlot.Item == null || this.MSlot.MouseSlot.Item.Type == ItemType.Utility) {
+                        var temp = this.Item;
+                        this.Item = this.MSlot.MouseSlot.Item;
+                        this.MSlot.MouseSlot.Item = temp;
+                    }
+                }
+                
+                if(this.Owner.Name == "PrimarySlot") {
+                    if(this.Item != null) {
+                        GlobalVariables.UseWeapon.Primary = this.Item;
+                    } else {
+                        GlobalVariables.UseWeapon.Primary = Fists();
+                        GlobalVariables.UseWeapon.Primary.Init();
+                    }
+                } else if (this.Owner.Name == "SecondarySlot") {
+                    if(this.Item != null) {
+                        GlobalVariables.UseWeapon.Secondary = this.Item;
+                    } else {
+                        GlobalVariables.UseWeapon.Secondary = Fists();
+                        GlobalVariables.UseWeapon.Secondary.Init();
+                    }
+                } else {
+                    if(this.Item != null) {
+                        GlobalVariables.UseWeapon.Utility = this.Item;
+                    } else {
+                        GlobalVariables.UseWeapon.Utility = null;
+                    }
+                }
+                
+            }
+            
+            return;
+        }
+        
+        //dont do this if you are empty
+        if((!this.HotbarSlot && GlobalVariables.Items[this.Index] == null) || (this.HotbarSlot && this.Item == null))
+            return;
+        
+        
+        if(GlobalVariables.CInv.ChestInventory.Vis) {
+            if(this.HotbarSlot) {
+                if(GlobalVariables.AddCInventoryItem(this.Item)) {
+                    this.Item = null;
+                }
+            } else {
+                if(GlobalVariables.AddCInventoryItem(GlobalVariables.Items[this.Index])) {
+                    GlobalVariables.Items[this.Index] = null;
+                }
+            }
+            return;
+        }
+        
+        /*Hotbar slots need to handel things differently*/
+        if(this.HotbarSlot) {
+            if(GlobalVariables.AddInventoryItem(this.Item)) {
+                if(this.Owner.Name == "PrimarySlot") {
+                    GlobalVariables.UseWeapon.Primary = Fists();
+                    GlobalVariables.UseWeapon.Primary.Init();
+                } else if(this.Owner.Name == "SecondarySlot"){
+                    GlobalVariables.UseWeapon.Secondary = Fists();
+                    GlobalVariables.UseWeapon.Secondary.Init();
+                } else {
+                    GlobalVariables.UseWeapon.Utility = null;
+                }
+                this.Item = null;
+            }
+            return;
+        }
+        
+        //---equip/use item---
+        
+        var item = GlobalVariables.Items[this.Index];
+        
+        var temp = Item();
+        
+        if(item.Type == ItemType.Consumable) {  //Consumable items
+            item.Use(0);
+            if(item.Ammount == 1){
+                delete item;
+                GlobalVariables.Items[this.Index] = null;
+            } else {
+                item.Ammount -= 1;
+            }
+        } else if(item.Type == ItemType.Weapon) {
+            if(event.Button == MouseButtons.Left) {
+                
+                if(this.Owner.Parent.InventoryManager.PrimarySlot.InventorySlot.Item == null) {
+                    this.Owner.Parent.InventoryManager.PrimarySlot.InventorySlot.Item = item;
+                    GlobalVariables.Items[this.Index] = null;
+                }else{
+                    temp = this.Owner.Parent.InventoryManager.PrimarySlot.InventorySlot.Item;
+                    this.Owner.Parent.InventoryManager.PrimarySlot.InventorySlot.Item = item;
+                    GlobalVariables.Items[this.Index] = temp;
+                }
+                
+                GlobalVariables.UseWeapon.Primary = item;
+                
+            } else if(event.Button == MouseButtons.Right) {
+                
+                if(this.Owner.Parent.InventoryManager.SecodarySlot.InventorySlot.Item == null) {
+                    this.Owner.Parent.InventoryManager.SecodarySlot.InventorySlot.Item = item;
+                    GlobalVariables.Items[this.Index] = null;
+                }else{
+                    temp = this.Owner.Parent.InventoryManager.SecodarySlot.InventorySlot.Item;
+                    this.Owner.Parent.InventoryManager.SecodarySlot.InventorySlot.Item = item;
+                    GlobalVariables.Items[this.Index] = temp;
+                }
+                
+                GlobalVariables.UseWeapon.Secondary = item;
+                
+            }
+        } else if(item.Type == ItemType.Utility) {
+            if(this.Owner.Parent.InventoryManager.UtilitySlot.InventorySlot.Item == null) {
+                this.Owner.Parent.InventoryManager.UtilitySlot.InventorySlot.Item = item;
+                GlobalVariables.Items[this.Index] = null;
+            }else{
+                temp = this.Owner.Parent.InventoryManager.UtilitySlot.InventorySlot.Item;
+                this.Owner.Parent.InventoryManager.UtilitySlot.InventorySlot.Item = item;
+                GlobalVariables.Items[this.Index] = temp;
+            }
+            
+            GlobalVariables.UseWeapon.Utility = item;
+            
+        }
+        
+    }
+
+    function OnMouseExit(event : ViewportMouseEvent) {
+        this.Owner.Sprite.Color = this.InitialColor;
+        this.LorePanel.Sprite.Visible = false;
+        this.MSlot.MouseSlot.OverInventory = false;
+    }
+
+    function OnMouseEnter(event : ViewportMouseEvent) {
+        
+        this.MSlot.MouseSlot.OverInventory = true;
+        
+        this.Owner.Sprite.Color = this.InitialColor + Real4(-0.3,-0.3,-0.3,0);
+        
+        if(GlobalVariables.Items[this.Index] != null && !this.HotbarSlot){
+            
+            var item = GlobalVariables.Items[this.Index];
+            
+            var text = "";
+            
+            if(item.Type == ItemType.Weapon){
+                if(item.MagSize != -1)
+                    text = "`item.Name`\n`item.ReturnLore()`\nMag: `item.CurrentMag`/`item.MagSize`\nFire Rate: `item.FireRate` per second\nDamage Per: `item.DamagePer`\nAmmo Per Shot: `item.AmmoPerShot`";
+                else
+                    text = "`item.Name`\n`item.ReturnLore()`\nMag: INF\nFire Rate: `item.FireRate` per second\nDamage Per: `item.DamagePer`";
+            } else if(item.Type == ItemType.Utility){
+                if(item.MagSize != -1)
+                    text = "`item.Name`\n`item.ReturnLore()`\nMag: `item.CurrentMag`/`item.MagSize`\nFire Rate: `item.FireRate` per second\nAmmo Per Shot: `item.AmmoPerShot`";
+                else
+                    text = "`item.Name`\n`item.ReturnLore()`\nFire Rate: `item.FireRate` per second";
+            } else if(item.Type == ItemType.Consumable) {
+                if(GlobalVariables.CInv.ChestInventory.Vis)
+                    text = "`item.Name`\n`item.ReturnLore()`";
+                else
+                    text = "`item.Name`\n`item.ReturnLore()`\nShift click to use";
+            } else
+                text = "`item.Name`\n`item.ReturnLore()`";
+            
+            this.LorePanel.LorePanel.Text = text;
+            this.LorePanel.Sprite.Visible = true;
+            
+        } else if(this.Item != null) {
+            
+            var item = this.Item;
+            
+            var text = "";
+            
+            if(item.Type == ItemType.Weapon){
+                if(item.MagSize != -1)
+                    text = "`item.Name`\n`item.ReturnLore()`\nMag: `item.CurrentMag`/`item.MagSize`\nFire Rate: `item.FireRate` per second\nDamage Per: `item.DamagePer`\nAmmo Per Shot: `item.AmmoPerShot`";
+                else
+                    text = "`item.Name`\n`item.ReturnLore()`\nMag: INF\nFire Rate: `item.FireRate` per second\nDamage Per: `item.DamagePer`";
+            } else if(item.Type == ItemType.Utility){
+                if(item.MagSize != -1)
+                    text = "`item.Name`\n`item.ReturnLore()`\nMag: `item.CurrentMag`/`item.MagSize`\nFire Rate: `item.FireRate` per second";
+                else
+                    text = "`item.Name`\n`item.ReturnLore()`\nFire Rate: `item.FireRate` per second";
+            }
+            
+            this.LorePanel.LorePanel.Text = text;
+            this.LorePanel.Sprite.Visible = true;
+            
+        } else {
+            
+            var text = "";
+            
+            this.LorePanel.Sprite.Visible = true;
+            
+            //no item is in slot, if hotbar slot tell player
+            if(this.Owner.Name == "PrimarySlot") {
+                text = "Primary Weapon Slot";
+            } else if(this.Owner.Name == "SecondarySlot"){
+                text = "Secondary Weapon Slot";
+            } else if(this.Owner.Name == "UntlitySlot") { //yes I know this slots name is spelled wrong
+                text = "Utility Item Slot";
+            } else {
+                this.LorePanel.Sprite.Visible = false;
+            }
+            
+            this.LorePanel.LorePanel.Text = text;
+            
+        }
+        
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        this.Owner.Transform.Translation = Real3(this.Owner.Transform.Translation.X, this.Owner.Transform.Translation.Y, 0.1);
+        
+        if(!this.HotbarSlot) {
+            if(this.AmmountSprite != null) {
+                if(GlobalVariables.Items[this.Index] != null) {
+                    if(GlobalVariables.Items[this.Index].Ammount != 1) {
+                        this.AmmountSprite.SpriteText.Visible = true;
+                        this.AmmountSprite.SpriteText.Text = "`GlobalVariables.Items[this.Index].Ammount`";
+                    } else {
+                        this.AmmountSprite.SpriteText.Visible = false;
+                    }
+                } else {
+                    this.AmmountSprite.SpriteText.Visible = false;
+                }
+            }
+        }
+        
+    }
+}

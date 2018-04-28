@@ -1,0 +1,96 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Shockwave",
+	},
+	Archetyped = 
+	{
+		string Name = "5a13d482d9254829:Shockwave",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	SpriteParticleSystem = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		SystemChildMode ChildMode = Independent,
+		SystemSpace SystemSpace = WorldSpace,
+		uint DrawOrder = 0,
+		Vec4 Tint = [0.685000002, 0.657599986, 0.657599986, 0.154999971],
+		float WarmUpTime = 0,
+		ParticleGeometry GeometryMode = Billboarded,
+		ParticleRenderMode RenderMode = Blended,
+		ParticleSortMode SortMode = Youngest,
+		ParticleAnimation ParticleAnimation = Single,
+		string Texture = "5a0f809016faceca:VolcanoSmoke",
+		float VelocityScale = 1,
+		float LengthScale = 1,
+		float MaxParticleSize = 20,
+		Vec3 SystemSize = [1, 1, 1],
+	},
+	SphericalParticleEmitter = 
+	{
+		bool Active = true,
+		uint EmitCount = 5,
+		float EmitRate = 10,
+		float EmitVariance = 8,
+		float Size = 0.100000001,
+		float SizeVariance = 0,
+		float Lifetime = 0.400000006,
+		float LifetimeVariance = 0.200000003,
+		float Spin = -9.51778412,
+		float SpinVariance = 50,
+		bool RandomSpin = false,
+		float Fill = 1,
+		float EmitterVelocityPercent = 0,
+		Vec3 StartVelocity = [0, 0, 0],
+		Vec3 RandomVelocity = [1, 1, 1],
+		Vec3 TangentVelocity = [0, 0, 0],
+		Vec3 EmitterSize = [0, 0, 0],
+		bool FastMovingEmitter = false,
+	},
+	LinearParticleAnimator = 
+	{
+		Vec3 Force = [0, 0, 0],
+		Vec3 RandomForce = [0, 0, 0],
+		float Torque = 0,
+		float Growth = 1,
+		float Dampening = 0,
+		Vec3 Twist = [0, 0, 0],
+	},
+	ParticleColorAnimator = 
+	{
+		Vec4 Color0 = [1, 1, 1, 0],
+		Vec4 Color1 = [1, 1, 1, 1],
+		Vec4 Color2 = [1, 1, 1, 1],
+		Vec4 Color3 = [1, 1, 1, 1],
+		Vec4 Color4 = [1, 1, 1, 0],
+	},
+	ParticleDespawner = 
+	{
+		float Lifetime = 6,
+	},
+	LandingPoofParticleController = 
+	{
+		Vec4 Level1Color = [0.156862736, 0.611764431, 0.709803939, 0.999899983],
+		Vec4 Level2Color = [0.235294133, 0.592156887, 0.396078527, 0.999899983],
+		Vec4 Level3Color = [0.952941239, 0.65882355, 0.254901946, 0.999899983],
+		Vec4 Level4Color = [0.788235307, 0.211764753, 0.80392164, 0.999899983],
+		Vec4 Level5Color = [0.756862819, 0.247058824, 0.0901960731, 0.999899983],
+		Vec4 Level6Color = [0.811764777, 0.0941176414, 0.0941176414, 0.819999993],
+	},
+	Hierarchy = 
+	{
+	},
+},

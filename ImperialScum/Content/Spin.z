@@ -1,0 +1,30 @@
+//http://zero.digipen.edu/Tutorials/Gameplay/VectorMath/2DRotation.html
+
+class Spin : ZilchComponent
+{
+  [Property]
+  var RotationSpeed : Real = 30.0;
+  
+  var Timer : Real = 0.5;
+  
+  [Property] var SoundToPlay : SoundCue = SoundCue.SawBlade;
+
+  function Initialize(init : CogInitializer)
+  {
+    Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+  }
+
+  function OnLogicUpdate(event : UpdateEvent)
+  {
+    var rotationSpeedRadians = Math.ToRadians(this.RotationSpeed);
+
+    this.Owner.Transform.RotateAnglesLocal(Real3(0,0,rotationSpeedRadians * event.Dt));
+    
+    if(this.Timer > 0 && this.Owner.SoundEmitter != null) this.Timer -= event.Dt;
+    if(this.Timer <= 0 && this.Owner.SoundEmitter != null)
+    {
+        this.Owner.SoundEmitter.PlayCue(this.SoundToPlay);
+        this.Timer += 0.5;
+    }
+  }
+}

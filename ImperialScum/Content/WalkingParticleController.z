@@ -1,0 +1,62 @@
+class WalkingParticleController : ZilchComponent
+{
+    [Property]
+    var Level1Color:Real4;
+    
+    [Property]
+    var Level2Color:Real4;
+    
+    [Property]
+    var Level3Color:Real4;
+    
+    [Property]
+    var Level4Color:Real4;
+    
+    [Property]
+    var Level5Color:Real4;
+    
+    [Property]
+    var Level6Color:Real4;
+    
+    function Initialize(init : CogInitializer)
+    {
+        if(this.Space.CurrentLevel == Level.BeginningLevel)
+        this.Owner.SpriteParticleSystem.Tint = this.Level1Color;
+        
+        if(this.Space.CurrentLevel == Level.SuperEasyLevel)
+        this.Owner.SpriteParticleSystem.Tint = this.Level2Color;
+        
+        if(this.Space.CurrentLevel == Level.SandLevel_Labyrinth)
+        this.Owner.SpriteParticleSystem.Tint = this.Level3Color;
+        
+        if(this.Space.CurrentLevel == Level.ElenasOldLevel)
+        this.Owner.SpriteParticleSystem.Tint = this.Level4Color;
+        
+        if(this.Space.CurrentLevel == Level.JacobsTerribleLevel)
+        this.Owner.SpriteParticleSystem.Tint = this.Level5Color;
+        
+        if(this.Space.CurrentLevel == Level.TheBestBossLevel_InTheWorld)
+        this.Owner.SpriteParticleSystem.Tint = this.Level6Color;
+        
+        if(this.Space.CurrentLevel == Level.ElenaDunesLevel)
+        this.Owner.SpriteParticleSystem.Tint = this.Level6Color;
+        
+        if(this.Space.CurrentLevel == Level.Level2)
+        this.Owner.SpriteParticleSystem.Tint = this.Level6Color;
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Owner.Parent.PlayerMovement.TouchingGround == true &&
+            this.Owner.Parent.RigidBody.Velocity != Real3.Zero
+            && this.Owner.Parent.GroundChecker.Grounded == true)
+        {
+            this.Owner.SphericalParticleEmitter.Active = true;
+        }
+        else
+        this.Owner.SphericalParticleEmitter.Active = false;
+
+    }
+}

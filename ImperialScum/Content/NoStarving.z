@@ -1,0 +1,30 @@
+class NoStarving : ZilchComponent
+{
+    [Property] var YesColor : Real4;
+    [Property] var NoColor : Real4;
+    var TrackColor : Boolean = false;
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+    }
+
+    function OnMouseDown(event : ViewportMouseEvent)
+    {
+        if(this.TrackColor == false)
+        {
+            this.Owner.SpriteText.Color = this.YesColor;
+            this.TrackColor = true;
+        }
+        
+        if(this.TrackColor == true)
+        {
+            this.Owner.SpriteText.Color = this.NoColor;
+            this.TrackColor = false;
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

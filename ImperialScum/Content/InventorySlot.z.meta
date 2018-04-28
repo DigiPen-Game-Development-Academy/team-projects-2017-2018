@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "InventorySlot",
+		uint64 ResourceId = 5a4c190738dbafb2,
+	},
+},

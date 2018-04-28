@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "PlaySoundOnSpawn",
+		uint64 ResourceId = 5a08128b4c171df5,
+	},
+},

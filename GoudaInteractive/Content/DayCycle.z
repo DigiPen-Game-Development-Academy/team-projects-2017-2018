@@ -1,0 +1,98 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class DayCycle : ZilchComponent {
+    
+    [Property] var RenderDayNightCycle : Boolean = true;
+    
+    var DayMultiplier : Real = 4.0;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        Relocation.Time += event.Dt;
+        
+        if(Relocation.UISpace != null) {
+            Relocation.UISpace.FindObjectByName("Time").SpriteText.Text = 
+                "Day:`Relocation.Day`\nTime:`this.TimeToString(false)`";
+        }
+        
+        if(Relocation.Time > Relocation.DayLength) {
+            Relocation.Time = 0.0;
+            ++Relocation.Day;
+        }
+        
+        // RENDER DAY/NIGHT CYCLE
+        if(this.Owner.AmbientLight != null) {
+            if(Relocation.Time < Relocation.DayLength * 0.25 || Relocation.Time > Relocation.DayLength * 0.75) {
+                
+                if(Relocation.Time > Relocation.DayLength * 0.125 && Relocation.Time < Relocation.DayLength * 0.75) {
+                    Relocation.LightAmount = Relocation.Time / 24;
+                    if(this.RenderDayNightCycle)
+                        this.Owner.AmbientLight.Color = Real4(Real3(Relocation.LightAmount), 1.0);
+                } else if(Relocation.Time > Relocation.DayLength * 0.625 && Relocation.LightAmount > 0.5) {
+                    Relocation.LightAmount = (Relocation.DayLength - Relocation.Time) / 24;
+                    if(this.RenderDayNightCycle)
+                        this.Owner.AmbientLight.Color = Real4(Real3(Relocation.LightAmount), 1.0);
+                } else if(Relocation.Time < Relocation.DayLength * 0.25 || Relocation.Time > Relocation.DayLength * 0.84) {
+                    if(this.RenderDayNightCycle)
+                        this.Owner.AmbientLight.Color = Real4(Real3(0.5), 1.0);
+                }
+                
+            } else {
+                if(this.RenderDayNightCycle)
+                    this.Owner.AmbientLight.Color = Real4(1.0, 1.0, 1.0, 1.0);
+            }
+        }
+        
+    }
+    
+    function SetTime(time : Real) {
+        
+        time = time * this.DayMultiplier / 1000;
+        
+        if(time > Relocation.DayLength) {
+            Relocation.Day += (time / Relocation.DayLength) as Integer;
+            time = time % Relocation.DayLength;
+        }
+        
+        Relocation.Time = time;
+        
+    }
+    
+    function AddTime(time : Real) {
+        time = time * this.DayMultiplier / 1000;
+        this.SetTime((Relocation.Time + time) * 1000 / this.DayMultiplier);
+    }
+    
+    function TimeToString(militaryTime : Boolean) : String {
+        
+        var hours = Math.Floor(Relocation.Time / this.DayMultiplier);
+        var minutes = Relocation.Time / this.DayMultiplier - hours;
+        var minutesString = "`Math.Floor(minutes * 60)`0";
+        var suffix = "";
+        
+        if(!militaryTime) {
+            if(hours >= 12) {
+                suffix = "pm";
+                if(hours > 12)
+                    hours -= 12;
+            } else {
+                suffix = "am";
+                if(hours == 0)
+                    hours = 12;
+            }
+        }
+        
+        if(minutes >= 0.1) {
+            return "`hours`:`minutesString.SubStringFromRuneIndices(0, 2)``suffix`";
+        } else {
+            return "`hours`:0`minutesString.SubStringFromRuneIndices(0, 1)``suffix`";
+        }
+        
+    }
+    
+}

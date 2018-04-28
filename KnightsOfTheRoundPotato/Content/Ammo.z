@@ -1,0 +1,26 @@
+class Ammo : Item
+{
+    function Init(){
+        this.Name = "Ammo";
+        this.ID = "Ammo";
+        this.Type = ItemType.Ammo;
+        this.GroundSprite = SpriteSource.Plasma;
+        this.Icon = SpriteSource.Plasma;
+        this.Stackable = true;
+        var rand = Random();
+        this.Ammount = Math.Round(rand.Range(20, 30)) as Integer;
+        
+    }
+    
+    function ReturnLore () : String {
+        var lore = Array[String]();
+        lore.Add("It's Ammo");
+        lore.Add("Works on everything");
+        lore.Add("Wish you had more of these?");
+        lore.Add("You might want to keep this...\nYou need to to shoot things");
+        var rand = Random();
+        return lore[Math.Round(rand.Range(0, lore.Count-1)) as Integer];
+    }
+    
+    function Use(redAngle : Real){}
+}

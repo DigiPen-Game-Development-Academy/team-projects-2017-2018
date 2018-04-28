@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "Chariot",
+		uint64 ResourceId = 5a9164083384bcca,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 550,
+		uint FrameSizeY = 432,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 275,
+		float OriginY = 216,
+		float PixelsPerUnit = 96,
+		bool Smoothing = true,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

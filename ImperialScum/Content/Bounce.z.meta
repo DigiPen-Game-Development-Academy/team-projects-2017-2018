@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "Bounce",
+		uint64 ResourceId = 5ab51cd59100c706,
+	},
+},

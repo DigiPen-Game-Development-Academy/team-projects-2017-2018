@@ -1,0 +1,9 @@
+DataContent = 
+{
+	RichAnimationBuilder = 
+	{
+		string Name = "CutsceneScollAnime",
+		uint64 ResourceId = 5a030641fabb55bc,
+		string PreviewArchetype = "",
+	},
+},

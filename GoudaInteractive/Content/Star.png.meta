@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "Star",
+		uint64 ResourceId = 5aee3fb80ad6352b,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 12,
+		uint FrameSizeY = 12,
+		uint FrameCount = 6,
+		float FrameDelay = 0.125,
+		float OriginX = 6,
+		float OriginY = 6,
+		float PixelsPerUnit = 32,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

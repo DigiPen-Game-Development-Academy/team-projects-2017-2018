@@ -1,0 +1,108 @@
+class ChestInventory : ZilchComponent {
+    
+    var Slots : HierarchyNameRange;
+    
+    var PrimarySlot : Cog;
+    var SecodarySlot : Cog;
+    var UtilitySlot : Cog;
+    
+    var InitalZ : Real;
+    var MSlot : Cog;
+    
+    var Vis : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        
+        GlobalVariables.CInv = this.Owner;
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        
+        this.MSlot = this.Space.FindObjectByName("MouseSlot");
+        
+        this.InitalZ = this.Owner.Transform.WorldTranslation.Z;
+        this.Owner.Transform.WorldTranslation += Real3(0,0,100);
+        
+        //find all slots
+        this.RefreshSlots();
+        
+        //set array of items
+        if(GlobalVariables.ChestItems == null)
+            GlobalVariables.ChestItems = Array[Item]();
+        
+        //count how many slots there are
+        var count = 0;
+        foreach(var slot in this.Slots) {
+            ++count;
+        }
+        
+        GlobalVariables.ChestItems.Resize(count);
+        
+        this.RefreshSlots();
+        
+        //initialize slots
+        var i = 0;
+        foreach(var slot in this.Slots) {
+            slot.ChestInventorySlot.Index = i;
+            
+            slot.ChestInventorySlot.ItemSprite = slot.FindChildByName("Item");
+            slot.ChestInventorySlot.AmmountSprite = slot.FindChildByName("Ammount");
+            
+            if(GlobalVariables.ChestItems[i] != null) {
+                slot.ChestInventorySlot.ItemSprite.Sprite.SpriteSource = GlobalVariables.ChestItems[i].Icon;
+                slot.ChestInventorySlot.ItemSprite.Sprite.Visible = true;
+                
+            }else{
+                slot.ChestInventorySlot.ItemSprite.Sprite.Visible = false;
+            }
+            ++i;
+        }
+        
+        
+        
+    }
+    
+    function OnMouseExit(event : ViewportMouseEvent) {
+        this.MSlot.MouseSlot.OverInventory = false;
+    }
+
+    function OnMouseEnter(event : ViewportMouseEvent) {
+        this.MSlot.MouseSlot.OverInventory = true;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        this.Refresh();
+        
+        if(this.Vis)
+            this.Owner.Transform.WorldTranslation = Real3(this.Owner.Transform.WorldTranslation.X, this.Owner.Transform.WorldTranslation.Y, this.InitalZ);
+        else
+            this.Owner.Transform.WorldTranslation += Real3(0,0,100);
+        
+        
+    }
+    
+    function Refresh () {
+        
+        this.RefreshSlots();
+        
+        var i = 0;
+        foreach(var slot in this.Slots) {
+            if(GlobalVariables.ChestItems[i] != null) {
+                slot.ChestInventorySlot.ItemSprite.Sprite.SpriteSource = GlobalVariables.ChestItems[i].Icon;
+                slot.ChestInventorySlot.ItemSprite.Sprite.Visible = true;
+            }else{
+                slot.ChestInventorySlot.ItemSprite.Sprite.Visible = false;
+            }
+            ++i;
+        }
+    }
+    
+    function RefreshSlots () {
+        
+        this.Slots = this.Owner.FindAllChildrenByName("ChestInventorySlot");
+        
+    }
+    
+}

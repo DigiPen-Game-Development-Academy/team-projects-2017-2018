@@ -1,0 +1,109 @@
+// AUTHOR: MYLES BUSIG
+// CONTRIBUTORS: HUDSON GREEN
+
+class SaveLoadData : ZilchComponent {
+    
+    [Static] var ChunkPath : String = "";
+    
+    var PlayerData : Cog = null;
+    var ConfigurationData : Cog = null;
+    
+    function Initialize(init : CogInitializer) {
+        
+        this.PlayerData = Zero.ObjectStore.RestoreOrArchetype("PlayerData", Archetype.SavedData, this.Space);
+        this.ConfigurationData = Zero.ObjectStore.RestoreOrArchetype("ConfigurationData", Archetype.SavedData, this.Space);
+        
+        this.Load(false);
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(Zero.Keyboard.KeyIsPressed(Keys.Zero))
+            this.Save();
+        
+        if (Relocation.ShouldLoadLevel == true)
+        {
+            this.Load(true);
+            Relocation.ShouldLoadLevel = false;
+        }
+    }
+    
+    function Save() {
+        
+        var player = this.Space.FindObjectByName("EntityPlayer");
+        
+        // Player Data
+        this.PlayerData.SavedData.PlayerName                = player.PlayerProperties.PlayerName;
+        this.PlayerData.SavedData.PlayerPosition            = ToFromStrings.Real3ToString(player.Transform.Translation);
+        this.PlayerData.SavedData.PlayerHealth              = player.Health.CurrentHealth;
+        this.PlayerData.SavedData.PlayerSkin                = player.PlayerProperties.PlayerSkin;
+        this.PlayerData.SavedData.PlayerBalance             = player.PlayerProperties.Balance;
+        this.PlayerData.SavedData.PlayerInv                 = ToFromStrings.IntArrayToString(PlayerData.InventoryContents);
+        this.PlayerData.SavedData.PlayerInvCount            = ToFromStrings.IntArrayToString(PlayerData.InventoryContentsCount);
+        this.PlayerData.SavedData.PlayerWeaponData          = ToFromStrings.IntArrayToString(PlayerData.WeaponData);
+        
+        // World Data:
+        this.PlayerData.SavedData.CurrentWorld              = this.Space.CurrentLevel.Name;
+        
+        // Settings Data:
+        this.ConfigurationData.SavedData.MenuAnimations     = GameSetting.EnableUIAnimations;
+        this.ConfigurationData.SavedData.Vignette           = GameSetting.EnableVignette;
+        this.ConfigurationData.SavedData.PlayerTooltips     = GameSetting.PlayerTooltip;
+        this.ConfigurationData.SavedData.EnemyTooltips      = GameSetting.EnemyTooltip;
+        this.ConfigurationData.SavedData.MasterVolume       = GameSetting.MasterVolume;
+        this.ConfigurationData.SavedData.MusicVolume        = GameSetting.MusicVolume;
+        this.ConfigurationData.SavedData.SoundEffectsVolume = GameSetting.SoundEffectsVolume;
+        
+        Zero.ObjectStore.Store("PlayerData", this.PlayerData);
+        Zero.ObjectStore.Store("ConfigurationData", this.ConfigurationData);
+        
+        if(this.LevelSettings.PlaceChunks != null) {
+            timeout(10) {
+                foreach(var chunk in this.LevelSettings.PlaceChunks.ChunkMap) {
+                    if(chunk.WorldGenerator.WorldMap != null && chunk.WorldGenerator.WorldMapData != null) {
+                        
+                        chunk.WorldGenerator.WorldMapString = ToFromStrings.HashMapInt2IntToString(chunk.WorldGenerator.WorldMap);
+                        chunk.WorldGenerator.WorldMapDataString = ToFromStrings.HashMapInt2Real2ToString(chunk.WorldGenerator.WorldMapData);
+                        chunk.WorldGenerator.ChunkPositionString = ToFromStrings.Real3ToString(chunk.Transform.WorldTranslation);
+                        
+                        if(chunk.WorldGenerator.WorldMapString.Count >= chunk.WorldGenerator.Width * chunk.WorldGenerator.Width)
+                            Zero.ObjectStore.Store("`SaveLoadData.ChunkPath``chunk.Name`", chunk);
+                        
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    function Load(loadPlayer : Boolean) {
+        
+        // PLAYER DATA
+        if(loadPlayer && Zero.ObjectStore.IsStored("PlayerData")) {
+            Relocation.Player.PlayerProperties.PlayerName   = this.PlayerData.SavedData.PlayerName;
+            Relocation.Player.PlayerProperties.PlayerSkin   = this.PlayerData.SavedData.PlayerSkin;
+            Relocation.Player.PlayerProperties.Balance      = this.PlayerData.SavedData.PlayerBalance;
+            Relocation.Player.Health.CurrentHealth          = this.PlayerData.SavedData.PlayerHealth;
+            Relocation.Player.Transform.WorldTranslation    = ToFromStrings.StringToReal3(this.PlayerData.SavedData.PlayerPosition);
+            PlayerData.InventoryContents                    = ToFromStrings.StringToIntArray(this.PlayerData.SavedData.PlayerInv);
+            PlayerData.InventoryContentsCount               = ToFromStrings.StringToIntArray(this.PlayerData.SavedData.PlayerInvCount);
+            Relocation.TeleportTriggered = true;
+        }
+        
+        // GLOBAL DATA/SETTINGS
+        if(Zero.ObjectStore.IsStored("ConfigurationData")) {
+            GameSetting.EnableUIAnimations                  = this.ConfigurationData.SavedData.MenuAnimations;
+            GameSetting.EnableVignette                      = this.ConfigurationData.SavedData.Vignette;
+            GameSetting.PlayerTooltip                       = this.ConfigurationData.SavedData.PlayerTooltips;
+            GameSetting.EnemyTooltip                        = this.ConfigurationData.SavedData.EnemyTooltips;
+            GameSetting.MasterVolume                        = this.ConfigurationData.SavedData.MasterVolume;
+            GameSetting.MusicVolume                         = this.ConfigurationData.SavedData.MusicVolume;
+            GameSetting.SoundEffectsVolume                  = this.ConfigurationData.SavedData.SoundEffectsVolume;
+        }
+        
+    }
+    
+}

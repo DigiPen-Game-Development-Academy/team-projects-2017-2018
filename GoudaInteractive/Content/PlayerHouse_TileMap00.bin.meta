@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "PlayerHouse_TileMap00",
+		uint64 ResourceId = 5adf7968bc84e21a,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "5adf788b11535bd4:PlayerHouse",
+	},
+},

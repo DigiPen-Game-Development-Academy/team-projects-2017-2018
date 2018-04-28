@@ -1,0 +1,106 @@
+// Elena 
+//Makes text pop up when mouse is on a inv item. The text describes what the item is.
+class InventoryButton : ZilchComponent
+{
+[Property]
+var SelectedInvItem : SpriteSource = null;
+
+[Static]
+var WhatItem:String;
+
+[Static]
+var DeleteString:Boolean = false;
+
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+    }
+    
+    function OnMouseExit(event : ViewportMouseEvent)
+    {
+       InventoryButton.DeleteString = true;
+    }
+
+    function OnMouseEnter(event : ViewportMouseEvent)
+    {
+        InventoryButton.DeleteString = false;
+        
+        if(this.Owner.Sprite.SpriteSource.Name == ("Inv_Food"))
+        {
+            InventoryButton.WhatItem = "    Food";
+        }
+        if(this.Owner.Sprite.SpriteSource.Name == ("Inv_HealthPotion"))
+        {
+            InventoryButton.WhatItem = "    Health Potions";
+        }
+        
+        if(this.Owner.Sprite.SpriteSource.Name == ("Inv_Fruit"))
+        {
+             InventoryButton.WhatItem = "    Fruit";
+        }
+         if(this.Owner.Sprite.SpriteSource.Name == ("Inv_Gears"))
+        {
+             InventoryButton.WhatItem = "    Gears";
+        }
+         if(this.Owner.Sprite.SpriteSource.Name == ("Inv_Ring_Jump"))
+        {
+             InventoryButton.WhatItem = "    Jump Boost Ring";
+        }
+         if(this.Owner.Sprite.SpriteSource.Name == ("Inv_Ring_Regen"))
+        {
+             InventoryButton.WhatItem = "    Regen Ring";
+        }
+         if(this.Owner.Sprite.SpriteSource.Name == ("Inv_Ring_Speed"))
+        {
+             InventoryButton.WhatItem = "    Speed Ring";
+             
+        }
+         if(this.Owner.Sprite.SpriteSource.Name == ("Inv_Ring_Health"))
+        {
+             InventoryButton.WhatItem = "    Health Ring";
+        }
+        if(this.Owner.Sprite.SpriteSource.Name == ("Inv_ArmorCopper"))
+        {
+             InventoryButton.WhatItem = "    Copper Armor." ;
+             "It decreases damage you take";
+        }
+         if(this.Owner.Sprite.SpriteSource.Name == ("Inv_ArmorVolcano"))
+        {
+             InventoryButton.WhatItem = "    Amethyst armor."; 
+            "     Better version of copper armor." ;
+        
+        }
+        
+
+        this.Space.CreateAtPosition(Archetype.WhatText, this.Owner.Transform.WorldTranslation);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+    }
+}
+class WhatText : ZilchComponent
+{
+
+
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Owner.SpriteText.Text = InventoryButton.WhatItem;
+        
+        if(InventoryButton.DeleteString == true)
+        this.Owner.Destroy();
+        
+        if(Inventory.Exists == false)
+        this.Owner.Destroy();
+    }
+    
+}

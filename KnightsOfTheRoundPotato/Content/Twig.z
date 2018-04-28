@@ -1,0 +1,31 @@
+class Twig : ZilchComponent {
+    
+    [Property]
+    var Radius : Real = 5;
+    
+    [Property]
+    var Sprite : SpriteSource = SpriteSource.Twig_UnBroken;
+    [Property]
+    var BrokenSprite : SpriteSource = SpriteSource.Twig_Broken;
+    
+    var Stepped : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        this.Owner.Sprite.SpriteSource = this.Sprite;
+        this.Owner.Sprite.Color = Real4(1, 1, 1, 1);
+        this.Owner.Transform.WorldTranslation -= Real3(0,0,0.01);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent) {
+        if(event.OtherObject == GlobalVariables.Player && !this.Stepped) {
+            this.Stepped = true;
+            this.Owner.Sprite.SpriteSource = this.BrokenSprite;
+            Utilities.SendSound(this.Radius, this.Owner.Transform.WorldTranslation);
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+    }
+}

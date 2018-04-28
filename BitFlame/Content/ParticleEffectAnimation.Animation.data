@@ -1,0 +1,342 @@
+RichAnimation = 
+{
+	float SampleTolerance = 0.0500000007,
+	float Duration = 0.433333337,
+	Object Root = 
+	{
+		TrackType Type = Object,
+		string Name = "Root",
+		string Path = "",
+		bool Disabled = false,
+		uint PropertyTypeId = 0,
+		string PropertyTypeName = "void",
+		Array KeyFrames = 
+		[
+		],
+		Array Children = 
+		[
+			{
+				TrackType Type = Object,
+				string Name = "/",
+				string Path = "/",
+				bool Disabled = false,
+				uint PropertyTypeId = 0,
+				string PropertyTypeName = "",
+				Array KeyFrames = 
+				[
+				],
+				Array Children = 
+				[
+					{
+						TrackType Type = Object,
+						string Name = "BasicParticleEffect",
+						string Path = "/BasicParticleEffect",
+						bool Disabled = false,
+						uint PropertyTypeId = 0,
+						string PropertyTypeName = "",
+						Array KeyFrames = 
+						[
+						],
+						Array Children = 
+						[
+							{
+								TrackType Type = Component,
+								string Name = "SphericalParticleEmitter",
+								string Path = "SphericalParticleEmitter",
+								bool Disabled = false,
+								uint PropertyTypeId = 0,
+								string PropertyTypeName = "",
+								Array KeyFrames = 
+								[
+								],
+								Array Children = 
+								[
+									{
+										TrackType Type = Property,
+										string Name = "EmitRate",
+										string Path = "SphericalParticleEmitter.EmitRate",
+										bool Disabled = false,
+										uint PropertyTypeId = 3,
+										string PropertyTypeName = "float",
+										Array KeyFrames = 
+										[
+											{
+												float key = 0,
+												Object value = 
+												{
+													float Time = 0,
+													float Value = 50,
+													Vec2 TangentIn = [-0.0500000007, 0],
+													Vec2 TangentOut = [0.0500000007, 0],
+													uint EditorFlags = 0,
+												},
+											},
+											{
+												float key = 0.433333337,
+												Object value = 
+												{
+													float Time = 0.433333337,
+													float Value = 500,
+													Vec2 TangentIn = [-0.144444406, -602.653992],
+													Vec2 TangentOut = [0.144444406, 602.653992],
+													uint EditorFlags = 0,
+												},
+											},
+										],
+										Array Children = 
+										[
+										],
+									},
+									{
+										TrackType Type = Property,
+										string Name = "StartVelocity",
+										string Path = "SphericalParticleEmitter.StartVelocity",
+										bool Disabled = false,
+										uint PropertyTypeId = 8,
+										string PropertyTypeName = "Vec3",
+										Array KeyFrames = 
+										[
+										],
+										Array Children = 
+										[
+											{
+												TrackType Type = SubProperty,
+												string Name = "X",
+												string Path = "SphericalParticleEmitter.StartVelocity.X",
+												bool Disabled = false,
+												uint PropertyTypeId = 3,
+												string PropertyTypeName = "",
+												Array KeyFrames = 
+												[
+													{
+														float key = 0,
+														Object value = 
+														{
+															float Time = 0,
+															float Value = -6.73525238,
+															Vec2 TangentIn = [-0.0500000007, 0],
+															Vec2 TangentOut = [0.0500000007, 0],
+															uint EditorFlags = 0,
+														},
+													},
+													{
+														float key = 0.433333337,
+														Object value = 
+														{
+															float Time = 0.433333337,
+															float Value = -10,
+															Vec2 TangentIn = [-0.0500000007, 0],
+															Vec2 TangentOut = [0.0500000007, 0],
+															uint EditorFlags = 0,
+														},
+													},
+												],
+												Array Children = 
+												[
+												],
+											},
+											{
+												TrackType Type = SubProperty,
+												string Name = "Y",
+												string Path = "SphericalParticleEmitter.StartVelocity.Y",
+												bool Disabled = false,
+												uint PropertyTypeId = 3,
+												string PropertyTypeName = "",
+												Array KeyFrames = 
+												[
+													{
+														float key = 0,
+														Object value = 
+														{
+															float Time = 0,
+															float Value = 0,
+															Vec2 TangentIn = [-0.0500000007, 0],
+															Vec2 TangentOut = [0.0500000007, 0],
+															uint EditorFlags = 0,
+														},
+													},
+													{
+														float key = 0.433333337,
+														Object value = 
+														{
+															float Time = 0.433333337,
+															float Value = 0,
+															Vec2 TangentIn = [-0.0500000007, 0],
+															Vec2 TangentOut = [0.0500000007, 0],
+															uint EditorFlags = 0,
+														},
+													},
+												],
+												Array Children = 
+												[
+												],
+											},
+											{
+												TrackType Type = SubProperty,
+												string Name = "Z",
+												string Path = "SphericalParticleEmitter.StartVelocity.Z",
+												bool Disabled = false,
+												uint PropertyTypeId = 3,
+												string PropertyTypeName = "",
+												Array KeyFrames = 
+												[
+													{
+														float key = 0,
+														Object value = 
+														{
+															float Time = 0,
+															float Value = 0,
+															Vec2 TangentIn = [-0.0500000007, 0],
+															Vec2 TangentOut = [0.0500000007, 0],
+															uint EditorFlags = 0,
+														},
+													},
+													{
+														float key = 0.433333337,
+														Object value = 
+														{
+															float Time = 0.433333337,
+															float Value = 0,
+															Vec2 TangentIn = [-0.0500000007, 0],
+															Vec2 TangentOut = [0.0500000007, 0],
+															uint EditorFlags = 0,
+														},
+													},
+												],
+												Array Children = 
+												[
+												],
+											},
+										],
+									},
+									{
+										TrackType Type = Property,
+										string Name = "RandomVelocity",
+										string Path = "SphericalParticleEmitter.RandomVelocity",
+										bool Disabled = false,
+										uint PropertyTypeId = 8,
+										string PropertyTypeName = "Vec3",
+										Array KeyFrames = 
+										[
+										],
+										Array Children = 
+										[
+											{
+												TrackType Type = SubProperty,
+												string Name = "X",
+												string Path = "SphericalParticleEmitter.RandomVelocity.X",
+												bool Disabled = false,
+												uint PropertyTypeId = 3,
+												string PropertyTypeName = "",
+												Array KeyFrames = 
+												[
+													{
+														float key = 0,
+														Object value = 
+														{
+															float Time = 0,
+															float Value = 0,
+															Vec2 TangentIn = [-0.0500000007, 0],
+															Vec2 TangentOut = [0.0500000007, 0],
+															uint EditorFlags = 0,
+														},
+													},
+													{
+														float key = 0.433333337,
+														Object value = 
+														{
+															float Time = 0.433333337,
+															float Value = 0,
+															Vec2 TangentIn = [-0.0500000007, 0],
+															Vec2 TangentOut = [0.0500000007, 0],
+															uint EditorFlags = 0,
+														},
+													},
+												],
+												Array Children = 
+												[
+												],
+											},
+											{
+												TrackType Type = SubProperty,
+												string Name = "Y",
+												string Path = "SphericalParticleEmitter.RandomVelocity.Y",
+												bool Disabled = false,
+												uint PropertyTypeId = 3,
+												string PropertyTypeName = "",
+												Array KeyFrames = 
+												[
+													{
+														float key = 0,
+														Object value = 
+														{
+															float Time = 0,
+															float Value = 0.5,
+															Vec2 TangentIn = [-0.0500000007, 0],
+															Vec2 TangentOut = [0.0500000007, 0],
+															uint EditorFlags = 0,
+														},
+													},
+													{
+														float key = 0.433333337,
+														Object value = 
+														{
+															float Time = 0.433333337,
+															float Value = 2,
+															Vec2 TangentIn = [-0.0500000007, 0],
+															Vec2 TangentOut = [0.0500000007, 0],
+															uint EditorFlags = 0,
+														},
+													},
+												],
+												Array Children = 
+												[
+												],
+											},
+											{
+												TrackType Type = SubProperty,
+												string Name = "Z",
+												string Path = "SphericalParticleEmitter.RandomVelocity.Z",
+												bool Disabled = false,
+												uint PropertyTypeId = 3,
+												string PropertyTypeName = "",
+												Array KeyFrames = 
+												[
+													{
+														float key = 0,
+														Object value = 
+														{
+															float Time = 0,
+															float Value = 0,
+															Vec2 TangentIn = [-0.0500000007, 0],
+															Vec2 TangentOut = [0.0500000007, 0],
+															uint EditorFlags = 0,
+														},
+													},
+													{
+														float key = 0.433333337,
+														Object value = 
+														{
+															float Time = 0.433333337,
+															float Value = 0,
+															Vec2 TangentIn = [-0.0500000007, 0],
+															Vec2 TangentOut = [0.0500000007, 0],
+															uint EditorFlags = 0,
+														},
+													},
+												],
+												Array Children = 
+												[
+												],
+											},
+										],
+									},
+								],
+							},
+						],
+					},
+				],
+			},
+		],
+	},
+},

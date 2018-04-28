@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "Shockwave",
+		uint64 ResourceId = 5a13d4dacebf4445,
+	},
+},

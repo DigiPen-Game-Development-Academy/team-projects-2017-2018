@@ -1,0 +1,160 @@
+class SaveLoad : ZilchComponent {
+    
+    [Property]
+    var LoadOnStart : Boolean = true;
+    
+    var Once : Boolean = true;
+    
+    function Initialize(init : CogInitializer) {
+        if(GlobalVariables.GroundItems == null)
+            GlobalVariables.GroundItems = Array[Cog]();
+        if(GlobalVariables.Enemies == null)
+            GlobalVariables.Enemies = Array[Cog]();
+        if(GlobalVariables.Chests == null)
+            GlobalVariables.Chests = Array[Cog]();
+        if(GlobalVariables.QuestItems == null){
+            GlobalVariables.QuestItems = Array[Boolean]();
+            GlobalVariables.QuestItems.Resize(4);
+            foreach(var b in GlobalVariables.QuestItems) {
+                b = false;
+            }
+        }
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(Zero.Keyboard, Events.KeyDown, this.OnKeyDown);
+    }
+
+    function OnKeyDown(event : KeyboardEvent) {
+        if(event.Key == Keys.Backslash)
+            this.Save();
+        else if(event.Key == Keys.RightBracket)
+            this.Load();
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        if(this.Once) {
+            this.Load();
+            this.Once = false;
+        }
+    }
+    [Static]
+    function SaveSettings() {
+        
+        Zero.ObjectStore.Store("Config", GlobalVariables.Settings);
+        
+    }
+    [Static]
+    function LoadSettings() {
+        
+        if(GlobalVariables.Settings != null)
+            GlobalVariables.Settings.Destroy();
+        
+        Zero.ObjectStore.RestoreOrArchetype("Config", Archetype.SettingsSave, GlobalVariables.GameSpace);
+        
+    }
+    
+    function Save() {
+        GlobalVariables.Save.SaveController.Enemies = SaveFuncs.SerializeEnemies(GlobalVariables.Enemies);
+        GlobalVariables.Save.SaveController.Inventory = SaveFuncs.SerializeInventory(GlobalVariables.Items);
+        GlobalVariables.Save.SaveController.Primary = SaveFuncs.SerializeItem(GlobalVariables.Inv.InventoryManager.PrimarySlot.InventorySlot.Item);
+        GlobalVariables.Save.SaveController.Secondary = SaveFuncs.SerializeItem(GlobalVariables.Inv.InventoryManager.SecodarySlot.InventorySlot.Item);
+        GlobalVariables.Save.SaveController.Utility = SaveFuncs.SerializeItem(GlobalVariables.Inv.InventoryManager.UtilitySlot.InventorySlot.Item);
+        GlobalVariables.Save.SaveController.Mouse = SaveFuncs.SerializeItem(GlobalVariables.Inv.InventoryManager.MSlot.MouseSlot.Item);
+        GlobalVariables.Save.SaveController.Chests = SaveFuncs.SerializeChests(GlobalVariables.Chests);
+        GlobalVariables.Save.SaveController.GItems = SaveFuncs.SerializeGItems(GlobalVariables.GroundItems);
+        GlobalVariables.Save.SaveController.QuestItems = SaveFuncs.SerializeBools(GlobalVariables.QuestItems);
+        GlobalVariables.Save.SaveController.PlayerPos = GlobalVariables.Player.Transform.WorldTranslation;
+        GlobalVariables.Save.SaveController.PlayerHealth = GlobalVariables.Player.Health.CurrentHealth;
+        GlobalVariables.Save.SaveController.MaxQIndex = Utilities.MaxIndex;
+        Zero.ObjectStore.Store("Save", GlobalVariables.Save);
+    }
+    
+    function PartialSave() {
+        GlobalVariables.Save.SaveController.Inventory = SaveFuncs.SerializeInventory(GlobalVariables.Items);
+        GlobalVariables.Save.SaveController.Primary = SaveFuncs.SerializeItem(GlobalVariables.Inv.InventoryManager.PrimarySlot.InventorySlot.Item);
+        GlobalVariables.Save.SaveController.Secondary = SaveFuncs.SerializeItem(GlobalVariables.Inv.InventoryManager.SecodarySlot.InventorySlot.Item);
+        GlobalVariables.Save.SaveController.Utility = SaveFuncs.SerializeItem(GlobalVariables.Inv.InventoryManager.UtilitySlot.InventorySlot.Item);
+        GlobalVariables.Save.SaveController.Mouse = SaveFuncs.SerializeItem(GlobalVariables.Inv.InventoryManager.MSlot.MouseSlot.Item);
+        GlobalVariables.Save.SaveController.QuestItems = SaveFuncs.SerializeBools(GlobalVariables.QuestItems);
+        GlobalVariables.Save.SaveController.PlayerHealth = GlobalVariables.Player.Health.CurrentHealth;
+        GlobalVariables.Save.SaveController.MaxQIndex = Utilities.MaxIndex;
+        Zero.ObjectStore.Store("Save", GlobalVariables.Save);
+    }
+    
+    function Load() {
+        GlobalVariables.GameSpace.LevelSettings.TimeTimer.Timer = 0;
+        if(GlobalVariables.Save != null)
+            GlobalVariables.Save.Destroy();
+        var save = Zero.ObjectStore.Restore("Save", GlobalVariables.GameSpace);
+        if (save == null) {
+            save = GlobalVariables.GameSpace.Create(Archetype.Save);
+            save.SaveController.FirstLoad = true;
+            //Console.WriteLine("No Save File Detected");
+            return;
+        }
+        
+        GlobalVariables.Items = SaveFuncs.DeserializeInventory(save.SaveController.Inventory);
+        
+        GlobalVariables.Inv.InventoryManager.PrimarySlot.InventorySlot.Item = SaveFuncs.DeserializeItem(save.SaveController.Primary);
+        if(GlobalVariables.Inv.InventoryManager.PrimarySlot.InventorySlot.Item != null)
+            GlobalVariables.UseWeapon.Primary = GlobalVariables.Inv.InventoryManager.PrimarySlot.InventorySlot.Item;
+        else {
+            GlobalVariables.UseWeapon.Primary = Fists();
+            GlobalVariables.UseWeapon.Primary.Init();
+        }
+        
+        GlobalVariables.Inv.InventoryManager.SecodarySlot.InventorySlot.Item = SaveFuncs.DeserializeItem(save.SaveController.Secondary);
+        if(GlobalVariables.Inv.InventoryManager.SecodarySlot.InventorySlot.Item != null)
+            GlobalVariables.UseWeapon.Secondary = GlobalVariables.Inv.InventoryManager.SecodarySlot.InventorySlot.Item;
+        else {
+            GlobalVariables.UseWeapon.Secondary = Fists();
+            GlobalVariables.UseWeapon.Secondary.Init();
+        }
+        
+        GlobalVariables.Inv.InventoryManager.UtilitySlot.InventorySlot.Item = SaveFuncs.DeserializeItem(save.SaveController.Utility);
+        if(GlobalVariables.Inv.InventoryManager.UtilitySlot.InventorySlot.Item != null)
+            GlobalVariables.UseWeapon.Utility = GlobalVariables.Inv.InventoryManager.UtilitySlot.InventorySlot.Item;
+        else {
+            GlobalVariables.UseWeapon.Utility = null;
+        }
+        
+        GlobalVariables.Player.Health.CurrentHealth = save.SaveController.PlayerHealth;
+        
+        GlobalVariables.Inv.InventoryManager.MSlot.MouseSlot.Item = SaveFuncs.DeserializeItem(save.SaveController.Mouse);
+        
+        if (GlobalVariables.Save.SaveController.Quest != "") {
+            GlobalVariables.QuestSprite.Set(GlobalVariables.Save.SaveController.Quest);
+        } else {
+            GlobalVariables.QuestSprite.Clear();
+        }
+        
+        Utilities.MaxIndex = GlobalVariables.Save.SaveController.MaxQIndex;
+        
+        var qItems = SaveFuncs.DeserializeBools(GlobalVariables.Save.SaveController.QuestItems);
+        qItems.Resize(4);
+        GlobalVariables.QuestItems = qItems;
+        
+        if(!this.LoadOnStart)
+            return;
+        
+        save.SaveController.FirstLoad = false;
+        
+        //load values into game
+        GlobalVariables.Player.Transform.WorldTranslation = save.SaveController.PlayerPos;
+        foreach(var e in GlobalVariables.Enemies)
+            if(e != null)
+                e.Destroy();
+        GlobalVariables.Enemies.Clear();
+        foreach(var c in GlobalVariables.Chests)
+            if(c != null)
+                c.Destroy();
+        GlobalVariables.Chests.Clear();
+        foreach(var g in GlobalVariables.GroundItems)
+            if(g != null)
+                g.Destroy();
+        GlobalVariables.GroundItems.Clear();
+        SaveFuncs.DeserializeGItems(save.SaveController.GItems);
+        SaveFuncs.DeserializeChests(save.SaveController.Chests);
+        SaveFuncs.DeserializeEnemies(save.SaveController.Enemies);
+        
+    }
+}

@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "MainLevelReferances",
+		uint64 ResourceId = 5a20d388a7a8324d,
+	},
+},

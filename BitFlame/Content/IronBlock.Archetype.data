@@ -1,0 +1,79 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "IronBlock",
+	},
+	Archetyped = 
+	{
+		string Name = "5a62997e9d4c62f2:IronBlock",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [33.915596, 28.493, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [0.909999967, 0.808261991, 0.714349985, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5a073c442a60ccfc:Ship_Menu_Button_Art",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	Area = 
+	{
+		Vec2 Size = [1, 1],
+		Location Origin = Center,
+	},
+	BoxCollider = 
+	{
+		bool Ghost = false,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+		string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+		Vec3 Offset = [0, 0, 0],
+		Vec3 Size = [0.5, 0.5, 0.5],
+	},
+	Health = 
+	{
+		float Health = 4,
+		string ArchetypetoSpawnOnDeath1 = "5a86165eb2745571:Game_ResourceOre_Pickup",
+		string ArchetypetoSpawnOnDeath2 = "",
+		bool Unbreakable = false,
+	},
+	Asteroid_Mining = 
+	{
+		float DropAmount = 0,
+		float ShrinkAmount = 20,
+		Vec4 AluminiumColor = [0, 0, 0, 1],
+		Vec4 CopperColor = [0, 0, 0, 1],
+		Vec4 IronColor = [0, 0, 0, 1],
+		Vec4 TitaniumColor = [0, 0, 0, 1],
+		string AluminiumArchetype = "",
+		string CopperArchetype = "",
+		string IronArchetype = "",
+		string TitaniumArchetype = "",
+		float AluminiumProbability = 0,
+		float CopperProbability = 0,
+		float IronProbability = 0,
+		float TitaniumProbability = 0,
+		float EmptyProbability = 0,
+	},
+},

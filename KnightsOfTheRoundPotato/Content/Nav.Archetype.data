@@ -1,0 +1,43 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Nav",
+	},
+	Archetyped = 
+	{
+		string Name = "5a9ad29a6a175517:Nav",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	NavGrid = 
+	{
+		Object Settings = 
+		{
+			Heuristic Heuristic = Euclidean,
+			float HeuristicWeight = 1.00999999,
+			RubberBanding Rubberbanding = Conservative,
+			bool RemoveCoLinearPoints = true,
+			CurveType CurveType = Linear,
+			uint PathResolution = 3,
+		},
+		Object Data = 
+		{
+			uint Width = 0,
+			uint Height = 0,
+			Vec3 Position = [7.88354011e-35, 7.8835447e-35, 7.88355388e-35],
+			float CellSize = 1.75197341e-40,
+			Array Grid = 
+			[
+			],
+		},
+	},
+},

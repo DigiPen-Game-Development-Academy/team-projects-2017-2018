@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "Player_Block_Placing",
+		uint64 ResourceId = 5a629aab1956fa11,
+	},
+},

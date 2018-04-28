@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "SetChest",
+		uint64 ResourceId = 5a11d2d98959d048,
+	},
+},

@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "GlobalTimekeeper",
+		uint64 ResourceId = 5a630d4a45696050,
+	},
+},

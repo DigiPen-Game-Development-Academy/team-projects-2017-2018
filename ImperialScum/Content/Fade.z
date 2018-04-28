@@ -1,0 +1,70 @@
+class Fade : ZilchComponent
+{
+    [Static]
+    var WhatLevelToLoad:Level;
+    
+    [Static]
+    var Switch:Boolean = false;
+    
+    [Static]
+    var Color:Real4;
+    
+    var Timer:Real = 1.2;
+    
+    
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Owner.Sprite.Color = Fade.Color;
+        
+        if(Fade.Switch == true)
+        {
+            this.Timer -= event.Dt;
+        }
+        
+        if(this.Timer <= 0)
+        {
+            this.LoadLevel();
+            this.Timer = 1.2;
+            Fade.Switch = false;
+        }
+        
+    }
+    
+    [Static]
+    function StartFade(levelToLoad:Level, whatSpace:Space, objectSpace:Space)
+    {
+        var object = objectSpace.FindObjectByName("Fade");
+        var seq = Action.Sequence(object.Actions);
+        
+        Fade.WhatLevelToLoad = levelToLoad;
+        Fade.Switch = true;
+        Action.Property
+           (seq, @object.Sprite.Color, Real4(0,0,0,1), 1, Ease.Linear);
+        Action.Delay(seq, 0.2);
+        Action.Property
+           (seq, @object.Sprite.Color, Real4(0,0,0,0), 1, Ease.Linear);
+    }
+    
+        
+    [Static]
+    function EndFade(whatSpace:Space, objectSpace:Space)
+    {   
+        var object = objectSpace.FindObjectByName("Fade");
+        var seq = Action.Sequence(object.Actions);
+        
+        Action.Property
+           (seq, @object.Sprite.Color, Real4(0,0,0,0), 10, Ease.Linear);
+    }
+    
+    
+    function LoadLevel()
+    {
+        GoToBase.ThisSpace.LoadLevel(Fade.WhatLevelToLoad);
+    }
+}

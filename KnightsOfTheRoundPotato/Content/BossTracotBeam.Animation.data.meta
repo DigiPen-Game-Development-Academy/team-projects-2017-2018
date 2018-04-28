@@ -1,0 +1,9 @@
+DataContent = 
+{
+	RichAnimationBuilder = 
+	{
+		string Name = "BossTracotBeam",
+		uint64 ResourceId = 5a3dcf9db46021df,
+		string PreviewArchetype = "",
+	},
+},

@@ -1,0 +1,62 @@
+GameSession = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Archetyped = 
+	{
+		string Name = "554cea0f94af5fea:Game",
+	},
+	Viewports = 
+	{
+	},
+	DefaultGameSetup = 
+	{
+		string StartingSpaceName = "554cea0f94af6dc4:Space",
+		string StartingLevelName = "5a4b4ecc7afdb8a6:IntroLevel",
+	},
+	CameraViewports = 
+	{
+	},
+	GameVars = 
+	{
+		int StartingPlayerHealth = 10,
+		int PlayerMaxHealth = 10,
+		int StartingPlayerResources = 0,
+		int StartingCopper = 0,
+		int StartingPlayerTitanium = 0,
+		int StartingPlayerAluminium = 0,
+		float StartingPlayerOxygen = 10,
+		float PlayerMaxOxygen = 10,
+		int StartingUpgradePoints = 1,
+		int StartingPipes = 0,
+		int StartingTurrets = 0,
+		bool ShowFrameRate = true,
+		float HasUpgrade_SpreadI = 0,
+		float HasUpgrade_SpreadII = 0,
+		float HasUpgrade_Homing = 0,
+		float HasUpgrade_FirerateI = 0,
+		float HasUpgrade_BulletSpeed = 1,
+		float HasUpgrade_FirerateII = 0,
+		float HasUpgrade_Doubleshot = 0,
+		float HasUpgrade_PenitrationI = 0,
+		float HasUpgrade_PenitrationII = 0,
+		float HasUpgrade_KnockbackI = 0,
+		float HasUpgrade_KnockbackII = 0,
+		float HasUpgrade_Maxspeed = 0,
+		float HasUpgrade_Acceleration = 0,
+		bool HasUpgrade_InertiaDampeners = false,
+		float HasUpgrade_Vitals = 0,
+		float HasUpgrade_Maxhealth = 1,
+		float HasUpgrade_Maxoxygen = 1,
+		float HasUpgrade_HealthRegen = 0,
+		float HasUpgrade_OxygenRegen = 0,
+		float HasUpgrade_ShieldI = 0,
+		float HasUpgrade_Shieldregenspeed = 0,
+		float HasUpgrade_ShieldII = 0,
+	},
+	MenuMusic = 
+	{
+	},
+},

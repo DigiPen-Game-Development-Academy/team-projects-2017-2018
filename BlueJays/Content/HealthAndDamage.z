@@ -1,0 +1,279 @@
+enum Team
+{
+    Player,
+    Enemy,
+}
+enum HealthType
+{
+    PlayerMinion,
+    EnemyMinion,
+    Player,
+    Boss,
+}
+
+class DoOnCollide : ZilchComponent
+{
+    [Property] var TeamToAffect : Team;
+    [Property] var HealthToChange : Real = 0;
+    [Property] var FateToChange : Real = 0;
+    
+    [Property] var DeactivateSelf : Boolean;
+    [Property] var AttachSelf : Boolean;
+    [Property] var DestroySelf : Boolean;
+    [Property] var DestroyDelay : Real;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+    
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if (event.OtherObject.Health != null && event.OtherObject.Health.Team == this.TeamToAffect)
+        {
+            event.OtherObject.Health.ChangeHealth(this.HealthToChange);
+            
+            if (this.AttachSelf)
+            {
+                this.Owner.AttachToRelative(event.OtherObject);
+                this.TryToRemoveComponent(typeid(AutoRotate));
+                this.TryToRemoveComponent(typeid(RigidBody));
+                this.TryToRemoveComponent(typeid(BoxCollider));
+                this.TryToRemoveComponent(typeid(SphereCollider));
+            }
+            
+            if (this.DestroySelf)
+            {
+                var seq = Action.Sequence(this.Owner.Actions);
+                Action.Delay(seq, this.DestroyDelay);
+                if (this.Owner.Health != null)
+                {
+                    Action.Call(seq, this.Owner.Health.Die);
+                }
+                else
+                {
+                    Action.Call(seq, this.Owner.Destroy);
+                }
+            }
+            
+            if (this.DeactivateSelf)
+            {
+                this.TryToRemoveComponent(typeid(DoOnCollide));
+            }
+        }
+    }
+    
+    function TryToRemoveComponent(boundType : BoundType)
+    {
+        if (this.Owner.GetComponentByName(boundType.Name) != null)
+            this.Owner.RemoveComponentByName(boundType.Name);
+    }
+}
+
+class Health : ZilchComponent
+{
+    sends Damaged : ZilchEvent;
+    sends Healed : ZilchEvent;
+    [Property] var Level : Level;
+    [Property] var HealthType : HealthType = HealthType.PlayerMinion;
+    var Team : Team {
+        get {
+            if (this.HealthType == HealthType.Player || this.HealthType == HealthType.PlayerMinion)
+                return Team.Player; else
+            return Team.Enemy;
+        }
+    }
+    
+    [Property] var Health : Real = 10;
+    [Property] var Debug : Boolean;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        if (this.HealthType == HealthType.Player)
+        {
+            this.GameSession.Globals.PlayerCurrentHealth = this.Health;
+        }
+        else if (this.HealthType == HealthType.Boss)
+        {
+            this.GameSession.Globals.BossCurrentHealth = this.Health;
+        }
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.HealthType == HealthType.Player)
+        {
+            this.Health = this.GameSession.Globals.PlayerCurrentHealth;
+        }
+        else if (this.HealthType == HealthType.Boss)
+        {
+            this.Health = this.GameSession.Globals.BossCurrentHealth;
+        }
+        
+        if (this.Health <= 0) this.Die();
+    }
+   
+    // We will set the sound that is currently playing in code
+    var DamageSoundPlaying : SoundInstance;
+    var Flashing : Boolean;
+       function FoolDieEffect(nameToSearch : String)
+    {
+         var mainSprite = this.Owner.FindChildByName(nameToSearch);
+           //Botom dissapear
+        var seq = Action.Sequence(this.Owner.Actions);
+
+        var fadOut = Action.Group(seq);
+        
+        var fadIn = Action.Group(seq);
+        
+        var shrink = Action.Group(seq);
+        
+        //Action.Delay(seq,5);
+        //BottomReapear
+        //Action.Property(delyGame @this.Space.TimeSpace.TimeScale, Real ())
+        
+        Action.Property(fadIn, @this.Owner.Sprite.Color, Real4(255, 255, 255, 1), 1.0, Ease.Linear);
+        //MainSpriteReapear
+        Action.Property(fadIn, @mainSprite.Sprite.Color, Real4(255, 255, 255, 1), 1.0, Ease.Linear);
+     
+        Action.Property(shrink, @this.Owner.Transform.Scale, Real3 (0.5, 0.5, 0.5),1.0, Ease.QuadInOut);
+        
+        Action.Property(shrink, @mainSprite.Transform.Scale, Real3 (0.5, 0.5, 0.5),1.0, Ease.Linear);
+        
+        Action.Property(seq, @this.Flashing, false, 0, Ease.Linear);
+        
+          this.Space.LoadLevel(Level.WinScreen);
+    }
+   
+    function DieEffect(nameToSearch : String)
+    {
+         var mainSprite = this.Owner.FindChildByName(nameToSearch);
+           //Botom dissapear
+        var seq = Action.Sequence(this.Owner.Actions);
+
+        var fadOut = Action.Group(seq);
+        
+        var fadIn = Action.Group(seq);
+        
+        var shrink = Action.Group(seq);
+        
+        //Action.Delay(seq,5);
+        //BottomReapear
+        //Action.Property(delyGame @this.Space.TimeSpace.TimeScale, Real ())
+        
+        Action.Property(fadIn, @this.Owner.Sprite.Color, Real4(255, 255, 255, 1), 1.0, Ease.Linear);
+        //MainSpriteReapear
+        Action.Property(fadIn, @mainSprite.Sprite.Color, Real4(255, 255, 255, 1), 1.0, Ease.Linear);
+     
+        Action.Property(shrink, @this.Owner.Transform.Scale, Real3 (0.5, 0.5, 0.5),1.0, Ease.QuadInOut);
+        
+        Action.Property(shrink, @mainSprite.Transform.Scale, Real3 (0.5, 0.5, 0.5),1.0, Ease.Linear);
+        
+        Action.Property(seq, @this.Flashing, false, 0, Ease.Linear);
+        
+       
+          Action.Call(seq, this.LoadHub);
+    }
+    function ChangeHealth(amount : Real)
+     
+    {
+        
+        if (this.Debug) Console.WriteLine("`this.Owner.Name`: `this.Health` + `amount` = `this.Health`");
+        
+        this.Health += amount;
+        
+        if (amount < 0)
+        {
+            // Damaged
+            this.Owner.DispatchDown(Events.Damaged, ZilchEvent());
+            //this.Space.SoundSpace.PlayCue(SoundCue.Damage);
+            
+     
+        }
+        else if (amount > 0)
+        {
+            // Healed
+            this.Owner.DispatchDown(Events.Healed, ZilchEvent());
+            this.Space.SoundSpace.PlayCue(SoundCue.HealthPowerup);
+        }
+        
+        if (this.HealthType == HealthType.Player)
+        {
+            this.GameSession.Globals.PlayerCurrentHealth = this.Health;
+        }
+        else if (this.HealthType == HealthType.Boss)
+        {
+            this.GameSession.Globals.BossCurrentHealth = this.Health;
+            //this.Space.SoundSpace.PlayCue(SoundCue.Damage);
+            
+        }
+    }
+    
+    function LoadHub()
+    {
+        this.GameSession.Globals.GameSpace.LoadLevel(Level.Hub);
+    }
+    
+    var Dead : Boolean;
+    var Score : Real = 0;
+    function Die()
+    {
+        if (this.Dead) return;
+        this.Dead = true;
+        this.GameSession.DispatchEvent(Events.Death, DeathEvent(this.Owner));
+        
+        if (this.HealthType == HealthType.Player)
+        {
+            // @missing Death effect and lose result
+            this.Space.SoundSpace.PlayCue(SoundCue.PlayerDeath);
+            this.DieEffect("MainSprite");
+        }
+        else if (this.HealthType == HealthType.Boss)
+        {
+            // @missing Death effect and win result
+            this.Space.SoundSpace.PlayCue(SoundCue.FoolDeath2);
+             this.FoolDieEffect("Fool");
+            if (this.GameSession.Globals.BossCurrentHealth <= 0)
+            {
+                Console.WriteLine("AHHHHH");
+               
+            }
+            
+        }
+        else
+        {
+            // @missing Death effect
+            
+            this.Owner.Destroy();
+        }
+    }
+}
+
+class HealthEffect : ZilchComponent
+{
+    var OriginalColor : Real4;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.Damaged, this.OnDamaged);
+        Zero.Connect(this.Owner, Events.Healed, this.OnHealed);
+        
+        this.OriginalColor = this.Owner.Sprite.Color;
+    }
+    function OnDamaged(event : ZilchEvent)
+    {
+        var seq = Action.Sequence(this.Owner.Actions);
+        Action.Property(seq, @this.Owner.Sprite.Color, Real4(1, 0.5, 0.5, 0.5), 0.05, Ease.Linear);
+        Action.Delay(seq, 0.1);
+        Action.Property(seq, @this.Owner.Sprite.Color, this.OriginalColor, 0.05, Ease.Linear);
+    }
+    function OnHealed(event : ZilchEvent)
+    {
+        var seq = Action.Sequence(this.Owner.Actions);
+        Action.Property(seq, @this.Owner.Sprite.Color, Real4(0.5, 1, 0.5, 0.5), 0.05, Ease.Linear);
+        Action.Delay(seq, 0.1);
+        Action.Property(seq, @this.Owner.Sprite.Color, this.OriginalColor, 0.05, Ease.Linear);
+    }
+}

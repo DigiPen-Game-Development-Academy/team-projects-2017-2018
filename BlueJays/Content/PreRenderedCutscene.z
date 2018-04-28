@@ -1,0 +1,17 @@
+class PreRenderedCutscene : ZilchComponent
+{
+    [Property]
+    var Timer : Real = 0.0; 
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.Timer >= 0.0)
+        {
+            this.Timer -= event.Dt;
+        }
+    }
+}

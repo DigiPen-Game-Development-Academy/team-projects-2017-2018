@@ -1,0 +1,31 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class SkipToSplash : ZilchComponent {
+    
+    [Property] var SkipComponent : String = "DigiPen";
+    
+    [Dependency] var UIAnimate : UIAnimate = null;
+    
+    var Clicked : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(Zero.Mouse.IsButtonDown(MouseButtons.Left) && !this.Clicked) {
+            
+            this.Space.FindObjectByName(this.SkipComponent).Destroy();
+            this.UIAnimate.CurrDelayTime = this.UIAnimate.AnimationDelay;
+            this.Clicked = true;
+            
+            var lvlSwitcher = this.Space.FindObjectByName("LevelSettings").LevelSwitcher;
+            lvlSwitcher.CurrDelay = lvlSwitcher.Delay - this.UIAnimate.MultiAnimationDelay - this.UIAnimate.AnimationSpeed * 2;
+            
+        }
+        
+    }
+    
+}

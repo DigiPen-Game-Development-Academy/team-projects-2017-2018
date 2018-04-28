@@ -1,0 +1,317 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "ChargingEnemy",
+	},
+	Archetyped = 
+	{
+		string Name = "5a7411b441710034:ChargingEnemy",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0],
+		Vec3 Scale = [1.5, 1.5, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5a87a15f5d0ed996:ChargingEnemy_Sprite_Animated",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	Orientation = 
+	{
+		Vec3 GlobalUp = [0, 1, 0],
+		Vec3 UpVector = [0, 0, 1],
+		Vec3 ForwardVector = [1, 0, 0],
+		OrientationBases DefaultBases = ForwardXUpZ,
+	},
+	RigidBody = 
+	{
+		bool Static = false,
+		bool Asleep = false,
+		bool Kinematic = false,
+		bool RotationLocked = false,
+		bool Mode2D = false,
+		bool AllowSleep = true,
+		bool Inherit2DMode = true,
+		Vec3 Velocity = [0, 0, 0],
+		Vec3 AngularVelocity = [0, 0, 0],
+	},
+	Player_LookAt = 
+	{
+	},
+	Health = 
+	{
+		float Health = 10,
+		string ArchetypetoSpawnOnDeath1 = "5a70715bb5c81bfe:Game_OxygenOre_Pickup",
+		string ArchetypetoSpawnOnDeath2 = "5a5b01f486549f9d:ChargingEnemy_ExplosionEffect",
+		string ArchetypetoSpawnOnDeath3 = "5a6ca525a5151ffd:Game_TitaniumOre_Pickup",
+		string ExplosionSound = "5ae3cf4fa1248b1b:Enemy_Explosion",
+		bool Unbreakable = false,
+		bool Random3Drop = true,
+	},
+	DamageOnCollide = 
+	{
+		int Damage = 1,
+		float DamageCooldown = 0.5,
+		string PlayerDamagedSound = "5ae3cf4fa125c756:Player_Damaged",
+	},
+	ChargingEnemyLogic = 
+	{
+		float Speed = 4,
+		float ChargeSpeed = 20,
+		float ChargeRange = 12,
+		float DetectionRange = 20,
+		float ChargeUpTime = 1,
+		Vec4 ChargeUpColor = [1, 0, 0, 1],
+		Vec3 ChargeUpScale = [2, 2, 1],
+	},
+	DamageOnHit = 
+	{
+		string ArchetypetoSpawnOnDamage = "",
+		float Damage = 10,
+		bool Penatrating = true,
+		bool EnemyBullet = false,
+		string PlayerDamagedSound = "",
+		string SoundOnHit = "",
+	},
+	MultiConvexMeshCollider = 
+	{
+		bool Ghost = false,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+		string SerializedGroupName = "5a8c76cb6cde040f:ChargingEnemyCollider",
+		Vec3 Offset = [0, 0, 0],
+		string MeshName = "5a87a1f867e1df0a:ChargingEnemyCollisionMesh",
+	},
+	PopUpTextController = 
+	{
+		Enum PopUpType = Explosion,
+		string ExplosionText = "5a4b19e75b1fc931:ExplosionText",
+		string BumpText1 = "",
+		string BumpText2 = "",
+		string BeepText = "",
+	},
+	Dont_Move_In_Z_Axis = 
+	{
+		int Z_Position = 0,
+	},
+	Hierarchy = 
+	{
+		ArchetypeInstance = 
+		{
+			string Name = "5a5b3e55522cefba:ChargingEnemyJetpack",
+			LinkId = 
+			{
+				uint Id = 2,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0, 0, -1],
+				Vec3 Scale = [0.666666687, 0.666666687, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "ChargingEnemyJetpack",
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 3,
+			},
+			Named = 
+			{
+				string Name = "GlowEffect",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0, 0, -1],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 0, 0, 0.150000006],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "5274db4c2e7c11f9:Circle",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			Hierarchy = 
+			{
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 4,
+					},
+					Named = 
+					{
+						string Name = "Sprite",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [9.53674316e-07, 1.1920929e-07, 0],
+						Vec3 Scale = [1.16666675, 1.16666675, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					Sprite = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 0, 0, 0.119999997],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string SpriteSource = "5274db4c2e7c11f9:Circle",
+						bool RenderMask = false,
+						bool FlipX = false,
+						bool FlipY = false,
+						bool AnimationActive = true,
+						float AnimationSpeed = 1,
+						uint StartFrame = 0,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 5,
+					},
+					Named = 
+					{
+						string Name = "Sprite",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [9.53674316e-07, 1.1920929e-07, 0],
+						Vec3 Scale = [1.33333337, 1.33333337, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					Sprite = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 0, 0, 0.0900000036],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string SpriteSource = "5274db4c2e7c11f9:Circle",
+						bool RenderMask = false,
+						bool FlipX = false,
+						bool FlipY = false,
+						bool AnimationActive = true,
+						float AnimationSpeed = 1,
+						uint StartFrame = 0,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 6,
+					},
+					Named = 
+					{
+						string Name = "Sprite",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [9.53674316e-07, 1.1920929e-07, 0],
+						Vec3 Scale = [1.5, 1.5, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					Sprite = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 0, 0, 0.0599999987],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string SpriteSource = "5274db4c2e7c11f9:Circle",
+						bool RenderMask = false,
+						bool FlipX = false,
+						bool FlipY = false,
+						bool AnimationActive = true,
+						float AnimationSpeed = 1,
+						uint StartFrame = 0,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 7,
+					},
+					Named = 
+					{
+						string Name = "Sprite",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [9.53674316e-07, 1.1920929e-07, 0],
+						Vec3 Scale = [1.66666675, 1.66666675, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					Sprite = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 0, 0, 0.0299999993],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string SpriteSource = "5274db4c2e7c11f9:Circle",
+						bool RenderMask = false,
+						bool FlipX = false,
+						bool FlipY = false,
+						bool AnimationActive = true,
+						float AnimationSpeed = 1,
+						uint StartFrame = 0,
+					},
+				},
+			},
+		},
+	},
+},

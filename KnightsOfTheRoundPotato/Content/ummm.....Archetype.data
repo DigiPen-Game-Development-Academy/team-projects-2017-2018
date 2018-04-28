@@ -1,0 +1,80 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "BasicParticleEffect",
+	},
+	Archetyped = 
+	{
+		string Name = "5ac13098fc956993:ummm....",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [16.2963943, 2.43520069, 26.4519501],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	SpriteParticleSystem = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		SystemChildMode ChildMode = Independent,
+		SystemSpace SystemSpace = WorldSpace,
+		uint DrawOrder = 0,
+		Vec4 Tint = [0.966999888, 0.339999974, 1, 0.75],
+		float WarmUpTime = 0,
+		ParticleGeometry GeometryMode = Billboarded,
+		ParticleRenderMode RenderMode = Blended,
+		ParticleSortMode SortMode = Youngest,
+		ParticleAnimation ParticleAnimation = Single,
+		string Texture = "5586f579ca73ecc2:SquareBordered",
+		float VelocityScale = 1,
+		float LengthScale = 1,
+		float MaxParticleSize = 100,
+		Vec3 SystemSize = [4, 4, 4],
+	},
+	SphericalParticleEmitter = 
+	{
+		bool Active = true,
+		uint EmitCount = 0,
+		float EmitRate = 25,
+		float EmitVariance = 0,
+		float Size = 10,
+		float SizeVariance = 0,
+		float Lifetime = 1.25,
+		float LifetimeVariance = 0,
+		float Spin = 0,
+		float SpinVariance = 0,
+		bool RandomSpin = false,
+		float Fill = 1,
+		float EmitterVelocityPercent = 0,
+		Vec3 StartVelocity = [0, 0, 0],
+		Vec3 RandomVelocity = [0, 0, 2],
+		Vec3 TangentVelocity = [0, 0, 0],
+		Vec3 EmitterSize = [0, 0, 0],
+		bool FastMovingEmitter = false,
+	},
+	LinearParticleAnimator = 
+	{
+		Vec3 Force = [0, 0, 0],
+		Vec3 RandomForce = [0, 0, 0],
+		float Torque = 0,
+		float Growth = -9.00554371,
+		float Dampening = 0,
+		Vec3 Twist = [0, 0, 0],
+	},
+	ParticleColorAnimator = 
+	{
+		Vec4 Color0 = [1, 1, 1, 0.999899983],
+		Vec4 Color1 = [1, 1, 1, 1],
+		Vec4 Color2 = [1, 1, 1, 1],
+		Vec4 Color3 = [1, 1, 1, 0.459999979],
+		Vec4 Color4 = [1, 1, 1, 0],
+	},
+},

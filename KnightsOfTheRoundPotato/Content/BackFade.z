@@ -1,0 +1,33 @@
+class BackFade : ZilchComponent {
+    [Dependency] var Reactive : Reactive;
+    
+    var Target : Real = 0;
+    
+    var Start : Real = 0;
+    
+    [Property] var FadeSpd : Real = 2.5;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        this.Start = this.Owner.Sprite.Color.W;
+        this.Owner.Sprite.Color = Real4(this.Owner.Sprite.Color.X, this.Owner.Sprite.Color.Y, this.Owner.Sprite.Color.Z, 0);
+    }
+
+    function OnMouseEnter(event : ViewportMouseEvent) {
+        this.Target = this.Start;
+    }
+
+    function OnMouseExit(event : ViewportMouseEvent) {
+        this.Target = 0;
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        var color = this.Owner.Sprite.Color;
+        
+        this.Owner.Sprite.Color = Math.Lerp(color, Real4(color.X, color.Y, color.Z, this.Target), event.Dt*this.FadeSpd);
+        
+    }
+}

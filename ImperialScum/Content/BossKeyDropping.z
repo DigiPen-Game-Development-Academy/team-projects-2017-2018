@@ -1,0 +1,28 @@
+//I'm pretty sure Jessica wrote this
+
+//It makes the boss drop a key
+
+class BossKeyDropping : ZilchComponent
+{
+    [Static] var BossDead : Boolean = false;
+    [Property]
+    var Key : Archetype;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+//(11. -40, 0)
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var spawnPosition : Real3 = this.Owner.Transform.Translation;
+        spawnPosition -= Real3(0, 7, 0);
+        
+        
+        if(this.Owner.EnemyHealth.Health <= 0)
+        {
+            this.Space.CreateAtPosition(this.Key, spawnPosition);
+            VolumeLevev.SaveVolume = VolumeControls.Number1;
+            BossKeyDropping.BossDead = true;
+        }
+    }
+}

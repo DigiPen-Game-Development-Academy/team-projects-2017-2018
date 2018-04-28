@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "WorldGenerator",
+		uint64 ResourceId = 5ad8afaa9b8446b1,
+	},
+},

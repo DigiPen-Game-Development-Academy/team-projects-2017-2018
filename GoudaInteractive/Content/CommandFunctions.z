@@ -1,0 +1,384 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class Commands : ZilchComponent {
+    
+    [Dependency] var TextEntry : TextEntry = null;
+    
+    function CreateCommands() {
+        
+        this.Owner.TextEntry.Commands = new Array[String]();
+        
+        // PUSH COMMANDS
+        this.Owner.TextEntry.Commands.Push("clear");
+        this.Owner.TextEntry.Commands.Push("cls");
+        this.Owner.TextEntry.Commands.Push("color");
+        this.Owner.TextEntry.Commands.Push("debug");
+        this.Owner.TextEntry.Commands.Push("echo");
+        this.Owner.TextEntry.Commands.Push("give");
+        this.Owner.TextEntry.Commands.Push("god");
+        this.Owner.TextEntry.Commands.Push("heal");
+        this.Owner.TextEntry.Commands.Push("help");
+        this.Owner.TextEntry.Commands.Push("kill");
+        this.Owner.TextEntry.Commands.Push("playsound");
+        this.Owner.TextEntry.Commands.Push("spawn");
+        this.Owner.TextEntry.Commands.Push("time");
+        this.Owner.TextEntry.Commands.Push("togglecheat");
+        this.Owner.TextEntry.Commands.Push("tp");
+        
+    }
+    
+    function CommandFunctions() {
+        
+        if(this.CheckForCommand("debug", false, "", "") != -1) {
+            this.CommandDebug();
+        } else if(this.CheckForCommand("give", false, "", "") != -1) {
+            this.CommandGive();
+        } else if(this.CheckForCommand("god", false, "", "") != -1) {
+            this.CommandGod();
+        } else if(this.CheckForCommand("heal", false, "", "") != -1) {
+            this.CommandHeal();
+        } else if(this.CheckForCommand("help", false, "", "?") != -1) {
+            this.CommandHelp();
+        } else if(this.CheckForCommand("clear", false, "", "cls") != -1) {
+            this.CommandClear();
+        } else if(this.CheckForCommand("color", false, "", "") != -1) {
+            this.CommandColor();
+        } else if(this.CheckForCommand("echo", false, "", "") != -1) {
+            this.CommandEcho();
+        } else if(this.CheckForCommand("playsound", false, "", "") != -1) {
+            this.CommandPlaySound();
+        } else if(this.CheckForCommand("spawn", false, "", "") != -1) {
+            this.CommandSpawn();
+        } else if(this.CheckForCommand("time", false, "", "") != -1) {
+            this.CommandTime();
+        } else if(this.CheckForCommand("togglecheat", false, "", "") != -1) {
+            this.CommandCheat();
+        } else if(this.CheckForCommand("kill", false, "", "") != -1) {
+            this.CommandKill();
+        } else if(this.CheckForCommand("tp", false, "", "") != -1) {
+            this.CommandTeleport();
+        } else if(this.CheckForCommand("`String.FromChar(117)`ss`String.FromChar(114)`", false, "", "") != -1) {
+            this.CommandCatch();
+        } else {
+            var baseCommand = this.GetArgument(0, this.TextEntry.SubmittedText, false);
+            this.TextEntry.PrintToUIConsole("Error: The command \"`baseCommand`\" does not exist. Type help for a list of commands.");
+        }
+        
+        this.TextEntry.SubmittedText = "";
+        
+    }
+    
+    function CheckForCommand(cmd : String, args : Boolean, usage : String, cmdAlias : String) : Integer {
+        
+        if(this.TextEntry.SubmittedText == cmd || this.TextEntry.SubmittedText.StartsWith(String.Concatenate(cmd, " ")) || (this.TextEntry.SubmittedText == cmdAlias || this.TextEntry.SubmittedText.StartsWith(String.Concatenate(cmdAlias, " ")) && cmdAlias != "")) {
+            
+            if(args && (this.TextEntry.SubmittedText.EndsWith(cmd) || this.TextEntry.SubmittedText.EndsWith(String.Concatenate(cmd, " ")))) {
+                this.TextEntry.PrintToUIConsole(String.Concatenate("Error: Invalid arguments. Usage: ", usage));
+                return 0;
+            } else {
+                return 1;
+            }
+            
+        }
+        
+        return -1;
+        
+    }
+    
+    function GetArgument(argNum : Integer, command : String, spaces : Boolean) : String {
+        
+        var currArg = 0;
+        var tmpArg = "";
+        
+        for(var i = 0; i < command.Count; ++i) {
+            
+            if(String.FromChar(command.Get(i)) == " ") {
+                if(spaces && currArg != 0)
+                    tmpArg = "`tmpArg``String.FromChar(command.Get(i))`";
+                ++currArg;
+                continue;
+            }
+            
+            if(currArg == argNum || (currArg >= argNum && spaces))
+                tmpArg = "`tmpArg``String.FromChar(command.Get(i))`";
+            else if(currArg > argNum && !spaces)
+                break;
+            
+        }
+        
+        return tmpArg;
+        
+    }
+    
+    function PrintInvalidArgumentError(usage : String, invalidCmdArg : Integer) {
+        if(invalidCmdArg > 0)
+            this.TextEntry.PrintToUIConsole("Error: Invalid argument \"`this.GetArgument(invalidCmdArg, this.TextEntry.SubmittedText, false)`\". Usage:\n`usage`");
+        else
+            this.TextEntry.PrintToUIConsole("Error: Invalid argument(s). Usage: `usage`");
+    }
+    
+    function CommandDebug() {
+        
+        if(this.TextEntry.SubmittedText.EndsWith("true")) {
+            
+            Relocation.DebugMode = true;
+            this.TextEntry.PrintToUIConsole("Debug: `Relocation.DebugMode`");
+            
+        } else if(this.TextEntry.SubmittedText.EndsWith("false")) {
+            
+            Relocation.DebugMode = false;
+            this.TextEntry.PrintToUIConsole("Debug: `Relocation.DebugMode`");
+            
+        } else if(this.TextEntry.SubmittedText == "debug" || this.TextEntry.SubmittedText == "debug ") {
+            
+            Relocation.DebugMode = !Relocation.DebugMode;
+            this.TextEntry.PrintToUIConsole("Debug: `Relocation.DebugMode`");
+            
+        } else {
+            this.PrintInvalidArgumentError("debug [true|false]", 1);
+        }
+        
+    }
+    
+    function CommandGive() {
+        if(this.CheckForCommand("give", true, "give <itemID> [quantity]", "") != 0) {
+            if(Relocation.Space.FindObjectByName("EntityPlayer") != null) {
+                
+                var quantity = this.GetArgument(2, this.TextEntry.SubmittedText, false);
+                
+                if(quantity == "")
+                    quantity = "1";
+                
+                Relocation.Space.FindObjectByName("EntityPlayer").Inventory.GiveItemWithAmount(
+                    Integer.Parse(this.GetArgument(1, this.TextEntry.SubmittedText, false)),
+                    true,
+                    Integer.Parse(quantity)
+                );
+                
+            }
+        }
+    }
+    
+    function CommandGod() {
+        
+        if(this.TextEntry.SubmittedText.EndsWith("true")) {
+            PlayerData.GodMode = true;
+            this.TextEntry.PrintToUIConsole("God Mode: `PlayerData.GodMode`");
+        } else if(this.TextEntry.SubmittedText.EndsWith("false")) {
+            PlayerData.GodMode = false;
+            this.TextEntry.PrintToUIConsole("God Mode: `PlayerData.GodMode`");
+        } else if(this.TextEntry.SubmittedText == "god" || this.TextEntry.SubmittedText == "god ") {
+            PlayerData.GodMode = !PlayerData.GodMode;
+            this.TextEntry.PrintToUIConsole("God Mode: `PlayerData.GodMode`");
+        } else {
+            this.PrintInvalidArgumentError("god [true|false]", 1);
+        }
+        
+    }
+    
+    function CommandHeal() {
+        
+        if(Relocation.Player != null && !Relocation.Player.Health.IsDead) {
+            Relocation.Player.Health.CurrentHealth = Relocation.Player.Health.MaxHealth;
+            this.TextEntry.PrintToUIConsole("Healed player.");
+        }
+        
+    }
+    
+    function CommandHelp() {
+        
+        var width = 25;
+        
+        this.TextEntry.PrintToUIConsole("Help", true);
+        this.TextEntry.PrintToUIConsole("clear - (Alias: cls)", " - Clears the screen", width);
+        this.TextEntry.PrintToUIConsole("color <color>", " - Changes console color", width);
+        this.TextEntry.PrintToUIConsole("debug [true|false]", " - Enables/Disables debug mode", width);
+        this.TextEntry.PrintToUIConsole("echo <string>", " - Prints to console screen", width);
+        this.TextEntry.PrintToUIConsole("give <itemID> [quantity]", " - Gives player item", width);
+        this.TextEntry.PrintToUIConsole("god [true|false]", " - Makes player invincible", width);
+        this.TextEntry.PrintToUIConsole("heal", " - Heals player", width);
+        this.TextEntry.PrintToUIConsole("help - (Alias: ?)", " - Shows this help screen", width);
+        this.TextEntry.PrintToUIConsole("kill", " - Kills player", width);
+        this.TextEntry.PrintToUIConsole("playsound <SoundCue>", " - Plays sound cue", width);
+        this.TextEntry.PrintToUIConsole("spawn <entity>", " - Spawns entity", width);
+        this.TextEntry.PrintToUIConsole("time [set|add] <time>", " - Sets or adds to time", width);
+        this.TextEntry.PrintToUIConsole("togglecheat <cheat>", " - Enables specified cheat", width);
+        this.TextEntry.PrintToUIConsole("tp [relative] <x> <y>", " - Teleports to specified position", width);
+        
+    }
+    
+    function CommandCatch() {
+        
+        var color = this.Owner.Parent.FindChildByName(this.TextEntry.ConsoleTextboxName).SpriteText.Color.XYZ;
+        
+        if(color == Real3(1.0, 0.0, 0.0) && (Relocation.Player == null || (Relocation.Player != null && Relocation.Player.PlayerProperties.PlayerSkin == 2))) {
+            
+            var prntStr = "Uijt jt opu Sfmpdbujpo- uijt jt SfmPVSdbujpo";
+            var newStr = "";
+            
+            for(var i = 0; i < prntStr.Count; ++i)
+                newStr = "`newStr``String.FromChar(prntStr[i] - color.X as Integer)`";
+            
+            // CATCH SOUND STUFF
+            this.Owner.Parent.SoundObject.CanModPitch = false;
+            this.Owner.Parent.SoundObject.PlayCue(SoundCue.CaveAmbiance);
+            this.Owner.Parent.SoundEmitter.UsePitchSemitones = true;
+            this.Owner.Parent.SoundEmitter.PitchSemitones = 21.0;
+            
+            this.TextEntry.PrintToUIConsole("`newStr`");
+            
+        } else {
+            
+            this.TextEntry.PrintToUIConsole("Error: The command \"`String.FromChar(117)`ss`String.FromChar(114)`\" does not exist. Type help for a list of commands.");
+            
+        }
+        
+    }
+    
+    function CommandCheat() {
+        if(this.CheckForCommand("togglecheat", true, "togglecheat <cheat>", "") != 0) {
+            
+            var cheatArg = this.GetArgument(1, this.TextEntry.SubmittedText, false);
+            
+            if(cheatArg.ToLower() == "noclip") {
+                if(Relocation.Space != null && Relocation.Player != null) Relocation.Player.CapsuleCollider.Ghost = !Relocation.Player.CapsuleCollider.Ghost;
+            } else if(cheatArg.ToLower() == "camera" || cheatArg.ToLower() == "cam") {
+                //TODO: CAMERA CHEAT
+            } else if(cheatArg.ToLower() == "crafting") {
+                //TODO: CRAFTING CHEAT
+            } else {
+                this.PrintInvalidArgumentError("togglecheat <cheat>", 1);
+            }
+            
+        }
+    }
+    
+    function CommandClear() {
+        this.TextEntry.ConsoleLog = "";
+        this.TextEntry.PrintToUIConsole("Console cleared.");
+    }
+    
+    function CommandColor() {
+        if(this.CheckForCommand("color", true, "color (<0-255> [0-255] [0-255] | <off>)", "") != 0) {
+            
+            var colorR = this.GetArgument(1, this.TextEntry.SubmittedText, false);
+            var colorG = this.GetArgument(2, this.TextEntry.SubmittedText, false);
+            var colorB = this.GetArgument(3, this.TextEntry.SubmittedText, false);
+            var finalColor = Real3(Real.Parse(colorR) / 255, Real.Parse(colorG) / 255, Real.Parse(colorB) / 255);
+            
+            if(colorR.ToLower() == "off")
+                finalColor = Real3(1.0);
+            
+            this.Owner.Parent.FindChildByName(this.TextEntry.ConsoleTextboxName).SpriteText.Color = Real4(finalColor, 1.0);
+            this.TextEntry.PrintToUIConsole("Changing color to `finalColor`.");
+            
+        }
+    }
+    
+    function CommandEcho() {
+        if(this.CheckForCommand("echo", true, "echo <string>", "") != 0)
+            this.TextEntry.PrintToUIConsole("`this.GetArgument(1, this.TextEntry.SubmittedText, true)`");
+    }
+    
+    function CommandKill() {
+        
+        if(Relocation.Player != null && !Relocation.Player.Health.IsDead) {
+            Relocation.Player.Health.IsInvincible = false;
+            Relocation.Player.Health.CurrentHealth = 0.0;
+            this.TextEntry.PrintToUIConsole("Killed player.");
+        }
+        
+    }
+    
+    function CommandPlaySound() {
+        if(this.CheckForCommand("playsound", true, "playsound <SoundCue>", "") != 0) {
+            
+            var sound = this.GetArgument(1, this.TextEntry.SubmittedText, false);
+            
+            if(Zero.ResourceSystem.GetResourceByTypeAndName("SoundCue", sound) != null) {
+                this.TextEntry.PrintToUIConsole("Playing sound \"`sound`\"");
+                this.TextEntry.Space.SoundSpace.PlayCue(SoundCue.Find("`sound`"));
+            }
+            
+        }
+    }
+    
+    function CommandSpawn() {
+        if(this.CheckForCommand("spawn", true, "spawn <entity>", "") != 0 && Relocation.Space != null) {
+            
+            var entity = this.GetArgument(1, this.TextEntry.SubmittedText, false);
+            var mousePos = Relocation.Space.FindObjectByName("LevelSettings").CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 0.0);
+            
+            if(Zero.ResourceSystem.GetResourceByTypeAndName("Archetype", entity) != null)
+                Relocation.Space.CreateAtPosition(Archetype.Find("`entity`"), mousePos);
+            
+        }
+    }
+    
+    function CommandTeleport() {
+        
+        var usage = "tp [relative] <x> <y>";
+        
+        if(this.CheckForCommand("tp", true, usage, "") != 0 && Relocation.Player != null) {
+            
+            var relative = false;
+            var x = Real.Parse(this.GetArgument(1, this.TextEntry.SubmittedText, false));
+            var y = Real.Parse(this.GetArgument(2, this.TextEntry.SubmittedText, false));
+            
+            if(this.GetArgument(3, this.TextEntry.SubmittedText, false) != "") {
+                if(this.GetArgument(1, this.TextEntry.SubmittedText, false).ToLower() == "relative") {
+                    relative = true;
+                    x = Real.Parse(this.GetArgument(2, this.TextEntry.SubmittedText, false));
+                    y = Real.Parse(this.GetArgument(3, this.TextEntry.SubmittedText, false));
+                } else {
+                    this.PrintInvalidArgumentError("`usage`", 1);
+                    return;
+                }
+            }
+            
+            var playerTransformation = Relocation.Player.Transform;
+            
+            if(!relative)
+                playerTransformation.WorldTranslation = Real3(x, y, playerTransformation.WorldTranslation.Z);
+            else
+                playerTransformation.Translation += Real3(x, y, 0);
+            
+            var pos = playerTransformation.WorldTranslation.XY;
+            
+            this.TextEntry.PrintToUIConsole("Teleported to `pos.X`, `pos.Y`.");
+            
+        }
+        
+    }
+    
+    function CommandTime() {
+        
+        var usage = "time [set | add] <amount>";
+        
+        if(this.CheckForCommand("time", false, usage, "") != 0 && Relocation.Space != null) {
+            
+            var cLen = this.GetArgument(0, this.TextEntry.SubmittedText, false).Count;
+            var mode = this.GetArgument(1, this.TextEntry.SubmittedText, false);
+            var time = this.GetArgument(2, this.TextEntry.SubmittedText, false);
+            
+            if(Relocation.Space != null && Relocation.Space.FindObjectByName("LevelSettings").DayCycle != null) {
+                
+                var dayCycle = Relocation.Space.FindObjectByName("LevelSettings").DayCycle;
+                
+                if(mode.ToLower() == "set")
+                    dayCycle.SetTime(Real.Parse(time));
+                else if(mode.ToLower() == "add")
+                    dayCycle.AddTime(Real.Parse(time));
+                else if(cLen == this.TextEntry.SubmittedText.TrimEnd().ToString().Count)
+                    this.TextEntry.PrintToUIConsole("Time: `dayCycle.TimeToString(false)`");
+                else
+                    this.PrintInvalidArgumentError("`usage`", 1);
+                
+            }
+            
+        }
+        
+    }
+    
+}

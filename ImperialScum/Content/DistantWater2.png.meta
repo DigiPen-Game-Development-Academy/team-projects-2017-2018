@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "DistantWater2",
+		uint64 ResourceId = 5ad2b3ef61af38f0,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 16,
+		uint FrameSizeY = 16,
+		uint FrameCount = 9,
+		float FrameDelay = 0.166666672,
+		float OriginX = 8,
+		float OriginY = 8,
+		float PixelsPerUnit = 16,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

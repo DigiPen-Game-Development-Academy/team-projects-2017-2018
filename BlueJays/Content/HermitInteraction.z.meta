@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "HermitInteraction",
+		uint64 ResourceId = 5a37d35fb670e438,
+	},
+},

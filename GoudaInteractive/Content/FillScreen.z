@@ -1,0 +1,24 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class FillScreen : ZilchComponent {
+    
+    [Property] var Offset : Real2 = Real2(0.0);
+    [Property] var Margin : Real2 = Real2(0.0);
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        var screen = this.Space.FindObjectByName("LevelSettings");
+        var screenRes = screen.CameraViewport.ViewportResolutionWithMargin;
+        var screenSize = Math.Abs(screen.CameraViewport.ScreenToWorldZPlane(screen.CameraViewport.ViewportToScreen(screenRes), 0.0).XY);
+        
+        this.Owner.Area.Size = (screenSize * 2) - this.Margin;
+        this.Owner.Transform.WorldTranslation = Real3(this.Offset, this.Owner.Transform.WorldTranslation.Z);
+        
+    }
+    
+}

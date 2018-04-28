@@ -1,0 +1,62 @@
+//Jacob Burke
+
+//This script makes the owner always be facing the player (looking and flipping)
+
+class FlipToPlayer : ZilchComponent
+{
+    [Property]
+    var LookAt:Boolean = true;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var player = this.Space.FindObjectByName("Player");
+        
+        if(player == null)
+        return;
+        
+        if(this.LookAt == true)
+        this.Owner.Orientation.LookAtPointWithUp(player.Transform.WorldTranslation, Real3(0,0,1));
+        
+        if(this.Owner.Transform.WorldTranslation.X <= player.Transform.WorldTranslation.X)
+        {
+            this.Owner.Sprite.FlipY = false;
+        }
+        else if(this.Owner.Transform.WorldTranslation.X >= player.Transform.WorldTranslation.X)
+        {
+           this.Owner.Sprite.FlipY = true;
+        }
+    }
+}
+//Just flips X
+class FlipXToPlayer : ZilchComponent
+{
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var player = this.Space.FindObjectByName("Player");
+        
+        if(player == null)
+        return;
+        
+        if(this.Owner.Transform.WorldTranslation.X <= player.Transform.WorldTranslation.X)
+        {
+            this.Owner.Sprite.FlipX = false;
+        }
+        else if(this.Owner.Transform.WorldTranslation.X >= player.Transform.WorldTranslation.X)
+        {
+           this.Owner.Sprite.FlipX = true;
+        }
+    }
+}
+
+

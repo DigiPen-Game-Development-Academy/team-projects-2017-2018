@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "Oxygen_Regen_Field",
+		uint64 ResourceId = 5afe5545d82fa549,
+	},
+},

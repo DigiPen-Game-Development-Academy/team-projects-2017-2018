@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "GrowWhenKeyPress",
+		uint64 ResourceId = 5aada5fc7f7c5ee9,
+	},
+},

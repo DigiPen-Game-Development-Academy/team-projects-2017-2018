@@ -1,0 +1,44 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class EntityDrop : ZilchComponent {
+    
+    [Dependency] var Health : Health = null;
+    
+    [Property] var ItemName : String = "ItemAir";
+    [Property] var Amount : Integer = 1;
+    
+    var ItemNames : Array[String] = null;
+    
+    function DropItem() {
+        
+        this.ItemNames = new Array[String]();
+        
+        if(this.ItemName.Contains(",")) {
+            
+            while(this.ItemName.Contains(" "))
+                this.ItemName = this.ItemName.Replace(" ", "");
+            
+            var start = 0;
+            
+            for(var i = 0; i < this.ItemName.Count; ++i) {
+                
+                if(String.FromChar(this.ItemName[i]) == ",") {
+                    this.ItemNames.Push(this.ItemName.SubStringFromRuneIndices(start, i));
+                    start = i;
+                } else if(i == this.ItemName.Count - 1) {
+                    this.ItemNames.Push(this.ItemName.SubStringFromRuneIndices(start + 1, this.ItemName.Count));
+                }
+                
+            }
+            
+        } else {
+            this.ItemNames.Push(this.ItemName);
+        }
+        
+        for(var i = 0; i < this.ItemNames.Count; ++i)
+            Relocation.ItemManager.DropItems(Relocation.ItemManager.GetIDByName(this.ItemNames[i]), this.Amount, this.Owner.Transform.WorldTranslation);
+        
+    }
+    
+}

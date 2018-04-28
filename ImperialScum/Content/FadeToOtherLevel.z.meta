@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "FadeToOtherLevel",
+		uint64 ResourceId = 5a1104b30271d6aa,
+	},
+},

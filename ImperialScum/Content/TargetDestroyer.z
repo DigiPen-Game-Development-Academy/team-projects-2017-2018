@@ -1,0 +1,30 @@
+//Jacob Burke
+
+//This destroys the target after it is hit with the boomerang (the target your
+//mouse puts down when it clicks.
+
+class TargetDestroyer : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.SwordBoomerangMove != null)
+        {
+        this.Owner.Destroy();
+        }
+        
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(SwordBoomerangMove.Moving == false)
+        {
+            this.Owner.Destroy();
+        }
+    }
+}

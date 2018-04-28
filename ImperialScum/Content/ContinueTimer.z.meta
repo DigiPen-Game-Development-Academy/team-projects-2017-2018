@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "ContinueTimer",
+		uint64 ResourceId = 5a4b914d64aedd77,
+	},
+},

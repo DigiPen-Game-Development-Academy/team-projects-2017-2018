@@ -1,0 +1,93 @@
+class Pickup : ZilchComponent
+{
+  [Property] var PurchaseName : String;
+  [Property] var PurchaseCount : Integer;
+  [Property] var CostName : String;
+  [Property] var CostCount : Integer;
+  
+  function Initialize(init : CogInitializer)
+  {
+    Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+  }
+  function OnCollisionStarted(event : CollisionEvent)
+  {
+    if (event.OtherObject.Inventory != null && AdvInventory.Get(this.CostName) >= this.CostCount)
+    {
+      AdvInventory.Remove(this.CostName, this.CostCount);
+      AdvInventory.Add(this.PurchaseName, this.PurchaseCount);
+    }
+  }
+}
+
+class AdvInventory : ZilchComponent
+{
+  [Static] var PlayerInventory : HashMap[String, Integer] = new HashMap[String, Integer]()
+  {
+    { "Food", 10 },
+    { "Gears", 5},
+    { "HealthPotion",1},
+    { "Fruit",5},
+    {"Ring_Speed", 0},
+    {"Ring_Health", 0},
+    {"Ring_Regen", 0},
+    {"Ring_Jump", 0},
+    {"ArmorCopper", 0},
+    {"ArmorVolcano", 0}
+  };
+  
+  [Static] function Get(name : String) : Integer
+  {
+    if (AdvInventory.PlayerInventory.Contains(name))
+    {
+      return AdvInventory.PlayerInventory[name];
+    }
+    else
+    {
+      return 0;
+    }
+  }
+  [Static] function Add(name : String, count : Integer)
+  {
+    if (AdvInventory.PlayerInventory.Contains(name))
+    {
+      AdvInventory.PlayerInventory[name] += count;
+    }
+    else
+    {
+      AdvInventory.PlayerInventory.Add(name, count);
+    }
+  }
+  [Static] function Remove(name : String, count : Integer)
+  {
+    if (AdvInventory.PlayerInventory.Contains(name))
+    {
+      AdvInventory.PlayerInventory[name] -= count;
+    }
+    else
+    {
+      AdvInventory.PlayerInventory.Add(name, -count);
+    }
+  }
+  
+  function Initialize(init : CogInitializer)
+  {
+    Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+  }
+  
+  function OnLogicUpdate(event : UpdateEvent)
+  {
+    Console.Write("{ ");
+    var i = 0;
+    foreach (var pair in AdvInventory.PlayerInventory)
+    {
+      Console.Write("{ ");
+      Console.Write(pair.Key);
+      Console.Write(", ");
+      Console.Write(pair.Value);
+      Console.Write(" }");
+      ++i;
+      if (i < AdvInventory.PlayerInventory.Count) Console.Write(", ");
+    }
+    Console.WriteLine(" }");
+  }
+}

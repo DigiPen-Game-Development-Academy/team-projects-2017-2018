@@ -1,0 +1,9 @@
+DataContent = 
+{
+	RichAnimationBuilder = 
+	{
+		string Name = "Splash",
+		uint64 ResourceId = 5a7e774c3e12c840,
+		string PreviewArchetype = "",
+	},
+},

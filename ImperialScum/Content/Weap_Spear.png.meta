@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "Weap_Spear",
+		uint64 ResourceId = 5a30dc41e716c9a5,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 5,
+		uint FrameSizeY = 36,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 2.5,
+		float OriginY = 18,
+		float PixelsPerUnit = 16,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

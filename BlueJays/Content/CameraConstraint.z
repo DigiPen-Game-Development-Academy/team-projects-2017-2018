@@ -1,0 +1,58 @@
+//Author: Callie (with Jeff's Help)
+//Purpose: Keep Camera from moving past walls
+
+class CameraConstraint : ZilchComponent
+{
+    [Property] var MouseInfluence : Real = 0.1;
+    [Property] var Speed : Real = 5;
+    
+    [Property] var Top : Real = 20;
+    [Property] var Bottom : Real = -20;
+    [Property] var Left : Real = -20;
+    [Property] var Right : Real = 20;
+    [Property] var Offset : Real2;
+    
+    var TargetObject : Cog;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.TargetObject = this.Space.FindObjectByName("Player");
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.TargetObject == null) this.TargetObject = this.Space.FindObjectByName("Player");
+        if (this.TargetObject == null) return;
+        
+        var position = this.Owner.Transform.WorldTranslation.XY;
+        var target = this.TargetObject.Transform.WorldTranslation.XY;
+        var mouse = this.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 0).XY;
+        target = Math.Lerp(target, mouse, this.MouseInfluence);
+        position = Math.Lerp(position, target + this.Offset, this.Speed * event.Dt);
+        
+        //Up
+        if (position.Y > this.Top - this.Owner.Camera.Size)
+        {
+            position.Y = this.Top - this.Owner.Camera.Size;
+        }
+        //Down
+        if (position.Y < -this.Bottom + this.Owner.Camera.Size)
+        {
+            position.Y = -this.Bottom + this.Owner.Camera.Size;
+        }
+        //Right
+        if (position.X > this.Right - this.Owner.Camera.Size)
+        {
+            position.X = this.Right - this.Owner.Camera.Size;
+        }
+        //Left
+        if (position.X < -this.Left + this.Owner.Camera.Size)
+        {
+            position.X = -this.Left + this.Owner.Camera.Size;
+        }
+        
+        this.Owner.Transform.WorldTranslation =
+            Real3(position, this.Owner.Transform.WorldTranslation.Z);
+    }
+}

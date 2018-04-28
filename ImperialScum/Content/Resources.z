@@ -1,0 +1,102 @@
+//Jacob Burke
+
+//This gathers the resources when the player hits it
+
+class Resources : ZilchComponent
+{
+    var Timer:Real = 1;
+    [Property] var SoundToPlay : SoundCue = SoundCue.GearPickup;
+    
+    [Property] var Legendary : Boolean = false;
+    
+    [Static] var PlaySound : Boolean = false;
+    [Static] var PlayLegendarySound : Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionPersisted);
+        
+        //Legendary Effect
+        if (this.Legendary == true)
+        {
+            this.Space.CreateAtPosition(Archetype.LegendaryExplode, this.Owner.Transform.Translation);
+            this.Space.CreateAtPosition(Archetype.SparkleExplode, this.Owner.Transform.Translation);
+        }
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Timer > 0)
+        {
+        this.Timer -= event.Dt;
+        }
+        
+        if(Zero.Keyboard.KeyIsDown(Keys.Alt) && Zero.Keyboard.KeyIsDown(Keys.L))
+        AdvInventory.PlayerInventory["Gears"] += 10;
+    }
+
+    function OnCollisionPersisted(event : CollisionEvent)
+    {
+        if(event.OtherObject.Name == ("DefaultTile") || event.OtherObject.JaggedRock != null)
+        this.Owner.SphereCollider.Ghost = false;
+        
+        
+        if(event.OtherObject.Name == ("Player") && this.Timer <= 0.1)
+        {
+            this.Owner.SphereCollider.Ghost = true;
+        }
+        
+        if(event.OtherObject.PlayerController != null && this.Timer <= 0.1)
+        {
+            if (event.OtherObject.PlayerController.Dead == false)
+            {
+                
+                Resources.PlaySound = true;
+                
+                //Legendary Effect
+                if (this.Legendary == true)
+                {
+                    this.Space.CreateAtPosition(Archetype.LegendaryExplode, this.Owner.Transform.Translation);
+                    this.Space.CreateAtPosition(Archetype.SparkleExplode, this.Owner.Transform.Translation);
+                    this.Space.CreateAtPosition(Archetype.LegendaryText, this.Owner.Transform.Translation);
+                    Resources.PlayLegendarySound = true;
+                }
+                
+                this.Owner.Destroy();
+                
+                if(this.Owner.Name == "Gear")
+                AdvInventory.PlayerInventory["Gears"] += 1;
+        
+                if(this.Owner.Name == "Food")
+                AdvInventory.PlayerInventory["Food"] += 1;
+                
+                if(this.Owner.Name == "HealthPotion")
+                AdvInventory.PlayerInventory["HealthPotion"] += 1;
+                
+                if(this.Owner.Name == "Fruit")
+                AdvInventory.PlayerInventory["Fruit"] += 1;
+                
+                if(this.Owner.Name == "Ring_Speed")
+                AdvInventory.PlayerInventory["Ring_Speed"] += 1;
+                
+                if(this.Owner.Name == "Ring_Regen")
+                AdvInventory.PlayerInventory["Ring_Regen"] += 1;
+                
+                if(this.Owner.Name == "Ring_Health")
+                AdvInventory.PlayerInventory["Ring_Health"] += 1;
+                
+                if(this.Owner.Name == "Ring_Jump")
+                AdvInventory.PlayerInventory["Ring_Jump"] += 1;
+                
+                if(this.Owner.Name == "VolcanoArmor")
+                AdvInventory.PlayerInventory["ArmorVolcano"] +=1;
+
+            }
+            
+        }
+        
+        
+        
+    }
+}

@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "HitSound",
+		uint64 ResourceId = 5aacbcfc1f9d80aa,
+	},
+},

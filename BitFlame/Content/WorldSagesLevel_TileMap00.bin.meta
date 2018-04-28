@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "WorldSagesLevel_TileMap00",
+		uint64 ResourceId = 5a11dc45e6d02b56,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "5a1c09ecbc2dfbde:WorldSagesLevel",
+	},
+},

@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "SlideBox",
+		uint64 ResourceId = 5ae3d2cd3b35b891,
+	},
+},

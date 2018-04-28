@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "Ship_Menu_Button_Repair",
+		uint64 ResourceId = 5a9bb743ec29f863,
+	},
+},

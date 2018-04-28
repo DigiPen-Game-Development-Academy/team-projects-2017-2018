@@ -1,0 +1,505 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Inventory",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0],
+		Vec3 Scale = [2, 2, 2],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Hierarchy = 
+	{
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 2,
+			},
+			Named = 
+			{
+				string Name = "InventoryHeader",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-4.5, 1.5, 0],
+				Vec3 Scale = [0.5, 0.5, 0.5],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			SpriteText = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 0.75],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string FontName = "5a399d8894a1af95:consola",
+				uint FontSize = 120,
+				string Text = "Inventory",
+				TextAlign Align = Left,
+				float PixelsPerUnit = 128,
+				bool Smoothing = true,
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 3,
+			},
+			Named = 
+			{
+				string Name = "InventoryBG",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0, 0, -0.5],
+				Vec3 Scale = [10, 4, 0.5],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [0, 0.850000143, 1, 0.5],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "5275aa4d802dd6dc:Square",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			Hierarchy = 
+			{
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 4,
+					},
+					Named = 
+					{
+						string Name = "InventoryBGBottom",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0, -0.550000012, 0],
+						Vec3 Scale = [1, 0.100000001, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					Sprite = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string SpriteSource = "5a3849374ee23b35:MissingTexture",
+						bool RenderMask = false,
+						bool FlipX = false,
+						bool FlipY = false,
+						bool AnimationActive = true,
+						float AnimationSpeed = 1,
+						uint StartFrame = 0,
+					},
+				},
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a38401d04a68bc1:InventorySlot",
+			LinkId = 
+			{
+				uint Id = 5,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-4, 0.150000006, 0],
+				Vec3 Scale = [0.75, 0.75, 0.75],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "Slot1",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a38401d04a68bc1:InventorySlot",
+			LinkId = 
+			{
+				uint Id = 6,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-3, 0.150000006, 0],
+				Vec3 Scale = [0.75, 0.75, 0.75],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "Slot2",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a38401d04a68bc1:InventorySlot",
+			LinkId = 
+			{
+				uint Id = 7,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-2, 0.150000006, 0],
+				Vec3 Scale = [0.75, 0.75, 0.75],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "Slot3",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a38401d04a68bc1:InventorySlot",
+			LinkId = 
+			{
+				uint Id = 8,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-1, 0.150000006, 0],
+				Vec3 Scale = [0.75, 0.75, 0.75],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "Slot4",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a38401d04a68bc1:InventorySlot",
+			LinkId = 
+			{
+				uint Id = 9,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0, 0.150000006, 0],
+				Vec3 Scale = [0.75, 0.75, 0.75],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "Slot5",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a38401d04a68bc1:InventorySlot",
+			LinkId = 
+			{
+				uint Id = 10,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [1, 0.150000006, 0],
+				Vec3 Scale = [0.75, 0.75, 0.75],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "Slot6",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a38401d04a68bc1:InventorySlot",
+			LinkId = 
+			{
+				uint Id = 11,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [2, 0.150000006, 0],
+				Vec3 Scale = [0.75, 0.75, 0.75],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "Slot7",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a38401d04a68bc1:InventorySlot",
+			LinkId = 
+			{
+				uint Id = 12,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [3, 0.150000006, 0],
+				Vec3 Scale = [0.75, 0.75, 0.75],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "Slot8",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a38401d04a68bc1:InventorySlot",
+			LinkId = 
+			{
+				uint Id = 13,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [4, 0.150000006, 0],
+				Vec3 Scale = [0.75, 0.75, 0.75],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "Slot9",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a38401d04a68bc1:InventorySlot",
+			LinkId = 
+			{
+				uint Id = 14,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-4, -1, 0],
+				Vec3 Scale = [0.75, 0.75, 0.75],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "Slot10",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a38401d04a68bc1:InventorySlot",
+			LinkId = 
+			{
+				uint Id = 15,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-3, -1, 0],
+				Vec3 Scale = [0.75, 0.75, 0.75],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "Slot11",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a38401d04a68bc1:InventorySlot",
+			LinkId = 
+			{
+				uint Id = 16,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-2, -1, 0],
+				Vec3 Scale = [0.75, 0.75, 0.75],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "Slot12",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a38401d04a68bc1:InventorySlot",
+			LinkId = 
+			{
+				uint Id = 17,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-1, -1, 0],
+				Vec3 Scale = [0.75, 0.75, 0.75],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "Slot13",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a38401d04a68bc1:InventorySlot",
+			LinkId = 
+			{
+				uint Id = 18,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0, -1, 0],
+				Vec3 Scale = [0.75, 0.75, 0.75],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "Slot14",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a38401d04a68bc1:InventorySlot",
+			LinkId = 
+			{
+				uint Id = 19,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [1, -1, 0],
+				Vec3 Scale = [0.75, 0.75, 0.75],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "Slot15",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a38401d04a68bc1:InventorySlot",
+			LinkId = 
+			{
+				uint Id = 20,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [2, -1, 0],
+				Vec3 Scale = [0.75, 0.75, 0.75],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "Slot16",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a38401d04a68bc1:InventorySlot",
+			LinkId = 
+			{
+				uint Id = 21,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [3, -1, 0],
+				Vec3 Scale = [0.75, 0.75, 0.75],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "Slot17",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a38401d04a68bc1:InventorySlot",
+			LinkId = 
+			{
+				uint Id = 22,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [4, -1, 0],
+				Vec3 Scale = [0.75, 0.75, 0.75],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "Slot18",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a384ca33d6b0b28:InventorySlotHBOH",
+			LinkId = 
+			{
+				uint Id = 23,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [8, -4.75, 0],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "Slot19",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a38436fcf259e80:InventorySlotHB",
+			LinkId = 
+			{
+				uint Id = 24,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [9.5, -4.75, 0],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "Slot20",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a387339fac82522:InventorySlotMouse",
+			LinkId = 
+			{
+				uint Id = 25,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [5, -0.5, 2],
+				Vec3 Scale = [0.75, 0.75, 0.75],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "Slot21",
+			},
+		},
+	},
+},

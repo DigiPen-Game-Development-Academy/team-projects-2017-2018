@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "SandLevel_Snorgo_TileMap05",
+		uint64 ResourceId = 5a28653d91c32790,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "5a287faae1a8d5ac:SandLevel_Snorgo",
+	},
+},

@@ -1,0 +1,76 @@
+class DeathEvent :ZilchEvent
+{
+    sends Death:DeathEvent;
+    var DyingObject : Cog;
+    constructor (dyingobject:Cog):base ()
+    {
+        this.DyingObject = dyingobject;
+    }
+}
+class TutorialManager : ZilchComponent
+{
+
+
+    function Initialize(init : CogInitializer)
+    {
+        
+        Zero.Connect(this.GameSession, Events.Death, this.OnDeath);
+           
+        
+
+            Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.GameSession.Globals.GameSpace.CurrentLevel == Level.Find("Fool"))
+        {
+            this.Owner.Destroy();
+        }
+    }
+    
+    var PigeonDeathCounter :Real = 0;
+    function OnDeath(event : DeathEvent)
+    {
+        
+        if (event.DyingObject.Health != null && event.DyingObject.Health.HealthType == HealthType.EnemyMinion)
+        {
+            this.PigeonDeathCounter += 1;
+            Console.WriteLine(event.DyingObject.Name);
+            Zero.Connect(this.Space, Events.LogicUpdate, this.TextConnect);
+            
+            
+        }
+    }
+
+
+
+   
+    
+     function TextConnect(event : UpdateEvent)
+    {
+        if (this.PigeonDeathCounter == 1)
+        {
+            this.Owner.SpriteText.Text = "Each Tarot Card uses a certain amount of Fate. The blue banner represents how \n much fate you have left. The more powerful the card, the more fate it uses.";
+        } 
+
+        if (this.PigeonDeathCounter == 2)
+        {
+            this.Owner.SpriteText.Text = "Use the scroll wheel to change Tarot Cards. Try spawning the TOWER.";
+            
+        }
+        
+        if (this.PigeonDeathCounter == 3)
+        {
+            this.Owner.SpriteText.Text = "Use the last Card, the CHARIOT for a powerful impact!";
+        } 
+
+        if (this.PigeonDeathCounter == 4)
+        {
+            this.Owner.SpriteText.Text = "When you're ready, go to the HERMIT in the corner to begin the battle \n against the FOOL";
+        }
+        
+    }
+
+}

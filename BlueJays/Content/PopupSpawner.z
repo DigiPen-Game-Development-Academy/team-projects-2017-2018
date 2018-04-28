@@ -1,0 +1,37 @@
+class PopupSpawner : ZilchComponent
+{
+    [Property] var Offset : Real3;
+    [Property] var ToSpawn : Archetype;
+    var SpawnObject : Cog;
+    
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Owner, Events.CollisionEnded, this.OnCollisionEnded);
+    }
+
+    function OnCollisionEnded(event : CollisionEvent)
+    {
+        if (event.OtherObject.PlayerController != null)
+        {
+            var position = event.OtherObject.Transform.WorldTranslation;
+            position += this.Offset;
+            this.SpawnObject = this.Space.CreateAtPosition(this.ToSpawn, position);
+            this.SpawnObject.AttachToRelative(event.OtherObject);
+        }
+    }
+    
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if (event.OtherObject.PlayerController != null)
+        {
+            if (this.SpawnObject != null)
+            {
+                this.SpawnObject.Destroy();
+            }
+        } 
+    }
+}
+

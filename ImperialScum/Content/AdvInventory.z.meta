@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "AdvInventory",
+		uint64 ResourceId = 5ab024f0d64155f2,
+	},
+},

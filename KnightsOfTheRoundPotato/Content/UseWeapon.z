@@ -1,0 +1,264 @@
+//Author Brandon Wolenetz
+
+class UseWeapon : ZilchComponent {
+    
+    [Dependency]
+    var Sprite : PlayerSprites;
+    
+    var Primary : Item;
+    var Secondary : Item;
+    var Utility : Item;
+    
+    var AmmoCount : Integer = 0;
+    
+    var PrimarySelected : Boolean = true;
+    
+    var Up : Boolean = true;
+    
+    [Property]
+    var AnimLockTime : Real = 0.5;
+    
+    function Initialize(init : CogInitializer) {
+        this.Primary = Fists();
+        this.Primary.Init();
+        this.Secondary = Fists();
+        this.Secondary.Init();
+        GlobalVariables.UseWeapon = this;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(Zero.Keyboard, Events.KeyUp, this.OnKeyUp);
+        Zero.Connect(this.Space, Events.MouseScroll, this.OnMouseScroll);
+        Zero.Connect(this.Space, Events.MouseUp, this.OnMouseUp);
+        Zero.Connect(Zero.Keyboard, Events.KeyDown, this.OnKeyDown);
+    }
+
+    function OnKeyDown(event : KeyboardEvent) {
+        
+        if(event.Key == GlobalVariables.InputManager.Reload && this.Up) {
+            
+            if(this.PrimarySelected) {
+                if(this.Primary.MagSize != -1 && this.Primary.CurrentMag != this.Primary.MagSize && this.Primary.CurrentMag > 0 && !this.Primary.Reloading) {
+                    this.Primary.Reloading = true;
+                    this.Primary.Timer = this.Primary.RelodTime;
+                    Utilities.PlaySFX(SoundCue.NeedAmmo);
+                }
+            } else {
+                if(this.Secondary.MagSize != -1 && this.Secondary.CurrentMag != this.Secondary.MagSize && this.Secondary.CurrentMag > 0 && !this.Secondary.Reloading) {
+                    this.Secondary.Reloading = true;
+                    this.Secondary.Timer = this.Secondary.RelodTime;
+                    Utilities.PlaySFX(SoundCue.NeedAmmo);
+                }
+            }
+            
+        }
+        
+    }
+    
+    function OnMouseScroll(event : ViewportMouseEvent) {
+        
+        this.PrimarySelected = !this.PrimarySelected;
+        
+    }
+
+    function OnKeyUp(event : KeyboardEvent) {
+        if(GlobalVariables.GameSpace.TimeSpace.Paused)
+            return;
+        if(event.Key == GlobalVariables.InputManager.UseWeaponKey || event.Key == GlobalVariables.InputManager.PauseOrInventory) {
+            if(this.PrimarySelected && this.Primary.Timer <= 0 && this.Primary.CurrentMag > 0) {
+                if(!this.Primary.Auto)
+                    this.Primary.Timer = 1 / this.Primary.FireRate;
+                if(this.Primary.MagSize != -1 && !this.Primary.Auto)
+                    this.Primary.CurrentMag -= 1;
+                this.Primary.UseReleased();
+            } else if(!this.PrimarySelected && this.Secondary.Timer <= 0 && this.Secondary.CurrentMag > 0) {
+                if(!this.Secondary.Auto)
+                    this.Secondary.Timer = 1 / this.Secondary.FireRate;
+                if(this.Secondary.MagSize != -1 && !this.Secondary.Auto)
+                    this.Secondary.CurrentMag -= 1;
+                this.Secondary.UseReleased();
+            }
+            this.Up = true;
+        }
+    }
+
+    function OnMouseUp(event : ViewportMouseEvent) {
+        if(GlobalVariables.GameSpace.TimeSpace.Paused)
+            return;
+        if(event.Button == GlobalVariables.InputManager.UseWeaponMouse) {
+            if(this.PrimarySelected && this.Primary.Timer <= 0 && this.Primary.CurrentMag > 0) {
+                if(!this.Primary.Auto)
+                    this.Primary.Timer = 1 / this.Primary.FireRate;
+                if(this.Primary.MagSize != -1 && !this.Primary.Auto)
+                    this.Primary.CurrentMag -= 1;
+                this.Primary.UseReleased();
+            } else if(!this.PrimarySelected && this.Secondary.Timer <= 0 && this.Secondary.CurrentMag > 0) {
+                if(!this.Secondary.Auto)
+                    this.Secondary.Timer = 1 / this.Secondary.FireRate;
+                if(this.Secondary.MagSize != -1 && !this.Secondary.Auto)
+                    this.Secondary.CurrentMag -= 1;
+                this.Secondary.UseReleased();
+            }
+            this.Up = true;
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(GlobalVariables.GameSpace.TimeSpace.Paused)
+            return;
+        
+        var mousePos = this.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 0);
+        
+        var vec = mousePos - this.Owner.Transform.WorldTranslation;
+        
+        var angle = Math.ATan2(vec.Y, vec.X);
+        
+        if(!this.Up) {
+            this.Sprite.LockDir(vec, this.AnimLockTime);
+        }
+        
+        if(this.PrimarySelected) {
+            
+            if(!this.Primary.Auto && this.Up) {
+                this.Primary.Timer -= event.Dt;
+            }else if(this.Primary.Auto) {
+                this.Primary.Timer -= event.Dt;
+            }
+        }
+        if(!this.PrimarySelected) {
+            if(!this.Secondary.Auto && this.Up){
+                this.Secondary.Timer -= event.Dt;
+            }else if(this.Secondary.Auto) {
+                this.Secondary.Timer -= event.Dt;
+            }
+        }
+        if(this.Utility != null) this.Utility.Timer -= event.Dt;
+        
+        this.AmmoCount = this.GetAmmoCount();
+        
+        if(this.Primary.CurrentMag == 0 && !this.Primary.Reloading && this.AmmoCount != 0 && this.Primary.MagSize != -1){
+            this.Primary.Reloading = true;
+            this.Primary.Timer = this.Primary.RelodTime;
+            Utilities.PlaySFX(SoundCue.NeedAmmo);
+        } else if(this.Primary.Reloading && this.Primary.Timer <= 0){
+            this.Primary.Reloading = false;
+            if(this.AmmoCount - (this.Primary.MagSize*this.Primary.AmmoPerShot) < 0){
+                this.Primary.CurrentMag = this.AmmoCount/this.Primary.AmmoPerShot;
+                this.RemoveAmmo(this.AmmoCount);
+            } else{
+                this.RemoveAmmo((this.Primary.MagSize*this.Primary.AmmoPerShot) - this.Primary.CurrentMag);
+                this.Primary.CurrentMag = this.Primary.MagSize;
+            }
+        }
+        
+        if(this.Secondary.CurrentMag == 0 && !this.Secondary.Reloading && this.AmmoCount != 0 && this.Secondary.MagSize != -1){
+            this.Secondary.Reloading = true;
+            this.Secondary.Timer = this.Secondary.RelodTime;
+            Utilities.PlaySFX(SoundCue.NeedAmmo);
+        } else if(this.Secondary.Reloading && this.Secondary.Timer <= 0){
+            this.Secondary.Reloading = false;
+            if(this.AmmoCount - (this.Secondary.MagSize*this.Secondary.AmmoPerShot) < 0){
+                this.Secondary.CurrentMag = this.AmmoCount/this.Secondary.AmmoPerShot;
+                this.RemoveAmmo(this.AmmoCount);
+            } else{
+                this.RemoveAmmo((this.Secondary.MagSize*this.Secondary.AmmoPerShot) - this.Secondary.CurrentMag);
+                this.Secondary.CurrentMag = this.Secondary.MagSize;
+            }
+        }
+        
+        /*This Code Will Probably Never Run*/
+        if(this.Utility != null && this.Utility.CurrentMag == 0 && !this.Utility.Reloading && this.AmmoCount != 0){
+            this.Utility.Reloading = true;
+            this.Utility.Timer = this.Utility.RelodTime;
+            Utilities.PlaySFX(SoundCue.NeedAmmo);
+        } else if(this.Utility != null && this.Utility.Reloading && this.Utility.Timer <= 0){
+            this.Utility.Reloading = false;
+            if(this.AmmoCount - (this.Utility.MagSize*this.Secondary.AmmoPerShot) < 0){
+                this.Utility.CurrentMag = this.AmmoCount/this.Utility.AmmoPerShot;
+                this.RemoveAmmo(this.AmmoCount);
+            } else{
+                this.RemoveAmmo((this.Utility.MagSize*this.Utility.AmmoPerShot) - this.Utility.CurrentMag);
+                this.Utility.CurrentMag = this.Utility.MagSize;
+            }
+        }
+        
+        /*This will tho*/
+        
+        if(this.Owner.PlayerMovment.FreezeTimer > 0) {
+            return;
+        }
+        
+        if(Zero.Keyboard.KeyIsDown(GlobalVariables.InputManager.UseWeaponKey) || Zero.Mouse.IsButtonDown(GlobalVariables.InputManager.UseWeaponMouse)) {
+            if(this.PrimarySelected && this.Primary.Timer <= 0 && (this.Primary.CurrentMag > 0 || this.Primary.MagSize == -1) && this.Up) {
+                if(!this.Primary.Auto)
+                    this.Up = false;
+                if(this.Primary.Auto)
+                    this.Primary.Timer = 1 / this.Primary.FireRate;
+                if(this.Primary.MagSize != -1 && this.Primary.Auto)
+                    this.Primary.CurrentMag -= 1;
+                this.Primary.Use(angle);
+                this.Sprite.LockDir(vec, this.AnimLockTime);
+            } else if(!this.PrimarySelected && this.Secondary.Timer <= 0 && (this.Secondary.CurrentMag > 0  || this.Secondary.MagSize == -1) && this.Up) {
+                if(!this.Secondary.Auto)
+                    this.Up = false;
+                if(this.Secondary.Auto)
+                    this.Secondary.Timer = 1 / this.Secondary.FireRate;
+                if(this.Secondary.MagSize != -1 && this.Secondary.Auto)
+                    this.Secondary.CurrentMag -= 1;
+                this.Sprite.LockDir(vec, this.AnimLockTime);
+                this.Secondary.Use(angle);
+            }
+            
+        }
+        
+        if(Zero.Keyboard.KeyIsDown(GlobalVariables.InputManager.UseUtility)){
+            if(this.Utility != null && this.Utility.Timer <= 0 && (this.Utility.CurrentMag > 0 || this.Utility.MagSize == -1)) {
+                this.Utility.Timer = 1 / this.Utility.FireRate;
+                if(this.Utility.MagSize != -1)
+                    this.Utility.CurrentMag -= 1;
+                this.Utility.Use(angle);
+            }
+        }
+        
+        if(Zero.Keyboard.KeyIsPressed(GlobalVariables.InputManager.ToggleSecondary) && !Zero.Mouse.IsButtonDown(GlobalVariables.InputManager.UseWeaponMouse) && !Zero.Keyboard.KeyIsDown(GlobalVariables.InputManager.UseWeaponKey))
+            this.PrimarySelected = !this.PrimarySelected;
+        
+    }
+    
+    function GetAmmoCount () : Integer {
+        var items = GlobalVariables.Items;
+        
+        var count = 0;
+        
+        foreach(var item in items) {
+            if(item == null)
+                continue;
+            if(item.Type == ItemType.Ammo){
+                count += item.Ammount;
+            }
+        }
+        
+        return count;
+    }
+    
+    function RemoveAmmo (count : Integer) {
+        
+        var items = GlobalVariables.Items;
+        
+        foreach(var item in items) {
+            if(item == null)
+                continue;
+            if(item.Type == ItemType.Ammo){
+                if(item.Ammount <= count){
+                    count -= item.Ammount;
+                    item.Ammount = 0;
+                    delete item;
+                } else {
+                    item.Ammount -= count;
+                    this.AmmoCount = this.GetAmmoCount();
+                    return;
+                }
+            }
+        }
+        this.AmmoCount = this.GetAmmoCount();
+    }
+}

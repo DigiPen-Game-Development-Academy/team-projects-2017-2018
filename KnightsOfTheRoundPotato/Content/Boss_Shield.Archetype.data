@@ -1,0 +1,254 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Boss_Shield",
+	},
+	Archetyped = 
+	{
+		string Name = "5a50a4bb66325ddc:Boss_Shield",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0],
+		Vec3 Scale = [2, 2, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	RigidBody = 
+	{
+		bool Static = false,
+		bool Asleep = false,
+		bool Kinematic = false,
+		bool RotationLocked = true,
+		bool Mode2D = true,
+		bool AllowSleep = true,
+		bool Inherit2DMode = true,
+		Vec3 Velocity = [0, 0, 0],
+		Vec3 AngularVelocity = [0, 0, 0],
+	},
+	SphereCollider = 
+	{
+		bool Ghost = false,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+		string SerializedGroupName = "5a11bfba4f162cf2:Enemies",
+		Vec3 Offset = [0, 0, 0],
+		float Radius = 0.5,
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 0.999899983],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5275aa4d802dd6dc:Square",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	MenuVisibilityController = 
+	{
+	},
+	Health = 
+	{
+		float InitialHealth = 2000,
+		float Cooldown = 10,
+		float RegenRate = 0.5,
+	},
+	BossDrops = 
+	{
+		string Part = "5a501997de7c61af:QuestItem3",
+		string Note = "THIS IS A NOTE",
+		string Drops = "",
+		float DropRange = 1,
+		string NeurtralMusic = "5a518f65cac35b18:Nuetral",
+	},
+	EnemyPathFind = 
+	{
+	},
+	BasicPathFollowAI = 
+	{
+	},
+	EnemyAI = 
+	{
+		float InstantSpotRadius = 2,
+		float MaxDistFromGuard = 20,
+		float WaitTime = 1,
+		float Range = 3,
+		float ViewAngle = 45,
+		float ViewRange = 6,
+		float MoveSpeed = 1,
+		float ChaseSpeedMultiplier = 1.25,
+		float GuardWaitTime = 5,
+		float SearchTimer = 20,
+		float MaxTimeOutOfSight = 1,
+		float SearchRange = 100,
+		float ViewDist = 10,
+	},
+	Visibility = 
+	{
+	},
+	AlwaysSpotted = 
+	{
+	},
+	Boss_Shield = 
+	{
+		float FireRateFull = 0.850000024,
+		float FireRateEmpty = 1.5,
+		float SpeedFull = 4,
+		float SpeedEmpty = 5,
+		float DamageFull = 10,
+		float DamageEmpty = 10,
+		float SplashFull = 2,
+		float SplashEmpty = 2,
+		float ArcIntencity = 1,
+		string DeathMSG = "You were hit in the face with a missile.",
+	},
+	EnemySprite = 
+	{
+		string North = "5ad3979db88a06bd:ShieldBossAlpha002",
+		string NorthEast = "5ad3979db88a06bd:ShieldBossAlpha002",
+		string East = "5ad3979dbb65979e:ShieldBossAlpha003",
+		string SouthEast = "5ad3979cb8a4f2a3:ShieldBossAlpha000",
+		string South = "5ad3979cb8a4f2a3:ShieldBossAlpha000",
+		string SouthWest = "5ad3979cb8a4f2a3:ShieldBossAlpha000",
+		string West = "5ad3979cb89cf4f9:ShieldBossAlpha001",
+		string NorthWest = "5ad3979db88a06bd:ShieldBossAlpha002",
+	},
+	Hierarchy = 
+	{
+		ArchetypeInstance = 
+		{
+			string Name = "5a7c1968c9af3d26:Healthbar",
+			LinkId = 
+			{
+				uint Id = 2,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0, -0.625, 1],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Area = 
+			{
+				Vec2 Size = [1, 0.100000001],
+				Location Origin = Center,
+			},
+			Named = 
+			{
+				string Name = "Healthbar",
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 3,
+			},
+			Named = 
+			{
+				string Name = "Shield",
+			},
+			Archetyped = 
+			{
+				string Name = "5a508b0a00bfa5a3:Shield",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0, 0, 1],
+				Vec3 Scale = [0.5, 0.5, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			MenuVisibilityController = 
+			{
+			},
+			Shield = 
+			{
+				float TurnSpeed = 1,
+				float FlashSpeed = 5,
+				bool Shoot = false,
+			},
+			Hierarchy = 
+			{
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 4,
+					},
+					Named = 
+					{
+						string Name = "Blocker",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [1.375, 0, 0],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					Sprite = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string SpriteSource = "5ad391c7f0ed4e59:BossyShieldAlpha",
+						bool RenderMask = false,
+						bool FlipX = false,
+						bool FlipY = false,
+						bool AnimationActive = true,
+						float AnimationSpeed = 1,
+						uint StartFrame = 0,
+					},
+					BoxCollider = 
+					{
+						bool Ghost = false,
+						bool SendsMessages = true,
+						bool Seamless = true,
+						string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+						string SerializedGroupName = "5a11bfba4f162cf2:Enemies",
+						Vec3 Offset = [0, 0, 0],
+						Vec3 Size = [0.125, 1, 2.5],
+					},
+					RigidBody = 
+					{
+						bool Static = false,
+						bool Asleep = false,
+						bool Kinematic = true,
+						bool RotationLocked = false,
+						bool Mode2D = true,
+						bool AllowSleep = true,
+						bool Inherit2DMode = true,
+						Vec3 Velocity = [85.9374924, 0, 62.4999962],
+						Vec3 AngularVelocity = [0, 0, 0],
+					},
+					MenuVisibilitySprite = 
+					{
+					},
+					Area = 
+					{
+						Vec2 Size = [0.25, 2],
+						Location Origin = Center,
+					},
+				},
+			},
+		},
+	},
+},

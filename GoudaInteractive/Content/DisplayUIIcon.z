@@ -1,0 +1,22 @@
+class DisplayUIIcon : ZilchComponent
+{
+    [Property] var ObjectName : String = "null";
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Owner, Events.CollisionEnded, this.OnCollisionEnded);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if (this.LevelSettings.UICreator.UISpace.FindObjectByName(this.ObjectName) != null)
+            this.LevelSettings.UICreator.UISpace.FindObjectByName(this.ObjectName).Sprite.Visible = true;
+    }
+    
+    function OnCollisionEnded(event : CollisionEvent)
+    {
+        if (this.LevelSettings.UICreator.UISpace.FindObjectByName(this.ObjectName) != null)
+            this.LevelSettings.UICreator.UISpace.FindObjectByName(this.ObjectName).Sprite.Visible = false;
+    }
+}

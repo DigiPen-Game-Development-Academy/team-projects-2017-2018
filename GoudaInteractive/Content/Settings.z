@@ -1,0 +1,22 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class Settings : ZilchComponent {
+    
+    function Initialize(init : CogInitializer) {
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(GameSetting.EnableVignette) {
+            this.Space.FindObjectByName("OverlayVignette").Sprite.Visible = true;
+        } else {
+            this.Space.FindObjectByName("OverlayVignette").Sprite.Visible = false;
+        }
+        
+    }
+    
+}

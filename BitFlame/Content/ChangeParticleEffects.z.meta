@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "ChangeParticleEffects",
+		uint64 ResourceId = 5a0b5f888c3a572c,
+	},
+},

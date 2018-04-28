@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "DisplayUIIcon",
+		uint64 ResourceId = 5a853f314482196f,
+	},
+},

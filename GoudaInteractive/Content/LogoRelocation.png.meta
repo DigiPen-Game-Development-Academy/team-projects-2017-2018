@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "LogoRelocation",
+		uint64 ResourceId = 5aca05286c7d3397,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 180,
+		uint FrameSizeY = 21,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 90,
+		float OriginY = 10.5,
+		float PixelsPerUnit = 16,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

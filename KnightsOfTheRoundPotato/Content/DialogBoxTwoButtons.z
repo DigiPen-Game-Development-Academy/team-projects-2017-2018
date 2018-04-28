@@ -1,0 +1,51 @@
+class DialogBoxTwoButtons : ZilchComponent {
+    var Margin : Real = 0.25;
+    var ButtonSpace : Real = 1;
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.GameSession.FindSpaceByName("UI") != null)
+            this.GameSession.FindSpaceByName("UI").TimeSpace.Paused = true;
+        GlobalVariables.GameSpace.TimeSpace.Paused = true;
+        
+        this.Owner.Area.Size = this.Owner.FindChildByName("TXT").SpriteText.MeasureText() + Real2(this.Margin, this.Margin+this.ButtonSpace);
+        
+        this.Owner.FindChildByName("TXT").Transform.Translation = Real3(0, (this.ButtonSpace+this.Owner.FindChildByName("TXT").SpriteText.MeasureText().Y)/2, 1);
+        
+        var ok = this.Owner.FindChildByName("OK");
+        
+        ok.Area.Size = Real2(this.ButtonSpace * 1.5, this.ButtonSpace)*this.Owner.Transform.WorldScale.XY;
+        ok.Transform.Translation = Real3((this.Owner.Area.Size.X / 2) - ((ok.Area.Size.X / 2) + this.Margin/2), -((this.Owner.Area.Size.Y / 2) - (this.ButtonSpace / 1.5)), 2);
+        ok.Button.Scaling = false;
+        ok.Transform.Scale = Real3(1);
+        var smallest = this.ButtonSpace * this.Owner.Transform.WorldScale.Y;
+        if(ok.Area.Size.X * this.Owner.Transform.WorldScale.X < smallest) {
+            smallest = ok.Area.Size.X * this.Owner.Transform.WorldScale.X;
+        }
+        ok.FindChildByName("TXTOK").Transform.WorldScale = Real3(smallest);
+        
+        var cancel = this.Owner.FindChildByName("CANCEL");
+        
+        cancel.Area.Size = Real2(this.ButtonSpace * 1.5, this.ButtonSpace)*this.Owner.Transform.WorldScale.XY;
+        cancel.Transform.Translation = Real3(ok.Transform.Translation.X - ((cancel.Area.Size.X/3) + (ok.Area.Size.X/3)) - this.Margin, -((this.Owner.Area.Size.Y / 2) - (this.ButtonSpace / 1.5)), 2);
+        cancel.Button.Scaling = false;
+        cancel.Transform.Scale = Real3(1);
+        smallest = this.ButtonSpace * this.Owner.Transform.WorldScale.Y;
+        if(cancel.Area.Size.X/2 < smallest) {
+            smallest = cancel.Area.Size.X;
+        }
+        cancel.FindChildByName("TXTOK").Transform.WorldScale = Real3(smallest);
+        //alter size
+        var scale = 0.75;
+        ok.Transform.WorldScale *= scale;
+        ok.Button.StartSize *= scale;
+        ok.Button.TargetSize *= scale;
+        cancel.Transform.WorldScale *= scale;
+        cancel.Button.StartSize *= scale;
+        cancel.Button.TargetSize *= scale;
+        
+    }
+}

@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "GameTimer",
+		uint64 ResourceId = 5a186264111bf381,
+	},
+},

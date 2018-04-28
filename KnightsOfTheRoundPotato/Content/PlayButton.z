@@ -1,0 +1,74 @@
+class PlayButton : ZilchComponent {
+    [Dependency] var Button     : Button;
+    
+    [Property]   var Level      : Level;
+    [Property]   var StartLevel : Level;
+    
+    [Property]   var DialogBox     : Boolean = false;
+    [Property]   var DialogText : String = "";
+    [Property]   var DialogType : DialogTypes = DialogTypes.OKCANCEL;
+    
+    var Dialog : Cog = null;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+    }
+    
+    function OnDialogEnded(event : DialogEnded) {
+        if(event.Type == DialogReturn.YES || event.Type == DialogReturn.OK) {
+            Utilities.DialogBox = null;
+            this.LoadTheLevel();
+        }
+        
+        Zero.Disconnect(this.Owner, Events.DialogEnded, this.Dialog);
+        
+    }
+    
+    function OnMouseDown(event : ViewportMouseEvent) {
+        
+        if(this.DialogBox) {
+            //open dialog box and wait for confirmation
+            
+            var dialog = Utilities.Dialog("`this.DialogText`", this.DialogType, 10);
+            if(dialog != null) {
+                this.Dialog = dialog;
+                Zero.Connect(this.Dialog, Events.DialogEnded, this.OnDialogEnded);
+            }
+            
+            return;
+        }
+        
+        this.LoadTheLevel();
+        
+    }
+    
+    function LoadTheLevel () {
+        
+        if(Utilities.DialogBox != null)
+            return;
+        
+        var save = Zero.ObjectStore.Restore("Save", this.Space);
+        
+        var uiSpace = this.GameSession.FindSpaceByName("UI");
+        if(uiSpace != null) {
+            uiSpace.Destroy();
+        }
+        if(GlobalVariables.GameSpace == null) {
+            if(save != null) {
+                this.Space.LoadLevel(this.Level);
+            } else {
+                this.Space.LoadLevel(this.StartLevel);
+            }
+            this.Space.TimeSpace.Paused = false;
+        } else {
+            if(save != null) {
+                GlobalVariables.GameSpace.LoadLevel(this.Level);
+            } else {
+                GlobalVariables.GameSpace.LoadLevel(this.StartLevel);
+            }
+            GlobalVariables.GameSpace.TimeSpace.Paused = false;
+        }
+        Zero.Mouse.Trapped = false;
+        
+    }
+}

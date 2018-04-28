@@ -1,0 +1,3 @@
+Regenerating the world will 
+reset all asteroids. You will
+keep all resources and buildings.

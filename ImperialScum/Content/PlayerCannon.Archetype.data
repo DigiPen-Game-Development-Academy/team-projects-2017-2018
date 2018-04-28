@@ -1,0 +1,50 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "PlayerCannon",
+	},
+	Archetyped = 
+	{
+		string Name = "5a7ac1f17e27eecf:PlayerCannon",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [26.0613441, 4.81405449, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5a6186e1f8c0958d:Player_Death",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	Spin = 
+	{
+		float RotationSpeed = 800,
+		string SoundToPlay = "5a73fcfb7f3fbd5e:SawBlade",
+	},
+	PlayerCannon = 
+	{
+	},
+	Hierarchy = 
+	{
+	},
+},

@@ -1,0 +1,54 @@
+class EnemyPing : ZilchComponent {
+    
+    var LastVel : Real3 = Real3(0);
+    
+    [Dependency]
+    var Vis : Visibility;
+    
+    [Dependency]
+    var AI : EnemyAI;
+    
+    var PObj : Cog = null;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.Owner.BasicPathFollowAI != null && !this.Owner.BasicPathFollowAI.Active)
+            return;
+        
+        if(this.Vis.InSight) {
+            if(this.PObj != null)
+                this.PObj.Destroy();
+            return;
+        }
+        
+        if(this.LastVel == Real3(0) && this.Owner.RigidBody.Velocity != Real3(0)) {
+            this.Ping(1);
+        } else if (this.AI.State == State.Spotted) {
+            this.Ping(2, true);
+        }
+        
+        this.LastVel = this.Owner.RigidBody.Velocity;
+    }
+    
+    function Ping (ammount : Real, attach : Boolean) {
+        if(attach && this.PObj != null)
+            return;
+        
+        var ping = GlobalVariables.GameSpace.CreateAtPosition(Archetype.Ping, this.Owner.Transform.WorldTranslation);
+        ping.Transform.Scale = Real3(ammount, ammount, 1);
+        if(attach) {
+            ping.AttachTo(this.Owner);
+            ping.Transform.Translation = Real3(0);
+            this.PObj = ping;
+        }
+    }
+    
+    function Ping (ammount : Real) {
+        this.Ping(ammount, false);
+    }
+    
+}

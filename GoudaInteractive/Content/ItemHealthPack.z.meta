@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "ItemHealthPack",
+		uint64 ResourceId = 5a3ab7f0a6f5a6d4,
+	},
+},

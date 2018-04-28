@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "PurpleArmorSpawner",
+		uint64 ResourceId = 5aa347978b74bcf5,
+	},
+},

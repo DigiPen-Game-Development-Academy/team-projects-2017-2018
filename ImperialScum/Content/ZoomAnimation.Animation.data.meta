@@ -1,0 +1,9 @@
+DataContent = 
+{
+	RichAnimationBuilder = 
+	{
+		string Name = "ZoomAnimation",
+		uint64 ResourceId = 5a59ce900a7a6076,
+		string PreviewArchetype = "",
+	},
+},

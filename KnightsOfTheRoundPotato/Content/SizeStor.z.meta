@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "SizeStor",
+		uint64 ResourceId = 5a9a82f049710a63,
+	},
+},

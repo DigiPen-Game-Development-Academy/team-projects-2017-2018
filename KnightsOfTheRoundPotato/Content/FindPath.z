@@ -1,0 +1,146 @@
+//Author Brandon Wolenetz
+
+class FindPath : ZilchComponent {
+    
+    [Dependency]
+    var Grid : CreateNavGrid;
+    [Dependency]
+    var LGrid : CreateLargeNavGrid;
+    
+    function FindPath (start : Real3, goal : Real3, requester : Cog){
+        
+        var path = this.AStarLarge(start, goal);
+        var toSend = PathFound();
+        if(path != null){
+            if(path.Count <= 1)
+                path = this.AStar(start, goal);
+            else
+                path = this.AStar(start, path[0].WorldPos);
+            toSend.Path = path;
+        } else {
+            toSend.Path = null;
+        }
+        requester.DispatchEvent(Events.PathFound, toSend);
+        
+    }
+    
+    function AStar(start : Real3, goal : Real3) : Array[NavNode]{
+        var lCount = 0;
+        var startN = this.Grid.GetNodeFromPos(start);
+        var targetN = this.Grid.GetNodeFromPos(goal);
+        var count = 0;
+        if(targetN == null || startN == null)
+            return null;
+        while(!targetN.Walkable || count >= 8) {
+            ++count;
+            targetN = this.Grid.GetNeighbors(targetN)[0];
+        }
+        var oSet = new Heap(this.Grid.MaxSize);
+        var cSet = Array[NavNode]();
+        oSet.Add(startN);
+        while (oSet.Count > 0) {
+            ++lCount;
+            if(targetN != null) {
+                var cNode = oSet.RemoveFirst();
+                if(lCount >= 1000)
+                    return FindPath.GetPath(startN, cNode);
+                cSet.Add(cNode);
+                if(cNode == targetN)
+                    return FindPath.GetPath(startN, targetN);
+                foreach(var n in this.Grid.GetNeighbors(cNode)) {
+                    if(!n.Walkable || this.Contains(cSet, n))
+                        continue;
+                    var nMovCostN = cNode.GCost + this.Dist(cNode, n);
+                    if(nMovCostN < n.GCost || !this.Contains(oSet, n)){
+                        n.GCost = nMovCostN;
+                        n.HCost = this.Dist(n, targetN);
+                        n.Parent = cNode;
+                        if(!this.Contains(oSet, n))
+                            oSet.Add(n);
+                        else
+                            oSet.UpdateItem(n);
+                    }
+                }
+            } else
+                break;
+        }
+        //Console.WriteLine("Somone is inside a wall at: `start`");
+        return null;
+    }
+    
+    function AStarLarge(start : Real3, goal : Real3) : Array[NavNode]{
+        var lCount = 0;
+        var startN = this.LGrid.GetNodeFromPos(start);
+        var targetN = this.LGrid.GetNodeFromPos(goal);
+        var count = 0;
+        if(targetN == null || startN == null)
+            return null;
+        while(!targetN.Walkable || count >= 8) {
+            ++count;
+            targetN = this.LGrid.GetNeighbors(targetN)[0];
+        }
+        var oSet = new Heap(this.LGrid.MaxSize);
+        var cSet = Array[NavNode]();
+        oSet.Add(startN);
+        while (oSet.Count > 0) {
+            ++lCount;
+            if(targetN != null) {
+                var cNode = oSet.RemoveFirst();
+                if(lCount >= 1000)
+                    return FindPath.GetPath(startN, cNode);
+                cSet.Add(cNode);
+                if(cNode == targetN)
+                    return FindPath.GetPath(startN, targetN);
+                foreach(var n in this.LGrid.GetNeighbors(cNode)) {
+                    if(!n.Walkable || this.Contains(cSet, n))
+                        continue;
+                    var nMovCostN = cNode.GCost + this.Dist(cNode, n);
+                    if(nMovCostN < n.GCost || !this.Contains(oSet, n)){
+                        n.GCost = nMovCostN;
+                        n.HCost = this.Dist(n, targetN);
+                        n.Parent = cNode;
+                        if(!this.Contains(oSet, n))
+                            oSet.Add(n);
+                        else
+                            oSet.UpdateItem(n);
+                    }
+                }
+            } else
+                break;
+        }
+        //Console.WriteLine("Somone is inside a wall at: `start`");
+        return null;
+    }
+    
+    [Static]
+    function GetPath(sn : NavNode, en : NavNode) : Array[NavNode] {
+        var rPath = Array[NavNode]();
+        var cNode = en;
+        while (cNode != sn) {
+            rPath.Add(cNode);
+            cNode = cNode.Parent;
+        }
+        var path = Array[NavNode]();
+        for(var i = rPath.Count-1; i >= 0; --i)
+            path.Add(rPath[i]);
+        if(GlobalVariables.DebugLinesActive)
+            for(var i = 0; i < path.Count-1; ++i)
+                Utilities.DrawdebugLine(path[i].WorldPos, path[i+1].WorldPos, Real4(1,0,0,1));
+        return path;
+    }
+    
+    function Dist(nA : NavNode, nB : NavNode) : Integer {
+        var dX = Math.Abs(nA.GridX - nB.GridX);
+        var dy = Math.Abs(nA.GridY - nB.GridY);
+        return 10 * (dX + dy) + (14-2*10) * Math.Min(dX, dy);
+    }
+    
+    function Contains(array : Array[NavNode], node : NavNode) : Boolean {
+        return array.FindFirstIndex(node) != -1;
+    }
+    
+    function Contains(array : Heap, node : NavNode) : Boolean {
+        return array.Items[node.HeapIndex] == node;
+    }
+    
+}

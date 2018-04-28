@@ -1,0 +1,143 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Filename: IntroLevel_Logic.z                                                                              
+//Created by: Jakob McFarland                                                                                  
+//Contributors:                                                                                      
+//Last Modified: 4/19/18                                                                             
+//Brief: Controls the intro for the game                                                                     
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class IntroLevel_Logic : ZilchComponent
+{    
+    //leave null on intro level
+    [Property] var Blackout : CogPath = null;
+    
+    [Property] var DigipenLogo : CogPath = null;
+    [Property] var DigipenLogo_FadeinTime : Real = 0.0;
+    [Property] var DigipenLogo_FadeoutTime : Real = 0.0;
+    
+    [Property] var Interval_01_Time : Real = 0.0;
+    
+    [Property] var TeamLogo : CogPath = null;
+    [Property] var TeamLogo_FadeinTime : Real = 0.0;
+    [Property] var TeamLogo_FadeoutTime : Real = 0.0;
+    
+    [Property] var GameLogo1 : CogPath = null;
+    [Property] var GameLogo2 : CogPath = null;
+    [Property] var GameLogo3 : CogPath = null;
+    [Property] var GameLogo_FadeinTime : Real = 0.0;
+    [Property] var Interval_02_Time : Real = 0.0;
+    [Property] var GameLogo_FadeoutTime : Real = 0.0;
+    
+    //on init, do intro animation. utnon intro level LevelSettings
+    function Initialize(init : CogInitializer)
+    {
+       // Console.WriteLine();
+        
+        //catch unregistered references
+        if(this.Blackout != null && this.Blackout.Cog != null)
+        {
+            var seq = Action.Sequence(this.Owner.Actions);
+            
+              Actions.Property(seq, @this.Blackout.Cog.Sprite.Color, 
+                Real4(0.0, 0.0, 0.0, 0.0), 1.5, Ease.Linear);
+        
+        }
+        else if(this.DigipenLogo != null && this.DigipenLogo.Cog != null && this.TeamLogo
+            != null && this.TeamLogo.Cog != null && this.GameLogo1 != null && this.GameLogo1.Cog != null)
+        {
+            this.GameSession.MenuMusic.Music = this.Space.SoundSpace.PlayCue(SoundCue.Background);
+            
+            var digiLogoColor = this.DigipenLogo.Cog.Sprite.Color;
+            //var newDigiLogoColor = digiLogoColor;
+            //newDigiLogoColor.W += 255.0;
+            
+            var teamLogoColor = this.DigipenLogo.Cog.Sprite.Color;
+            //var newTeamLogoColor = digiLogoColor;
+            //newTeamLogoColor.W += 255.0;
+             
+            var gameLogoColor = this.DigipenLogo.Cog.Sprite.Color;
+            //var newGameLogoColor = digiLogoColor;
+            //newGameLogoColor.W += 255.0;
+            
+            var seq = Action.Sequence(this.Owner.Actions);
+            
+            var digiInGrp = Action.Group(seq);
+              
+            var digiOutGrp = Action.Group(seq);
+            
+            var teamInGrp = Action.Group(seq);
+               
+            var teamOutGrp = Action.Group(seq);
+            
+            var gameInGrp = Action.Group(seq);
+               
+            var gameOutGrp = Action.Group(seq);
+        
+            //digipen
+            Actions.Property(digiInGrp, @this.DigipenLogo.Cog.Transform.Scale, this.DigipenLogo.Cog.Transform.Scale * 1.2, 
+                this.DigipenLogo_FadeinTime, Ease.QuadInOut);
+            Actions.Property(digiInGrp, @this.DigipenLogo.Cog.Sprite.Color, this.DigipenLogo.Cog.Sprite.Color + 
+                Real4(0.0, 0.0, 0.0, 1.0), this.DigipenLogo_FadeinTime, Ease.QuadInOut);
+                
+            Actions.Delay(digiInGrp, this.Interval_01_Time);    
+            
+            Actions.Property(digiOutGrp, @this.DigipenLogo.Cog.Sprite.Color, 
+                Real4(0, 0, 0, 0), this.DigipenLogo_FadeoutTime, Ease.QuadInOut);
+                
+            Actions.Delay(digiOutGrp, this.Interval_01_Time);       
+            
+             //team        
+            Actions.Property(teamInGrp, @this.TeamLogo.Cog.Transform.Scale, this.TeamLogo.Cog.Transform.Scale * 1.1, 
+                this.TeamLogo_FadeinTime, Ease.QuadInOut);
+            
+            Actions.Property(teamInGrp, @this.TeamLogo.Cog.Sprite.Color, this.TeamLogo.Cog.Sprite.Color +
+                Real4(0.0, 0.0, 0.0, 1.0), this.TeamLogo_FadeinTime, Ease.Linear);   
+                
+            Actions.Delay(teamInGrp, this.Interval_01_Time);     
+                
+            Actions.Property(teamOutGrp, @this.TeamLogo.Cog.Sprite.Color, 
+                Real4(0, 0, 0, 0), this.TeamLogo_FadeoutTime, Ease.Linear);
+                
+            Actions.Delay(teamOutGrp, this.Interval_01_Time);    
+            
+            //game
+            Actions.Property(gameInGrp, @this.GameLogo1.Cog.Transform.Scale, this.GameLogo1.Cog.Transform.Scale * 1.1, 
+                this.GameLogo_FadeinTime, Ease.QuadInOut);
+            Actions.Property(gameInGrp, @this.GameLogo1.Cog.SpriteText.Color, this.GameLogo1.Cog.SpriteText.Color +
+                Real4(0.0, 0.0, 0.0, 1.0), this.GameLogo_FadeinTime, Ease.Linear);
+            Actions.Property(gameInGrp, @this.GameLogo2.Cog.Transform.Scale, this.GameLogo2.Cog.Transform.Scale * 1.1, 
+                this.GameLogo_FadeinTime, Ease.QuadInOut);
+            Actions.Property(gameInGrp, @this.GameLogo2.Cog.SpriteText.Color, this.GameLogo2.Cog.SpriteText.Color +
+                Real4(0.0, 0.0, 0.0, 0.75), this.GameLogo_FadeinTime, Ease.Linear);
+            Actions.Property(gameInGrp, @this.GameLogo3.Cog.Transform.Scale, this.GameLogo3.Cog.Transform.Scale * 1.1, 
+                this.GameLogo_FadeinTime, Ease.QuadInOut);
+            Actions.Property(gameInGrp, @this.GameLogo3.Cog.SpriteText.Color, this.GameLogo3.Cog.SpriteText.Color +
+                Real4(0.0, 0.0, 0.0, 0.5), this.GameLogo_FadeinTime, Ease.Linear);
+                    
+            Actions.Delay(gameInGrp, this.Interval_02_Time);
+            
+            //game
+            Actions.Property(gameOutGrp, @this.GameLogo1.Cog.SpriteText.Color,
+                Real4(0, 0, 0, 0), this.GameLogo_FadeoutTime, Ease.Linear);
+            Actions.Property(gameOutGrp, @this.GameLogo2.Cog.SpriteText.Color,
+                Real4(0, 0, 0, 0), this.GameLogo_FadeoutTime, Ease.Linear);
+            Actions.Property(gameOutGrp, @this.GameLogo3.Cog.SpriteText.Color,
+                Real4(0, 0, 0, 0), this.GameLogo_FadeoutTime, Ease.Linear);
+                   
+            //switch to menu level
+            Actions.Call(seq, this.LoadMenulevel);
+        
+        }
+        else
+        {
+            Console.WriteLine("Error: Sprites not registered in IntroLevel_Logic references.");
+            Console.WriteLine("You should never get this error alright.");
+        }
+    }
+    
+    function LoadMenulevel()
+    {
+        //Console.WriteLine("Got here");
+        this.Space.LoadLevel(Level.StartMenu_Level);
+    }
+}

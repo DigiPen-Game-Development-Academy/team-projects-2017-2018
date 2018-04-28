@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "UncommonSandDune1_TileMap07",
+		uint64 ResourceId = 5ab533a48ba7ae34,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "5ab50dd989734206:UncommonSandDune1",
+	},
+},

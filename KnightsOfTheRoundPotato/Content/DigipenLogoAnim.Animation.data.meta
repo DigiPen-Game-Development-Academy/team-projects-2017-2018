@@ -1,0 +1,9 @@
+DataContent = 
+{
+	RichAnimationBuilder = 
+	{
+		string Name = "DigipenLogoAnim",
+		uint64 ResourceId = 5a2367e9de9e5cf7,
+		string PreviewArchetype = "",
+	},
+},

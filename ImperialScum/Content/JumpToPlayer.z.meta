@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "JumpToPlayer",
+		uint64 ResourceId = 5a78ae0d4fe8a742,
+	},
+},

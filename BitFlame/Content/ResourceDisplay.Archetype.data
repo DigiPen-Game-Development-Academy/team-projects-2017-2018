@@ -1,0 +1,235 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "ResourceDisplay",
+	},
+	Archetyped = 
+	{
+		string Name = "5a2062830437e850:ResourceDisplay",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0],
+		Vec3 Scale = [4, 4, 2.39427853],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5ab776916a3b5609:Resource_Display",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	Hierarchy = 
+	{
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 2,
+			},
+			Named = 
+			{
+				string Name = "Material Indicator",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0.465848207, 0.981614709, 0.309148788],
+				Vec3 Scale = [0.224999994, 0.224999994, 0.375896096],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			SetXToVariable = 
+			{
+				Enum Type = Aluminium,
+			},
+			SpriteText = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string FontName = "57343753bb4eaaec:NotoSans-Regular",
+				uint FontSize = 101,
+				string Text = "0",
+				TextAlign Align = Right,
+				float PixelsPerUnit = 64,
+				bool Smoothing = true,
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 3,
+			},
+			Named = 
+			{
+				string Name = "Material Indicator",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0.464764357, -0.582702041, 0.297020912],
+				Vec3 Scale = [0.224999994, 0.224999994, 0.375896096],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			SpriteText = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string FontName = "4e7bac697bec55c5:Verdana",
+				uint FontSize = 100,
+				string Text = "0",
+				TextAlign Align = Right,
+				float PixelsPerUnit = 64,
+				bool Smoothing = true,
+			},
+			SetXToVariable = 
+			{
+				Enum Type = UpgradePoints,
+			},
+			Hierarchy = 
+			{
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 4,
+			},
+			Named = 
+			{
+				string Name = "Material Indicator",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0.464764357, 0.588594437, 0.297020912],
+				Vec3 Scale = [0.224999994, 0.224999994, 0.375896096],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			SpriteText = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string FontName = "4e7bac697bec55c5:Verdana",
+				uint FontSize = 100,
+				string Text = "0",
+				TextAlign Align = Right,
+				float PixelsPerUnit = 64,
+				bool Smoothing = true,
+			},
+			SetXToVariable = 
+			{
+				Enum Type = Copper,
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 5,
+			},
+			Named = 
+			{
+				string Name = "Material Indicator",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0.464764357, -0.195250392, 0.297020912],
+				Vec3 Scale = [0.224999994, 0.224999994, 0.375896096],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			SpriteText = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string FontName = "4e7bac697bec55c5:Verdana",
+				uint FontSize = 100,
+				string Text = "0",
+				TextAlign Align = Right,
+				float PixelsPerUnit = 64,
+				bool Smoothing = true,
+			},
+			SetXToVariable = 
+			{
+				Enum Type = Titanium,
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 6,
+			},
+			Named = 
+			{
+				string Name = "Material Indicator",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0.464764357, 0.201094449, 0.297020912],
+				Vec3 Scale = [0.224999994, 0.224999994, 0.375896096],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			SpriteText = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string FontName = "4e7bac697bec55c5:Verdana",
+				uint FontSize = 100,
+				string Text = "0",
+				TextAlign Align = Right,
+				float PixelsPerUnit = 64,
+				bool Smoothing = true,
+			},
+			SetXToVariable = 
+			{
+				Enum Type = Iron,
+			},
+		},
+	},
+},

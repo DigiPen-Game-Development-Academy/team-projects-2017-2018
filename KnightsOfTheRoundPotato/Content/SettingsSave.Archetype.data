@@ -1,0 +1,26 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "SettingsSave",
+	},
+	Archetyped = 
+	{
+		string Name = "5ae3d6f399aacca2:SettingsSave",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0.369941384, 0.0669927672, 1.6170624e-08],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	SettingsSave = 
+	{
+		float SFXvol = 1,
+		float MUSICvol = 1,
+	},
+},

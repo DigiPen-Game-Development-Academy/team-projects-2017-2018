@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "Enemy_GearShark()",
+		uint64 ResourceId = 5aa3e5e08498dd78,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 48,
+		uint FrameSizeY = 32,
+		uint FrameCount = 6,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 24,
+		float OriginY = 16,
+		float PixelsPerUnit = 16,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

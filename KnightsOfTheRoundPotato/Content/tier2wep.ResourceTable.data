@@ -1,0 +1,43 @@
+ResourceTable = 
+{
+	string ResourceType = "String",
+	Array EntryList = 
+	[
+		{
+			string Name = "Name1",
+			string Value = "Sniper",
+			float Weight = 8,
+		},
+		{
+			string Name = "Name2",
+			string Value = "Shotgun",
+			float Weight = 8,
+		},
+		{
+			string Name = "Name3",
+			string Value = "Health_Pack_(T3)",
+			float Weight = 3,
+		},
+		{
+			string Name = "Name4",
+			string Value = "Ammo",
+			float Weight = 50,
+		},
+		{
+			string Name = "Name5",
+			string Value = "Laser_Beam",
+			float Weight = 8,
+		},
+		{
+			string Name = "Name6",
+			string Value = "Saw_Laser",
+			float Weight = 5,
+		},
+		{
+			string Name = "Name9",
+			string Value = "null",
+			float Weight = 70,
+		},
+	],
+	float MaxWeight = 100,
+},

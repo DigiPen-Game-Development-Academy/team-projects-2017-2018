@@ -1,0 +1,159 @@
+//Author Brandon Wolenetz
+
+class Radar : Item {
+    
+    function Init() {
+        this.Name = "Radar";
+        this.ID = "Radar";
+        this.Type = ItemType.Utility;
+        this.Icon = SpriteSource.Radar;
+        this.GroundSprite = SpriteSource.Radar;
+        this.MagSize = -1;
+        this.FireRate = 0.125;
+        this.Stackable = false;
+    }
+    
+    function ReturnLore() : String {
+        var lore = Array[String]();
+        lore.Add("I SEE ALLL");
+        lore.Add("lets you see through walls");
+        lore.Add("PING!");
+        lore.Add("You can run");
+        lore.Add("Enemy detected!");
+        lore.Add("That's impossible, even for a computer!");
+        lore.Add("Target in sight");
+        var rand = Random();
+        return lore[Math.Round(rand.Range(0, lore.Count-1)) as Integer];
+    }
+    
+    function Use (radAngle : Real) {
+        
+        var toSend = UseRadar();
+        toSend.Timer = 3;
+        GlobalVariables.GameSpace.DispatchEvent(Events.UseRadar, toSend);
+        
+    }
+    
+}
+
+class Watch : Item {
+    
+    function Init() {
+        this.Name = "Strange Watch";
+        this.ID = "Watch";
+        this.Type = ItemType.Utility;
+        this.Icon = SpriteSource.Strange_Watch;
+        this.GroundSprite = SpriteSource.Strange_Watch;
+        this.MagSize = -1;
+        this.FireRate = 0.01666666666667;
+        this.Stackable = false;
+    }
+    
+    function ReturnLore() : String {
+        var lore = Array[String]();
+        lore.Add("What is this?");
+        lore.Add("lets you tell time");
+        lore.Add("ye old watch");
+        var rand = Random();
+        return lore[Math.Round(rand.Range(0, lore.Count-1)) as Integer];
+    }
+    
+    function Use (radAngle : Real) {
+        
+        Utilities.TimeTimerSet(0.15, 3, 1/0.15);
+        
+    }
+    
+}
+
+class SoftShoes : Item {
+    
+    function Init() {
+        this.Name = "Padded Shoes";
+        this.ID = "Shoes";
+        this.Type = ItemType.Utility;
+        this.Icon = SpriteSource.Stealth_Boots;
+        this.GroundSprite = SpriteSource.Stealth_Boots;
+        this.MagSize = -1;
+        this.FireRate = -1;
+        this.Stackable = false;
+    }
+    
+    function ReturnLore() : String {
+        var lore = Array[String]();
+        lore.Add("a pair of old shoes!");
+        lore.Add("wait...  are these shoes branded as MIKE'S??!?!?");
+        lore.Add("It's more that just a shoe...  It's a life style!");
+        lore.Add("Quiet...");
+        var rand = Random();
+        return lore[Math.Round(rand.Range(0, lore.Count-1)) as Integer];
+    }
+    
+    function Use (radAngle : Real) {}
+    
+}
+
+class Silencer : Item {
+    
+    function Init() {
+        this.Name = "Silencer";
+        this.ID = "Silencer";
+        this.Type = ItemType.Utility;
+        this.Icon = SpriteSource.Silencer;
+        this.GroundSprite = SpriteSource.Silencer;
+        this.MagSize = -1;
+        this.FireRate = -1;
+        this.Stackable = false;
+    }
+    
+    function ReturnLore() : String {
+        var lore = Array[String]();
+        lore.Add("Silencer for all weapons");
+        lore.Add("Quiet down.");
+        lore.Add("Does it make a sound?");
+        lore.Add("You won't even know if you fired!");
+        lore.Add("No, the sound is not muted.");
+        lore.Add("In here, no one can hear them scream.");
+        lore.Add("SHHHHHHH!");
+        lore.Add("Silence is golden.");
+        lore.Add("Loud guns are overrated.");
+        lore.Add("Hush now.");
+        var rand = Random();
+        return lore[Math.Round(rand.Range(0, lore.Count-1)) as Integer];
+    }
+    
+    function Use (radAngle : Real) {}
+    
+}
+
+class Flashlight : Item {
+    
+    function Init() {
+        this.Name = "Flashlight";
+        this.ID = "Light";
+        this.Type = ItemType.Utility;
+        this.Icon = SpriteSource.Flashlight;
+        this.GroundSprite = SpriteSource.Flashlight;
+        this.MagSize = -1;
+        this.FireRate = -1;
+        this.Stackable = false;
+    }
+    
+    function ReturnLore() : String {
+        var lore = Array[String]();
+        lore.Add("You should keep this, it may come in handy!");
+        lore.Add("Works best in very dark places.");
+        lore.Add("Don't get any bright ideas.");
+        lore.Add("Let there be light!");
+        lore.Add("Batteries included.");
+        lore.Add("Nobody will read this.");
+        lore.Add("For all your room lighting needs");
+        lore.Add("With our new and patented design, this flashlight will never run out of battery!\nAnd it will shine through walls!");
+        lore.Add("It's a flashlight!");
+        var rand = Random();
+        return lore[Math.Round(rand.Range(0, lore.Count-1)) as Integer];
+    }
+    
+    function Use (radAngle : Real) {}
+    
+}

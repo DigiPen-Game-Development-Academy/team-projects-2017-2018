@@ -1,0 +1,91 @@
+class CardDisplay : ZilchComponent
+{
+    [Property] var Index : Integer;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.Index == this.GameSession.Globals.CurrentTurretIndex)
+        {
+            // Selected
+            this.Owner.Sprite.Color = Real4(1, 1, 1, 1);
+            
+            var cardText = this.Space.FindObjectByName("CardSelectName");
+            this.Space.FindObjectByName("CardSelectName");
+            
+            if (this.Owner.Name == "KnightCard")
+            {
+                Console.WriteLine("Knight of Swords");
+                
+                //CardSelectName.Text = "HEY";
+            }
+            
+            if (this.Owner.Name == "TowerCard")
+            {
+                Console.WriteLine("the Tower");
+            }
+            if (this.Owner.Name == "ChariotCard")
+            {
+                Console.WriteLine("the Chariot");
+                
+            }
+
+        }
+        else
+        {
+            // Not selected
+            this.Owner.Sprite.Color = Real4(0.2, 0.2, 0.2, 0.5);
+        }
+    }
+}
+
+enum BarType
+{
+    PlayerHealth,
+    PlayerFate,
+    BossHealth,
+    BossFate,
+}
+
+class BarDisplay : ZilchComponent
+{
+    [Property] var BarType : BarType;
+    [Property] var Length : Real = 10;
+    [Property] var Gradient : ColorGradient;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var ratio = 0.0;
+        
+        if (this.BarType == BarType.PlayerHealth)
+        {
+            ratio = this.GameSession.Globals.PlayerCurrentHealth / this.GameSession.Globals.PlayerMaxHealth;
+        }
+        else if (this.BarType == BarType.PlayerFate)
+        {
+            ratio = this.GameSession.Globals.PlayerCurrentFate / this.GameSession.Globals.PlayerMaxFate;
+        }
+        else if (this.BarType == BarType.BossHealth)
+        {
+            ratio = this.GameSession.Globals.BossCurrentHealth / this.GameSession.Globals.BossMaxHealth;
+        }
+        else if (this.BarType == BarType.BossFate)
+        {
+            ratio = this.GameSession.Globals.BossCurrentFate / this.GameSession.Globals.BossMaxFate;
+        }
+        ratio = Math.Clamp(ratio, 0, 1);
+        
+        var pos = this.Owner.Transform.Translation;
+        pos.Y = -this.Length * ratio;
+        this.Owner.Transform.Translation = pos;
+        
+        if (this.Gradient != null) this.Owner.Sprite.Color = this.Gradient.Sample(ratio);
+    }
+}

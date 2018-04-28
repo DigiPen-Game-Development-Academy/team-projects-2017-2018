@@ -1,0 +1,40 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class SkinButton : ZilchComponent {
+    
+    var ButtonActivated : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        
+        Zero.Connect(this.Owner, Events.MouseUpdate, this.OnMouseUpdate);
+        
+    }
+    
+    function OnMouseUpdate(event : ViewportMouseEvent) {
+        
+        if(Zero.Mouse.IsButtonDown(MouseButtons.Left) && !this.ButtonActivated && Relocation.Space != null && Relocation.Space.FindObjectByName("EntityPlayer") != null) {
+            
+            var playerProp = Relocation.Space.FindObjectByName("EntityPlayer").PlayerProperties;
+            var playerSkinID = playerProp.PlayerSkin;
+            
+            if(this.Owner.Name == "ArrowLeft" && playerSkinID > 0) {
+                --playerSkinID;
+            } else if(this.Owner.Name == "ArrowRight" && playerSkinID < playerProp.SkinCount) {
+                ++playerSkinID;
+            }
+            
+            if(this.Owner.Parent != null)
+                this.Owner.Parent.FindChildByName("SkinNumber").SpriteText.Text = "`playerSkinID + 1`";
+            
+            playerProp.SetSkin(playerSkinID);
+            
+            this.ButtonActivated = true;
+            
+        } else if(!Zero.Mouse.IsButtonDown(MouseButtons.Left)) {
+            this.ButtonActivated = false;
+        }
+        
+    }
+    
+}

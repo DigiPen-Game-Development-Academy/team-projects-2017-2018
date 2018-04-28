@@ -1,0 +1,38 @@
+SoundCue = 
+{
+	SoundPlayMode PlayMode = Single,
+	float Volume = 0.149999991,
+	float VolumeVariation = 0,
+	float VolumeDB = -16.4781742,
+	bool UseVolumeDB = false,
+	float VolumeDBVariation = 0,
+	float Pitch = -0.800000012,
+	float PitchSemitones = -9.59000015,
+	bool UsePitchSemitones = false,
+	float PitchVariation = 0.100000001,
+	float PitchSTVariation = 0,
+	float MinDistance = 1,
+	float MaxDistance = 70,
+	float MinAttenuatedVolume = 0,
+	uint MaxPlaybacks = 10,
+	Array Sounds = 
+	[
+		{
+			string SoundName = "5a34325482d8ae1b:LaserSound",
+			string GeneratedSoundName = "55017c595ef88bf0:DefaultGeneratedSound",
+			WhichSoundType WhichToUse = FromFile,
+			float Weight = 1,
+			float LoopEndTime = 0,
+			float LoopStartTime = 0,
+		},
+	],
+	Array SoundTags = 
+	[
+		{
+			string SoundTagName = "551c2d5a29ce571d:DefaultSoundTag",
+		},
+	],
+	string RolloffCurveName = "",
+	int Version = 1,
+	RolloffCurveType RolloffCurveType = Linear,
+},

@@ -1,0 +1,98 @@
+//Author Brandon Wolenetz
+
+class Button : ZilchComponent {
+    [Property]
+    var ScaleM : Real = 1.2;
+    
+    [Property]
+    var HoverColor : Real4;
+    
+    [Property]
+    var ClickColor : Real4;
+    
+    [Property]
+    var ScaleSpeed : Real = 5;
+    
+    [Property]
+    var Alpha : Boolean = false;
+    
+    [Property]
+    var Scaling : Boolean = true;
+    
+    var Color : Real4;
+    
+    [Dependency]
+    var Reactive : Reactive;
+    
+    var TargetSize : Real3;
+    
+    var StartSize : Real3;
+    
+    var ST : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        if(this.Owner.SpriteText != null) {
+            this.ST = true;
+            this.Color = this.Owner.SpriteText.Color;
+        } else {
+            this.Color = this.Owner.Sprite.Color;
+            this.Owner.Sprite.AnimationActive = false;
+            this.Owner.Sprite.CurrentFrame = 0;
+        }
+        this.StartSize = this.Owner.Transform.Scale;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        this.TargetSize = this.Owner.Transform.Scale;
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+        Zero.Connect(this.Owner, Events.MouseUp, this.OnMouseUp);
+    }
+
+    function OnMouseUp(event : ViewportMouseEvent) {
+        if(this.ST)
+            this.Owner.SpriteText.Color = this.HoverColor;
+        else
+            this.Owner.Sprite.Color = this.HoverColor;
+    }
+
+    function OnMouseDown(event : ViewportMouseEvent) {
+        if(this.ST)
+            this.Owner.SpriteText.Color = this.ClickColor;
+        else
+            this.Owner.Sprite.Color = this.ClickColor;
+        Utilities.PlaySFX(SoundCue.ButtonPress);
+    }
+
+    function OnMouseExit(event : ViewportMouseEvent) {
+        
+        var c = this.Color;
+        if(!this.Alpha)
+            c = Real4(this.Color.X, this.Color.Y, this.Color.Z, 1);
+        
+        this.TargetSize = this.StartSize;
+        if(this.ST)
+            this.Owner.SpriteText.Color = c;
+        else {
+            this.Owner.Sprite.Color = c;
+            this.Owner.Sprite.CurrentFrame = 0;
+        }
+    }
+
+    function OnMouseEnter(event : ViewportMouseEvent) {
+        this.TargetSize = this.Owner.Transform.Scale * this.ScaleM;
+        if(this.ST)
+            this.Owner.SpriteText.Color = this.HoverColor;
+        else {
+            this.Owner.Sprite.Color = this.HoverColor;
+            this.Owner.Sprite.CurrentFrame = 1;
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.Scaling) {
+            this.Owner.Transform.Scale = Math.Lerp(this.Owner.Transform.Scale, this.TargetSize, event.Dt*this.ScaleSpeed);
+        }
+        
+    }
+}

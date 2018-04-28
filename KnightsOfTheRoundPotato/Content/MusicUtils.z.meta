@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "MusicUtils",
+		uint64 ResourceId = 5adae6610e3259d5,
+	},
+},

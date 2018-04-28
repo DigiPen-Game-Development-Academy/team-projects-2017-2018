@@ -1,0 +1,67 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: MATTHEW ZEARING
+
+class EntitySpawner : ZilchComponent {
+    
+    [Dependency] var Generator : WorldGenerator = null;
+    
+    [Property] var SpawnAmount : Integer = 5;
+    
+    var HasSpawned : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        //Zero.Connect(Relocation.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        var chunkPos = this.Owner.Transform.WorldTranslation;
+        var playerPos = Relocation.Player.Transform.WorldTranslation;
+        
+        if(
+            !this.Generator.IsSpawnChunk &&
+            !this.HasSpawned &&
+            Relocation.Player != null &&
+            Math.Sqrt(
+                Math.Pow(chunkPos.X - playerPos.X, 2) + 
+                Math.Pow(chunkPos.Y - playerPos.Y, 2)
+            ) < 16.0
+        ) {
+            this.SpawnEntities();
+            this.HasSpawned = true;
+        }
+        
+    }
+    
+    function SpawnEntity(pos : Real3) {
+        
+        var rand = Random();
+        var spawnChance = rand.Range(0, 100);
+        
+        if(spawnChance >= 0 && spawnChance < 10)
+            Relocation.Space.CreateAtPosition(Archetype.EntityEnemy, pos);
+        else if(spawnChance >= 10 && spawnChance < 25)
+            Relocation.Space.CreateAtPosition(Archetype.EntityFrogg, pos);
+        else if(spawnChance >= 25 && spawnChance < 40)
+            Relocation.Space.CreateAtPosition(Archetype.EntityOnionBoy, pos);
+        else if(spawnChance >= 40 && spawnChance < 55)
+            Relocation.Space.CreateAtPosition(Archetype.EntityPassive, pos);
+        else if(spawnChance >= 55 && spawnChance < 70)
+            Relocation.Space.CreateAtPosition(Archetype.EntitySlug, pos);
+        else if(spawnChance >= 70 && spawnChance <= 100)
+            Relocation.Space.CreateAtPosition(Archetype.EntityArmadilo, pos);
+  
+    }
+    
+    function SpawnEntities() {
+        
+        var width = this.Generator.Width / 2;
+        
+        for(var i = 0; i < this.SpawnAmount; ++i) {
+            var position = Real3(Random().Range(-width, width), Random().Range(-width, width), 0.0);
+            var entity = Relocation.Space.CreateAtPosition(Archetype.EntityEnemy, position + Real3(this.Owner.Transform.WorldTranslation.XY, 0.0));
+        }
+        
+    }
+    
+}

@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "TheHermit",
+		uint64 ResourceId = 5a37b35ac02561b5,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 200,
+		uint FrameSizeY = 200,
+		uint FrameCount = 76,
+		float FrameDelay = 0.0333333351,
+		float OriginX = 100,
+		float OriginY = 100,
+		float PixelsPerUnit = 64,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

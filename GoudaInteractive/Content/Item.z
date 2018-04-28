@@ -1,0 +1,114 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class Item {
+    
+    var ItemName : String = "item.Undefined.name";
+    var ItemRecognizableNameBase : String = "Undefined Item";
+    var ItemRecognizableName : String = "Undefined Item";
+    var ItemType : String = "Item";
+    var ItemLore : String = "";
+    
+    var ItemColor : Real4 = Real4(1.0);
+    var ItemLoreColor : Real4 = Real4(1.0);
+    
+    var ItemID : Integer = 0;
+    
+    var ShowID : Boolean = false;
+    
+    var Sprite : SpriteSource = SpriteSource.MissingTexture;
+    
+    constructor(itemName : String) {
+        
+        this.ItemName = itemName;
+        this.ItemRecognizableNameBase = String.Concatenate(String.Concatenate("item.", itemName.SubStringFromRuneIndices(4, itemName.Count)), ".name");
+        this.ItemRecognizableName = this.ItemRecognizableNameBase;
+        
+        this.Sprite = SpriteSource.Find(this.ItemName);
+        
+    }
+    
+    constructor(itemName : String, useNameAsSpriteSource : Boolean) {
+        
+        this.ItemName = itemName;
+        this.ItemRecognizableNameBase = String.Concatenate(String.Concatenate("item.", itemName.SubStringFromRuneIndices(4, itemName.Count)), ".name");
+        this.ItemRecognizableName = this.ItemRecognizableNameBase;
+        
+        if(useNameAsSpriteSource) {
+            this.Sprite = SpriteSource.Find(this.ItemName);
+        }
+        
+    }
+    
+    constructor(itemName : String, sprite : SpriteSource) {
+        
+        this.ItemName = itemName;
+        this.ItemRecognizableNameBase = String.Concatenate(String.Concatenate("item.", itemName.SubStringFromRuneIndices(4, itemName.Count)), ".name");
+        this.ItemRecognizableName = this.ItemRecognizableNameBase;
+        this.Sprite = sprite;
+        
+    }
+    
+    function SetSpriteSource(sprite : String) {
+        this.Sprite = SpriteSource.Find(sprite);
+    }
+    
+    function SetDisplayName(id : Integer, name : String) : Integer {
+        this.ItemRecognizableNameBase = name;
+        this.ShowLabelID(this.ItemID, this.ShowID);
+        ++id;
+        return id;
+    }
+    
+    function SetDisplayName(id : Integer, name : String, lore : String) : Integer {
+        this.ItemRecognizableNameBase = name;
+        this.ItemLore = lore;
+        this.ShowLabelID(this.ItemID, this.ShowID);
+        ++id;
+        return id;
+    }
+    
+    function SetItemType(id : Integer, type : String) : Integer {
+        return this.SetItemType(id, type, this.ItemColor, this.ItemLoreColor);
+    }
+    
+    function SetItemType(id : Integer, type : String, color : Real4) : Integer {
+        return this.SetItemType(id, type, color, this.ItemLoreColor);
+    }
+    
+    function SetItemType(id : Integer, type : String, color : Real4, loreColor : Real4) : Integer {
+        this.ItemType = type;
+        this.ItemColor = color;
+        this.ItemLoreColor = loreColor;
+        ++id;
+        return id;
+    }
+    
+    function SetID(id : Integer) : Integer {
+        this.ItemID = id;
+        Console.WriteLine("[Item Manager] Item with name \"`this.ItemName`\" has an ID of `this.ItemID`");
+        ++id;
+        return id;
+    }
+    
+    function ShowLabelID(id : Integer, showID : Boolean) : Integer {
+        
+        this.ShowID = showID;
+        
+        if(showID && this.ItemRecognizableNameBase != "") {
+            this.ItemRecognizableName = String.Concatenate(this.ItemRecognizableNameBase, " [ID #`this.ItemID`]");
+        } else {
+            this.ItemRecognizableName = this.ItemRecognizableNameBase;
+        }
+        
+        ++id;
+        
+        return id;
+        
+    }
+    
+    [Virtual] function Update(dt : Real) {
+        
+    }
+    
+}

@@ -1,0 +1,32 @@
+//Jacob Burke
+
+//Makes the owner look at the player
+
+class LookAt : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+
+
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+        var player = this.Space.FindObjectByName("player");
+        
+        if(player == null)
+        return;
+        
+        
+        this.Owner.Orientation.LookAtPointWithUp(player.Transform.WorldTranslation, Real3(0,0,1));
+        
+        
+    }
+}

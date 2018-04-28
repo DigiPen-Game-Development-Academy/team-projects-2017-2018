@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "FlashSprite",
+		uint64 ResourceId = 5a703dc96ba4e4f4,
+	},
+},

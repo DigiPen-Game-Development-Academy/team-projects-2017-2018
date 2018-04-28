@@ -1,0 +1,166 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Enemy_Rusher",
+	},
+	Archetyped = 
+	{
+		string Name = "5a2e681cfe57b4fa:Enemy_RusherW3",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5275aa4d802dd6dc:Square",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	RigidBody = 
+	{
+		bool Static = false,
+		bool Asleep = false,
+		bool Kinematic = false,
+		bool RotationLocked = true,
+		bool Mode2D = true,
+		bool AllowSleep = true,
+		bool Inherit2DMode = true,
+		Vec3 Velocity = [0, 0, 0],
+		Vec3 AngularVelocity = [0, 0, 0],
+	},
+	IgnoreSpaceEffects = 
+	{
+		bool Drag = true,
+		bool Flow = true,
+		bool Force = true,
+		bool Gravity = true,
+		bool Thrust = true,
+		bool Vortex = true,
+		bool Wind = true,
+		bool Invalid = false,
+		bool Torque = true,
+		bool PointGravity = true,
+		bool PointForce = true,
+		bool Buoyancy = true,
+		bool Custom = true,
+	},
+	EnemyPathFind = 
+	{
+	},
+	BasicPathFollowAI = 
+	{
+	},
+	Visibility = 
+	{
+	},
+	SphereCollider = 
+	{
+		bool Ghost = false,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "5a08c96d04f0597c:Enemy",
+		string SerializedGroupName = "5a11bfba4f162cf2:Enemies",
+		Vec3 Offset = [0, 0, 0],
+		float Radius = 0.5,
+	},
+	EnemyAI = 
+	{
+		float InstantSpotRadius = 3,
+		float MaxDistFromGuard = 20,
+		float WaitTime = 1,
+		float SpotTime = 0.200000003,
+		float Range = 3,
+		float ViewAngle = 45,
+		float ViewRange = 10,
+		float MoveSpeed = 2,
+		float ChaseSpeedMultiplier = 3.5,
+		float GuardWaitTime = 5,
+		float SearchTimer = 20,
+		float MaxTimeOutOfSight = 1,
+		float SearchRange = 10,
+		float ViewDist = 10,
+	},
+	EnemySprite = 
+	{
+		string North = "5ad380509249d3c4:DreadHound000",
+		string NorthEast = "5ad380519224c282:DreadHound001",
+		string East = "5a3973d4353f21ba:DreadHoundRunE",
+		string SouthEast = "5ad3805292006231:DreadHound003",
+		string South = "5a39738e3f72b551:DreadHoundRunS",
+		string SouthWest = "5ad3805392e20005:DreadHound005",
+		string West = "5a3973e532c990b2:DreadHoundRunW",
+		string NorthWest = "5ad3805392c39257:DreadHound007",
+	},
+	EnemyMelee = 
+	{
+		float AttacksPerSecond = 3,
+		float DamagerPerAttack = 50,
+		string DeathMSG = "You Where Bitten by an Enemy",
+	},
+	Health = 
+	{
+		float InitialHealth = 115,
+		float Cooldown = 3,
+		float RegenRate = 0.333333343,
+		float FlashLength = 0.100000001,
+	},
+	EnemyDeath = 
+	{
+		int NumberOfDrops = 3,
+		int NumberOfDropsVariation = 1,
+		float DropRange = 0.5,
+		string LootTable = "5a816d6a44fae722:levelthree",
+	},
+	EnemyPing = 
+	{
+	},
+	MenuVisibilityController = 
+	{
+	},
+	Hierarchy = 
+	{
+		ArchetypeInstance = 
+		{
+			string Name = "5a7c1968c9af3d26:Healthbar",
+			LinkId = 
+			{
+				uint Id = 2,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0, -0.625, 1],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Area = 
+			{
+				Vec2 Size = [1, 0.100000001],
+				Location Origin = Center,
+			},
+			Named = 
+			{
+				string Name = "Healthbar",
+			},
+		},
+	},
+},

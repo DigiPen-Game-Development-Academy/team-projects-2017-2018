@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "UpgradeStation",
+		uint64 ResourceId = 5a6d9e7bad07939d,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 64,
+		uint FrameSizeY = 32,
+		uint FrameCount = 16,
+		float FrameDelay = 0.0500000007,
+		float OriginX = 32,
+		float OriginY = 16,
+		float PixelsPerUnit = 16,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

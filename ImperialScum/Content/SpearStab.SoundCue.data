@@ -1,0 +1,38 @@
+SoundCue = 
+{
+	SoundPlayMode PlayMode = Single,
+	float Volume = 0.5,
+	float VolumeVariation = 0,
+	float VolumeDB = -6.02060032,
+	bool UseVolumeDB = false,
+	float VolumeDBVariation = 0,
+	float Pitch = 1,
+	float PitchSemitones = 11.9899998,
+	bool UsePitchSemitones = false,
+	float PitchVariation = 0,
+	float PitchSTVariation = 0,
+	float MinDistance = 1,
+	float MaxDistance = 70,
+	float MinAttenuatedVolume = 0,
+	uint MaxPlaybacks = 10,
+	Array Sounds = 
+	[
+		{
+			string SoundName = "5a74d360433305c1:Shooting sound",
+			string GeneratedSoundName = "",
+			WhichSoundType WhichToUse = FromFile,
+			float Weight = 1,
+			float LoopEndTime = 0,
+			float LoopStartTime = 0,
+		},
+	],
+	Array SoundTags = 
+	[
+		{
+			string SoundTagName = "551c2d5a29ce571d:DefaultSoundTag",
+		},
+	],
+	string RolloffCurveName = "",
+	int Version = 1,
+	RolloffCurveType RolloffCurveType = Error,
+},

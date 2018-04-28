@@ -1,0 +1,27 @@
+class VolumeLevev : ZilchComponent
+{
+    //Author - Jessica
+   [Static] var SaveVolume : Integer;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(BossKeyDropping.BossDead == true) return;
+        if(BackgroundMusic.StayMuted == true) return;
+        if(VolumeControls.Number1 == 0) this.Owner.SoundEmitter.Volume = 0; 
+        if(VolumeControls.Number1 == 1) this.Owner.SoundEmitter.Volume = 0.2;
+        if(VolumeControls.Number1 == 2) this.Owner.SoundEmitter.Volume = 0.4;
+        if(VolumeControls.Number1 == 3) this.Owner.SoundEmitter.Volume = 0.6;
+        if(VolumeControls.Number1 == 4) this.Owner.SoundEmitter.Volume = 0.8;
+        if(VolumeControls.Number1 == 5) this.Owner.SoundEmitter.Volume = 1;
+        if(VolumeControls.Number1 == 6) this.Owner.SoundEmitter.Volume = 1.1;
+        if(VolumeControls.Number1 == 7) this.Owner.SoundEmitter.Volume = 1.2;
+        if(VolumeControls.Number1 == 8) this.Owner.SoundEmitter.Volume = 1.3;
+        if(VolumeControls.Number1 == 9) this.Owner.SoundEmitter.Volume = 1.4;
+        if(VolumeControls.Number1 == 10) this.Owner.SoundEmitter.Volume = 1.5;
+        
+    }
+}

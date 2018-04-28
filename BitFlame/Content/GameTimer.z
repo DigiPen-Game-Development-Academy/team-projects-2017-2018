@@ -1,0 +1,26 @@
+/*************************************
+Filename: GameTimer.z
+Author: Jakob McFarland
+Contributors: 
+Last modified: 2/6/18
+Brief: This class counts the time since the game was started, to use it, set a local var to the current Timer value and then compare it with the newest Timer value, the difference between them is how much time has passed.
+******************************************/
+
+//This class counts the time since the game was started, to use it, set a local var to the current Timer value and then compare it with the newest Timer value, the difference between them is how much time has passed.
+class GameTimer : ZilchComponent
+{
+    //Do not Change This Variable Ever!
+    var Timer : Real;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.Timer = 0;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Timer += event.Dt;
+        this.Timer = Math.Round(this.Timer, -2);
+    }
+}

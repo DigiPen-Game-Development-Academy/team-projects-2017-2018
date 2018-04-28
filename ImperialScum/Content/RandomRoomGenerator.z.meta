@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "RandomRoomGenerator",
+		uint64 ResourceId = 5aaabe47654fd6d7,
+	},
+},

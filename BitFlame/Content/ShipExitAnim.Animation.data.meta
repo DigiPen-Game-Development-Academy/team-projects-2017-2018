@@ -1,0 +1,9 @@
+DataContent = 
+{
+	RichAnimationBuilder = 
+	{
+		string Name = "ShipExitAnim",
+		uint64 ResourceId = 5a400c65d568becf,
+		string PreviewArchetype = "",
+	},
+},

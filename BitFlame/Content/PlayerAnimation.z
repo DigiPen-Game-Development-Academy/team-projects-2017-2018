@@ -1,0 +1,86 @@
+/**
+Filename:  PlayerAnimation .z
+Author: Jakob McFarland
+Contributors: Sage Dupuy
+Last modified: 2/24/2018
+Brief: This component controls the animations for the player, built off of flip x when mouse is greater than
+******************************************/
+
+class PlayerAnimation : ZilchComponent
+{
+    [Dependency] var Sprite : Sprite;
+    
+    [Dependency] var RigidBody : RigidBody;
+    
+    var MousePos : Real3;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.LevelSettings, Events.MouseUpdate, this.OnMouseUpdate);
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnMouseUpdate(event : ViewportMouseEvent)
+    {
+        this.MousePos = event.ToWorldZPlane(0.0);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.MousePos.X >= this.Owner.Transform.Translation.X)
+        {
+            this.Sprite.FlipX = false;
+            
+            if(Math.ApproximatelyEqual(this.RigidBody.Velocity.X, 0, 1) && Math.ApproximatelyEqual(this.RigidBody.Velocity.Y, 0, 1))
+            {
+                this.Sprite.CurrentFrame = 0;
+            }
+            else if(this.RigidBody.Velocity.X > 1)
+            {
+                this.Sprite.CurrentFrame = 2;
+            }
+            else if(this.RigidBody.Velocity.X < -1)
+            {
+                this.Sprite.CurrentFrame = 1;
+            }
+            else if(this.RigidBody.Velocity.Y > 1)
+            {
+                this.Sprite.CurrentFrame = 4;
+            }
+            else if(this.RigidBody.Velocity.Y < -1)
+            {
+                this.Sprite.CurrentFrame = 3;
+            }
+            
+            this.Owner.FindChildByName("Arm").Transform.Translation = Real3(0, this.Owner.FindChildByName("Arm").Transform.Translation.Y, 0.1);
+        }
+        else
+        {
+            this.Sprite.FlipX = true;
+            
+            if(Math.ApproximatelyEqual(this.RigidBody.Velocity.X, 0, 1) && Math.ApproximatelyEqual(this.RigidBody.Velocity.Y, 0, 1))
+            {
+                this.Sprite.CurrentFrame = 0;
+            }
+            else if(this.RigidBody.Velocity.X > 1)
+            {
+                this.Sprite.CurrentFrame = 1;
+            }
+            else if(this.RigidBody.Velocity.X < -1)
+            {
+                this.Sprite.CurrentFrame = 2;
+            }
+            else if(this.RigidBody.Velocity.Y > 1)
+            {
+                this.Sprite.CurrentFrame = 4;
+            }
+            else if(this.RigidBody.Velocity.Y < -1)
+            {
+                this.Sprite.CurrentFrame = 3;
+            }
+            
+            this.Owner.FindChildByName("Arm").Transform.Translation = Real3(0, this.Owner.FindChildByName("Arm").Transform.Translation.Y, 0.1);
+        }
+    }
+}

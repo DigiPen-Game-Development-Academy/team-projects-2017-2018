@@ -1,0 +1,35 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class EntityFrozen : ZilchComponent {
+    
+    [Property] var UnfreezeRange : Real = 16.0;
+    
+    var EntityArchetype : Archetype = Archetype.EntityEnemy;
+    var Health : Real = 0.0;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(Relocation.Player != null) {
+            
+            var entityPos = this.Owner.Transform.WorldTranslation;
+            var playerPos = Relocation.Player.Transform.WorldTranslation;
+            
+            if(Math.Sqrt(
+                Math.Pow(entityPos.X - playerPos.X, 2) + 
+                Math.Pow(entityPos.Y - playerPos.Y, 2)
+            ) <= this.UnfreezeRange) {
+                var entity = Relocation.Space.CreateAtPosition(this.EntityArchetype, entityPos);
+                entity.Health.CurrentHealth = this.Health;
+                this.Owner.Destroy();
+            }
+            
+        }
+        
+    }
+    
+}

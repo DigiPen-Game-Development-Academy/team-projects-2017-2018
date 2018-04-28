@@ -1,0 +1,92 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "TutorialBannerFlip",
+	},
+	Archetyped = 
+	{
+		string Name = "5a2c8d1772df695d:Tutorial_1",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [-20.3048935, 3.24526739, -0.0560379028],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5a2cbe9597f42d95:TutorialBannerFlip",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	Area = 
+	{
+		Vec2 Size = [13.6037283, 14.9308577],
+		Location Origin = Center,
+	},
+	Hierarchy = 
+	{
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 2,
+			},
+			Named = 
+			{
+				string Name = "SpriteText",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0.599317551, -0.338452101, 2.0560379],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			SpriteText = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 0.963249922, 0.475000024, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string FontName = "4e7bac697bec55c5:Verdana",
+				uint FontSize = 30,
+				string Text = "My King! The Castle is full of pigeons! Quick! Summon a KNIGHT OF SWORDS to rid of some!
+
+'Left Click' to spawn a Tarot Card",
+				TextAlign Align = Center,
+				float PixelsPerUnit = 64,
+				bool Smoothing = true,
+			},
+			SpriteTextBlock = 
+			{
+				string TextBlock = "5a2cb73f9e47973d:Tutorial_1",
+			},
+			Area = 
+			{
+				Vec2 Size = [4.53450727, 6.45759726],
+				Location Origin = Center,
+			},
+		},
+	},
+},

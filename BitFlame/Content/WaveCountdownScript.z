@@ -1,0 +1,40 @@
+class WaveCountdownScript : ZilchComponent
+{
+    [Property] var TimeBetweenFlash : Real;
+    var Timer : Real;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.Timer = this.TimeBetweenFlash;
+        if(this.GameSession.GameVars.WaveGamemode == true)
+        {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        }
+        else
+        {
+            this.Owner.SpriteText.Text = ("");
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var timer = Math.Round(this.GameSession.GameVars.WaveTimer, 0);
+        
+        this.Owner.SpriteText.Text = ("Enemy Wave Incoming: `timer` 's");
+        
+        if(this.Timer <= 0)
+        {
+            if(this.GameSession.GameVars.WaveTimer < 3)
+            {
+                this.Owner.SpriteTextFlashColor.Flash = true;
+                
+                this.Timer += this.TimeBetweenFlash;
+            }
+        }
+        else
+        {
+            this.Timer -= 0.01;
+        }
+        
+    }
+}

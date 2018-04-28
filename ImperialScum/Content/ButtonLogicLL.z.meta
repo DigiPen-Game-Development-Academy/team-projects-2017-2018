@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "ButtonLogicLL",
+		uint64 ResourceId = 5a13210ae5507933,
+	},
+},

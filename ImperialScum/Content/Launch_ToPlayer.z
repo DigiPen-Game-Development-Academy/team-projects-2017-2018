@@ -1,0 +1,39 @@
+//Sam
+//Makes this projectile go towards the player after a time
+
+class Launch_ToPlayer : ZilchComponent
+{
+    [Property]
+    var PreLaunch : Integer;
+    var Launch : Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.PreLaunch > 0)
+        {
+            this.PreLaunch -= 1;
+        }
+        
+        else
+        {
+            if (this.Launch == false)
+            {
+                //LAUNCH!
+                this.Launch = true;
+                var player = this.Space.FindObjectByName("Player");
+                if (player == null) return;
+                
+                var target = player.Transform.Translation;
+                var pos = this.Owner.Transform.WorldTranslation;
+                
+                this.Owner.BulletLogic.Target = player;
+                this.Owner.RigidBody.Velocity = target - pos;
+            }
+        }
+    }
+}

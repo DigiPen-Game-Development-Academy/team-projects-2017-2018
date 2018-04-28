@@ -1,0 +1,97 @@
+//Jacob Burke
+
+//This makes the camera follow the player and deals with screen shake
+class ShakeEvent : ZilchEvent
+{
+    sends Shake : ShakeEvent;
+    
+    var MinShake : Real;
+    var MaxShake : Real;
+    var Frequency : Real;
+    var Ease : Ease;
+    var Shakes : Integer;
+    
+    constructor(minShake:Real, maxShake:Real, frequency:Real, ease:Ease, shakes:Integer) : base()
+    {
+        this.MinShake = minShake;
+        this.MaxShake = maxShake;
+        this.Frequency = frequency;
+        this.Ease = ease;
+        this.Shakes = shakes;
+    }
+}
+
+class FollowCamera : ZilchComponent
+{
+    var Speed:Real = 200;
+
+    var  RandNumber : Random = new Random();
+    
+    var OriginalPosition : Real3;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.OriginalPosition = this.Owner.Transform.Translation;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.GameSession, Events.Shake, this.OnShake);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var player = this.Space.FindObjectByName("Player");
+        
+        var target = player.Transform.Translation;
+        
+        
+        var swordBoomerang = this.Space.FindObjectByName("SwordBoomerang");
+        
+        var spear = this.Space.FindObjectByName("SpearVision");
+        
+        var focusSum = Real3(0,0,0);
+        var focusCount = 0;
+        
+        if(player != null)
+        {
+            focusCount += 3;
+            focusSum += player.Transform.WorldTranslation * 3;
+        }
+        
+        if(swordBoomerang != null)
+        {
+            ++focusCount;
+            focusSum += swordBoomerang.Transform.WorldTranslation;
+        }
+        
+        if(spear != null)
+        {
+            focusCount += 1;
+            focusSum += spear.Transform.WorldTranslation;
+        }
+        
+        var average = focusSum/focusCount;
+        
+        if(this.Owner.Transform.Translation == target)
+        {
+            return;
+        }
+        else
+        {
+        this.Owner.RigidBody.Velocity = Math.Normalize(average -
+         this.Owner.Transform.Translation)
+       * this.Speed; 
+        }
+    }
+    
+    function OnShake(event : ShakeEvent)
+    {
+        var sequence = Action.Sequence(this.Owner.Actions);
+        for(var i = 0; i < event.Shakes; ++i)
+        {
+            Action.Property(sequence, @this.Owner.Transform.WorldTranslation,
+                this.Owner.Transform.WorldTranslation +
+                    Real3(this.RandNumber.Real2(event.MinShake, event.MaxShake), 0),
+                        event.Frequency, event.Ease);
+        }
+    }
+
+}

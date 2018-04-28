@@ -1,0 +1,34 @@
+class LightMask : ZilchComponent {
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Space, Events.MouseMove, this.OnMouseMove);
+        this.PointAtMouse();
+    }
+
+    function OnMouseMove(event : ViewportMouseEvent) {
+        
+        this.PointAtMouse();
+        
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if (GlobalVariables.UseWeapon.Utility == null || GlobalVariables.UseWeapon.Utility.ID != "Light") {
+            this.Owner.Sprite.SpriteSource = SpriteSource.LightMask1;
+            this.Owner.Transform.Scale = Real3(0.5, 0.5, 1);
+        } else {
+            this.Owner.Sprite.SpriteSource = SpriteSource.LightMask;
+            this.Owner.Transform.Scale = Real3(2, 2, 1);
+        }
+        
+    }
+    
+    function PointAtMouse () {
+        
+        var dir = this.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 0) - this.Owner.Transform.WorldTranslation;
+        var angle = Math.ATan2(dir.Y, dir.X);
+        this.Owner.Transform.SetEulerAnglesXYZ(0, 0, angle+Math.ToRadians(90));
+        
+    }
+    
+}

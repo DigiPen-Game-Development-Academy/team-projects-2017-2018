@@ -1,0 +1,8 @@
+TextContent = 
+{
+	TextBuilder = 
+	{
+		string Name = "Potato_Warning",
+		uint64 ResourceId = 5ac1e6f36055f6ea,
+	},
+},

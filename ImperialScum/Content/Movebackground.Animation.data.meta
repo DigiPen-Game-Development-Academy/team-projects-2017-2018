@@ -1,0 +1,9 @@
+DataContent = 
+{
+	RichAnimationBuilder = 
+	{
+		string Name = "Movebackground",
+		uint64 ResourceId = 5a6fe28b967a3e65,
+		string PreviewArchetype = "",
+	},
+},

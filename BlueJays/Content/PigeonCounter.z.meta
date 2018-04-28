@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "PigeonCounter",
+		uint64 ResourceId = 5ab873265b5f1294,
+	},
+},

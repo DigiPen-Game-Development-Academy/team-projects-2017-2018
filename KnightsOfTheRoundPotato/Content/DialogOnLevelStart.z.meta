@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "DialogOnLevelStart",
+		uint64 ResourceId = 5ada3b261c2cdbfd,
+	},
+},

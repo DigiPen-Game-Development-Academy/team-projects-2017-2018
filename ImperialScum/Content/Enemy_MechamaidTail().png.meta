@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "Enemy_MechamaidTail()",
+		uint64 ResourceId = 5a51af4304b3360a,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 11,
+		uint FrameSizeY = 13,
+		uint FrameCount = 4,
+		float FrameDelay = 0.0250000004,
+		float OriginX = 5.5,
+		float OriginY = 1,
+		float PixelsPerUnit = 16,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

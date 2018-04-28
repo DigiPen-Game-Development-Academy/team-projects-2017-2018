@@ -1,0 +1,99 @@
+class CheatSystem : ZilchComponent
+{
+    var Scroll : Real2;
+    
+    var PermHealth : Boolean = false;
+    
+    var PermOxygen : Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        Zero.Connect(this.Space, Events.MouseScroll, this.OnMouseScroll);
+    }
+
+    function OnMouseScroll(event : ViewportMouseEvent)
+    {
+        this.Scroll = event.Scroll;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+        if(this.PermHealth)
+        {
+            this.GameSession.GameVars.PlayerHealth = 10;
+        }
+        
+        if(this.PermOxygen)
+        {
+            this.GameSession.GameVars.PlayerOxygen = 550;
+        }
+        
+        if(Zero.Keyboard.KeyIsPressed(Keys.Back))
+        {
+            this.GameSession.GameVars.PlayerHealth = 0;
+            Console.WriteLine("You Cheated Life...");
+        }
+        
+        if(Zero.Keyboard.KeyIsDown(Keys.Shift) && Zero.Keyboard.KeyIsDown(Keys.Control) && Zero.Keyboard.KeyIsPressed(Keys.H))
+        {
+            this.PermHealth = !this.PermHealth;
+            
+            Console.WriteLine("Toggled Health");
+        }
+        
+        if(Zero.Keyboard.KeyIsDown(Keys.Shift) && Zero.Keyboard.KeyIsDown(Keys.Control) && Zero.Keyboard.KeyIsPressed(Keys.O))
+        {
+            this.PermOxygen = !this.PermOxygen;
+            
+            Console.WriteLine("Toggled Oxygen");
+        }
+        
+        if(Zero.Keyboard.KeyIsDown(Keys.Alt) && Zero.Keyboard.KeyIsDown(Keys.Shift) && Zero.Keyboard.KeyIsDown(Keys.One))
+        {
+            this.GameSession.GameVars.PlayerAluminium += this.Scroll.Y as Integer;
+            
+            Console.WriteLine("Added -> `this.Scroll.Y` To `this.GameSession.GameVars.PlayerAluminium - this.Scroll.Y` -> Current Value: `this.GameSession.GameVars.PlayerAluminium`");
+            
+            this.Scroll = Real2(0.0,0.0);
+        }
+        
+        if(Zero.Keyboard.KeyIsDown(Keys.Alt) && Zero.Keyboard.KeyIsDown(Keys.Shift) && Zero.Keyboard.KeyIsDown(Keys.Two))
+        {
+            this.GameSession.GameVars.PlayerCopper += this.Scroll.Y as Integer;
+            
+            Console.WriteLine("Added -> `this.Scroll.Y` To `this.GameSession.GameVars.PlayerCopper - this.Scroll.Y` -> Current Value: `this.GameSession.GameVars.PlayerCopper`");
+            
+            this.Scroll = Real2(0.0,0.0);
+        }
+        
+        if(Zero.Keyboard.KeyIsDown(Keys.Alt) && Zero.Keyboard.KeyIsDown(Keys.Shift) && Zero.Keyboard.KeyIsDown(Keys.Three))
+        {
+            this.GameSession.GameVars.PlayerResources += this.Scroll.Y as Integer;
+            
+            Console.WriteLine("Added -> `this.Scroll.Y` To `this.GameSession.GameVars.PlayerResources - this.Scroll.Y` -> Current Value: `this.GameSession.GameVars.PlayerResources`");
+            
+            this.Scroll = Real2(0.0,0.0);
+        }
+        
+        if(Zero.Keyboard.KeyIsDown(Keys.Alt) && Zero.Keyboard.KeyIsDown(Keys.Shift) && Zero.Keyboard.KeyIsDown(Keys.Four))
+        {
+            this.GameSession.GameVars.PlayerTitanium += this.Scroll.Y as Integer;
+            
+            Console.WriteLine("Added -> `this.Scroll.Y` To `this.GameSession.GameVars.PlayerTitanium - this.Scroll.Y` -> Current Value: `this.GameSession.GameVars.PlayerTitanium`");
+            
+            this.Scroll = Real2(0.0,0.0);
+        }
+        
+        if(Zero.Keyboard.KeyIsDown(Keys.Alt) && Zero.Keyboard.KeyIsDown(Keys.Shift) && Zero.Keyboard.KeyIsDown(Keys.Five))
+        {
+            this.GameSession.GameVars.PlayerUpgradePoints += this.Scroll.Y as Integer;
+            
+            Console.WriteLine("Added -> `this.Scroll.Y` To `this.GameSession.GameVars.PlayerUpgradePoints - this.Scroll.Y` -> Current Value: `this.GameSession.GameVars.PlayerUpgradePoints`");
+            
+            this.Scroll = Real2(0.0,0.0);
+        }
+    }
+}

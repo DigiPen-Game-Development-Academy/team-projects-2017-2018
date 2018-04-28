@@ -1,0 +1,17 @@
+class DropOnDestroy : ZilchComponent
+{
+    [Property] var Drop : Archetype = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Owner.Health.Health <= 0.0)
+        {
+            this.Space.CreateAtPosition(this.Drop, this.Owner.Transform.Translation);
+        }
+    }
+}

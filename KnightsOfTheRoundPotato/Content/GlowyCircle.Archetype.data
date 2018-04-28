@@ -1,0 +1,34 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "GlowyCircle",
+	},
+	Archetyped = 
+	{
+		string Name = "5a75bfc9c313becf:GlowyCircle",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Model = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = true,
+		string MaterialName = "5a75bcea994faa8c:GlowyCircle",
+		string MeshName = "4de0354322b376ae:Sphere",
+		Vec4 Color = [1, 0, 0, 0.399999976],
+	},
+	LockToMouse = 
+	{
+	},
+},

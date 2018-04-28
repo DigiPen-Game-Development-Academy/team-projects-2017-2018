@@ -1,0 +1,36 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Mask",
+	},
+	Archetyped = 
+	{
+		string Name = "5a917d5f9e98df54:Mask",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 32],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	DynamicMesh = 
+	{
+		bool GenerateNormals = true,
+		bool GenerateUVs = false,
+		bool GenerateAdjacencyInfo = false,
+	},
+	DynamicModel = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = true,
+		string Material = "5a91e29a62491550:Light",
+		Vec4 Color = [1, 1, 1, 1],
+	},
+},

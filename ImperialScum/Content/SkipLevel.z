@@ -1,0 +1,22 @@
+class SkipLevel : ZilchComponent
+{
+    var Timer : Real = 0;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(Zero.Keyboard.KeyIsDown(Keys.Alt) && Zero.Keyboard.KeyIsDown(Keys.K))
+        {
+            if(this.Timer > 0) this.Timer -= event.Dt;
+            if(this.Timer <= 0 && ContinueTimer.LevelNumber <= 4)
+            {
+                ContinueTimer.LevelNumber += 1;
+                this.Timer += 0.25;
+            }
+            else return;
+        }
+    }
+}

@@ -1,0 +1,360 @@
+//Jacob Burke
+
+//Controls the boss in magical ways
+
+class BossScript : ZilchComponent
+{
+    var Timer:Real = 6;
+    
+    [Property]
+    var Fish:Archetype;
+    
+    [Property]
+    var BiteSFX:SoundCue;
+    
+    [Property]
+    var NormRotation:Quaternion;
+    
+    [Static]
+    var LaserActive:Boolean = false;
+    
+    [Property]
+    var Stop:RigidBodyDynamicState;
+    
+    [Property]
+    var Start:RigidBodyDynamicState;
+    
+    var AbilityEnd:Boolean = false;
+    
+    var DoubleCollide:Boolean = false;
+    
+    [Property]
+    var Speed:Integer = 10;
+    
+    var SpawnFishTimer:Real = 1;
+    
+    var StartSpawn:Boolean = false;
+    
+    var RandomDie:Integer;
+    
+    var Bite:Boolean = false;
+    var TimerSprite:Integer = 0;
+    var TimerBite:Integer = 0;
+    var TimerStart:Integer = 200;
+    
+    var TimerShoot:Integer = 30;
+    var TimerElapse:Integer = 200;
+    
+    [Property]
+    var NormalSprite:SpriteSource;
+    
+    [Property]
+    var BiteSprite:SpriteSource;
+    
+    [Property]
+    var TurnSprite:SpriteSource;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.StartSpawn == true)
+        {
+        this.SpawnFishTimer -= event.Dt;
+        }
+        
+        //Timer to Begin Attacking
+        if (this.TimerStart != 0)
+        {
+            this.TimerStart -= 1;
+            
+            if (this.TimerStart == 0)
+            {
+                this.Charge();
+            }
+        }
+        
+        //Timer to Reset Sprites
+        //Normal Sprite
+        if (this.TimerSprite != 0)
+        {
+            this.TimerSprite -= 1;
+            
+            if (this.TimerSprite == 0)
+            {
+                this.Owner.Sprite.SpriteSource = this.NormalSprite;
+                this.Space.SoundSpace.PlayCue(this.BiteSFX);
+            }
+        }
+        //Open Mouth
+        if (this.Bite == true)
+        {
+            this.TimerBite -= 1;
+            if (this.TimerBite == 0)
+            {
+                this.Owner.Sprite.SpriteSource = this.BiteSprite;
+                this.TimerSprite = 10;
+                this.TimerBite = 20;
+            }
+        }
+        
+        //idk
+        
+        if(this.SpawnFishTimer <= 0)
+        {
+            //Open Mouth
+            this.Owner.Sprite.SpriteSource = this.BiteSprite;
+            this.TimerSprite = 15;
+            
+            if (this.Owner.Sprite.FlipX == true)
+            {
+                this.Space.CreateAtPosition(this.Fish, this.Owner.Transform.Translation + Real3(-2,0,0));
+            }
+            else
+            {
+                this.Space.CreateAtPosition(this.Fish, this.Owner.Transform.Translation + Real3(2,0,0));
+            }
+            
+            this.RandomDie -= 1;
+            if(this.RandomDie > 0)
+            {
+            this.SpawnFishTimer += 1;
+            }
+            else
+            {
+            this.AbilityEnd = true;
+            this.StartSpawn = false;
+            this.SpawnFishTimer += 1;
+            }
+            
+        }
+            
+        
+        if(this.AbilityEnd == true)
+        {
+            this.Timer -= event.Dt;
+        }
+        
+        if(this.Timer <= 0)
+        {
+            this.AbilityEnd = false;
+            this.Timer += 10;
+            this.ChooseEvent();
+        }
+        
+        //Making the boss look at the player when his laser is active
+        if(BossScript.LaserActive == true)
+        {
+            var player = this.Space.FindObjectByName("Player");
+            
+            if(this.Timer > 5)
+            {
+            //this.Owner.Orientation.LookAtPointWithUp(player.Transform.WorldTranslation, Real3(0,0,1) * -2);
+            }
+            else if(this.Timer <= 5)
+            {
+                this.Owner.Transform.WorldRotation = this.NormRotation;
+                BossScript.LaserActive = false;
+            }
+            //Shoot the Layzers
+            if (this.TimerElapse > 0)
+            {
+                this.TimerElapse -= 1;
+                this.TimerShoot -= 1;
+                
+                if (this.TimerShoot == 0)
+                {
+                    this.TimerShoot = 35;
+                    
+                    //Open Mouth
+                    this.Owner.Sprite.SpriteSource = this.BiteSprite;
+                    this.TimerSprite = 25;
+                    
+                    
+                    if (this.Owner.Sprite.FlipX == true)
+                    {
+                        this.Space.CreateAtPosition(Archetype.Laser, this.Owner.Transform.Translation + Real3(-2,0,0));
+                    }
+                    else
+                    {
+                        this.Space.CreateAtPosition(Archetype.Laser, this.Owner.Transform.Translation + Real3(2,0,0));
+                    }
+                }
+            }
+            else
+            {
+                this.TimerElapse = 200;
+                this.TimerShoot = 40;
+            }
+        }
+    }
+    
+    //Chooses what the boss should do next
+    function ChooseEvent()
+    {
+        var rand = new Random();
+        var randomDie = rand.DieRoll(3);
+        
+        if(randomDie == 1)
+        this.Laser();
+        
+        if(randomDie == 2)
+        this.Charge();
+        
+        if(randomDie == 3)
+        this.SendFish();
+        
+    }
+    //Starts the laser
+    function Laser()
+    {
+        BossScript.LaserActive = true;
+        this.AbilityEnd = true;
+    }
+    //Makes the boss charge with actions
+    function Charge()
+    {
+        var position = this.Owner.Transform.Translation;
+        var returning = this.Space.FindObjectByName("Returning").Transform.Translation;
+        var destination = this.Space.FindObjectByName("Destination").Transform.Translation;
+        
+        this.Bite = true;
+        this.TimerBite = 20;
+        
+        if(position == returning)
+        {
+        var seq = Action.Sequence(this.Owner.Actions);
+        
+        Action.Property
+            (seq, @this.Owner.Transform.Translation, position - Real3(-1,-1,0), 1, Ease.QuadInOut);
+            
+        Action.Property
+            (seq, @this.Owner.Transform.Translation, destination, 2, Ease.QuadInOut);
+        Action.Call(seq, this.ChangeDirection);
+        
+        this.AbilityEnd = true;
+        }
+        
+        if(position == destination)
+        {
+        var seq = Action.Sequence(this.Owner.Actions);
+        
+        Action.Property
+            (seq, @this.Owner.Transform.Translation, destination + Real3(-1,1,0), 1, Ease.QuadInOut);
+            
+        Action.Property
+            (seq, @this.Owner.Transform.Translation, returning, 2, Ease.QuadInOut);
+        Action.Call(seq, this.ChangeDirection);
+            
+        this.AbilityEnd = true;
+        }
+        
+    }
+    //Sends out bombfish
+    function SendFish()
+    {
+        this.StartSpawn = true;
+        var rand = new Random();
+        this.RandomDie = rand.DieRoll(5) + 5;
+    }
+    //Changes the boss's direction after its charge
+    function ChangeDirection()
+    {
+        this.Bite = false;
+        
+        this.TimerSprite = 8;
+        this.Owner.Sprite.SpriteSource = this.TurnSprite;
+        
+        if(this.Owner.Sprite.FlipX == true)
+        {
+        this.Owner.Sprite.FlipX = false;
+        }
+        else
+        {
+            this.Owner.Sprite.FlipX = true;
+        }
+    }
+
+}
+//The bombfish code
+class BombFish : ZilchComponent
+{
+    [Property]
+    var FuseSFX:SoundCue;
+  
+    [Property]
+    var StaticState:RigidBodyDynamicState;
+    
+    [Property]
+    var Timer:Real = 2;
+    
+    var Exploding:Boolean = false;
+    
+    [Property]
+    var RedColor:Real4;
+    
+
+  function Initialize(init : CogInitializer)
+  {
+    Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+  }
+
+  function OnLogicUpdate(event : UpdateEvent)
+  {
+      if(this.Exploding == true)
+      {
+          this.Timer -= event.Dt;
+          this.Owner.RigidBody.DynamicState = this.StaticState;
+          this.Owner.Sprite.Color = this.RedColor;
+      }
+      if(this.Timer <= 0)
+      {
+      this.Space.CreateAtPosition(Archetype.Explosion, this.Owner.Transform.Translation);
+      this.Space.CreateAtPosition(Archetype.ExplodeBubbles, this.Owner.Transform.Translation);
+      this.Owner.Destroy();
+    }
+  }
+
+  function OnCollisionStarted(event : CollisionEvent)
+  {
+      if(event.OtherObject.PlayerController != null || event.OtherObject.Spear != null ||
+      event.OtherObject.SwordBoomerangMove != null)
+      {
+          this.Space.SoundSpace.PlayCue(this.FuseSFX);
+          this.Exploding = true;
+          this.Owner.Sprite.SpriteSource = SpriteSource.BombGearahna_Explode;
+      }
+  }
+
+}
+//The code on the bombfish that makes them explode
+class Explosion : ZilchComponent
+{
+  [Property]
+  var ExplodeSFX:SoundCue;
+  
+  var Timer:Real = 2;
+  function Initialize(init : CogInitializer)
+  {
+    Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    this.Space.SoundSpace.PlayCue(this.ExplodeSFX);
+  }
+
+  function OnLogicUpdate(event : UpdateEvent)
+  {
+    this.Timer -= event.Dt;
+
+    if(this.Timer <= 0)
+    {
+        this.Owner.Destroy();
+    }
+    
+    else
+    this.Owner.Transform.Scale += Real3(event.Dt,event.Dt, 0) * 2;
+  }
+}

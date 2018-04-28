@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "AddDarkness",
+		uint64 ResourceId = 5a91a70b8b606446,
+	},
+},

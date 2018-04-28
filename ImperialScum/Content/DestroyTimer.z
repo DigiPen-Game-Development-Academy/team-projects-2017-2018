@@ -1,0 +1,24 @@
+class DestroyTimer : ZilchComponent
+{
+    [Property]
+    var Time : Real = 5;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Owner.Name == ("LandingParticles"))
+        this.Time -= event.Dt;
+        else
+        this.Time -= 1;
+        
+        if (this.Time <= 0)
+        {
+            this.Owner.Destroy();
+        }
+    }
+}
+

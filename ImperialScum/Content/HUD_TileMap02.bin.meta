@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "HUD_TileMap02",
+		uint64 ResourceId = 5aba561528790309,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "5aa392b7bedc697f:HUD",
+	},
+},

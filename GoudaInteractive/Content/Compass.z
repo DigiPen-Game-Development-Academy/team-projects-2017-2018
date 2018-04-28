@@ -1,0 +1,49 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class Compass : ZilchComponent {
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.MouseUpdate, this.OnMouseUpdate);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnMouseUpdate(event : ViewportMouseEvent) {
+        
+        this.Space.FindObjectByName("Tooltip").Tooltip.ShowTooltip(true);
+        this.Space.FindObjectByName("Tooltip").Tooltip.TooltipText(
+            "Compass",
+            "Always points to center of the world.\nGood for finding the cave's exit.",
+            Real4(1.0),
+            Real4(1.0)
+        );
+        
+    }
+    
+    function OnMouseExit(event : ViewportMouseEvent) {
+        this.Space.FindObjectByName("Tooltip").Tooltip.ShowTooltip(false);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(Relocation.Player != null) {
+            
+            var playerPos = Relocation.Player.Transform.WorldTranslation.XY;
+            var targetPos = Real2(0.0);
+            
+            if(playerPos != targetPos) {
+                var vectorToTarget = targetPos - playerPos;
+                var targetAngle = Math.ATan2(vectorToTarget.Y, vectorToTarget.X);
+                
+                var target = Math.ToQuaternion(Real3(0.0, 0.0, targetAngle - Math.ToRadians(90.0)));
+                var currRotation = this.Owner.Transform.Rotation;
+                
+                this.Owner.Transform.Rotation = Math.RotateTowards(currRotation, target, event.Dt * 5.0);
+            }
+            
+        }
+        
+    }
+    
+}

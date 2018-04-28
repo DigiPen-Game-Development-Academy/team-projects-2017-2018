@@ -1,0 +1,17 @@
+class ResetVolume : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionPersisted);
+    }
+
+    function OnCollisionPersisted(event : CollisionEvent)
+    {
+        VolumeControls.Number1 = VolumeLevev.SaveVolume;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

@@ -1,0 +1,9 @@
+DataContent = 
+{
+	RichAnimationBuilder = 
+	{
+		string Name = "FinalOceanSound",
+		uint64 ResourceId = 5a2297aa8066cb54,
+		string PreviewArchetype = "",
+	},
+},

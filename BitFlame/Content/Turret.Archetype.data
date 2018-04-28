@@ -1,0 +1,187 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "LaserTurret",
+	},
+	Archetyped = 
+	{
+		string Name = "5a33cbf6af34b493:Turret",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0],
+		Vec3 Scale = [2, 2, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5a33d19f8d752ba6:Turret_Base",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	SphereCollider = 
+	{
+		bool Ghost = false,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+		string SerializedGroupName = "5ac6aa87e9b8147d:FriendlyBuildings",
+		Vec3 Offset = [0, 0, 0],
+		float Radius = 0.510155797,
+	},
+	RigidBody = 
+	{
+		bool Static = true,
+		bool Asleep = false,
+		bool Kinematic = false,
+		bool RotationLocked = false,
+		bool Mode2D = false,
+		bool AllowSleep = true,
+		bool Inherit2DMode = true,
+		Vec3 Velocity = [0, 0, 0],
+		Vec3 AngularVelocity = [0, 0, 0],
+	},
+	TurretLogic = 
+	{
+		string Projectile = "5a33c8a060f2dcc9:TurretBullet",
+		float Speed = 15,
+		float CoolDown = 0.25,
+		float Range = 25,
+		string EnemyCollide = "5a33def0a21d9c42:Enemies",
+		string ChargingCollide = "5a8c76cb6cde040f:ChargingEnemyCollider",
+	},
+	Health = 
+	{
+		float Health = 10,
+		string ArchetypetoSpawnOnDeath1 = "5a0191ae833f27e5:Game_Turret_Pickup",
+		string ArchetypetoSpawnOnDeath2 = "",
+		string ArchetypetoSpawnOnDeath3 = "",
+		string ExplosionSound = "",
+		bool Unbreakable = false,
+	},
+	Asteroid_Mining = 
+	{
+		string ArchetypetoSpawnOnDamage = "",
+		float DropAmount = 0,
+		float ShrinkAmount = 200,
+		string AluminiumSprite = "5ab82aff8f3ef818:Asteroid_TileMap_Ores000",
+		string CopperSprite = "5ab82aff8f353da5:Asteroid_TileMap_Ores002",
+		string IronSprite = "5ab82aff8f317c0c:Asteroid_TileMap_Ores004",
+		string TitaniumSprite = "5ab82aff8f33a0ea:Asteroid_TileMap_Ores005",
+		string AluminiumArchetype = "",
+		string CopperArchetype = "",
+		string IronArchetype = "",
+		string TitaniumArchetype = "",
+		float AluminiumProbability = 0,
+		float CopperProbability = 0,
+		float IronProbability = 0,
+		float TitaniumProbability = 0,
+		float EmptyProbability = 0,
+	},
+	Hierarchy = 
+	{
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 2,
+			},
+			Named = 
+			{
+				string Name = "LaserTurret_Cannon",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0.0078792572, -0.00985121727, 0.5],
+				Vec3 Scale = [1.10000002, 1.10000002, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [0.644999981, 0.644999981, 0.644999981, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "5a33d1678e29284e:Turret_Top",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			Orientation = 
+			{
+				Vec3 GlobalUp = [0, 0, 1],
+				Vec3 UpVector = [0, 0, 1],
+				Vec3 ForwardVector = [0, 1, 0],
+				OrientationBases DefaultBases = Custom,
+			},
+			TurretRotation = 
+			{
+			},
+			Hierarchy = 
+			{
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 3,
+					},
+					Named = 
+					{
+						string Name = "LaserTurret_Barrel",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [-0.00716352463, 0.389570951, -0.0324611664],
+						Vec3 Scale = [1.13, 0.899999976, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					Sprite = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [0.814999998, 0.814999998, 0.814999998, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string SpriteSource = "5a33d17591ef6d53:Turret_Barrel",
+						bool RenderMask = false,
+						bool FlipX = false,
+						bool FlipY = false,
+						bool AnimationActive = true,
+						float AnimationSpeed = 1,
+						uint StartFrame = 0,
+					},
+					Turret_Barrel = 
+					{
+					},
+				},
+			},
+		},
+	},
+},

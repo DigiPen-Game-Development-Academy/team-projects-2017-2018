@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "HandleQuit",
+		uint64 ResourceId = 5aeba85f15647860,
+	},
+},

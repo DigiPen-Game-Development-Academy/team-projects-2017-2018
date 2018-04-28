@@ -1,0 +1,128 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Bonus Level!",
+	},
+	Archetyped = 
+	{
+		string Name = "5ac4a05db163c723:BonusLevelText",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0],
+		Vec3 Scale = [3, 3, 3],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	SpriteText = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [0.904999971, 0.814499855, 0, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string FontName = "5a0f895ab1e49e19:DraftGameFont",
+		uint FontSize = 30,
+		string Text = "Bonus Level!",
+		TextAlign Align = Left,
+		float PixelsPerUnit = 64,
+		bool Smoothing = true,
+	},
+	ParticleDespawner = 
+	{
+		float Lifetime = 3,
+	},
+	MoveUp = 
+	{
+	},
+	Hierarchy = 
+	{
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 2,
+			},
+			Named = 
+			{
+				string Name = "KeySparkles",
+			},
+			Archetyped = 
+			{
+				string Name = "5a0639e12b1c4854:LegendSparkle",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [1.40285444, -0.350713819, 0],
+				Vec3 Scale = [0.333333343, 0.333333343, 9.99999975e-05],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			SpriteParticleSystem = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				SystemChildMode ChildMode = Independent,
+				SystemSpace SystemSpace = WorldSpace,
+				uint DrawOrder = 0,
+				Vec4 Tint = [1, 0.539999843, 0, 1],
+				float WarmUpTime = 0,
+				ParticleGeometry GeometryMode = Billboarded,
+				ParticleRenderMode RenderMode = Additive,
+				ParticleSortMode SortMode = Youngest,
+				ParticleAnimation ParticleAnimation = Single,
+				string Texture = "5add733cf6bb7f8c:Particle_Sparkle()",
+				float VelocityScale = 1,
+				float LengthScale = 1,
+				float MaxParticleSize = 20,
+				Vec3 SystemSize = [2, 2, 2],
+			},
+			SphericalParticleEmitter = 
+			{
+				bool Active = true,
+				uint EmitCount = 0,
+				float EmitRate = 20,
+				float EmitVariance = 5,
+				float Size = 0.5,
+				float SizeVariance = 0.200000003,
+				float Lifetime = 0.400000006,
+				float LifetimeVariance = 0,
+				float Spin = 0,
+				float SpinVariance = 10,
+				bool RandomSpin = true,
+				float Fill = 1,
+				float EmitterVelocityPercent = 0,
+				Vec3 StartVelocity = [0, 0, 0],
+				Vec3 RandomVelocity = [0, 0, 0],
+				Vec3 TangentVelocity = [0, 0, 0],
+				Vec3 EmitterSize = [5, 5, 5],
+				bool FastMovingEmitter = false,
+			},
+			LinearParticleAnimator = 
+			{
+				Vec3 Force = [0, 0, 0],
+				Vec3 RandomForce = [0, 0, 0],
+				float Torque = 0,
+				float Growth = 0,
+				float Dampening = 0,
+				Vec3 Twist = [0, 0, 0],
+			},
+			ParticleColorAnimator = 
+			{
+				Vec4 Color0 = [0.889999986, 1, 0, 0.5],
+				Vec4 Color1 = [1, 0.720000029, 0, 1],
+				Vec4 Color2 = [1, 0.990000129, 0, 1],
+				Vec4 Color3 = [1, 0.600000143, 0, 0.5],
+				Vec4 Color4 = [1, 0.960000157, 0, 0],
+			},
+		},
+	},
+},

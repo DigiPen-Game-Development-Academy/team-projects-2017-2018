@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "ScreenAlignment",
+		uint64 ResourceId = 5a92fc30832766b8,
+	},
+},

@@ -1,0 +1,46 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Watermark",
+	},
+	Archetyped = 
+	{
+		string Name = "5acad920c7159677:Watermark",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [-19.5, 10, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	SpriteText = 
+	{
+		bool Visible = false,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string FontName = "5ad9e7ff8459f32e:FontDefaultBold",
+		uint FontSize = 128,
+		string Text = "Relocation Beta v1.0.2.2",
+		TextAlign Align = Left,
+		float PixelsPerUnit = 256,
+		bool Smoothing = false,
+	},
+	ScreenAlignment = 
+	{
+		Enum PositionX = Left,
+		Enum PositionY = Top,
+		Vec2 PositionOffset = [0.25, 0],
+		float ZIndex = 0,
+		bool HideUntilPositioned = true,
+	},
+},

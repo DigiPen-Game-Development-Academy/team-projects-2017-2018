@@ -1,0 +1,44 @@
+//Jacob Burke
+
+//Makes the owner go towards the player
+
+class Follow : ZilchComponent
+{
+    [Property]
+    var Speed:Real = 5;
+
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var target = this.Space.FindObjectByName("Player");
+        //this code will make the thing move faster the farther it gets from the target
+        //this.Owner.RigidBody.Velocity = (target.Transform.Translation - this.Owner.Transform.Translation)
+        //* this.Speed; 
+        
+        
+        //This following code makes the thing move the same speed always toward the target
+        this.Owner.RigidBody.Velocity = Math.Normalize(target.Transform.Translation - this.Owner.Transform.Translation)
+       * this.Speed; 
+
+        if(this.Owner.Transform.Translation.X <= target.Transform.Translation.X)
+        {
+            this.Owner.Sprite.FlipX = false;
+        }
+        else if(this.Owner.Transform.Translation.X >= target.Transform.Translation.X)
+        {
+            this.Owner.Sprite.FlipX = true;
+        }
+        else
+        {
+            this.Speed = 0;
+        }
+        
+        
+        
+        
+    }
+}

@@ -1,0 +1,23 @@
+class MissileSound : ZilchComponent {
+    
+    var Sound : SoundCue;
+    var SoundRange : Real = 10;
+    var Timer : Real = 0;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        this.Owner.AddComponentByName("SoundEmitter");
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        this.Timer -= event.Dt;
+        if(this.Timer <= 0) {
+            this.Timer = 0.1;
+            this.Owner.SoundEmitter.PlayCue(this.Sound);
+        }
+        
+        this.Owner.SoundEmitter.Volume = GlobalVariables.Settings.SettingsSave.SFXvol - Math.Clamp(GlobalVariables.Settings.SettingsSave.SFXvol, 0, 
+        Math.Distance(GlobalVariables.Player.Transform.WorldTranslation, this.Owner.Transform.WorldTranslation)/this.SoundRange);
+        
+    }
+}

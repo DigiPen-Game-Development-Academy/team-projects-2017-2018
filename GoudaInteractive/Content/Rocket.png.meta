@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "Rocket",
+		uint64 ResourceId = 5adf131dc2b15c1d,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 64,
+		uint FrameSizeY = 256,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 32,
+		float OriginY = 128,
+		float PixelsPerUnit = 24,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

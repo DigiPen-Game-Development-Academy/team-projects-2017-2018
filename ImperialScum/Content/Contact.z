@@ -1,0 +1,179 @@
+// Copyright: © 2017 DigiPen, All Rights Reserved.
+// Author:    Jeffrey Kumley
+// Email:     jeffrey.kumley@digipen.edu
+
+// Purpose:
+//  Provide a more mathematically useful collision event which can be used in place of regular ones
+
+// Usage:
+//  Add a RigidBody component to your object
+//  Add a Collider component to your object (BoxCollider, SphereCollider, etc.)
+//  Add a Contact component to your object
+//  Add your own custom script to your object
+//  In your custom script, connect to this.Owner and listen for Events.AnyCollisionEvent
+//  The AnyCollisionEvent class contains more information than normal collision events
+
+enum CollisionCallbacks
+{
+  OnStarted,    // Done once when the objects begin touching
+  OnPersisted,  // Done every collision update while the objects are touching
+  OnEnded       // Done once when the objects stop touching
+}
+class AnyCollisionEvent : ZilchEvent
+{
+  [Static]
+  var Name : String = "AnyCollision";
+  
+  // I don't know why you would ever want anything from the actual event, since I've forwarded it below
+  var Event : CollisionEvent;
+  
+  // The objects involved in the collision
+  var Object : Cog { get { return this.Event.Object; } }
+  var OtherObject : Cog { get { return this.Event.OtherObject; } }
+  
+  // The point of contact in local coordinates relative to the object
+  var ObjectPoint : Real3 { get { return this.Event.FirstPoint.BodyPoint; } }
+  var OtherObjectPoint : Real3 { get { return this.Event.FirstPoint.OtherBodyPoint; } }
+  
+  // The point of contact in world coordinates
+  var ContactPoint : Real3 { get { return this.Event.FirstPoint.WorldPoint; } }
+  
+  // The vector from one surface toward the other
+  var ContactNormal : Real3 { get { return this.Event.FirstPoint.WorldNormalTowardsOther; } }
+  
+  // The vector tangent to the contact or in other words perpendicular to the contact normal (note that this only works in 2D)
+  var ContactBinormal : Real3 { get { return Real3(this.ContactNormal.Y, -this.ContactNormal.X, 0); } }
+  
+  // The mass of the object is defaulted to infinity if not dynamic or if zero
+  var ObjectMass : Real {
+    get {
+      if (this.Object.RigidBody != null && this.Object.RigidBody.Mass != 0)
+        return this.Object.RigidBody.Mass;
+      else return Real.PositiveMax;
+    }
+  }
+  var OtherObjectMass : Real {
+    get {
+      if (this.OtherObject.RigidBody != null && this.OtherObject.RigidBody.Mass != 0)
+        return this.OtherObject.RigidBody.Mass;
+      else return Real.PositiveMax;
+    }
+  }
+  
+  // The normal impulse of the object is the change in velocity in the direction of the contact normal
+  var ObjectNormalImpulse : Real3 { get { return -this.ContactNormal * this.Event.FirstPoint.NormalImpulse / this.ObjectMass; } }
+  var OtherObjectNormalImpulse : Real3 { get { return this.ContactNormal * this.Event.FirstPoint.NormalImpulse / this.OtherObjectMass; } }
+  
+  // The signed friction is the scalar value multiplied by the contact binormal to get the friction impulse
+  var SignedFriction : Real {
+    get {
+      // Note that this transformation from the complex number given in the original event is one I made myself
+      //    I have no idea if it is fullproof, but I have found it is sufficient for my uses. I have tested it
+      //    a decent amount and it has performed flawlessly. If you find a case it doesn't work, please let me
+      //    know. I don't even know why it works in the first place!
+      var angle = Math.ATan2(this.ContactNormal.Y, this.ContactNormal.X);
+      var piOver4 = Math.Pi / 4;
+      if (angle > piOver4 && angle < 3 * piOver4)
+      {
+        // More up than left or right
+        return this.Event.FirstPoint.ComplexImpulse.Z;
+      }
+      else if (angle < -piOver4 && angle > -3 * piOver4)
+      {
+        // More down than left or right
+        return -this.Event.FirstPoint.ComplexImpulse.Z;
+      }
+      else
+      {
+        // More side to side than up or down
+        return -this.Event.FirstPoint.ComplexImpulse.Y;
+      }
+    }
+  }
+  
+  // The friction impulse of the object is the change in velocity in the direction of the contact binormal
+  var ObjectFrictionImpulse : Real3 { get { return -this.ContactBinormal * this.SignedFriction / this.ObjectMass; } }
+  var OtherObjectFrictionImpulse : Real3 { get { return this.ContactBinormal * this.SignedFriction / this.ObjectMass; } }
+  
+  // The total impulse of the object is the change in velocity and is also equal to the normal impulse plus the friction impulse
+  var ObjectTotalImpulse : Real3 { get { return this.ObjectNormalImpulse + this.ObjectFrictionImpulse; } }
+  var OtherObjectTotalImpulse : Real3 { get { return this.OtherObjectNormalImpulse + this.OtherObjectFrictionImpulse; } }
+  
+  // The pre versus post contact velocity of the object is the velocity right before versus right after the collision took place
+  var ObjectPostContactVelocity : Real3 {
+    get {
+      if (this.Object.RigidBody != null && this.Object.RigidBody.DynamicState == RigidBodyDynamicState.Dynamic)
+        return this.Object.RigidBody.Velocity;
+      else return Real3.Zero;
+    }
+  }
+  var OtherObjectPostContactVelocity : Real3 {
+    get {
+      if (this.OtherObject.RigidBody != null && this.OtherObject.RigidBody.DynamicState == RigidBodyDynamicState.Dynamic)
+        return this.OtherObject.RigidBody.Velocity;
+      else return Real3.Zero;
+    }
+  }
+  var ObjectPreContactVelocity : Real3 { get { return this.ObjectPostContactVelocity - this.ObjectTotalImpulse; } }
+  var OtherObjectPreContactVelocity : Real3 { get { return this.OtherObjectPostContactVelocity - this.OtherObjectTotalImpulse; } }
+  
+  // The relative velocity of the objects is the first object's velocity minus the second object's velocity
+  var PreContactRelativeSpeed : Real { get { return Math.Length(this.PreContactRelativeVelocity); } }
+  var PreContactRelativeVelocity : Real3 { get { return this.ObjectPreContactVelocity - this.OtherObjectPreContactVelocity; } }
+  var PostContactRelativeSpeed : Real { get { return this.Event.FirstPoint.RelativeVelocity; } }
+  var PostContactRelativeVelocity : Real3 { get { return this.ObjectPostContactVelocity - this.OtherObjectPostContactVelocity; } }
+  
+  // The penetrating velocity is the relative velocity of the objects projected onto the contact normal
+  var PreContactPenetratingVelocity : Real3 { get { return Math.ProjectOnVector(this.PreContactRelativeVelocity, this.ContactNormal); } }
+  var PostContactPenetratingVelocity : Real3 { get { return Math.ProjectOnVector(this.PostContactRelativeVelocity, this.ContactNormal); } }
+  
+  // If true, then either:
+  //    at least one of the colliders in the collision has a ghosted collider
+  // OR
+  //    the collision table being used by the physics space has specified the colliders' collision groups as skipping resolution
+  var GhostCollision : Boolean { get { return this.Event.IsGhost; } }
+  
+  // Whether the collision event being forwarded is a CollisionStarted, CollisionPersisted, or CollisionEnded event
+  var Type : CollisionCallbacks;
+  var Started : Boolean { get { return this.Type == CollisionCallbacks.OnStarted; } }
+  var Persisted : Boolean { get { return this.Type == CollisionCallbacks.OnPersisted; } }
+  var Ended : Boolean { get { return this.Type == CollisionCallbacks.OnEnded; } }
+  
+  // To get all this extra information from a collision, construct this event from the original event
+  // For an example, see the Contact component
+  constructor(event : CollisionEvent, callback : CollisionCallbacks) : base()
+  {
+    this.Event = event;
+    this.Type = callback;
+  }
+}
+// Forward the collision events as the more complete and mathematically useful version
+class Contact : ZilchComponent
+{
+  sends AnyCollision : AnyCollisionEvent;
+  
+  var AllContacts : Array[Cog] = new Array[Cog]();
+  
+  function Initialize(init : CogInitializer)
+  {
+    // Listen for the regular events
+    Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionPersisted);
+    Zero.Connect(this.Owner, Events.CollisionEnded, this.OnCollisionEnded);
+  }
+  function OnCollisionStarted(event : CollisionEvent)
+  {
+    if (this.AllContacts.FindFirstIndex(event.OtherObject) < 0) this.AllContacts.Add(event.OtherObject);
+    this.Owner.DispatchEvent(AnyCollisionEvent.Name, AnyCollisionEvent(event, CollisionCallbacks.OnStarted));
+  }
+  function OnCollisionPersisted(event : CollisionEvent)
+  {
+    this.Owner.DispatchEvent(AnyCollisionEvent.Name, AnyCollisionEvent(event, CollisionCallbacks.OnPersisted));
+  }
+  function OnCollisionEnded(event : CollisionEvent)
+  {
+    this.AllContacts.RemoveAll(null);
+    this.AllContacts.RemoveFirst(event.OtherObject);
+    this.Owner.DispatchEvent(AnyCollisionEvent.Name, AnyCollisionEvent(event, CollisionCallbacks.OnEnded));
+  }
+}

@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "Volcano_StabDown",
+		uint64 ResourceId = 5a36aaa7bc1b4e9d,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 20,
+		uint FrameSizeY = 32,
+		uint FrameCount = 5,
+		float FrameDelay = 0.0625,
+		float OriginX = 10,
+		float OriginY = 18,
+		float PixelsPerUnit = 16,
+		bool Smoothing = false,
+		bool Looping = false,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

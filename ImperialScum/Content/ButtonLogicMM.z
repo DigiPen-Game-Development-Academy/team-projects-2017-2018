@@ -1,0 +1,39 @@
+class ButtonLogicMM : ZilchComponent
+{
+    var SoundToPlay : SoundCue = SoundCue.MenuSelect;
+    //Author - Jessica
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Owner, Events.LeftMouseDown, this.OnLeftMouseDown);
+        Zero.Connect(this.Owner, Events.LeftMouseUp, this.OnLeftMouseUp);
+    }
+
+    function OnLeftMouseUp(event : ViewportMouseEvent)
+    {
+        this.Owner.Transform.Scale = Real3(1.1,1.1,1.1);
+    }
+
+    function OnLeftMouseDown(event : ViewportMouseEvent)
+    {
+        this.Owner.Transform.Scale = Real3(1,1,1.1);
+    }
+
+    function OnMouseExit(event : ViewportMouseEvent)
+    {
+        this.Owner.Transform.Scale = Real3(1,1,1);
+    }
+
+    function OnMouseEnter(event : ViewportMouseEvent)
+    {
+        this.Owner.Transform.Scale = Real3(1.1,1.1,1.1);
+        this.Owner.SoundEmitter.PlayCue(this.SoundToPlay);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

@@ -1,0 +1,42 @@
+class SpriteTextFlashColor : ZilchComponent
+{
+     [Property] var FlashTime : Real = 0.0;
+    
+    [Property] var FlashColor : Real4 = Real4.Zero;
+    [Property] var FlashScale : Real3 = Real3();
+    
+    var DefaultColor : Real4 = Real4.Zero;
+    var DefaulScale : Real3 = Real3();
+    
+    var Flash : Boolean = false;
+    
+    var Timer : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.DefaultColor = this.Owner.SpriteText.Color;
+        this.DefaulScale = this.Owner.Transform.Scale;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Flash)
+        {
+            this.Owner.SpriteText.Color = this.FlashColor;
+            this.Owner.Transform.Scale = this.FlashScale;
+            
+            this.Timer +=  event.Dt;
+            
+            if(this.Timer >= this.FlashTime)
+            {
+                this.Owner.SpriteText.Color = this.DefaultColor;
+                this.Owner.Transform.Scale = this.DefaulScale;
+                
+                this.Flash = false;
+                this.Timer = 0.0;
+            }
+        }
+    }
+}

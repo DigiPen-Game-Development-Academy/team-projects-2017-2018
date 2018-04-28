@@ -1,0 +1,21 @@
+//Sam
+//Makes the slimy feet stay on the player
+
+class JumpToPlayer : ZilchComponent
+{
+    var Player : Cog = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        //This is where the magic happens
+        if (this.Player != null)
+        {
+            this.Owner.Transform.Translation = this.Player.Transform.Translation;
+        }
+    }
+}

@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "DialogButton",
+		uint64 ResourceId = 5a7ce07ee2573189,
+	},
+},

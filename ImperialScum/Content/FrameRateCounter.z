@@ -1,0 +1,23 @@
+class FrameRateCounter : ZilchComponent
+{
+    var FPS : Array[Real] = new Array[Real]();
+    [Property] var Window : Integer = 50;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.FPS.Add(1.0 / event.Dt);
+        while (this.FPS.Count > this.Window) this.FPS.RemoveAt(0);
+        var min = Real.PositiveMax;
+        var max = 0.0;
+        foreach(var fps in this.FPS)
+        {
+            if (fps < min) min = fps;
+            if (fps > max) max = fps;
+        }
+        this.Owner.SpriteText.Text = "min: `min` fps\nmax: `max` fps";
+    }
+}

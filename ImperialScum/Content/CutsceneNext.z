@@ -1,0 +1,80 @@
+class CutsceneNext : ZilchComponent
+{
+    [Property] var LevelToLoad : Level;
+    
+    var Next : Integer = 0;
+    
+    var StartTimer : Boolean = false;
+    var Timer : Real = 0.4;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+    }
+
+    function OnMouseDown(event : ViewportMouseEvent)
+    {
+        var change = this.Space.FindObjectByName("ChangeText");
+        var change2 = this.Space.FindObjectByName("ChangeText2");
+        var change3 = this.Space.FindObjectByName("ChangeText3");
+        var change4 = this.Space.FindObjectByName("ChangeText4");
+        var aiexample = this.Space.FindObjectByName("BOSS");
+        var buttonText = this.Owner.FindChildByName("ContinueGame");
+        if(this.Next == 0)
+        {
+            change.Transform.Translation = Real3(-12, 2.31, 0);
+            change3.Transform.Translation = Real3(-11.96, 2.28, -1);
+            change.SpriteText.Text = "During this time, scientists raced to build technology great enough to";
+            change3.SpriteText.Text = "During this time, scientists raced to build technology great enough to";
+            change2.SpriteText.Text = "ensure victory for their countries.";
+            change4.SpriteText.Text = "ensure victory for their countries.";
+            change4.SpriteText.Visible = true;
+            change2.SpriteText.Visible = true;
+            this.Next += 1;
+        }
+        else if(this.Next == 1)
+        {
+            change.Transform.Translation = Real3(-10, 2.31, 0);
+            change3.Transform.Translation = Real3(-9.96, 2.28, -1);
+            change2.Transform.Translation = Real3(-15, 1.01, 0);
+            change4.Transform.Translation = Real3(-14.96, 0.97, -1);
+            change.SpriteText.Text = "Mistakes were made, and one group of scientists created ";
+            change3.SpriteText.Text = "Mistakes were made, and one group of scientists created ";
+            change2.SpriteText.Text = "an AI that was programmed to destroy not only the enemy, but all life on the planet.";
+            change4.SpriteText.Text = "an AI that was programmed to destroy not only the enemy, but all life on the planet.";
+            aiexample.Sprite.Visible = true;
+            this.Next += 1;
+        }
+        else if(this.Next == 2)
+        {
+            aiexample.Sprite.Visible = false;
+            change.Transform.Translation = Real3(-10, 2.31, 0);
+            change3.Transform.Translation = Real3(-9.96, 2.28, -1);
+            change2.Transform.Translation = Real3(-11, 1.01, 0);
+            change4.Transform.Translation = Real3(-10.96, 0.97, -1);
+            change.SpriteText.Text = "You are one of the few humans left and have fled to a";
+            change3.SpriteText.Text = "You are one of the few humans left and have fled to a";
+            change2.SpriteText.Text  = "tiny, far-off island to escape the spreading destruction of the AI....";
+            change4.SpriteText.Text = "tiny, far-off island to escape the spreading destruction of the AI....";
+            this.Next += 1;
+        }
+        else
+        {
+            this.StartTimer = true;
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.StartTimer == true && this.Timer > 0)
+        {
+           this.Timer -= event.Dt; 
+        }
+        if(this.StartTimer == true && this.Timer <= 0)
+        {
+            this.GameSession.DispatchEvent
+        (Events.Fade, FadeEvent(this.LevelToLoad, 1, Real4.Zero, Real4(0,0,0,1)));
+        }
+    }
+}

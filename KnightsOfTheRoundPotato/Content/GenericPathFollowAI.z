@@ -1,0 +1,68 @@
+//Author Brandon Wolenetz
+
+class GenericPathFollowAI : ZilchComponent {
+    
+    var Timer : Real = 1;
+    
+    var Target : Real3 = Real3(0);
+    
+    var TurnSpeed : Real = 360;
+    
+    var Stunned : Boolean = false;
+    
+    var Active : Boolean = true;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.Stun, this.OnStun);
+    }
+
+    function OnStun(event : Stun) {
+        this.Stunned = true;
+        this.Timer = event.Time;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(!this.Active)
+            return;
+        
+        this.Timer -= event.Dt;
+        
+        var tSpeed = Math.ToRadians(this.TurnSpeed);
+        
+        if(this.Stunned) {
+            if(this.Timer <= 0)
+                this.Stunned = false;
+            return;
+        }
+        
+        if(this.Owner.EnemyPathFind.Path != null && (this.Owner.EnemyPathFind.Path.Count <= 0 || this.Timer <= 0)){
+            this.Timer = 1;
+            this.Owner.EnemyPathFind.Recalculate(this.Target);
+            if(this.Owner.EnemyPathFind.Path != null && this.Owner.EnemyPathFind.Path.Count <= 0){
+                this.Owner.EnemyPathFind.Path = null;
+            }
+        }
+        
+        if(this.Owner.EnemyPathFind.Path == null){
+            this.Owner.RigidBody.Velocity = Real3(0);
+        } else {
+            var tDir = this.Owner.EnemyPathFind.Path[0].WorldPos - this.Owner.Transform.WorldTranslation;
+            
+            this.Owner.RigidBody.Velocity = Math.Normalize(tDir);
+            
+            if(Math.Distance(this.Owner.EnemyPathFind.Path[0].WorldPos, this.Owner.Transform.WorldTranslation) < 0.1)
+                this.Owner.EnemyPathFind.Recalculate(this.Target);
+        }
+        
+    }
+    
+    function SetTarget (target : Real3) {
+        this.Target = target;
+        if(this.Owner.EnemyPathFind.Path == null) {
+            this.Timer = 1;
+            this.Owner.EnemyPathFind.Recalculate(this.Target);
+        }
+    }
+}

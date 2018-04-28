@@ -1,0 +1,58 @@
+class PlayWhenXFromPlayer : ZilchComponent
+{
+    [Dependency] var Speaker : SoundEmitter;
+    
+    [Property] var Distance : Real = 0;
+    [Property] var SoundToPlay : SoundCue = null;
+    [Property] var PlayMultipleTimes : Boolean = false;
+    [Property] var TimeTillReplay : Real = 10;
+    
+    var Player : Cog;
+    var Timer : Real;
+    var HasPlayed : Boolean;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.Player = this.Space.FindObjectByName("Player");
+        this.HasPlayed = false;
+        if (this.PlayMultipleTimes)
+        {
+            this.Timer = this.TimeTillReplay;
+        }
+        else 
+        {
+            this.Timer = 0;
+        }   
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.HasPlayed && this.PlayMultipleTimes)
+        {
+            if (this.Timer > 0)
+            {
+                this.Timer -= event.Dt;
+            }
+            else 
+            {
+                this.Timer = 0;
+                this.HasPlayed = false;
+            }
+        }
+        
+        if (this.Timer == 0 && !this.HasPlayed)
+        {
+            if (Math.Distance(this.Player.Transform.WorldTranslation, this.Owner.Transform.WorldTranslation) <= this.Distance)
+            {
+                if (this.SoundToPlay != null)
+                {
+                    this.Speaker.PlayCue(this.SoundToPlay);
+                    this.Timer = this.TimeTillReplay;
+                    this.HasPlayed = true;
+                }
+            }
+        }
+    }
+}

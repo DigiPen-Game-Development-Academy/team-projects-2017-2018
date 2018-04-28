@@ -1,0 +1,102 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+[RunInEditor] class DebugMenu : ZilchComponent {
+    
+    [Property] var DebugKey : Keys = Keys.F3;
+    
+    [Editable] var Memory : EditorButtonExecute {
+        get {
+            return EditorButtonExecute();
+        } set {
+            Zero.Editor.ExecuteCommand("Memory");
+        }
+    }
+    
+    var Enabled : Boolean = false;
+    
+    var Framerate : Real = 60.0;
+    var Timer : Real = 0.0;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(Zero.Keyboard.KeyIsPressed(this.DebugKey)) {
+            this.Enabled = !this.Enabled;
+            this.Owner.SpriteText.Visible = this.Enabled;
+        }
+        
+        this.UpdateDebugInfo(this.Enabled, event.Dt);
+        
+    }
+    
+    function UpdateDebugInfo(update : Boolean, dt : Real) {
+        
+        if(this.Timer >= 0.25) {
+            this.Framerate = Math.Round(1 / dt);
+            this.Timer = 0.0;
+        } else this.Timer += dt;
+        
+        if(update) {
+            
+            var camPos = Real3(0, 0, 0);
+            var plrPos = Real3(0, 0, 0);
+            var scrRes = this.LevelSettings.CameraViewport.ViewportResolution;
+            
+            if(Relocation.Space != null && Relocation.Space.FindObjectByName("Camera") != null)
+                camPos = Relocation.Space.FindObjectByName("Camera").Transform.WorldTranslation;
+            if(Relocation.Player != null)
+                plrPos = Relocation.Player.Transform.WorldTranslation;
+            
+            var fps = "`this.Framerate` fps (`Math.Round(dt * 100000) / 100`ms/frame)";
+            var screenRes = "`scrRes.X`x`scrRes.Y`";
+            var currLevel = "Undefined Level";
+            var camCoords = "`Math.Round(camPos.X * 1000) / 1000` / `Math.Round(camPos.Y * 1000) / 1000`";
+            var plrCoords = "`Math.Round(plrPos.X * 1000) / 1000` / `Math.Round(plrPos.Y * 1000) / 1000`";
+            
+            if(Relocation.Space != null)
+                currLevel = "`Relocation.Space.CurrentLevel.Name`";
+            if(this.CalcScreenStandard(scrRes) != null)
+                screenRes = "`screenRes` (`this.CalcScreenStandard(scrRes)`)";
+            
+            this.Owner.SpriteText.Text =
+                "`fps`\nDisplay Resolution: `screenRes`\n\nRegion: `currLevel`\nCamera XY: `camCoords`\nPlayer XY: `plrCoords`";
+            
+        }
+        
+    }
+    
+    function CalcScreenStandard(resolution : Real2) : String {
+        
+        var standardLabel = "";
+        
+        if(resolution.Y >= 720 && resolution.Y < 1440) {
+            if(resolution.Y >= 1080) {
+                standardLabel = "Full HD";
+            } else {
+                standardLabel = "HD";
+            }
+        } else if(resolution.Y >= 1440 && resolution.Y < 2160) {
+            standardLabel = "Quad HD";
+        } else if(resolution.Y >= 2160 && resolution.Y < 2880) {
+            standardLabel = "UHD";
+        } else if(resolution.Y >= 2880 && resolution.Y < 4320) {
+            standardLabel = "5K";
+        } else if(resolution.Y >= 4320 && resolution.Y < 8640) {
+            standardLabel = "8K";
+        } else if(resolution.Y >= 8640 && resolution.Y < 17280) {
+            standardLabel = "16K";
+        } else if(resolution.Y >= 17280) {
+            standardLabel = "Panel That Doesn't Exist";
+        }
+        
+        if(standardLabel != "")
+            return standardLabel;
+        else return null;
+        
+    }
+    
+}

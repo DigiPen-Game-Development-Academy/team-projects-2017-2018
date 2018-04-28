@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "EnterCannon",
+		uint64 ResourceId = 5a632a850b44b136,
+	},
+},

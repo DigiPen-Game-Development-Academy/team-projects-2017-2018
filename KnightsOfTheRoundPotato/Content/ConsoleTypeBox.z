@@ -1,0 +1,753 @@
+class ConsoleTypeBox : ZilchComponent {
+    
+    [Dependency]
+    var Reactive : Reactive;
+    
+    var CurrentIn : String = "";
+    var LastIn : String = "";
+    var History : Array[String];
+    var Selected : Boolean = false;
+    var Active : Boolean = false;
+    var Text : Cog = null;
+    var HistoryIndex : Integer = -1;
+    var InitialPos : Real3;
+    var ACIndex : Integer = -1;
+    var CursorIndex : Integer = 0;
+    var Cursor : Cog;
+    var Selection : Boolean = false;
+    var SelectionMax : Integer = 0;
+    var SelectionMin : Integer = 0;
+    var SelectionBar : Cog;
+    var Timer : Real = 1;
+    var Held : Boolean = false;
+    var Dir : Boolean = false;
+    var Offset : Real = 0;
+    var Auto : Cog;
+    var AutoSel : Cog;
+    var AutoText : Cog;
+    
+    function Initialize(init : CogInitializer) {
+        
+        Commands.Init();
+        
+        this.InitialPos = this.Owner.Parent.ScreenAlign.Offset;
+        
+        this.History = Array[String]();
+        this.History.Add("");
+        
+        this.Text = this.Owner.FindChildByName("Text");
+        this.Cursor = this.Owner.FindChildByName("Cursor");
+        this.SelectionBar = this.Owner.FindChildByName("Selection");
+        this.Auto = this.Owner.FindChildByName("Auto");
+        this.AutoSel = this.Auto.FindChildByName("Sel");
+        this.AutoText = this.Owner.FindChildByName("AutoText");
+        
+        this.Text.SpriteText.Color = Real4(1,1,1,1);
+        
+        this.UpdateAuto();
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(Zero.Keyboard, Events.TextTyped, this.OnTextTyped);
+        Zero.Connect(Zero.Keyboard, Events.KeyDown, this.OnKeyDown);
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+        Zero.Connect(this.Space, Events.MouseUp, this.OnMouseUp);
+        Zero.Connect(this.Space, Events.MouseMove, this.OnMouseMove);
+        Zero.Connect(this.GameSession, Events.KeyHeld, this.OnKeyHeld);
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        
+        Zero.Shell.ClipboardText;
+        
+    }
+
+    function OnMouseExit(event : ViewportMouseEvent) {
+        GlobalVariables.Cursor.CursorController.SetNormal();
+    }
+
+    function OnMouseEnter(event : ViewportMouseEvent) {
+        if(this.Selected && this.Active)
+            GlobalVariables.Cursor.CursorController.SetText();
+    }
+
+    function OnKeyHeld(event : KeyHeld) {
+        
+        this.Special(event.Key);
+        
+        this.UpdateAuto();
+        
+    }
+
+    function OnMouseMove(event : ViewportMouseEvent) {
+        
+        if(this.Held) {
+            
+            var mousePos = this.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 0);
+            
+            if(this.Dir) {
+                
+                this.SelectionMax = this.GetIndexFromPos(mousePos);
+                
+            } else {
+                
+                this.SelectionMin = this.GetIndexFromPos(mousePos);
+                
+            }
+            
+            if(this.SelectionMax < this.SelectionMin) {
+                
+                var temp = this.SelectionMin;
+                this.SelectionMin = this.SelectionMax;
+                this.SelectionMax = temp;
+                
+                this.Dir = !this.Dir;
+                
+            }
+            
+        }
+        
+    }
+
+    function OnMouseUp(event : ViewportMouseEvent) {
+        
+        if(!this.Selected || !this.Active) {
+            
+            return;
+            
+        }
+        
+        this.Held = false;
+        this.CursorIndex = this.GetIndexFromPos(this.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 0));
+        
+        if(this.SelectionMax == this.SelectionMin) {
+            
+            this.Selection = false;
+            this.Timer = 1;
+            this.Cursor.SpriteText.Visible = true;
+            
+        }
+        
+    }
+    
+    function GetIndexFromPos (pos : Real3) : Integer {
+        
+        var x = pos.X - this.Owner.Transform.WorldTranslation.X;
+        
+        for (var i = 0; i < this.CurrentIn.Count; ++i) {
+            
+            if(this.Text.SpriteText.MeasureGivenText(":>`this.CurrentIn.SubStringFromRuneIndices(0, i)`").X >= x) {
+                
+                return i;
+                
+            }
+            
+        }
+        
+        return this.CurrentIn.Count;
+        
+    }
+
+    function OnMouseDown(event : ViewportMouseEvent) {
+        
+        if (this.Selected) {
+            
+            this.Selection = true;
+            var index = this.GetIndexFromPos(this.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 0));
+            this.SelectionMax = index;
+            this.SelectionMin = index;
+            this.Held = true;
+            
+        }
+        
+        this.Selected = true;
+        
+    }
+
+    function OnKeyDown (event : KeyboardEvent) {
+        
+        if (!this.Selected && event.Key == Keys.Slash) {
+            
+            this.Selected = true;
+            
+        }
+        
+        if (event.Key == Keys.V && Zero.Keyboard.KeyIsDown(Keys.Control)) {
+            
+            if (this.Text.SpriteText.MeasureGivenText(":>`this.CurrentIn``Zero.Shell.ClipboardText`").X <= (this.Owner.Area.Size.X - 0.125)) {
+                
+                var str = Zero.Shell.ClipboardText;
+                var toAdd = "";
+                
+                for (var i = 0; i < str.Count; ++i) {
+                    //Console.WriteLine(str[i]);
+                    if(this.IsRenderable(str[i])) {
+                        toAdd = "`toAdd``String.FromChar(str[i])`";
+                    }
+                    
+                }
+                
+                this.CurrentIn = "`this.CurrentIn.SubStringFromRuneIndices(0, this.CursorIndex)``toAdd``this.CurrentIn.SubStringFromRuneIndices(this.CursorIndex, this.CurrentIn.Count)`";
+                this.CursorIndex += toAdd.Count;
+                
+            }
+            
+        }
+        
+        if (event.Key == Keys.C && Zero.Keyboard.KeyIsDown(Keys.Control)) {
+            
+            if (this.Selection) {
+                Zero.Shell.ClipboardText = this.CurrentIn.SubStringFromRuneIndices(this.SelectionMin, this.SelectionMax);
+                this.Selection = false;
+            }
+            
+        }
+        
+        if (event.Key == Keys.X && Zero.Keyboard.KeyIsDown(Keys.Control)) {
+            
+            if (this.Selection) {
+                Zero.Shell.ClipboardText = this.CurrentIn.SubStringFromRuneIndices(this.SelectionMin, this.SelectionMax);
+                
+                this.CurrentIn = "`this.CurrentIn.SubStringFromRuneIndices(0, this.SelectionMin)``this.CurrentIn.SubStringFromRuneIndices(this.SelectionMax, this.CurrentIn.Count)`";
+                this.CursorIndex = this.SelectionMin;
+                
+                this.Selection = false;
+            }
+            
+        }
+        
+        if (event.Key == Keys.A && Zero.Keyboard.KeyIsDown(Keys.Control)) {
+            
+            this.Selection = true;
+            this.SelectionMin = 0;
+            this.SelectionMax = this.CurrentIn.Count;
+            
+        }
+        
+        this.Special(event.Key);
+        
+        this.UpdateAuto();
+        
+    }
+
+    function OnTextTyped(event : KeyboardTextEvent) {
+        
+        if (this.Selected && this.Active) {
+            
+            var key = String.FromChar(event.Character);
+            
+            if(this.IsRenderable(event.Character) && this.Text.SpriteText.MeasureGivenText(":>`this.CurrentIn``key`").X < this.Owner.Area.Size.X - 0.05) {
+                
+                if(this.Selection) {
+                    
+                    this.CurrentIn = "`this.CurrentIn.SubStringFromRuneIndices(0, this.SelectionMin)``this.CurrentIn.SubStringFromRuneIndices(this.SelectionMax, this.CurrentIn.Count)`";
+                    this.CursorIndex = this.SelectionMin;
+                    
+                }
+                
+                this.CurrentIn = "`this.CurrentIn.SubStringFromRuneIndices(0, this.CursorIndex)``key``this.CurrentIn.SubStringFromRuneIndices(this.CursorIndex, this.CurrentIn.Count)`";
+                
+                this.LastIn = this.CurrentIn;
+                this.ACIndex = -1;
+                
+                ++this.CursorIndex;
+                
+                this.Selection = false;
+                
+                this.Timer = 1;
+                this.Cursor.SpriteText.Visible = true;
+                
+                this.UpdateAuto();
+                
+                return;
+                
+            }
+        }
+        
+        this.UpdateAuto();
+        
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        
+        //blinking
+        this.Timer -= event.Dt;
+        if(this.Timer <= 0.5) {
+            
+            this.Timer = 1;
+            this.Cursor.SpriteText.Visible = !this.Cursor.SpriteText.Visible;
+            
+        }
+        
+        if(!this.Selected || !this.Active || this.Held) {
+            
+            this.Timer = 1;
+            this.Cursor.SpriteText.Visible = false;
+            
+        }
+        
+        //selection stuffage
+        if(!this.Selection) {
+            
+            this.SelectionBar.Sprite.Visible = false;
+            
+        } else { 
+            
+            this.SelectionBar.Sprite.Visible = true;
+            
+            this.SelectionBar.Transform.Scale = Real3(this.Text.SpriteText.MeasureGivenText("`this.CurrentIn.SubStringFromRuneIndices(this.SelectionMin, this.SelectionMax)`").X, this.SelectionBar.Transform.Scale.Y, 1);
+            
+            this.SelectionBar.Transform.Translation = Real3(this.Text.SpriteText.MeasureGivenText(":>`this.CurrentIn.SubStringFromRuneIndices(0, this.SelectionMin)`").X-0.025, 0.125, 2);
+            
+            this.Timer = 1;
+            this.Cursor.SpriteText.Visible = false;
+            
+        }
+        
+        if(Zero.Keyboard.KeyIsPressed(GlobalVariables.InputManager.OpenConsole) && !this.Selected) {
+            
+            this.Active = !this.Active;
+            
+        }
+        
+        this.Owner.Sprite.Visible = this.Active;
+        
+        if(this.Active) {
+            
+            this.Owner.Parent.ScreenAlign.Offset = this.InitialPos;
+            
+        } else {
+            
+            this.Owner.Parent.ScreenAlign.Offset = this.InitialPos - Real3(0,this.Owner.Area.Size.Y,0);
+            
+        }
+        
+        this.Text.SpriteText.Visible = this.Active;
+        this.Text.SpriteText.Text = ":>`this.CurrentIn`";
+        
+        var pos = Real3(this.Text.SpriteText.MeasureGivenText(":>`this.CurrentIn.SubStringFromRuneIndices(0, this.CursorIndex)`").X-0.05, 0.25, 5);
+        
+        this.Cursor.Transform.Translation = pos;
+        
+        if(this.Selected && this.Active) {
+            
+            this.Owner.Sprite.Color = Real4(this.Owner.Sprite.Color.X, this.Owner.Sprite.Color.Y, this.Owner.Sprite.Color.Z, 1);
+            GlobalVariables.PauseMenu.MenuVisibilityController.Vis = true;
+            GlobalVariables.GameSpace.TimeSpace.Paused = true;
+            
+        } else {
+            
+            this.Owner.Sprite.Color = Real4(this.Owner.Sprite.Color.X, this.Owner.Sprite.Color.Y, this.Owner.Sprite.Color.Z, 0);
+            
+        }
+        
+        if(!this.Active && this.Selected) {
+            
+            this.Selected = false;
+            
+        }
+        
+    }
+    
+    function IsRenderable (code : Integer) : Boolean {
+        
+        return code >= " "[0] && code <= "~"[0];
+        
+    }
+    
+    function GetAC (str : String) : Array[String] {
+        
+        var strs = Array[String]();
+        
+        if (str.ToLower().StartsWith ("/give")) {
+            
+            foreach (var cmd in Utilities.Ids) {
+                
+                var nCmd = "/give `cmd.ID`";
+                
+                if (nCmd.ToLower().StartsWith(str.ToLower())) {
+                    
+                    strs.Add(nCmd);
+                    
+                }
+                
+            }
+            
+        } else if (str.StartsWith("/spawn")) {
+            
+            foreach (var id in Utilities.EnemiesIDS) {
+                
+                var nCmd = "/spawn `id.ID`";
+                
+                if (nCmd.ToLower().StartsWith(str.ToLower())) {
+                    
+                    strs.Add(nCmd);
+                    
+                }
+                
+            }
+            
+        } else {
+            
+            foreach (var cmd in Commands.Commands) {
+                
+                if (cmd.Cmd.ToLower().StartsWith(str.ToLower())) {
+                    
+                    strs.Add(cmd.Cmd);
+                    
+                }
+                
+            }
+            
+        }
+        
+        return strs;
+    }
+    
+    function Special (key : Keys) {
+        
+        if(!this.Selected || !this.Active) {
+            
+            return;
+            
+        }
+        
+        //backspace
+        if (key == Keys.Back) {
+        
+            if(this.CurrentIn.Count > 0 && this.CursorIndex > 0) {
+                
+                if(this.Selection) {
+                    
+                    this.CurrentIn = "`this.CurrentIn.SubStringFromRuneIndices(0, this.SelectionMin)``this.CurrentIn.SubStringFromRuneIndices(this.SelectionMax, this.CurrentIn.Count)`";
+                    this.CursorIndex = this.SelectionMin;
+                    
+                } else {
+                    
+                    this.CurrentIn = "`this.CurrentIn.SubStringFromRuneIndices(0, this.CursorIndex-1)``this.CurrentIn.SubStringFromRuneIndices(this.CursorIndex, this.CurrentIn.Count)`";
+                    --this.CursorIndex;
+                    
+                }
+                
+                this.LastIn = this.CurrentIn;
+                this.ACIndex = -1;
+                this.Selection = false;
+                
+                this.Timer = 1;
+                this.Cursor.SpriteText.Visible = true;
+                this.UpdateAuto();
+                
+            }
+        
+        } else if (key == Keys.Enter) {
+            
+            if (this.CurrentIn.Count != 0 && String.FromChar(this.CurrentIn.Get(0)) == "/") {
+                
+                Commands.CheckForCommands(this.CurrentIn);
+                
+                if(this.History[0] != this.CurrentIn) {
+                    
+                    this.History.Insert(0, this.CurrentIn);
+                    
+                }
+            } else {
+                
+                Utilities.ConsoleSend(this.CurrentIn, Real4(1,1,1,1));
+                
+            }
+            
+            this.CurrentIn = "";
+            this.LastIn = "";
+            this.Selected = false;
+            this.HistoryIndex = -1;
+            this.ACIndex = -1;
+            this.CursorIndex = 0;
+            this.Selection = false;
+            GlobalVariables.Cursor.CursorController.SetNormal();
+            
+        }else if (Zero.Keyboard.KeyIsDown(Keys.Shift) && key == Keys.Tab) {
+            
+            var ac = this.GetAC(this.LastIn);
+            if (ac.Count == 0)
+                return;
+            if (this.ACIndex == -1) {
+                
+                var str = "";
+                
+                foreach(var cmd in ac) {
+                    
+                    str = "`str`, `cmd`";
+                    
+                }
+                
+                //Utilities.ConsoleSend("Auto-Complete: `str`", Real4(0,1,0,1));
+            }
+            
+            --this.ACIndex;
+            
+            if(this.ACIndex < 0) {
+                this.ACIndex = ac.Count-1;
+            }
+            
+            this.CurrentIn = ac[this.ACIndex];
+            
+            this.CursorIndex = this.CurrentIn.Count;
+            this.Selection = false;
+            
+        } else if (key == Keys.Tab) {
+            
+            var ac = this.GetAC(this.LastIn);
+            if (ac.Count == 0)
+                return;
+            if (this.ACIndex == -1) {
+                
+                var str = "`ac[0]`";
+                
+                for(var i = 1; i < ac.Count; ++i) {
+                    
+                    str = "`str`, `ac[i]`";
+                    
+                }
+                
+                //Utilities.ConsoleSend("Auto-Complete: `str`", Real4(0,1,0,1));
+            }
+            
+            ++this.ACIndex;
+            
+            if (this.ACIndex > ac.Count-1) {
+                this.ACIndex = 0;
+            }
+            
+            this.CurrentIn = ac[this.ACIndex];
+            
+            this.CursorIndex = this.CurrentIn.Count;
+            this.Selection = false;
+            
+            this.Timer = 1;
+            this.Cursor.SpriteText.Visible = true;
+            
+        } else if (key == Keys.Up) {
+            
+            ++this.HistoryIndex;
+            
+            if(this.HistoryIndex > this.History.Count-2) {
+                
+                this.HistoryIndex = this.History.Count-2;
+                
+            }
+            
+            
+            if(this.History.Count > 1) {
+                
+                this.CurrentIn = this.History[this.HistoryIndex];
+                
+            }
+            
+            this.CursorIndex = this.CurrentIn.Count;
+            this.Selection = false;
+            
+            this.Timer = 1;
+            this.Cursor.SpriteText.Visible = true;
+            this.ACIndex = -1;
+            this.LastIn = this.CurrentIn;
+            
+        } else if (key == Keys.Down) {
+            
+            --this.HistoryIndex;
+            
+            if(this.HistoryIndex < 0) {
+                
+                this.HistoryIndex = 0;
+                
+            }
+            
+            if(this.History.Count > 1) {
+                
+                this.CurrentIn = this.History[this.HistoryIndex];
+                
+            }
+            
+            this.CursorIndex = this.CurrentIn.Count;
+            this.Selection = false;
+            
+            this.Timer = 1;
+            this.Cursor.SpriteText.Visible = true;
+            this.ACIndex = -1;
+            this.LastIn = this.CurrentIn;
+            
+        } else if (key == Keys.Left) {
+            
+            --this.CursorIndex;
+            
+            if (this.CursorIndex < 0) {
+                
+                this.CursorIndex = 0;
+                
+            }
+            
+            if(Zero.Keyboard.KeyIsDown(Keys.Shift)) {
+                
+                if(!this.Selection) {
+                    
+                    this.Selection = true;
+                    this.SelectionMax = this.CursorIndex+1;
+                    this.SelectionMin = this.CursorIndex;
+                    
+                } else {
+                    
+                    //Console.WriteLine(this.SelectionMin - this.CursorIndex);
+                    
+                    if(this.SelectionMin - this.CursorIndex < 1 && this.CursorIndex != 0) {
+                        
+                        this.SelectionMax = this.CursorIndex;
+                        
+                    } else {
+                        
+                        this.SelectionMin = this.CursorIndex;
+                        
+                    }
+                    
+                }
+                
+            } else {
+                
+                this.Selection = false;
+                this.Timer = 1;
+                this.Cursor.SpriteText.Visible = true;
+                
+                if(Zero.Keyboard.KeyIsDown(Keys.Control)) {
+                    
+                    this.CursorIndex = 0;
+                    
+                }
+                
+            }
+            
+        } else if (key == Keys.Right) {
+            
+            ++this.CursorIndex;
+            if (this.CursorIndex > this.CurrentIn.Count) {
+                
+                this.CursorIndex = this.CurrentIn.Count;
+                
+            }
+            
+            if(Zero.Keyboard.KeyIsDown(Keys.Shift)) {
+                if(!this.Selection) {
+                    
+                    this.Selection = true;
+                    this.SelectionMax = this.CursorIndex;
+                    this.SelectionMin = this.CursorIndex-1;
+                    
+                } else {
+                    
+                    //Console.WriteLine(this.SelectionMax - this.CursorIndex);
+                    
+                    if(this.SelectionMax - this.CursorIndex < 0 || this.CursorIndex == this.CurrentIn.Count) {
+                        
+                        this.SelectionMax = this.CursorIndex;
+                        
+                    } else {
+                        
+                        this.SelectionMin = this.CursorIndex;
+                        
+                    }
+                    
+                }
+                
+            } else {
+                
+                this.Selection = false;
+                this.Timer = 1;
+                this.Cursor.SpriteText.Visible = true;
+                
+                if(Zero.Keyboard.KeyIsDown(Keys.Control)) {
+                    
+                    this.CursorIndex = this.CurrentIn.Count;
+                    
+                }
+                
+            }
+            
+        } else if (key == Keys.Delete) {
+            
+            if(this.CursorIndex + 1 <= this.CurrentIn.Count) {
+                
+                this.CurrentIn = "`this.CurrentIn.SubStringFromRuneIndices(0, this.CursorIndex)``this.CurrentIn.SubStringFromRuneIndices(this.CursorIndex + 1, this.CurrentIn.Count)`";
+                
+            }
+            
+        }
+    }
+    
+    //update the auto-complete visuals
+    function UpdateAuto () {
+        
+        var ac = this.GetAC(this.LastIn);
+        
+        if(ac.Count <= 0 || !this.Selected || !this.Active) {
+            
+            this.Auto.SpriteText.Visible = false;
+            
+            this.AutoSel.Sprite.Visible = false;
+            
+            this.Auto.FindChildByName("back").Sprite.Visible = false;
+            
+            this.AutoText.SpriteText.Visible = false;
+            
+            return;
+            
+        }
+        
+        this.Auto.SpriteText.Visible = true;
+        
+        this.AutoSel.Sprite.Visible = true;
+        
+        this.Auto.FindChildByName("back").Sprite.Visible = true;
+        
+        this.Auto.SpriteText.Text = "";
+        
+        for (var i = 0; i < ac.Count; ++i) {
+            
+            this.Auto.SpriteText.Text = "`ac[i]`\n`this.Auto.SpriteText.Text`";
+            
+        }
+        
+        this.Auto.Area.Size = Real2(4, 100);
+        
+        this.Auto.Area.Size = this.Auto.SpriteText.MeasureText();
+        
+        if(this.ACIndex == -1) {
+            
+            this.AutoSel.Area.Size = this.Auto.SpriteText.MeasureGivenText(ac[0]);
+            
+            this.AutoSel.Transform.Translation = Real3(0, 0, 1);
+            
+            if(this.CursorIndex == this.CurrentIn.Count) {
+                
+                this.AutoText.Transform.Translation = Real3(this.Text.SpriteText.MeasureGivenText(this.CurrentIn).X + 0.1, 0.125, 1);
+                
+                //Console.WriteLine(this.CurrentIn);
+                
+                this.AutoText.SpriteText.Text = ac[0].SubStringFromRuneIndices(this.CurrentIn.Count, ac[0].Count);
+                
+                this.AutoText.SpriteText.Visible = true;
+                
+            } else {
+                
+                this.AutoText.SpriteText.Visible = false;
+                
+            }
+            
+        } else {
+            
+            this.AutoText.SpriteText.Visible = false;
+            
+            this.AutoSel.Area.Size = Real2(this.Auto.Area.Size.X, this.Auto.SpriteText.MeasureGivenText(ac[this.ACIndex]).Y);
+            
+            this.AutoSel.Transform.Translation = Real3(0, this.Auto.SpriteText.MeasureGivenText(ac[this.ACIndex]).Y * this.ACIndex, 1);
+            
+        }
+        
+    }
+    
+}

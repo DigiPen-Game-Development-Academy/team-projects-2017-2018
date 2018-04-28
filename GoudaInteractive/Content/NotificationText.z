@@ -1,0 +1,69 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class NotificationText : ZilchComponent {
+    
+    [Property] var Lifetime : Real = 2.5;
+    
+    var TooltipText : String = "";
+    var TooltipLore : String = "";
+    
+    var TooltipColor : Real4 = Real4(1.0);
+    var TooltipLoreColor : Real4 = Real4(1.0);
+    
+    var CurrLifetime : Real = 0.0;
+    
+    function Initialize(init : CogInitializer) {
+        
+        Zero.Connect(this.Owner, Events.MouseUpdate, this.OnMouseUpdate);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+    }
+    
+    function OnMouseUpdate(event : ViewportMouseEvent) {
+        
+        if(this.TooltipText != "" || this.TooltipLore != "") {
+            
+            var lore = "";
+            
+            if(Zero.Keyboard.KeyIsDown(Keys.Control))
+                lore = this.TooltipLore;
+            
+            Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.ShowTooltip(true);
+            Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.TooltipText(
+                this.TooltipText,
+                lore,
+                this.TooltipColor,
+                this.TooltipLoreColor
+            );
+            
+        }
+        
+    }
+    
+    function OnMouseExit(event : ViewportMouseEvent) {
+        Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.ShowTooltip(false);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(Relocation.NotificationManager.NotificationCount <= Relocation.NotificationManager.MaxNotificationCount)
+            this.CurrLifetime += event.Dt;
+        else
+            this.CurrLifetime += event.Dt * 4;
+        
+        if(this.CurrLifetime > this.Lifetime * 0.75) {
+            this.Owner.RemoveComponentByName("UIAnimate");
+            this.Owner.AddComponentByName("UIAnimate");
+            this.Owner.UIAnimate.FadeOut(event.Dt, this.Lifetime * 0.75);
+        }
+        
+        if(this.CurrLifetime > this.Lifetime) {
+            Relocation.NotificationManager.RemoveNotification();
+            this.Owner.Destroy();
+        }
+        
+    }
+    
+}

@@ -1,0 +1,134 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+/* PLACES CHUNKS - DOES NOT ACTUALLY GENERATE THE CHUNK CONTENTS */
+class PlaceChunks : ZilchComponent {
+    
+    [Property] var ChunkWidth : Integer = 32;
+    [Property] var ZIndex : Real = 0.0;
+    
+    var ChunkMap : Array[Cog] = null;
+    
+    var Player : Cog = null;
+    
+    function Initialize(init : CogInitializer) {
+        
+        this.ChunkMap = new Array[Cog]();
+        this.Player = Relocation.Space.FindObjectByName(Relocation.EntityPlayer);
+        
+        if(this.Player != null && this.Player.PlayerProperties != null)
+            this.LoadChunks(this.Player.PlayerProperties.SpawnPosition.XY);
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.Player != null) {
+            
+            var playerPos = this.Player.Transform.WorldTranslation;
+            
+            if(Math.Round(playerPos.X) % this.ChunkWidth == 0 || Math.Round(playerPos.Y) % this.ChunkWidth == 0 || Relocation.TeleportTriggered || event.Dt > 0.25) {
+                this.LoadChunks(playerPos.XY);
+                Relocation.TeleportTriggered = false;
+            }
+            
+        }
+        
+    }
+    
+    function LoadChunks(pos : Real2) {
+        this.LoadChunkCenter(pos);
+        this.LoadChunkNorthWest(pos);
+        this.LoadChunkNorth(pos);
+        this.LoadChunkNorthEast(pos);
+        this.LoadChunkEast(pos);
+        this.LoadChunkSouthWest(pos);
+        this.LoadChunkSouth(pos);
+        this.LoadChunkSouthEast(pos);
+        this.LoadChunkWest(pos);
+    }
+    
+    function LoadChunkCenter(pos : Real2) {
+        if(!this.CheckForChunkAtPosition(this.SnapToGrid(pos, this.ChunkWidth)))
+            this.ChunkMap.Add(
+                this.Space.CreateAtPosition(Archetype.Chunk, this.SnapToGrid(pos, this.ChunkWidth))
+            );
+    }
+    
+    function LoadChunkNorth(pos : Real2) {
+        if(!this.CheckForChunkAtPosition(this.SnapToGrid(pos, this.ChunkWidth) + Real3(0.0, this.ChunkWidth, 0.0)))
+            this.ChunkMap.Add(
+                this.Space.CreateAtPosition(Archetype.Chunk, this.SnapToGrid(pos, this.ChunkWidth) + Real3(0.0, this.ChunkWidth, 0.0))
+            );
+    }
+    
+    function LoadChunkSouth(pos : Real2) {
+        if(!this.CheckForChunkAtPosition(this.SnapToGrid(pos, this.ChunkWidth) + Real3(0.0, -this.ChunkWidth, 0.0)))
+            this.ChunkMap.Add(
+                this.Space.CreateAtPosition(Archetype.Chunk, this.SnapToGrid(pos, this.ChunkWidth) + Real3(0.0, -this.ChunkWidth, 0.0))
+            );
+    }
+    
+    function LoadChunkEast(pos : Real2) {
+        if(!this.CheckForChunkAtPosition(this.SnapToGrid(pos, this.ChunkWidth) + Real3(this.ChunkWidth, 0.0, 0.0)))
+            this.ChunkMap.Add(
+                this.Space.CreateAtPosition(Archetype.Chunk, this.SnapToGrid(pos, this.ChunkWidth) + Real3(this.ChunkWidth, 0.0, 0.0))
+            );
+    }
+    
+    function LoadChunkWest(pos : Real2) {
+        if(!this.CheckForChunkAtPosition(this.SnapToGrid(pos, this.ChunkWidth) + Real3(-this.ChunkWidth, 0.0, 0.0)))
+            this.ChunkMap.Add(
+                this.Space.CreateAtPosition(Archetype.Chunk, this.SnapToGrid(pos, this.ChunkWidth) + Real3(-this.ChunkWidth, 0.0, 0.0))
+            );
+    }
+    
+    function LoadChunkNorthWest(pos : Real2) {
+        if(!this.CheckForChunkAtPosition(this.SnapToGrid(pos, this.ChunkWidth) + Real3(-this.ChunkWidth, this.ChunkWidth, 0.0)))
+            this.ChunkMap.Add(
+                this.Space.CreateAtPosition(Archetype.Chunk, this.SnapToGrid(pos, this.ChunkWidth) + Real3(-this.ChunkWidth, this.ChunkWidth, 0.0))
+            );
+    }
+    
+    function LoadChunkNorthEast(pos : Real2) {
+        if(!this.CheckForChunkAtPosition(this.SnapToGrid(pos, this.ChunkWidth) + Real3(this.ChunkWidth, this.ChunkWidth, 0.0)))
+            this.ChunkMap.Add(
+                this.Space.CreateAtPosition(Archetype.Chunk, this.SnapToGrid(pos, this.ChunkWidth) + Real3(this.ChunkWidth, this.ChunkWidth, 0.0))
+            );
+    }
+    
+    function LoadChunkSouthWest(pos : Real2) {
+        if(!this.CheckForChunkAtPosition(this.SnapToGrid(pos, this.ChunkWidth) + Real3(-this.ChunkWidth, -this.ChunkWidth, 0.0)))
+            this.ChunkMap.Add(
+                this.Space.CreateAtPosition(Archetype.Chunk, this.SnapToGrid(pos, this.ChunkWidth) + Real3(-this.ChunkWidth, -this.ChunkWidth, 0.0))
+            );
+    }
+    
+    function LoadChunkSouthEast(pos : Real2) {
+        if(!this.CheckForChunkAtPosition(this.SnapToGrid(pos, this.ChunkWidth) + Real3(-this.ChunkWidth, this.ChunkWidth, 0.0)))
+            this.ChunkMap.Add(
+                this.Space.CreateAtPosition(Archetype.Chunk, this.SnapToGrid(pos, this.ChunkWidth) + Real3(-this.ChunkWidth, this.ChunkWidth, 0.0))
+            );
+    }
+    
+    function SnapToGrid(pos : Real2, gridWidth : Real) : Real3 {
+        
+        var x = Math.Floor(pos.X / gridWidth) * gridWidth;
+        var y = Math.Floor(pos.Y / gridWidth) * gridWidth;
+        
+        return Real3(x, y, this.ZIndex);
+        
+    }
+    
+    function CheckForChunkAtPosition(position : Real3) : Boolean {
+        
+        foreach(var chunk in this.ChunkMap)
+            if(chunk.Transform.WorldTranslation.XY == position.XY) return true;
+        
+        return false;
+        
+    }
+    
+}

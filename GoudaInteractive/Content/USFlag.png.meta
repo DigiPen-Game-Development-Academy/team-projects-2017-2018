@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "USFlag",
+		uint64 ResourceId = 5adf1a308070ae2c,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 930,
+		uint FrameSizeY = 530,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 465,
+		float OriginY = 265,
+		float PixelsPerUnit = 512,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

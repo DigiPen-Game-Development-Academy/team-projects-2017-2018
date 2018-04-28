@@ -1,0 +1,85 @@
+class GoTowardSpecifiedPos : ZilchComponent
+{
+    [Property] var Speed : Real = 0.0;
+    
+    var DefaultPos : Real3 = Real3.Zero;
+    
+    var T : Real = 0.0;
+    
+    var SpinDirection : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.DefaultPos = this.Owner.Transform.Translation;
+        
+        var position = Real3.Zero;
+            
+        var horOrVert = Random().CoinFlip();
+        
+        var upOrDown = Random().CoinFlip();
+        
+        var leftOrRight = Random().CoinFlip();
+        
+        if(horOrVert)
+        {
+            //horizontal
+            
+            if(leftOrRight)
+            {
+                //left
+                
+                position.X -= Random().Range(50,60);
+                
+                position.Y = Random().Range(-25, 25);
+            }
+            else
+            {
+                //right
+                
+                position.X += Random().Range(50,60);
+                
+                position.Y = Random().Range(-25, 25);
+            }
+        }
+        else
+        {
+            //vertical
+            
+            if(upOrDown)
+            {
+                //up
+                
+                position.Y += Random().Range(50,60);
+                
+                position.X = Random().Range(-25, 25);
+            }
+            else
+            {
+                //down
+                
+                position.Y -= Random().Range(50,60);
+                
+                position.X = Random().Range(-25, 25);
+            }
+        }
+        
+        this.Owner.Transform.Translation = position;
+        
+        this.SpinDirection = Random().Range(-1,1);
+        
+        this.Owner.Sprite.FlipX = Random().CoinFlip();
+        
+        this.Owner.Sprite.FlipY = Random().CoinFlip();
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Owner.Transform.Translation = Real3(Math.Lerp(this.Owner.Transform.Translation.X, this.DefaultPos.X, this.T), Math.Lerp(this.Owner.Transform.Translation.Y, this.DefaultPos.Y, this.T), 2.0);
+        
+        this.T += event.Dt * this.Speed;
+        
+        this.Owner.Transform.EulerAngles += Real3(0.0,0.0,Math.ToRadians(this.SpinDirection));
+    }
+}

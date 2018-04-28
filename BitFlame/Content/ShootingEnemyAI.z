@@ -1,0 +1,133 @@
+class ShootingEnemyAI : ZilchComponent
+{
+    [Property] var Speed : Real = 0.0;
+    
+    [Property] var RotationSpeed : Real = 0.0;
+    
+    [Property] var GrappleSpeed : Real = 0.0;
+    
+    [Property] var FollowRange : Real = 8.0;
+    
+    [Property] var OrbitRange : Real = 5.0;
+    
+    [Property] var FireRate : Real = 0.0;
+    
+    [Property] var BulletSpeed : Real = 0.0;
+    
+    [Property] var Bullet : Archetype = null;
+    
+    var Tracking : Boolean = false;
+    
+    var Target : Cog = null;
+    
+    var Collision : Boolean = false;
+    
+    var Timer : Real = 2.0;
+    
+    var GunTimer : Real = 0.0;
+    
+    function Shoot(dt : Real)
+    {
+        this.GunTimer = 0.0;
+        
+        var bullet = this.Space.CreateAtPosition(this.Bullet, this.Owner.Transform.Translation + this.Owner.Orientation.WorldForward);
+        
+        bullet.Orientation.LookAtPointWithUp(this.Space.FindObjectByName("Player").Transform.Translation, Real3(0.0,0.0,1.0));
+        
+        bullet.RigidBody.Velocity = Math.Normalize(this.Space.FindObjectByName("Player").Transform.Translation - this.Owner.Transform.Translation) * dt * this.BulletSpeed;
+    }
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        
+        this.Target = this.Space.FindObjectByName("Player");
+        
+        // If this enemy is spawned during a wave set there FollowRange to a large number
+        if(this.GameSession.GameVars.ActiveWave == true)
+        {
+            this.FollowRange += 1000;
+        }
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.Name != "EnemyBullet")
+        {
+            this.Collision = true;
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        //Enemy needs to follow only when in range
+        
+        var player = this.Space.FindObjectByName("Player");
+        
+        if(player != null)
+        {
+            if(Math.Distance(this.Owner.Transform.Translation, this.Target.Transform.Translation) <= this.FollowRange)
+            {
+                
+                if(Math.Distance(this.Owner.Transform.Translation, this.Target.Transform.Translation) <= this.OrbitRange && this.Timer >= 2.0)
+                {
+                    var grapple = this.Owner.FindChildByName("Grapple");
+                    
+                    if(grapple.Transform.Scale.Y <= Math.Distance(this.Owner.Transform.Translation, this.Target.Transform.Translation))
+                    {
+                        grapple.Transform.Scale += Real3(0.0,1.0,0.0) * event.Dt * this.GrappleSpeed;
+                    }
+                    else
+                    {
+                        var rotationSpeedRadians = Math.ToRadians(this.RotationSpeed);
+                        var rotation = Math.ToQuaternion(Real3(0,0,rotationSpeedRadians * event.Dt));
+                        
+                        this.Owner.Transform.RotateAround(this.Target.Transform.WorldTranslation, rotation);
+                        
+                        /*if(this.Collision)
+                        {
+                            this.Collision = false;
+                            
+                            this.Timer = 0.0;
+                        }*/
+                        
+                        
+                        grapple.Transform.Scale = Real3(0.1,Math.Distance(this.Owner.Transform.Translation, this.Target.Transform.Translation),0.0);
+                        
+                        if(this.GunTimer > this.FireRate)
+                        {
+                            this.Shoot(event.Dt);
+                        }
+                        else
+                        {
+                            this.GunTimer += event.Dt;
+                        }
+                    }
+                }
+                else
+                {
+                    var grapple = this.Owner.FindChildByName("Grapple");
+                    
+                    if(grapple.Transform.Scale.Y >= 0.05)
+                    {
+                        grapple.Transform.Scale -= Real3(0.0,1.0,0.0) * event.Dt * this.GrappleSpeed * 2.0;
+                    }
+                    
+                    this.Timer += event.Dt;   
+                    
+                    this.Owner.RigidBody.Velocity += Math.Normalize(this.Target.Transform.Translation - this.Owner.Transform.Translation) * event.Dt * this.Speed;
+                }
+            }
+        }
+        
+        //Enemy needs to orbit only when in range
+        
+        //Enemy can only start orbiting after grapple has landed
+        
+        //Enemy disengages orbit after collision event
+        
+        //Enemy can only shoot when grappled
+    }
+}

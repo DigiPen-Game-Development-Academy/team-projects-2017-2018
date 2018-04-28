@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "MechaTailPoint",
+		uint64 ResourceId = 5a6853e97ecf561c,
+	},
+},

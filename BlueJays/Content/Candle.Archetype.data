@@ -1,0 +1,117 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Candle",
+	},
+	Archetyped = 
+	{
+		string Name = "5a56bfa2af355e29:Candle",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [-11.1093264, 9.30345821, -4],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [0.410000026, 0.222384036, 0.116850019, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5275aa4d802dd6dc:Square",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	SpriteParticleSystem = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		SystemChildMode ChildMode = Independent,
+		SystemSpace SystemSpace = WorldSpace,
+		uint DrawOrder = 0,
+		Vec4 Tint = [1, 0.2700001, 0, 1],
+		float WarmUpTime = 0,
+		ParticleGeometry GeometryMode = Billboarded,
+		ParticleRenderMode RenderMode = Additive,
+		ParticleSortMode SortMode = Youngest,
+		ParticleAnimation ParticleAnimation = Looping,
+		string Texture = "4fab71e8bcb7a8ce:DefaultTexture",
+		float VelocityScale = 1,
+		float LengthScale = 1,
+		float MaxParticleSize = 100,
+		Vec3 SystemSize = [4, 4, 4],
+	},
+	ParticleColorAnimator = 
+	{
+		Vec4 Color0 = [1, 0, 0, 0],
+		Vec4 Color1 = [1, 0.539999843, 0, 1],
+		Vec4 Color2 = [1, 0.960000157, 0, 1],
+		Vec4 Color3 = [1, 0.690000057, 0, 1],
+		Vec4 Color4 = [1, 0.240000129, 0, 0],
+	},
+	BoxParticleEmitter = 
+	{
+		bool Active = true,
+		uint EmitCount = 0,
+		float EmitRate = 10,
+		float EmitVariance = 0,
+		float Size = 0.25,
+		float SizeVariance = 0.00999999978,
+		float Lifetime = 1,
+		float LifetimeVariance = 0.200000003,
+		float Spin = 0,
+		float SpinVariance = 50,
+		bool RandomSpin = true,
+		float Fill = 0.340000004,
+		float EmitterVelocityPercent = 0,
+		Vec3 StartVelocity = [0, 0.5, 0],
+		Vec3 RandomVelocity = [0.100000001, 0.100000001, 0],
+		Vec3 TangentVelocity = [0, 0, 0],
+		Vec3 EmitterSize = [0, 0, 0],
+		bool FastMovingEmitter = false,
+	},
+	LinearParticleAnimator = 
+	{
+		Vec3 Force = [0, 0, 0],
+		Vec3 RandomForce = [0, 0, 0],
+		float Torque = 0,
+		float Growth = 0,
+		float Dampening = 0,
+		Vec3 Twist = [0, 0, 0],
+	},
+	Area = 
+	{
+		Vec2 Size = [0.100000001, 0.5],
+		Location Origin = Center,
+	},
+	SoundEmitter = 
+	{
+		float Volume = 1,
+		float Pitch = 0,
+		float PitchSemitones = 0,
+		bool UsePitchSemitones = true,
+		bool Positional = true,
+		int Version = 1,
+	},
+	SimpleSound = 
+	{
+		bool StartPlaying = true,
+		string CueName = "5a9ec16ed48bd707:Fire",
+	},
+},

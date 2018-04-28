@@ -1,0 +1,17 @@
+class MenuMusic : ZilchComponent
+{
+    var Music : SoundInstance = null;
+        
+    function Initialize(init : CogInitializer)
+    {
+        
+    }
+    
+    function EndMusic()
+    {
+        if(this.Music != null)
+        {
+            this.Music.Stop();   
+        } 
+    }
+}

@@ -1,0 +1,114 @@
+//Jacob Burke
+
+//This will move the sword boomerang towards the target that is placed by 
+//clicking the left mouse
+
+class SwordBoomerangMove : ZilchComponent
+{
+    [Property]
+    var Speed:Integer = 20;
+    
+    [Property]
+    var ReturnSpeed:Integer = 20;
+    
+    [Property]
+    var StartHangTime:Integer = 20;
+    
+    var HangTime:Integer = 0;
+    
+    [Property]
+    var SwingSFX:SoundCue;
+    
+    var Timer:Integer = 10;
+    
+    [Static]
+    var Moving:Boolean = true;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.Space.SoundSpace.PlayCue(this.SwingSFX);
+        this.HangTime = this.StartHangTime;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.TargetDestroyer != null)
+        {
+            SwordBoomerangMove.Moving = false;
+        }
+        
+        if(event.OtherObject.Name == ("Player") && SwordBoomerangMove.Moving == false)
+        {
+            this.Owner.Destroy();
+            SwordBoomerang.MarkerPlaced = false;
+            SwordBoomerangMove.Moving = true;
+        }
+        if(event.OtherObject.Name == ("DefaultTile"))
+        {
+            SwordBoomerangMove.Moving = false;
+        }
+        
+        
+        
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        //Timer for Repetitive Noises
+        this.Timer -= 1;
+        
+        if (this.Timer == 0)
+        {
+            this.Timer = 10;
+            this.Space.SoundSpace.PlayCue(this.SwingSFX);
+        }
+        
+        //Hang Time Decreasing. Sam did this amazing thing.
+        
+        if (SwordBoomerangMove.Moving == false && this.HangTime != 0)
+        {
+        this.HangTime -= 1;
+        }
+        
+        //Making the spritesource change based on upgrade level
+        if(Upgrades.SwordUpgrade == 0)
+        this.Owner.Sprite.SpriteSource = SpriteSource.Weap_SwordBoomerang_Wimpy;
+        
+        if(Upgrades.SwordUpgrade == 1)
+        this.Owner.Sprite.SpriteSource = SpriteSource.Weap_SwordBoomerang_Copper;
+        
+        if(Upgrades.SwordUpgrade >= 2)
+        this.Owner.Sprite.SpriteSource = SpriteSource.Weap_SwordBoomerang_Volcano;
+        
+        var target = this.Space.FindObjectByName("SwordTarget");
+        var player = this.Space.FindObjectByName("Player");
+        
+        if(player == null)
+        return;
+        
+        
+        if(SwordBoomerangMove.Moving == false && this.HangTime == 0)
+        {
+             this.Owner.RigidBody.Velocity = Math.Normalize(player.Transform.Translation - this.Owner.Transform.Translation)
+            * this.Speed; 
+        }
+        
+        if(target == null)
+        return;
+        
+        if(SwordBoomerangMove.Moving == true && this.HangTime != 0)
+        {
+        this.Owner.RigidBody.Velocity = Math.Normalize(target.Transform.Translation -
+        this.Owner.Transform.Translation)
+        * this.Speed;
+        }
+        
+        if(this.HangTime > 0 && this.HangTime < this.StartHangTime)
+        {
+        this.Owner.RigidBody.Velocity = Real3(0,0,0);
+        }
+        
+    }
+}

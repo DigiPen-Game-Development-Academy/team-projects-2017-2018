@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "TriggerAmmoZone",
+		uint64 ResourceId = 5aadbac16776e14a,
+	},
+},

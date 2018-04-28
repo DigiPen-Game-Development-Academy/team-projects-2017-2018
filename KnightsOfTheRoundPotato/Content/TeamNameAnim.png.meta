@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "TeamNameAnim",
+		uint64 ResourceId = 5af491d15ad51171,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 320,
+		uint FrameSizeY = 180,
+		uint FrameCount = 28,
+		float FrameDelay = 0.0416666679,
+		float OriginX = 160,
+		float OriginY = 90,
+		float PixelsPerUnit = 64,
+		bool Smoothing = false,
+		bool Looping = false,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

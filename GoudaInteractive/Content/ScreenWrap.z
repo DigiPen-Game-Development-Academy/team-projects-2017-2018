@@ -1,0 +1,83 @@
+class ScreenWrap : ZilchComponent
+{
+    [Property] var XWidth : Real = 10.0;
+    [Property] var YWidth : Real = 10.0;
+    [Property] var IsBackground : Boolean = true;
+    [Property] var BackgroundBase : SpriteSource;
+    [Property] var MaxNumberOfVariants : Integer = 0;
+    [Property] var ChanceOfVariant : Real = 10.0;
+    
+    var Player : Cog = null;
+    
+    var MinTimeBetweenSpriteChanges : Real = 2;
+    var TimeSinceLastSpriteChange : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.Player = this.Space.FindObjectByName("EntityPlayer");
+        this.RandomizeSprite();
+        this.TimeSinceLastSpriteChange = this.MinTimeBetweenSpriteChanges;
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.TimeSinceLastSpriteChange -= event.Dt;
+        
+        var playerPos = Real3();
+        
+        if (this.Player != null)
+            playerPos = this.Player.Transform.Translation;
+        var pos = this.Owner.Transform.Translation;
+        
+        if (this.Player != null)
+        {
+            if (pos.X < playerPos.X - this.XWidth)
+            {
+                this.Owner.Transform.Translation += Real3(this.XWidth * 2, 0.0, 0.0);
+                this.RandomizeSprite();
+            }
+            if (pos.X > playerPos.X + this.XWidth)
+            {
+                this.Owner.Transform.Translation += Real3(-this.XWidth * 2, 0.0, 0.0);
+                this.RandomizeSprite();
+            }
+            if (pos.Y < playerPos.Y - this.YWidth)
+            {
+                this.Owner.Transform.Translation += Real3(0.0, this.YWidth * 2, 0.0);
+                this.RandomizeSprite();
+            }
+            if (pos.Y > playerPos.Y + this.YWidth)
+            {
+                this.Owner.Transform.Translation += Real3(0.0, -this.YWidth * 2, 0.0);
+                this.RandomizeSprite();
+            }
+        }
+    }
+    
+    function RandomizeSprite()
+    {
+        if (this.MaxNumberOfVariants > 0)
+        {
+            var rand = new Random().Range(0, 100);
+            var isVariant = false;
+            
+            if (rand < this.ChanceOfVariant)
+                isVariant = true;
+            
+            Console.WriteLine("Is Variant: `isVariant`");
+            
+            if (isVariant == true)
+            {
+                var variantNum = new Random().Range(1, this.MaxNumberOfVariants);
+                
+                this.Owner.Sprite.SpriteSource = SpriteSource.Find("`this.BackgroundBase.Name`V`variantNum`");
+            }
+            else
+                this.Owner.Sprite.SpriteSource = this.BackgroundBase;
+        }
+        else
+            this.Owner.Sprite.SpriteSource = this.BackgroundBase;
+    }
+}

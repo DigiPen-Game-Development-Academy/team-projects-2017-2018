@@ -1,0 +1,35 @@
+// AUTHOR: MYLES BUSIG
+// CONTRIBUTORS: HUDSON GREEN
+
+class CaveEnteranceExit : ZilchComponent {
+    
+    [Property] var LevelToLoad : Level = Level.Find("CaveWorld");
+    [Property] var SpawnPosition : Real3 = Real3(0.0);
+    
+    function Initialize(init : CogInitializer)
+    {
+        
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.GoToFromCave);
+        
+    }
+    
+    function GoToFromCave(event : CollisionEvent)
+    {
+        
+        if(event.OtherObject.Name == Relocation.EntityPlayer) {
+            
+            //this.Space.LastUsedEnterancePosition.LastUsedPosition = this.Owner.Transform.Translation;
+            this.LevelSettings.UICreator.UISpace.Destroy();
+            
+            if(this.SpawnPosition != Real3(0.0))
+                PlayerData.SpawnPosition = this.SpawnPosition;
+            
+            Console.WriteLine("`PlayerData.SpawnPosition`");
+            
+            this.Space.LoadLevel(this.LevelToLoad);
+            
+        }
+        
+    }
+    
+}

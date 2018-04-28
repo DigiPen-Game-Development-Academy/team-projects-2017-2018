@@ -1,0 +1,14 @@
+class NumOfDeaths : ZilchComponent
+{
+    //Author - Jessica
+    [Static] var NumberOfDeaths : Integer = 0;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Owner.SpriteText.Text = "`NumOfDeaths.NumberOfDeaths`";
+    }
+}

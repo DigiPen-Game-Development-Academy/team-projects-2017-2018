@@ -1,0 +1,9 @@
+DataContent = 
+{
+	RichAnimationBuilder = 
+	{
+		string Name = "ExclaimPoint",
+		uint64 ResourceId = 5a3daac824e13d42,
+		string PreviewArchetype = "",
+	},
+},

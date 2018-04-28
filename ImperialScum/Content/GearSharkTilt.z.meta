@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "GearSharkTilt",
+		uint64 ResourceId = 5a4fd957742edc02,
+	},
+},

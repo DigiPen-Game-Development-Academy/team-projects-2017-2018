@@ -1,0 +1,49 @@
+class DeleteButton : ZilchComponent {
+    
+    var InitialColor : Real4;
+    
+    var LorePanel : Cog;
+    
+    function Initialize(init : CogInitializer) {
+        
+        this.InitialColor = this.Owner.Sprite.Color;
+        this.LorePanel = this.Owner.Parent.Parent.FindChildByName("LorePanel");
+        
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        if(GlobalVariables.Items[this.Owner.Parent.InventorySlot.Index] == null) {
+            this.Owner.Sprite.Visible = false;
+        } else {
+            this.Owner.Sprite.Visible = true;
+        }
+    }
+    
+    function OnMouseExit(event : ViewportMouseEvent) {
+        this.Owner.Sprite.Color = this.InitialColor;
+        this.LorePanel.Sprite.Visible = false;
+    }
+
+    function OnMouseEnter(event : ViewportMouseEvent) {
+        this.Owner.Sprite.Color = this.InitialColor + Real4(-0.3,0,0,0);
+        this.LorePanel.LorePanel.Text = "Drop `GlobalVariables.Items[this.Owner.Parent.InventorySlot.Index].Name`";
+        this.LorePanel.Sprite.Visible = true;
+    }
+
+    function OnMouseDown(event : ViewportMouseEvent) {
+        if(GlobalVariables.Items[this.Owner.Parent.InventorySlot.Index] == null)
+            return;
+        
+        var gItem = GlobalVariables.GameSpace.CreateAtPosition(Archetype.GroundItem, GlobalVariables.Player.Transform.WorldTranslation + Random().Real3(0, 0.5));
+        if(gItem != null) {
+            gItem.Transform.WorldTranslation = Real3(gItem.Transform.WorldTranslation.X, gItem.Transform.WorldTranslation.Y, 0);
+            gItem.ItemPickup.SetItem(GlobalVariables.Items[this.Owner.Parent.InventorySlot.Index]);
+            gItem.ItemPickup.Item.Ammount = GlobalVariables.Items[this.Owner.Parent.InventorySlot.Index].Ammount;
+        }
+        GlobalVariables.Items[this.Owner.Parent.InventorySlot.Index] = null;
+    }
+}

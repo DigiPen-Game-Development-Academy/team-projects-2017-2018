@@ -1,0 +1,18 @@
+//Author Brandon Wolenetz
+
+class AddDarkness : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        var darkness = this.Space.CreateAtPosition(Archetype.Darkness, this.Owner.Transform.WorldTranslation);
+        if(darkness != null){
+            darkness.AttachTo(this.Owner);
+            darkness.Transform.Translation = Real3(0,0,31);
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

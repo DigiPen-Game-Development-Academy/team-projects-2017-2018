@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "ShopSlam",
+		uint64 ResourceId = 5a6de2f77b0d1058,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 64,
+		uint FrameSizeY = 64,
+		uint FrameCount = 5,
+		float FrameDelay = 0.03125,
+		float OriginX = 32,
+		float OriginY = 32,
+		float PixelsPerUnit = 16,
+		bool Smoothing = false,
+		bool Looping = false,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

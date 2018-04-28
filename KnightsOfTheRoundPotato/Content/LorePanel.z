@@ -1,0 +1,44 @@
+class LorePanel : ZilchComponent
+{
+    
+    var Text : String = "";
+    
+    var Lore : SpriteText;
+    
+    [Property]
+    var Padding : Real = 0.1;
+    
+    function Initialize(init : CogInitializer)
+    {
+        
+        this.Lore = this.Owner.FindChildByName("Lore").SpriteText;
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+        this.Lore.Text = this.Text;
+        this.Owner.Area.Size = this.Lore.MeasureText();
+        this.Lore.Owner.Transform.Translation = Real3(-this.Owner.Area.Size.X/2, this.Owner.Area.Size.Y/2, 0.1);
+        this.Owner.Area.Size += Real2(this.Padding);
+        
+        
+        this.Owner.Transform.WorldTranslation = this.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 1) + Real3(this.Owner.Area.Size.X/2, this.Owner.Area.Size.Y/2, 0.1);
+        
+        var screenSize = this.LevelSettings.CameraViewport.ScreenToWorldZPlane(this.LevelSettings.CameraViewport.ViewportToScreen(this.LevelSettings.CameraViewport.ViewportResolution), 0);
+        screenSize = Real3(screenSize.X, -screenSize.Y, 0);
+        
+        if(this.Owner.Transform.WorldTranslation.X + (this.Owner.Area.Size.X/2) > screenSize.X) {
+            this.Owner.Transform.WorldTranslation += Real3(screenSize.X - (this.Owner.Transform.WorldTranslation.X + (this.Owner.Area.Size.X/2)), 0, 0);
+        }
+        
+        if(this.Owner.Transform.WorldTranslation.Y + (this.Owner.Area.Size.Y/2) > screenSize.Y) {
+            this.Owner.Transform.WorldTranslation += Real3(0, screenSize.Y - (this.Owner.Transform.WorldTranslation.Y + (this.Owner.Area.Size.Y/2)), 0);
+        }
+        
+        this.Lore.Visible = this.Owner.Sprite.Visible;
+        
+    }
+}

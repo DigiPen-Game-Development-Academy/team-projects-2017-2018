@@ -1,0 +1,135 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Filename: ChargingEnemyLogic.z                                                                              
+//Created by: Jakob McFarland                                                                                  
+//Contributors:   Luke                                                                                      
+//Last Modified: 3/30/18                                                                             
+//Brief: Controls the charging enemy's AI                                                                      
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class ChargingEnemyLogic : ZilchComponent
+{
+    var Target : Cog;
+    
+    [Dependency] var Transform : Transform;
+    
+    [Dependency] var RigidBody : RigidBody;
+    
+    [Dependency] var Sprite : Sprite;
+    
+    [Property] var Speed : Real = 3;
+    
+    [Property] var ChargeSpeed : Real = 8;
+    
+    [Property] var ChargeRange : Real = 8.0;
+    
+    [Property] var DetectionRange : Real = 18.0;
+    
+    [Property] var ChargeUpTime : Real = 3.0;
+    
+    [Property] var ChargeUpColor : Real4 = Real4(1, 0, 0, 1);
+    
+    [Property] var ChargeUpScale : Real3 = Real3(1.1, 1.1, 1);
+    
+    var Charging : Boolean = false;
+    
+    var ChargeSpot : Real3 = Real3(0, 0, 0);
+    
+    var OriginalColor : Real4;
+    
+    var OriginalScale : Real3;
+    
+    var SwitchAction : Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        this.OriginalScale = this.Transform.Scale;
+        this.OriginalColor = this.Sprite.Color;
+        
+        this.Target = this.Space.FindObjectByName("Player");
+        
+        // If this enemy is spawned during a wave set there detection range to a large number
+        if(this.GameSession.GameVars.ActiveWave == true)
+        {
+            this.DetectionRange += 1000;
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var player = this.Space.FindObjectByName("Player");
+        
+        if(player != null)
+        {
+            
+            if(this.Charging)
+            {         
+                if(!this.SwitchAction)
+                {
+                    this.SwitchAction = true;
+                    this.Owner.Actions.Cancel();
+                }
+                
+                var seq = Action.Sequence(this.Owner.Actions);
+                    
+                var grp = Action.Group(seq);
+                
+                Action.Property(grp, @this.Transform.Scale, this.OriginalScale, 0.5, Ease.Linear);
+                Action.Property(grp, @this.Sprite.Color, this.OriginalColor, 0.5, Ease.Linear);
+                
+                if(Math.ApproximatelyEqual(this.Owner.Transform.Translation.X, this.ChargeSpot.X, 0.5) 
+                    && Math.ApproximatelyEqual(this.Owner.Transform.Translation.Y, this.ChargeSpot.Y, 0.5))
+                {
+                    this.SwitchAction = false;
+                    this.Charging = false;
+                }
+                this.Owner.RigidBody.Velocity += Math.Normalize(this.ChargeSpot - this.Owner.Transform.Translation) * event.Dt * this.ChargeSpeed;                        
+            }
+            else
+            {
+                this.ChargeSpot = player.Transform.Translation;
+                
+                if(Math.Distance(this.Owner.Transform.Translation, this.Target.Transform.Translation) <= this.ChargeRange)
+                {
+                    if(this.SwitchAction)
+                    {
+                        this.SwitchAction = false;
+                        this.Owner.Actions.Cancel();
+                    }
+                                     
+                    this.RigidBody.Velocity = Real3(0,0,0);
+                    
+                    var seq = Action.Sequence(this.Owner.Actions);
+                    
+                    var grp = Action.Group(seq);
+
+                    Action.Property(grp, @this.Transform.Scale, this.ChargeUpScale, this.ChargeUpTime, Ease.Linear);
+                   
+                    Action.Property(grp, @this.Sprite.Color, this.ChargeUpColor, this.ChargeUpTime, Ease.Linear);
+                    
+                    //Action.Call(seq, this.Test);
+                    
+                    Action.Property(seq, @this.Charging, true, 0, Ease.Linear);
+                    
+                } 
+                else if(Math.Distance(this.Owner.Transform.Translation, this.Target.Transform.Translation) <= this.DetectionRange) 
+                {
+                    if(!this.SwitchAction)
+                    {
+                        this.SwitchAction = true;
+                        this.Owner.Actions.Cancel();
+                    }
+                    
+                    this.Owner.RigidBody.Velocity += Math.Normalize(this.Target.Transform.Translation - this.Owner.Transform.Translation) * event.Dt * this.Speed;
+
+                    var seq = Action.Sequence(this.Owner.Actions);
+                    
+                    var grp = Action.Group(seq);
+                    
+                    Action.Property(grp, @this.Transform.Scale, this.OriginalScale, 0.5, Ease.Linear);
+                    Action.Property(grp, @this.Sprite.Color, this.OriginalColor, 0.5, Ease.Linear);
+                } 
+            }
+        }
+    }
+}

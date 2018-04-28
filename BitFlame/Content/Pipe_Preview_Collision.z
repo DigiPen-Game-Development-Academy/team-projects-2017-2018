@@ -1,0 +1,78 @@
+/*************************************
+Filename:  Pipe_Preview_Collision.z
+Author: Jakob McFarland
+Contributors: NULL
+Last modified: 2/23/18
+Brief: This Component determines wether the owner is colliding with an object
+******************************************/
+
+class Pipe_Preview_Collision : ZilchComponent
+{
+    [Dependency] var Sprite : Sprite;
+    
+    [Property] var Type : BlockType;
+    
+    var InvalidColor : Real4 = Real4(1, 0, 0, 100);
+    
+    var OriginalColor : Real4;
+    
+    var PlacementInvalid : Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.OriginalColor = this.Sprite.Color;
+        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionPersisted);
+        Zero.Connect(this.Owner, Events.CollisionEnded, this.OnCollisionEnded);   
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);   
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Type == 0)
+        {
+            if(this.GameSession.GameVars.PlayerPipes <= 0)
+            {
+                this.Sprite.Color = this.InvalidColor;          
+            }
+            else
+            {
+                this.Sprite.Color = this.OriginalColor;
+            }
+        }
+        else if(this.Type == 1)
+        {
+            if(this.GameSession.GameVars.PlayerTurrets <= 0)
+            {
+                this.Sprite.Color = this.InvalidColor;          
+            }
+            else
+            {
+                this.Sprite.Color = this.OriginalColor;
+            }
+        }
+        
+    }
+
+    function OnCollisionPersisted(event : CollisionEvent)
+    {
+        if(event.OtherObject.Name != "Oxygen_Field")
+        {
+            this.PlacementInvalid = true;
+            //Console.WriteLine("`this.PlacementInvalid`");
+            this.Sprite.Color = this.InvalidColor;
+        }
+    }
+
+    function OnCollisionEnded(event : CollisionEvent)
+    {
+        if(event.OtherObject.Name != "Oxygen_Field")
+        {
+            this.PlacementInvalid = false;
+            //Console.WriteLine("`this.PlacementInvalid`");
+            this.Sprite.Color = this.OriginalColor;
+        }
+    }
+}
+
+   
+

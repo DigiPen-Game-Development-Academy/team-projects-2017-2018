@@ -1,0 +1,52 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "ArrowRight",
+	},
+	Archetyped = 
+	{
+		string Name = "5a3b2bc8dcaa3ef9:ArrowButtonsSkin",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0.200000003, -0.75, 1],
+		Vec3 Scale = [0.150000006, 0.150000006, 0.150000006],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 0.75],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5a3bd0e01dee97bf:Arrow",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = false,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	SkinButton = 
+	{
+	},
+	Reactive = 
+	{
+		bool Active = true,
+		bool CaptureMouse = true,
+	},
+	Area = 
+	{
+		Vec2 Size = [1, 0.75],
+		Location Origin = Center,
+	},
+},

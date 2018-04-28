@@ -1,0 +1,92 @@
+// AUTHOR: MYLES BUSIG
+// CONTRIBUTORS: N/A
+
+enum Condition { HasItem, EntityDeath, HasSeenMessage, None }
+enum Message { HasMoved, HasSprinted, HasOpenedInventory, HasOpenedCraftingMenu, HasTalkedAboutCrafting, TutorialComplete }
+
+class DoorCondition : ZilchComponent
+{
+    [Property] var Condition : Condition = Condition.None;
+    [Property] var Item : String = "ItemAir";
+    [Property] var ItemAmount : Integer = 0;
+    [Property] var EntityName : String = "null";
+    [Property] var Message : Message = Message.TutorialComplete;
+    
+    var Entity : Cog = null;
+    
+    var Player : Cog = null;
+    
+    var Unlocked : Boolean = false;
+    
+    [Property] var Debug : Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        if (this.Condition == Condition.EntityDeath)
+            this.Entity = this.Space.FindObjectByName(this.EntityName);
+        
+        this.Player = this.Space.FindObjectByName("EntityPlayer");
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.Debug == true)
+        {
+            Console.WriteLine("\n\n\n\n\n\n\n\n\n\n\n\n");
+            Console.WriteLine("-----------Entity \"`this.Owner`\"-----------------\n");
+            
+            Console.WriteLine("================   InDirect   ==============");
+            Console.WriteLine("Has Moved: `this.LevelSettings.Tutorial.HasMoved`");
+            Console.WriteLine("Has Sprinted: `this.LevelSettings.Tutorial.HasSprinted`");
+            Console.WriteLine("Has Opened INV: `this.LevelSettings.Tutorial.HasOpenedInventory`");
+            Console.WriteLine("Has Opened Crafting: `this.LevelSettings.Tutorial.HasOpenedCraftingMenu`");
+            Console.WriteLine("Has Talked: `this.LevelSettings.Tutorial.HasTalkedAboutCrafting`");
+            Console.WriteLine("Has Completed: `this.LevelSettings.Tutorial.TutorialComplete`");
+            Console.WriteLine("===========================================");
+            
+            Console.WriteLine("Message: `this.Message`");
+            Console.WriteLine("Unlocked: `this.Unlocked`");
+        }
+        
+        if (this.Condition == Condition.HasItem)
+        {
+            if (this.Player.Inventory.CheckForItems(Relocation.ItemManager.GetIDByName(this.Item), this.ItemAmount) && this.Unlocked == false)
+                this.Owner.Door.DoorState = DoorState.Unlocked;
+        }
+        else if (this.Condition == Condition.EntityDeath)
+        {
+            if (this.Entity == null && this.Unlocked == false)
+                this.Owner.Door.DoorState = DoorState.Unlocked;
+        }
+        else if (this.Condition == Condition.HasSeenMessage)
+        {
+            if (this.Message == Message.HasMoved && this.Unlocked == false)
+            {
+                if (this.LevelSettings.Tutorial.HasMoved == true)
+                    this.Owner.Door.DoorState = DoorState.Unlocked;
+            }
+            else if (this.Message == Message.HasSprinted && this.Unlocked == false)
+            {
+                if (this.LevelSettings.Tutorial.HasSprinted == true)
+                    this.Owner.Door.DoorState = DoorState.Unlocked;
+            }
+            else if (this.Message == Message.HasOpenedInventory && this.Unlocked == false)
+            {
+                if (this.LevelSettings.Tutorial.HasOpenedInventory == true)
+                    this.Owner.Door.DoorState = DoorState.Unlocked;
+            }
+            else if (this.Message == Message.HasOpenedCraftingMenu && this.Unlocked == false)
+            {
+                if (this.LevelSettings.Tutorial.HasOpenedCraftingMenu == true)
+                    this.Owner.Door.DoorState = DoorState.Unlocked;
+            }
+            else if ((this.Message == Message.HasTalkedAboutCrafting || this.Message == Message.TutorialComplete) && this.Unlocked == false)
+            {
+                if (this.LevelSettings.Tutorial.HasTalkedAboutCrafting == true)
+                    this.Owner.Door.DoorState = DoorState.Unlocked;
+            }
+        }
+    }
+}

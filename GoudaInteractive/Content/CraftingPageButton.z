@@ -1,0 +1,55 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class CraftingPageButton : ZilchComponent {
+    
+    [Property] var Page : Integer = 0;
+    
+    var ButtonClicked : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Owner, Events.MouseUpdate, this.OnMouseUpdate);
+    }
+    
+    function OnMouseEnter(event : ViewportMouseEvent) {
+        this.Owner.Sprite.Color = Real4(this.Owner.Sprite.Color.XYZ, 0.75);
+    }
+    
+    function OnMouseExit(event : ViewportMouseEvent) {
+        this.Owner.Sprite.Color = Real4(this.Owner.Sprite.Color.XYZ, 0.5);
+    }
+    
+    function OnMouseUpdate(event : ViewportMouseEvent) {
+        
+        if(event.Mouse.IsButtonDown(MouseButtons.Left) && !this.ButtonClicked) {
+            
+            this.ButtonClicked = true;
+            
+            if(Relocation.Space != null && Relocation.Space.FindObjectByName(Relocation.EntityPlayer) != null) {
+                
+                var player = Relocation.Space.FindObjectByName(Relocation.EntityPlayer);
+                var maxScrollPos = player.Crafting.MaxScroll;
+                
+                if(player != null) {
+                    
+                    if(this.Page <= maxScrollPos && this.Page >= 0) {
+                        player.Crafting.SetScrollPosition(this.Page);
+                    }
+                    
+                }
+                
+                if(this.Space.FindObjectByName("CraftingMenu").FindChildByName("ScrollNumber") != null) {
+                    this.Space.FindObjectByName("CraftingMenu").FindChildByName("ScrollNumber").SpriteText.Text = "`this.Page + 1`";
+                }
+                
+            }
+            
+        } else if(!event.Mouse.IsButtonDown(MouseButtons.Left)) {
+            this.ButtonClicked = false;
+        }
+        
+    }
+    
+}

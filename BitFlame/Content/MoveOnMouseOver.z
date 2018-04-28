@@ -1,0 +1,46 @@
+class MoveOnMouseOver : ZilchComponent
+{ 
+    [Property] var Speed : Real = 0.0;
+    
+    [Property] var EndColor : Real4 = Real4(0.0,0.0,0.0,1.0);
+    
+    [Property] var SelectedColor : Real4 = Real4(0.0,0.0,0.0,1.0);
+    
+    [Property] var Child : CogPath = null;
+    
+    var StartColor : Real4 = Real4.Zero;
+    
+    var OwnerStartColor : Real4 = Real4.Zero;
+    
+    function Initialize(init : CogInitializer)
+    {
+        if(this.Child != null && this.Child.Cog != null && this.Child.Cog.SpriteText != null)
+        {
+            Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+            
+            Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        
+            this.OwnerStartColor = this.Owner.SpriteText.Color;
+            
+            this.StartColor = this.Child.Cog.SpriteText.Color;
+        }
+    }
+
+    function OnMouseExit(event : ViewportMouseEvent)
+    {
+        if(this.Child.Cog.SpriteText != null)
+        {
+            this.Owner.SpriteText.Color = this.OwnerStartColor;    
+            Actions.Property(this.Owner.Actions, @this.Child.Cog.SpriteText.Color, this.StartColor, this.Speed, Ease.QuadInOut);
+        }
+    }
+
+    function OnMouseEnter(event : ViewportMouseEvent)
+    {
+        if(this.Child.Cog.SpriteText != null)
+        {
+            this.Owner.SpriteText.Color = this.SelectedColor; 
+            Actions.Property(this.Owner.Actions, @this.Child.Cog.SpriteText.Color, this.EndColor, this.Speed, Ease.QuadInOut);
+        }
+    }
+}

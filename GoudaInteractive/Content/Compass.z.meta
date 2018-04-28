@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "Compass",
+		uint64 ResourceId = 5a27c2db3e9a1d06,
+	},
+},

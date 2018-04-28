@@ -1,0 +1,128 @@
+
+
+
+class ZZ : ZilchComponent
+{
+    [Property] var AlienCrabEnemySource : Archetype = null;
+    
+    [Property] var AlienEnemySource : Archetype = null;
+    
+    [Property] var AsteroidChunkSource : Archetype = null;
+    
+    [Property] var AsteroidConfigSource : Archetype = null;
+    
+    [Property] var ChargingEnemySource : Archetype = null;
+    
+    [Property] var EnemyHiveSource : Archetype = null;
+    
+    [Property] var AluminumSource : Archetype = null;
+    
+    [Property] var CopperSource : Archetype = null;
+    
+    [Property] var HealthSource : Archetype = null;
+    
+    [Property] var OxygenSource : Archetype = null;
+    
+    [Property] var IronSource : Archetype = null;
+    
+    [Property] var TitaniumSource : Archetype = null;
+    
+    [Property] var UpgradeSource : Archetype = null;
+    
+    [Property] var IronBlockSource : Archetype = null;
+    
+    [Property] var OxygenPipeSource : Archetype = null;
+    
+    [Property] var OxygePipePreviewSource : Archetype = null;
+    
+    
+    
+    [Property] var AlienCrabEnemy : Real = 0.0;
+    
+    [Property] var AlienEnemy : Real = 0.0;
+    
+    [Property] var AsteroidChunk : Real = 0.0;
+    
+    [Property] var AsteroidConfig : Real = 0.0;
+    
+    [Property] var ChargingEnemy : Real = 0.0;
+    
+    [Property] var EnemyHive : Real = 0.0;
+    
+    [Property] var Aluminum : Real = 0.0;
+    
+    [Property] var Copper : Real = 0.0;
+    
+    [Property] var Health : Real = 0.0;
+    
+    [Property] var Oxygen : Real = 0.0;
+    
+    [Property] var Iron : Real = 0.0;
+    
+    [Property] var Titanium : Real = 0.0;
+    
+    [Property] var Upgrade : Real = 0.0;
+    
+    [Property] var IronBlock : Real = 0.0;
+    
+    [Property] var OxygenPipe : Real = 0.0;
+    
+    [Property] var OxygenPipePreview : Real = 0.0;
+    
+    
+    
+    var RandomGen : Random = Random();
+    
+    var ResourceArchetype : Archetype = null;
+    
+    
+    function SetUp()
+    {
+         var randNum = 0.0;
+            randNum += Math.Clamp(this.RandomGen.Range(0,100), 0.0, 100.0);
+            
+            if(randNum < this.AlienCrabEnemy)
+            {
+                this.ResourceArchetype = this.AluminumSource;
+            }
+            else if(randNum < this.AlienCrabEnemy + this.AlienEnemy)
+            {
+                this.ResourceArchetype = this.AlienEnemySource;
+            }
+            else if(randNum < this.AlienCrabEnemy + this.AlienEnemy + this.AsteroidChunk)
+            {
+                this.ResourceArchetype = this.AsteroidChunkSource;
+            }
+            else if(randNum < this.AlienCrabEnemy + this.AlienEnemy + this.AsteroidChunk + this.AsteroidConfig)
+            {
+                this.ResourceArchetype = this.AsteroidConfigSource;
+            }
+            else if(randNum < this.AlienCrabEnemy + this.AlienEnemy + this.AsteroidChunk + this.AsteroidConfig + this.ChargingEnemy)
+            {
+                this.ResourceArchetype = this.ChargingEnemySource;
+            }
+            else if(randNum < this.AlienCrabEnemy + this.AlienEnemy + this.AsteroidChunk + this.AsteroidConfig + this.ChargingEnemy + this.EnemyHive)
+            {
+                this.ResourceArchetype = this.EnemyHiveSource;
+            }
+            else if(randNum < this.AlienCrabEnemy + this.AlienEnemy + this.AsteroidChunk + this.AsteroidConfig + this.ChargingEnemy + this.EnemyHive + this.Aluminum)
+            {
+                this.ResourceArchetype = this.AluminumSource;
+            }
+            
+            
+            
+    
+    
+    
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+}

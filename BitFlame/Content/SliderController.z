@@ -1,0 +1,45 @@
+class SliderController : ZilchComponent
+{
+    var Touching : Boolean = false;
+    
+    var MousePos : Real3 = Real3.Zero;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.MouseMove, this.OnMouseMove);
+        
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnMouseMove(event : ViewportMouseEvent)
+    {
+        this.MousePos = event.ToWorldZPlane(0);
+    }
+
+    function OnMouseExit(event : ViewportMouseEvent)
+    {
+        this.Touching = false;
+    }
+
+    function OnMouseEnter(event : ViewportMouseEvent)
+    {
+        this.Touching = true;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(Zero.Mouse.IsButtonDown(MouseButtons.Left) && this.Touching)
+        {
+            var textShower = this.Space.FindObjectByName("Text Shower");
+            var soundBar = this.Space.FindObjectByName("SoundBar");
+            
+            textShower.SpriteText.Text = "`Math.Round(Math.Distance(soundBar.Transform.WorldTranslation, this.MousePos)* 10) `";
+            textShower.Transform.Translation = Real3(Math.Distance(soundBar.Transform.WorldTranslation, this.MousePos) / 10 - 0.5, 1.2, 1.0);
+            soundBar.Area.Size = Real2(Math.Distance(soundBar.Transform.WorldTranslation, this.MousePos) * 10, 1.0);
+        }
+    }
+}

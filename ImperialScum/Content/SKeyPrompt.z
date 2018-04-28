@@ -1,0 +1,59 @@
+class SKeyPrompt : ZilchComponent
+{
+    var StartTimer:Boolean = false;
+    
+    var PromptTimer:Real = 3;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Owner, Events.CollisionEnded, this.OnCollisionEnded);
+    }
+
+    function OnCollisionEnded(event : CollisionEvent)
+    {
+        if(event.OtherObject.PlayerController != null)
+        {
+        this.StartTimer = false;
+        this.PromptTimer = 3;
+        }
+        
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.PlayerController != null)
+        this.StartTimer = true;
+
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.StartTimer == true && this.PromptTimer > 0)
+        this.PromptTimer -= event.Dt;
+        
+        if(this.PromptTimer <= 0)
+        this.Owner.Sprite.Color = Real4(1,1,1,1);
+        else
+        this.Owner.Sprite.Color = Real4.Zero;
+    }
+}
+class TabPrompt : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Space.CurrentLevel == Level.BeginningLevel)
+        {
+        if(Hunger.Hunger <= 0)
+        this.Owner.Sprite.Color = Real4(1,1,1,1);
+        else
+        this.Owner.Sprite.Color = Real4.Zero;
+        }
+    }
+}

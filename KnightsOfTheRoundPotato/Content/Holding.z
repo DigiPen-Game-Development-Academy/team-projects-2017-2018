@@ -1,0 +1,28 @@
+class Holding : ZilchComponent {
+    
+    [Dependency] var Area : Area;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        var holdingItem : Item = null;
+        
+        if(GlobalVariables.UseWeapon.PrimarySelected) {
+            holdingItem = GlobalVariables.UseWeapon.Primary;
+        } else {
+            holdingItem = GlobalVariables.UseWeapon.Secondary;
+        }
+        
+        if(holdingItem.HoldingSprite != null && holdingItem.HoldingSprite != SpriteSource.Square) {
+            this.Owner.Sprite.Visible = true;
+            if(this.Owner.Sprite.SpriteSource != holdingItem.HoldingSprite)
+                this.Owner.Sprite.SpriteSource = holdingItem.HoldingSprite;
+        } else {
+            this.Owner.Sprite.Visible = false;
+        }
+        
+    }
+}

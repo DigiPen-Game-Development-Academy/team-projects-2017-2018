@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "ShowCameraWhenCloseTo",
+		uint64 ResourceId = 5af8fb2557ac98a2,
+	},
+},

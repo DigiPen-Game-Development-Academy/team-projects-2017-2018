@@ -1,0 +1,332 @@
+/*************************************
+Filename: Player_Pickup_Collection.z
+Author: Jakob McFarland
+Contributors: Sage Dupuy
+Last modified: 1/23/18
+Brief: This Component will cause the owner to collect the set amount of resources when it collides with a resource pickup
+******************************************/
+
+
+class Player_Pickup_Collection : ZilchComponent
+{
+    //does player have control?
+    [Property] var Active : Boolean = true;
+    
+    var Player : Cog;
+    
+    //on initialize
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    //on collision started
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(this.Active)
+        {
+            var otherObject = event.OtherObject;
+            
+            if(otherObject.ResourcePickup != null)
+            {
+                this.GameSession.GameVars.PlayerResources += otherObject.ResourcePickup.PickupValue;
+                this.Space.SoundSpace.PlayCue(SoundCue.PickupNoise);
+                otherObject.Destroy();
+            }
+            
+            if(otherObject.TitaniumPickup != null)
+            {
+                this.GameSession.GameVars.PlayerTitanium += otherObject.TitaniumPickup.PickupValue;
+                this.Space.SoundSpace.PlayCue(SoundCue.PickupNoise);
+                otherObject.Destroy();
+            }
+            
+            if(otherObject.AluminiumPickup != null)
+            {
+                this.GameSession.GameVars.PlayerAluminium += otherObject.AluminiumPickup.PickupValue;
+                this.Space.SoundSpace.PlayCue(SoundCue.PickupNoise);
+                otherObject.Destroy();
+            }
+            
+            if(otherObject.CopperPickup != null)
+            {
+                this.GameSession.GameVars.PlayerCopper += otherObject.CopperPickup.PickupValue;
+                this.Space.SoundSpace.PlayCue(SoundCue.PickupNoise);
+                otherObject.Destroy();            
+            }
+
+            if(otherObject.OxygenPickup != null)
+            {            
+                this.GameSession.GameVars.PlayerOxygen += otherObject.OxygenPickup.PickupValue;
+                
+                this.GameSession.GameVars.PlayerOxygen = Math.Clamp(this.GameSession.GameVars.PlayerOxygen, 0, this.GameSession.GameVars.PlayerMaxOxygen);
+                
+                this.Space.SoundSpace.PlayCue(SoundCue.PickupNoise);
+                otherObject.Destroy();            
+            }
+            
+            if(otherObject.HealthPickup != null)
+            {        
+                this.GameSession.GameVars.PlayerHealth += otherObject.HealthPickup.PickupValue;
+                
+                if(this.GameSession.GameVars.PlayerHealth > this.GameSession.GameVars.StartingPlayerHealth)
+                {
+                    this.GameSession.GameVars.PlayerHealth = this.GameSession.GameVars.StartingPlayerHealth;
+                }
+                this.Space.SoundSpace.PlayCue(SoundCue.PickupNoise);
+                otherObject.Destroy();
+            }
+          
+            if(otherObject.TurretPickup != null)
+            {
+                this.GameSession.GameVars.PlayerTurrets += otherObject.TurretPickup.PickupValue;
+
+                this.Space.SoundSpace.PlayCue(SoundCue.PickupNoise);
+                otherObject.Destroy();
+            }
+        
+            if(otherObject.UpgradePickup != null)
+            {
+                this.GameSession.GameVars.PlayerUpgradePoints += otherObject.UpgradePickup.PickupValue;
+
+                this.Space.SoundSpace.PlayCue(SoundCue.PickupNoise);
+                otherObject.Destroy();
+            }
+        
+            if(otherObject.PipePickup != null)
+            {
+                this.GameSession.GameVars.PlayerPipes += otherObject.PipePickup.PickupValue;
+                this.Space.SoundSpace.PlayCue(SoundCue.PickupNoise);
+                otherObject.Destroy();
+            }
+        }
+    }
+}
+
+// allows owner to collect this up as a resource pickup
+class ResourcePickup : ZilchComponent 
+{
+    [Property] var PickupValue : Integer = 0;
+    
+    [Property] var PickupRange : Real = 0.0;
+    [Property] var PickupSpeed : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+       Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var player = this.Space.FindObjectByName("Player");
+        
+        if(Math.Distance(this.Owner.Transform.Translation, player.Transform.Translation) <= this.PickupRange)
+        {
+            this.Owner.RigidBody.Velocity = Math.Normalize(player.Transform.Translation 
+                - this.Owner.Transform.Translation) * event.Dt * this.PickupSpeed;
+        }
+    }
+}
+
+// allows owner to collect this up as a copper pickup
+class CopperPickup : ZilchComponent
+{
+    [Property] var PickupValue : Integer = 0;
+    
+    [Property] var PickupRange : Real = 0.0;
+    [Property] var PickupSpeed : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+       Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var player = this.Space.FindObjectByName("Player");
+        
+        if(Math.Distance(this.Owner.Transform.Translation, player.Transform.Translation) <= this.PickupRange)
+        {
+            this.Owner.RigidBody.Velocity = Math.Normalize(player.Transform.Translation 
+                - this.Owner.Transform.Translation) * event.Dt * this.PickupSpeed;
+        }
+    }
+}
+
+// allows owner to collect this up as a titanium pickup
+class TitaniumPickup : ZilchComponent
+{
+    [Property] var PickupValue : Integer = 0;
+    
+    [Property] var PickupRange : Real = 0.0;
+    [Property] var PickupSpeed : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+       Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var player = this.Space.FindObjectByName("Player");
+        
+        if(Math.Distance(this.Owner.Transform.Translation, player.Transform.Translation) <= this.PickupRange)
+        {
+            this.Owner.RigidBody.Velocity = Math.Normalize(player.Transform.Translation 
+                - this.Owner.Transform.Translation) * event.Dt * this.PickupSpeed;
+        }
+    }
+}
+
+// allows owner to collect this up as a aluminium pickup
+class AluminiumPickup : ZilchComponent
+{
+    [Property] var PickupValue : Integer = 0;
+    
+    [Property] var PickupRange : Real = 0.0;
+    [Property] var PickupSpeed : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+       Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var player = this.Space.FindObjectByName("Player");
+        
+        if(Math.Distance(this.Owner.Transform.Translation, player.Transform.Translation) <= this.PickupRange)
+        {
+            this.Owner.RigidBody.Velocity = Math.Normalize(player.Transform.Translation
+                - this.Owner.Transform.Translation) * event.Dt * this.PickupSpeed;
+        }
+    }
+}
+
+// allows owner to collect this up as an oxygen pickup
+class OxygenPickup : ZilchComponent
+{
+    [Property] var PickupValue : Integer = 0;
+    
+    [Property] var PickupRange : Real = 0.0;
+    [Property] var PickupSpeed : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+       Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var player = this.Space.FindObjectByName("Player");
+        
+        if(Math.Distance(this.Owner.Transform.Translation, player.Transform.Translation) <= this.PickupRange)
+        {
+            this.Owner.RigidBody.Velocity = Math.Normalize(player.Transform.Translation 
+                - this.Owner.Transform.Translation) * event.Dt * this.PickupSpeed;
+        }
+    }
+}
+
+class HealthPickup : ZilchComponent
+{
+    [Property] var PickupValue : Integer = 0;
+    
+    [Property] var PickupRange : Real = 0.0;
+    [Property] var PickupSpeed : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+       Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var player = this.Space.FindObjectByName("Player");
+        
+        if(Math.Distance(this.Owner.Transform.Translation, player.Transform.Translation) <= this.PickupRange)
+        {
+            this.Owner.RigidBody.Velocity = Math.Normalize(player.Transform.Translation 
+                - this.Owner.Transform.Translation) * event.Dt * this.PickupSpeed;
+        }
+    }
+}
+
+class UpgradePickup : ZilchComponent
+{
+    [Property] var PickupValue : Integer = 0;
+    
+    [Property] var PickupRange : Real = 0.0;
+    
+    [Property] var PickupSpeed : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+       Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var player = this.Space.FindObjectByName("Player");
+        
+        if(player != null)
+        {
+            if(Math.Distance(this.Owner.Transform.Translation, player.Transform.Translation) <= this.PickupRange)
+            {
+                this.Owner.RigidBody.Velocity = Math.Normalize(player.Transform.Translation 
+                    - this.Owner.Transform.Translation) * event.Dt * this.PickupSpeed;
+            }
+        }
+    }
+}
+
+// allows owner to collect this up as a copper pickup
+class PipePickup : ZilchComponent
+{
+    [Property] var PickupValue : Integer = 0;
+    
+    [Property] var PickupRange : Real = 0.0;
+    
+    [Property] var PickupSpeed : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+       Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var player = this.Space.FindObjectByName("Player");
+        
+        if(Math.Distance(this.Owner.Transform.Translation, player.Transform.Translation) <= this.PickupRange)
+        {
+            this.Owner.RigidBody.Velocity = Math.Normalize(player.Transform.Translation 
+                - this.Owner.Transform.Translation) * event.Dt * this.PickupSpeed;
+        }
+    }
+}
+
+class TurretPickup : ZilchComponent
+{
+    [Property] var PickupValue : Integer = 0;
+    
+    [Property] var PickupRange : Real = 0.0;
+    
+    [Property] var PickupSpeed : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+       Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var player = this.Space.FindObjectByName("Player");
+        
+        if(Math.Distance(this.Owner.Transform.Translation, player.Transform.Translation) <= this.PickupRange)
+        {
+            this.Owner.RigidBody.Velocity = Math.Normalize(player.Transform.Translation 
+                - this.Owner.Transform.Translation) * event.Dt * this.PickupSpeed;
+        }
+    }
+}

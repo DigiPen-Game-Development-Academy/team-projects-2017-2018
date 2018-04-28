@@ -1,0 +1,9 @@
+DataContent = 
+{
+	RichAnimationBuilder = 
+	{
+		string Name = "DialogRev",
+		uint64 ResourceId = 5ae3f44c3a9f63f6,
+		string PreviewArchetype = "",
+	},
+},

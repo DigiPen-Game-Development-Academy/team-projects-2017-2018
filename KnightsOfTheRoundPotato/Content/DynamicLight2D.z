@@ -1,0 +1,366 @@
+//Author Brandon Wolenetz
+
+struct POI {
+    var Null : Boolean = false;
+    var X : Real;
+    var Y : Real;
+    var Param: Real;
+    var Angle : Real = 0;
+    
+    constructor (isNull : Boolean) {
+        this.Null = isNull;
+    }
+    constructor (x : Real, y : Real, param : Real) {
+        this.X = x;
+        this.Y = y;
+        this.Param = param;
+        this.Null = false;
+    }
+}
+
+struct PointStruct {
+    
+    var X : Real = 0;
+    var Y : Real = 0;
+    var Angle : Real = 0;
+    
+    constructor () {}
+    
+    constructor (x : Real, y : Real){
+        this.X = x;
+        this.Y = y;
+    }
+    
+}
+
+class DynamicLight2D : ZilchComponent
+{
+    
+    [Property]
+    var Range : Real = 30;
+    
+    var Mesh : Mesh;
+    
+    var Points : Array[PointReturn];
+    
+    var Dm : Cog;
+    
+    var Once : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        this.Points = Array[PointReturn]();
+        
+        this.Dm = this.Space.CreateAtPosition(Archetype.Mask, Real3(0,0,32));
+        
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(!this.Once){
+            this.Once = true;
+            return;
+        }
+        
+        //this.Owner.Parent.Transform.WorldTranslation = this.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 0);
+        
+        var segments = Array[Segment]();
+        var pos = this.Owner.Transform.WorldTranslation;
+        
+        var camViewPort = this.LevelSettings.CameraViewport;
+        var cPos = camViewPort.Camera.Transform.WorldTranslation;
+        
+        //edge of screen bounds
+        var top     = Segment(cPos + Real3( this.Range,  this.Range, 0), cPos + Real3(-this.Range,  this.Range, 0));
+        var bottom  = Segment(cPos + Real3( this.Range, -this.Range, 0), cPos + Real3( -this.Range, -this.Range, 0));
+        var left    = Segment(cPos + Real3( this.Range,  this.Range, 0), cPos + Real3( this.Range, -this.Range, 0));
+        var right   = Segment(cPos + Real3(-this.Range,  this.Range, 0), cPos + Real3( -this.Range, -this.Range, 0));
+        
+        segments.Add(top);
+        segments.Add(bottom);
+        segments.Add(left);
+        segments.Add(right);
+        
+        var objs = Array[Cog]();
+        
+        foreach (var obj in GlobalVariables.ShadowObjects) {
+            
+            if(Math.Distance(Real3(obj.Transform.WorldTranslation.X, obj.Transform.WorldTranslation.Y, 0), Real3(pos.X, pos.Y, 0)) <= this.Range) {
+                objs.Add(obj);
+            }
+            
+        }
+        
+        var dm = this.Dm.DynamicMesh;
+        dm.Clear();
+        
+        //get segments
+        foreach (var obj in objs) {
+            foreach (var seg in obj.Cast2DDynamicShadow.Segments) {
+                segments.Add(seg);
+            }
+        }
+        //draw segments
+        /*foreach (var seg in segments){
+            Utilities.DrawLine(seg.P1, seg.P2, Real4(0, 1, 0, 1));
+        }*/
+        
+        
+        //get all unique points
+        var points = Array[Real3]();
+        
+        foreach (var seg in segments) {
+            if(points.FindFirstIndex(seg.P1) == -1)
+                points.Add(seg.P1);
+            if(points.FindFirstIndex(seg.P2) == -1)
+                points.Add(seg.P2);
+        }
+        var uniquePoints = Array[PointStruct]();
+        foreach (var p in points){
+            
+            uniquePoints.Add(PointStruct(p.X, p.Y));
+            
+        }
+        
+        
+        //get all angles
+        var uniqueAngles = Array[Real]();
+        for(var i = 0; i < uniquePoints.Count; ++i){
+            
+            var uniquePoint = uniquePoints[i];
+            var angle = Math.ATan2(uniquePoint.Y-pos.Y, uniquePoint.X-pos.X);
+            uniquePoint.Angle = angle;
+            uniqueAngles.Add(angle+-0.00001);
+            uniqueAngles.Add(angle+ 0.00001);
+            
+        }
+        
+        //rays
+        
+        var intersects = Array[POI]();
+        for(var i = 0; i < uniqueAngles.Count; ++i){
+            var angle = uniqueAngles[i];
+            
+            //calculate direction from angle
+            var dx = Math.Cos(angle);
+            var dy = Math.Sin(angle);
+            
+            //ray from us to the direction that we just calculated
+            var ray = Segment(pos, pos + Real3(dx, dy, 0));
+            
+            //find closest intersect
+            var closestIntersect = POI(true);
+            for(var l = 0; l < segments.Count; ++l){
+                var intersect = this.GetIntersection(ray, segments[l]);
+                if(intersect.Null)
+                    continue;
+            
+                if(closestIntersect.Null || intersect.Param<closestIntersect.Param) {
+                    closestIntersect=intersect;
+                }
+            }
+            
+            if(closestIntersect.Null) continue;
+            closestIntersect.Angle = angle;
+            
+            //add to list of intersects
+            intersects.Add(closestIntersect);
+            
+        }
+        
+        
+        //Sort intersects by angle
+        intersects.Sort(this.SortCompare);
+        
+        //generate shape segments
+        var edges = Array[Segment]();
+        var lastPoint = Real3(9999);
+        foreach (var i in intersects) {
+            
+            if(lastPoint != Real3(9999)){
+                
+                edges.Add(Segment(lastPoint, Real3(i.X, i.Y, 0)));
+                
+            }
+            lastPoint = Real3(i.X, i.Y, 0);
+            
+        }
+        
+        edges.Add(Segment(Real3(intersects[0].X, intersects[0].Y, 0), Real3(intersects[intersects.Count-1].X, intersects[intersects.Count-1].Y, 0)));
+        
+        
+        //draw rays
+        /*foreach (var i in intersects) {
+            Utilities.DrawLine(pos, Real3(i.X, i.Y, 0), Real4(0,0,1,1));
+            Utilities.DrawCircle(Real3(i.X, i.Y,0), 0.1, true, Real4(1,0,0,1));
+        }*/
+        
+        /*foreach (var seg in edges) {
+            
+            Utilities.DrawLine(seg.P1, seg.P2, Real4(0,0,1,1));
+            Utilities.DrawLine(pos, seg.P2, Real4(0,0,1,1));
+            Utilities.DrawLine(seg.P1, pos, Real4(0,0,1,1));
+            
+        }*/
+        
+        dm.AddVertex(pos);
+        
+        
+        
+        //generate mesh
+        for (var i = 0; i < edges.Count; ++i) {
+            
+            var seg = edges[i];
+            
+            dm.AddVertex(Real3(seg.P1.X, seg.P1.Y, pos.Z));
+            dm.AddVertex(Real3(seg.P2.X, seg.P2.Y, pos.Z));
+            //dm.AddTriangleIndices(dm.VertexCount-3, dm.VertexCount-2, 0);
+            
+        }
+        
+        for (var i = 1; i < dm.VertexCount; i += 2){
+            
+            //Console.WriteLine("hi");
+            
+            dm.AddTriangleIndices(i, i+1, 0);
+            
+        }
+        
+        dm.AddVertex(dm.GetVertex(dm.VertexCount-1));
+        dm.AddVertex(dm.GetVertex(dm.VertexCount-2));
+        
+        dm.AddTriangleIndices(dm.VertexCount-1, 1, 0);
+        //dm.AddTriangleIndices(dm.VertexCount-1, dm.VertexCount-2, 0);
+        /*var ray = Segment(Real3(0,0,0), this.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 0));
+        
+        
+        var closestIntersect = POI(true);
+        for(var i = 0; i < segments.Count; ++i){
+            var intersect = this.GetIntersection(ray, segments[i]);
+            if(intersect.Null)
+                continue;
+            
+            if(closestIntersect.Null || intersect.Param<closestIntersect.Param) {
+                closestIntersect=intersect;
+            }
+        }
+        var intersect = closestIntersect;
+        
+        Utilities.DrawLine(Real3(0,0,0), Real3(intersect.X, intersect.Y, 0), Real4(0,0,1,1));
+        Utilities.DrawCircle(Real3(intersect.X, intersect.Y, 0), 0.1, true, Real4(1,0,0,1));*/
+        
+        /*this.Points.Clear();
+        
+        this.Points.Add(Utilities.RaycastPoint(pos, (pos + Real3( 0.51,    0.51, 0)), this.Space.PhysicsSpace, 10));
+        this.Points.Add(Utilities.RaycastPoint(pos, (pos + Real3(-0.51,    0.51, 0)), this.Space.PhysicsSpace, 10));
+        this.Points.Add(Utilities.RaycastPoint(pos, (pos + Real3( 0.51,   -0.51, 0)), this.Space.PhysicsSpace, 10));
+        this.Points.Add(Utilities.RaycastPoint(pos, (pos + Real3(-0.51,   -0.51, 0)), this.Space.PhysicsSpace, 10));
+        this.Points[0].Target = Real3(9999);
+        this.Points[1].Target = Real3(9999);
+        this.Points[2].Target = Real3(9999);
+        this.Points[3].Target = Real3(9999);
+        
+        while(objs.IsNotEmpty){
+            var current = objs.Current;
+            //for(var i = 0; i < 4; ++i){
+                
+            //}
+            this.Points.Add(Utilities.RaycastPoint(pos, (current.Transform.WorldTranslation + Real3( 0.51,    0.51, 0)), this.Space.PhysicsSpace, 10));
+            this.Points.Add(Utilities.RaycastPoint(pos, (current.Transform.WorldTranslation + Real3(-0.51,    0.51, 0)), this.Space.PhysicsSpace, 10));
+            this.Points.Add(Utilities.RaycastPoint(pos, (current.Transform.WorldTranslation + Real3( 0.51,   -0.51, 0)), this.Space.PhysicsSpace, 10));
+            this.Points.Add(Utilities.RaycastPoint(pos, (current.Transform.WorldTranslation + Real3(-0.51,   -0.51, 0)), this.Space.PhysicsSpace, 10));
+            
+            objs.MoveNext();
+        }
+        
+        for (var i = 0; i < this.Points.Count; ++i) {
+            if(this.Points[i].Pos == Real3(9999)) {
+                this.Points.RemoveAt(i);
+                --i;
+            } else if (this.Points[i].Target == this.Points[i].Pos) {
+                this.Points[i].Pos = Real3(9999);
+            }
+        }
+        
+        var lastAngle : Real = -999;
+        
+        
+        dm.Clear();
+        
+        dm.AddVertex(Real3(0,0,0));
+        for (var i = 0; i < this.Points.Count; ++i){
+            
+            var a : Real = 999;
+            var aIndex = 0;
+            
+            for (var l = 0; l < this.Points.Count; ++l){
+                var angle = Math.ATan2(((this.Points[l].Pos + Real3(0.51, 0.51, 0)) - pos).Y, ((this.Points[l].Pos + Real3(0.51, 0.51, 0)) - pos).X);
+                if(angle > lastAngle && angle < a){
+                    a = angle;
+                    aIndex = l;
+                }
+            }
+            
+            
+            Utilities.DrawCircle(this.Points[aIndex].Pos, 0.05 * (i+1), true, Real4(1, 0, 0, 1));
+            
+            dm.AddVertex(this.Points[aIndex].Pos - pos);
+            
+            lastAngle = a;
+        }
+        
+        //Console.WriteLine("--------------------------------------------");
+        
+        for (var i = 1; i < dm.VertexCount; ++i){
+            
+            //Console.WriteLine("hi");
+            
+            dm.AddTriangleIndices(i, i+1, 0);
+            
+        }
+        
+        dm.AddTriangleIndices(dm.VertexCount-1, 1, 0);*/
+
+        dm.AddUV(Real2(1,1));
+        
+        dm.Modified();
+        
+    }
+    
+    function SortCompare (left : POI, right : POI) : Boolean{
+        return left.Angle<right.Angle;
+    }
+    
+    function GetIntersection (ray : Segment, segment : Segment) : POI {
+        
+        var r_px = ray.P1.X;
+        var r_py = ray.P1.Y;
+        var r_dx = ray.P2.X - ray.P1.X;
+        var r_dy = ray.P2.Y - ray.P1.Y;
+        
+        var s_px = segment.P1.X;
+        var s_py = segment.P1.Y;
+        var s_dx = segment.P2.X - segment.P1.X;
+        var s_dy = segment.P2.Y - segment.P1.Y;
+        
+        var r_mag = Math.Sqrt(r_dx*r_dx+r_dy*r_dy);
+        var s_mag = Math.Sqrt(s_dx*s_dx+s_dy*s_dy);
+        if(r_dx/r_mag == s_dx/s_mag && r_dy/r_mag == s_dy/s_mag)
+            return POI(true);
+        
+        if((s_dx*r_dy - s_dy*r_dx) == 0)
+            return POI(true);
+        
+        var t2 = (r_dx*(s_py-r_py) + r_dy*(r_px-s_px))/(s_dx*r_dy - s_dy*r_dx);
+        var t1 = (s_px+s_dx*t2-r_px)/r_dx;
+        
+        if(t1<0)
+            return POI(true);
+        if(t2<0 || t2>1)
+            return POI(true);
+        
+        return POI(r_px+r_dx*t1, r_py+r_dy*t1, t1);
+        
+    }
+    
+}

@@ -1,0 +1,85 @@
+//Jacob Burke
+
+//Shows the food in the inventory
+
+class Food : ZilchComponent
+{
+    [Static]
+    var Food:Integer = 10;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(AdvInventory.Get("Food") > 0)
+        {
+            this.Owner.SpriteText.Text = "`AdvInventory.Get("Food")`";
+        }
+    }
+}
+
+//Jacob Burke
+
+//Lets you eat the food from the inventory
+
+class Eat : ZilchComponent
+{
+    var FoodFullAmount:Integer = 10;
+    
+    var PotionFullAmount:Integer = 4;
+    
+    var FruitFullAmount:Integer = 15;
+    
+    [Static] var PlaySound3 : Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.LeftMouseDown, this.OnLeftMouseDown);
+        
+    }
+
+    function OnLeftMouseDown(event : ViewportMouseEvent)
+    {
+       if(event.HitObject == this.Owner)
+       {
+           if(this.Owner.Sprite.SpriteSource.Name == "Inv_Food" && Hunger.Hunger <=
+           (120 - this.FoodFullAmount) && AdvInventory.PlayerInventory["Food"] >= 1)
+           {
+           Hunger.Hunger += this.FoodFullAmount;
+           AdvInventory.PlayerInventory["Food"] -= 1;
+           Eat.PlaySound3 = true;
+           }
+           else if(this.Owner.Sprite.SpriteSource.Name == "Inv_Fruit" && Hunger.Hunger <=
+           (120 - this.FruitFullAmount) && AdvInventory.PlayerInventory["Fruit"] >= 1)
+           {
+           Hunger.Hunger += this.FruitFullAmount;
+           AdvInventory.PlayerInventory["Fruit"] -= 1;
+           Eat.PlaySound3 = true;
+           }
+            else if(this.Owner.Sprite.SpriteSource.Name == "Inv_HealthPotion" &&
+            Health.CurrentHealth <= (Health.MaxHealth - this.PotionFullAmount)
+            && AdvInventory.PlayerInventory["HealthPotion"] >= 1)
+           {
+           Health.CurrentHealth += this.PotionFullAmount;
+           AdvInventory.PlayerInventory["HealthPotion"] -= 1;
+           Eat.PlaySound3 = true;
+           }
+           
+           else
+            {
+                PlayerMovement.PlayErrorSound = true;
+            }
+            
+       }
+
+       
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

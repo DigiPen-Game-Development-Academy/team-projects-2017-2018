@@ -1,0 +1,421 @@
+enum Adjacency1D 
+{
+  Less, // Bottom or Left
+  Same, // Middle or Center
+  More, // Top or Right
+  FarAway
+}
+enum Adjacency2D 
+{
+  BottomLeft,
+  BottomCenter,
+  BottomRight,
+  MiddleLeft,
+  MiddleCenter,
+  MiddleRight,
+  TopLeft,
+  TopCenter,
+  TopRight,
+  FarAway
+}
+
+class Voxel : ZilchComponent
+{
+    // Voxel requires a sprite component, so make it a dependency
+    [Dependency] var Sprite : Sprite;
+    
+    // Each voxel will store an Integer2 "Offset"
+    var Offset : Integer2;
+    
+    // You will need a property for each tile position:
+    //   TL, TC, TR,
+    //   ML, MC, MR,
+    //   BL, BC, BR,
+    //   ITL, ITR,
+    //   IBL, IBR,
+    //   Invalid
+    
+    // For example:
+    [Property] var TopLeft                  : SpriteSource;
+    [Property] var TopCenter                : SpriteSource;
+    [Property] var TopRight                 : SpriteSource;
+    
+    [Property] var MiddleLeft               : SpriteSource;
+    [Property] var MiddleCenter             : SpriteSource;
+    [Property] var MiddleRight              : SpriteSource;
+    
+    [Property] var BottomLeft               : SpriteSource;
+    [Property] var BottomCenter             : SpriteSource;
+    [Property] var BottomRight              : SpriteSource;
+    
+    [Property] var InnerTopLeft             : SpriteSource;
+    [Property] var InnerTopRight            : SpriteSource;
+    
+    [Property] var InnerBottomLeft             : SpriteSource;
+    [Property] var InnerBottomRight            : SpriteSource;
+    
+    [Property] var ColliderTopLeft                  : PhysicsMesh;
+    [Property] var ColliderTopCenter                : PhysicsMesh;
+    [Property] var ColliderTopRight                 : PhysicsMesh;
+    
+    [Property] var ColliderMiddleLeft               : PhysicsMesh;
+    [Property] var ColliderMiddleCenter             : PhysicsMesh;
+    [Property] var ColliderMiddleRight              : PhysicsMesh;
+    
+    [Property] var ColliderBottomLeft               : PhysicsMesh;
+    [Property] var ColliderBottomCenter             : PhysicsMesh;
+    [Property] var ColliderBottomRight              : PhysicsMesh;
+    
+    [Property] var ColliderInnerTopLeft             : PhysicsMesh;
+    [Property] var ColliderInnerTopRight            : PhysicsMesh;
+    
+    [Property] var ColliderInnerBottomLeft             : PhysicsMesh;
+    [Property] var ColliderInnerBottomRight            : PhysicsMesh;
+    
+    [Property] var Invalid                  : SpriteSource = null;
+    
+    // If you would like some tiles to have random alternate replacements or
+    // something like that, then you will need Get functions for each special one
+    
+    // For example:
+    [Property] var AltMiddleCenter : SpriteSource;
+    function GetRandomMiddleCenter () : SpriteSource
+    {
+        if (Random().Boolean())
+        return this.MiddleCenter;
+        else
+        return this.AltMiddleCenter;
+    }
+    
+    // You will need an array of delegates for the outer tiles
+    var OuterSpriteSources : Array[delegate() : SpriteSource];
+    // You will also need one for the inner tiles
+    // Put the InnerSpriteSources here (like the one above)
+    var InnerSpriteSources : Array[delegate() : SpriteSource];
+    
+    var OuterPhysicsMeshes : Array[delegate () : PhysicsMesh];
+    
+    var InnerPhysicsMeshes : Array[delegate () : PhysicsMesh];
+    
+    // You will need an intialize function, where you set the values of the arrays
+    
+    
+    
+    var AsteroidArray : Array[Cog] = new Array[Cog]();
+    
+    var RandomGen : Random = Random();
+    
+    function Initialize(init : CogInitializer)
+    {
+        // Remember to set the outer array
+        this.OuterSpriteSources = new Array[delegate() : SpriteSource]() 
+        {
+            (@this.BottomLeft).Get,// BL regular or getter function,
+            (@this.BottomCenter).Get,// BC regular or getter function,
+            (@this.BottomRight).Get,// BR regular or getter function,
+            (@this.MiddleLeft).Get,// ML regular or getter function,
+            this.GetRandomMiddleCenter, // This is a regular function
+            (@this.MiddleRight).Get,// MR regular or getter function,
+            (@this.TopLeft).Get, // This is a getter function
+            (@this.TopCenter).Get,// TC regular or getter function,
+            (@this.TopRight).Get// TR regular or getter function,
+        };
+        // AND the inner array
+        // Put the InnerSpriteSources here (like the one above)
+        this.InnerSpriteSources = new Array[delegate() : SpriteSource]() 
+        {
+            (@this.InnerBottomLeft).Get,// IBL regular or getter function,
+            (@this.InnerBottomRight).Get,// IBR regular or getter function,
+            this.GetRandomMiddleCenter, // This is a regular function
+            (@this.InnerTopLeft).Get,// ITL regular or getter function,
+            (@this.InnerTopRight).Get,// ITR regular or getter function,
+        };
+        this.OuterPhysicsMeshes = new Array[delegate () : PhysicsMesh]()
+        {
+            (@this.ColliderBottomLeft).Get,
+            (@this.ColliderBottomCenter).Get,
+            (@this.ColliderBottomRight).Get,
+            (@this.ColliderMiddleLeft).Get,
+            (@this.ColliderMiddleCenter).Get,
+            (@this.ColliderMiddleRight).Get,
+            (@this.ColliderTopLeft).Get,
+            (@this.ColliderTopCenter).Get,
+            (@this.ColliderTopRight).Get,
+        };
+        this.InnerPhysicsMeshes = new Array[delegate () : PhysicsMesh]()
+        {
+            (@this.ColliderInnerBottomLeft).Get,
+            (@this.ColliderInnerBottomRight).Get,
+            (@this.ColliderMiddleCenter).Get,
+            (@this.ColliderInnerTopLeft).Get,
+            (@this.ColliderInnerTopRight).Get,
+        };
+    }
+    
+        // Check whether one index is nearby another
+    function GetAdjacency1D(self : Integer, other : Integer) : Adjacency1D
+    {
+        // If the first is one smaller than the second, return less
+        if(self + 1 == other) return Adjacency1D.Less;
+        // If the first is equal to the second, return same
+        if(self == other) return Adjacency1D.Same;
+        // If the first is one bigger than the second, return more
+        if(self - 1 == other) return Adjacency1D.More;
+        // Otherwise, the integers are far away
+        return Adjacency1D.FarAway;
+    }
+    // Check whether a two dimensional index is nearby another
+    function GetAdjacency2D(self : Integer2, other : Integer2) : Adjacency2D
+    {
+        // Pass on the x hard work to GetAdjacency(Integer, Integer)
+        var x = this.GetAdjacency1D(self.X, other.X);
+        // Pass on the y hard work to GetAdjacency(Integer, Integer)
+        var y = this.GetAdjacency1D(self.Y, other.Y);
+        // If the x is far away, then the two dimensional index is too
+        if(x == Adjacency1D.FarAway) return Adjacency2D.FarAway;
+        // If the y is far away, then the two dimensional index is too
+        if(y == Adjacency1D.FarAway) return Adjacency2D.FarAway;
+        // Each column (x) move 1 index, but each row (y) moves 3 indices
+        // On this line, you will need to cast to Integer and then back to Adjacency2D
+        // For example, you can cast 5.3 to an integer with "5.3 as Integer"
+        return (x as Integer + y as Integer * 3) as Adjacency2D;
+    }
+    // Check if a voxel is nearby another
+    function GetAdjacency2D(other : Voxel) : Adjacency2D
+    {
+        // Pass on the hard work to GetAdjacency(Integer2, Integer2)
+        return this.GetAdjacency2D(this.Offset, other.Offset);
+    }
+    // Make a helper function for checking the column of adjacency
+    // These tags make the function called like "Adjacency2D.GetHorizontalOffset(...)"
+    [Extension(typeid(Adjacency2D))] [Static]
+    function GetHorizontalOffset(this : Adjacency2D) : Integer {
+        // If the adjacency is far away, the offset is 0
+        // Otherwise, the adjacency is:
+        //   TL=6, TC=7, TR=8,
+        //   ML=3, MC=4, MR=5,
+        //   BL=0, BC=1, BR=2,
+        // And the offset should be:
+        //   TL=-1, TC=0, TR=1,
+        //   ML=-1, MC=0, MR=1,
+        //   BL=-1, BC=0, BR=1,
+        // What mathematical operator would do this?
+        //   TL=0, TC=1, TR=2,
+        //   ML=0, MC=1, MR=2,
+        //   BL=0, BC=1, BR=2,
+        // Once we have the above, what would we do to make:
+        //   0, 1, 2  be  -1, 0, 1 ?
+        return this % 3 - 1 as Integer;
+    }
+    // Make a helper function for checking the row of adjacency
+    // These tags make the function called like "Adjacency2D.GetVerticalOffset(...)"
+    [Extension(typeid(Adjacency2D))] [Static]
+    function GetVerticalOffset(this : Adjacency2D) : Integer {
+        // If the adjacency is far away, the offset is 0
+        // Otherwise, the adjacency is:
+        //   TL=6, TC=7, TR=8,
+        //   ML=3, MC=4, MR=5,
+        //   BL=0, BC=1, BR=2,
+        // And the offset should be:
+        //   TL= 1, TC= 1, TR= 1,
+        //   ML= 0, MC= 0, MR= 0,
+        //   BL=-1, BC=-1, BR=-1,
+        // What mathematical operator would do this?
+        //   TL=2, TC=2, TR=2,
+        //   ML=1, MC=1, MR=1,
+        //   BL=0, BC=0, BR=0,
+        // Once we have the above, what would we do to make:
+        //   0, 1, 2  be  -1, 0, 1 ?
+        return this / 3 - 1 as Integer;
+    }
+    // Make a helper function for checking if the adjacency is BC, ML, MR, or TC
+    // These tags make the function called like "Adjacency2D.IsOrthogonal(...)"
+    [Extension(typeid(Adjacency2D))] [Static]
+    function IsOrthogonal(this : Adjacency2D) : Boolean {
+        // How do we say OR in code? ||
+        return this == Adjacency2D.BottomCenter || this == Adjacency2D.MiddleLeft || this == Adjacency2D.MiddleRight || this == Adjacency2D.TopCenter;
+    }
+    // Make a helper function for checking if the adjacency is BL, BR, TL, or TR
+    // These tags make the function called like "Adjacency2D.IsDiagonal(...)"
+    [Extension(typeid(Adjacency2D))] [Static]
+    function IsDiagonal(this : Adjacency2D) : Boolean {
+        // How do we say OR in code? ||
+        return this == Adjacency2D.BottomLeft || this == Adjacency2D.BottomRight || this == Adjacency2D.TopLeft || this == Adjacency2D.TopRight;
+    }
+}
+
+class Generator : ZilchComponent
+{
+    // What to create four of per quad
+    [Property] var VoxelArchetype : Archetype;
+    // What size we expect them to be when parented to us
+    [Property] var VoxelSize : Real = 0.5;
+    // How many quads we want to spawn
+    [Property] var QuadCount : Integer = 10;
+    
+    [Static] var Turn : Integer;
+    var MyTurn : Integer;
+    
+    [Property] var DelayBetweenTurns : Real = 0.1;
+    
+    
+    
+    // Used to randomly select stub objects for turning into quads
+    var Rand : Random = new Random();
+    // All the voxels we've spawned
+    var Voxels : Array[Voxel] = new Array[Voxel]();
+    
+    // We need to connect to the post initialize event, because our child
+    // objects need to finish initializing before we collect and replace them
+    function Initialize(init : CogInitializer)
+    {
+        ++Generator.Turn;
+        this.MyTurn = Generator.Turn;
+        
+        Zero.Connect(init, Events.AllObjectsInitialized, this.OnAllObjectsInitialized);
+        
+        Zero.Connect(this.Space, Events.LevelStarted, this.OnLevelStarted);
+    }
+
+    function OnLevelStarted(event : GameEvent)
+    {
+        Generator.Turn = 0;
+    }
+    function OnAllObjectsInitialized(event : CogInitializerEvent)
+    {
+        var squence = Action.Sequence(this.Owner.Actions);
+        Action.Delay(squence, this.MyTurn * this.DelayBetweenTurns);
+        Action.Call(squence, this.Generate);
+        Action.Call(squence, this.SetSprites);
+    }
+    function Generate()
+    {
+        // Collect the temporary child objects
+        var array = new Array[Cog]();
+        foreach (var child in this.Owner.Children)
+        array.Add(child);
+        
+        // Loop through the temporary child objects
+        for (var i = 0; i < this.QuadCount; ++i)
+        {
+        // If we ran out of temporary child objects, cancel out
+        if (array.Count <= 0) return;
+        
+        // Pick a random temporary child object
+        var index = this.Rand.RangeExclusiveMax(0, array.Count);
+        
+        // Spawn four voxels at the position of the chosen
+        var position = array[index].Transform.LocalTranslation;
+        this.GenerateVoxel(position + 0.25 * Real3(1, 1, 0));    // TR
+        this.GenerateVoxel(position + 0.25 * Real3(-1, 1, 0));   // TL
+        this.GenerateVoxel(position + 0.25 * Real3(1, -1, 0));   // BR
+        this.GenerateVoxel(position + 0.25 * Real3(-1, -1, 0));  // BL
+        
+        // Destroy the chosen
+        array[index].Destroy();
+        // Remove the chosen from our temporary child objects
+        array.RemoveSwap(index);
+        }
+        
+        // Get rid of the remaining temporary child objects
+        foreach (var obj in array) obj.Destroy();
+    }
+    function GenerateVoxel(localPosition : Real3)
+    {
+        // Calculate the world position using "Transform.TransformPoint(...)"
+        var worldPosition = this.Owner.Transform.TransformPoint(localPosition);
+        // Create the voxel using the world position
+        var voxel = this.Space.CreateAtPosition(this.VoxelArchetype, worldPosition);
+        // Make sure to cancel out of the function if the object failed to create (is null)
+        if(voxel == null) return;
+        // Make sure to cancel out of the function if the object is missing the voxel component
+        if(voxel.Voxel == null) return;
+        // Attach the voxel object to the generator object using "AttachToRelative(...)"
+        voxel.AttachToRelative(this.Owner);
+        // Make sure the rotation is correct by setting "Transform.LocalRotation" to "Quaternion.Identity"
+        voxel.Transform.LocalRotation = Quaternion.Identity;
+        voxel.Transform.LocalScale *= this.VoxelSize;
+        // Add the voxel to our array of voxels
+        this.Voxels.Add(voxel.Voxel);
+        
+        // Find the offset index of the spawned voxel in local coordinates
+        var xOffset = localPosition.X / 0.5 + 0.5;
+        var yOffset = localPosition.Y / 0.5 + 0.5;
+        // Set the voxel's offset (you will have to cast to Integers using "___ as Integer"
+        voxel.Voxel.Offset = Integer2(xOffset as Integer, yOffset as Integer);
+    }
+    function SetSprites()
+    {
+        // Loop through our voxels
+        for (var index1 = 0; index1 < this.Voxels.Count; ++index1)
+        {
+            // Get the current voxel
+            var currentVoxel = this.Voxels[index1];
+            // Get the current voxel's offset
+            var currentOffset = currentVoxel.Offset;
+            
+            // Starting in the center...
+            var orthogonalIndex = 4;
+            var diagonalIndex = 2;
+            
+            // Loop through the voxels that aren't "currentVoxel"
+            for (var index2 = 0; index2 < this.Voxels.Count; ++index2)
+            {
+                // Get the other voxel
+                var otherVoxel = this.Voxels[index2];
+                // Get the other voxel's offset
+                var otherOffset = otherVoxel.Offset;
+                
+                // Don't compare to current if other is the current
+                // To skip to the next iteration of the loop, use "continue"
+                if(index1 == index2) continue;
+                // Check where we are relative to the other voxel
+                // Use "currentVoxel.GetAdjacency2D(otherVoxel)"
+                var adjacency = currentVoxel.GetAdjacency2D(otherVoxel);
+                
+                // If we are far away, skip the rest of the function
+                if (adjacency == Adjacency2D.FarAway) continue;
+                // Check if we are diagonal to the other using "Adjacency2D.IsDiagonal(...)"
+                else if (Adjacency2D.IsDiagonal(adjacency))
+                {
+                    // "adjacency" can either be BottomLeft=0, BottomRight=2, TopLeft=6, TopRight=8
+                    // Start in the middle, MiddleCenter=4, by subtracting MiddleCenter
+                    // Then divide by 2 to convert the offset to an index (notice all the options are even)
+                    diagonalIndex += (adjacency - 4) / 2;
+                }
+                else // If we aren't far away and we aren't diagonal, we must be orthogonal
+                {
+                    // Check what our horizontal (x) offset is
+                    // Check what our vertical (y) offset is
+                    var x = Adjacency2D.GetHorizontalOffset(adjacency);
+                    
+                    var y = Adjacency2D.GetVerticalOffset(adjacency);
+                    
+                    // Each column (x) move up 1 index, but each row (y) moves up 3 indices
+                    orthogonalIndex += x + y * 3;
+                }
+            }
+            
+            // If our orthogonal index doesn't make sense (must be from 0 to 8)
+            if (orthogonalIndex < 0 || orthogonalIndex > 8)
+                currentVoxel.Sprite.SpriteSource = currentVoxel.Invalid;
+            // If we are not in the middle, then use our orthogonal index
+            else if (orthogonalIndex != 4)
+            {
+                currentVoxel.Sprite.SpriteSource = currentVoxel.OuterSpriteSources[orthogonalIndex]();
+                currentVoxel.Owner.MeshCollider.PhysicsMesh = currentVoxel.OuterPhysicsMeshes[orthogonalIndex]();
+            }
+            // If our diagonal index doesn't make sense (must be from 0 to 4)
+            else if (diagonalIndex < 0 || diagonalIndex > 4)
+                currentVoxel.Sprite.SpriteSource = currentVoxel.Invalid;
+            // Otherwise, use our diagonal index
+            else
+            {
+                currentVoxel.Sprite.SpriteSource = currentVoxel.InnerSpriteSources[diagonalIndex]();
+                currentVoxel.Owner.MeshCollider.PhysicsMesh = currentVoxel.InnerPhysicsMeshes[diagonalIndex]();
+            }
+            
+            currentVoxel.Owner.Asteroid_Mining.Setup();
+        }
+    }
+}

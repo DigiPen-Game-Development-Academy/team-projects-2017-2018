@@ -1,0 +1,68 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "InventoryHUD",
+	},
+	Archetyped = 
+	{
+		string Name = "5a3b7b75ae7ed0a8:InventoryHUD",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [13.75, -9, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	ScreenAlignment = 
+	{
+		Enum PositionX = Right,
+		Enum PositionY = Bottom,
+		Vec2 PositionOffset = [-2.25, 1.25],
+		float ZIndex = 0,
+		bool HideUntilPositioned = false,
+	},
+	Hierarchy = 
+	{
+		ArchetypeInstance = 
+		{
+			string Name = "5a3b64c28d512b65:InventoryHUDSlotHBOH",
+			LinkId = 
+			{
+				uint Id = 2,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-1, 0, 0],
+				Vec3 Scale = [1.5, 1.5, 1.5],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "Slot3H",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a3b64dbb09a9787:InventoryHUDSlotHB",
+			LinkId = 
+			{
+				uint Id = 3,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [1, 0, 0],
+				Vec3 Scale = [1.5, 1.5, 1.5],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "Slot2H",
+			},
+		},
+	},
+},

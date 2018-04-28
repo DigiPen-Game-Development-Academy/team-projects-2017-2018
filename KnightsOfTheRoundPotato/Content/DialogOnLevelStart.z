@@ -1,0 +1,16 @@
+class DialogOnLevelStart : ZilchComponent {
+    var Text : String = "CONTROLS:\nW,A,S,D to move\nE or SCROLL WHEEL to swap between primary and secondary weapons\nTAB or ESCAPE to pause/open inventory\nF to use utility\nRIGHT CLICK to interact\nLEFT CLICK to use weapon\nSHIFT to sprint\nMOUSE to aim\nSHIFT CLICK to use consumable items";
+    
+    var Once : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        if(!this.Once && GlobalVariables.Save.SaveController.FirstLoad) {
+            this.Once = true;
+            Utilities.Dialog(this.Text, DialogTypes.OK, 15);
+        }
+    }
+}

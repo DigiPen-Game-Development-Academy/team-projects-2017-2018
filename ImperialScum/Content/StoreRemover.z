@@ -1,0 +1,16 @@
+class StoreRemover : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(StoreCollide.CollideWithShop == false && this.Owner.Name == "Shop")
+        this.Owner.Destroy();
+        
+        if(StoreCollide.CollideWithUpgrade == false && this.Owner.Name == "Upgrade")
+        this.Owner.Destroy();
+    }
+}

@@ -1,0 +1,67 @@
+class Visibility : ZilchComponent {
+    
+    var InSight : Boolean = false;
+    
+    var DirectLine : Boolean = false;
+    
+    var Timer : Real = 0;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Space, Events.UseRadar, this.OnUseRadar);
+    }
+
+    function OnUseRadar(event : UseRadar) {
+        this.Timer = event.Timer;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        if(GlobalVariables.Player == null || (this.Owner.BasicPathFollowAI != null && !this.Owner.BasicPathFollowAI.Active))
+            return;
+        
+        var filter = CastFilter();
+        var vel = GlobalVariables.Player.RigidBody.Velocity;
+        var ghost = GlobalVariables.Player.BoxCollider.Ghost;
+        GlobalVariables.Player.BoxCollider.Ghost = false;
+        GlobalVariables.Player.RigidBody.DynamicState = RigidBodyDynamicState.Static;
+        filter.IgnoreDynamic = true;
+        filter.IgnoreGhost = true;
+        filter.CollisionGroup = CollisionGroup.EnemyRaycast;
+        
+        var res = Utilities.Raycast(this.Owner.Transform.WorldTranslation, GlobalVariables.Player.Transform.WorldTranslation - this.Owner.Transform.WorldTranslation, this.Space.PhysicsSpace, 50, filter);
+        
+        if(res != null && res.ObjectHit == GlobalVariables.Player) {
+            this.Owner.Sprite.Visible = true;
+            this.InSight = true;
+        } else {
+            this.Owner.Sprite.Visible = false;
+            this.InSight = false;
+            this.DirectLine = false;
+        }
+        
+        filter.IgnoreDynamic = false;
+        filter.IgnoreGhost = true;
+        filter.CollisionGroup = CollisionGroup.DirectLine;
+        
+        res = Utilities.Raycast(this.Owner.Transform.WorldTranslation, GlobalVariables.Player.Transform.WorldTranslation - this.Owner.Transform.WorldTranslation, this.Space.PhysicsSpace, 20, filter);
+        
+        //Console.WriteLine(res);
+        
+        if(res != null && res.ObjectHit == GlobalVariables.Player) {
+            this.DirectLine = true;
+        }
+        
+        if(this.Timer > 0 || this.Timer == Real.PositiveMax) {
+            if(this.Timer != Real.PositiveMax)
+                this.Timer -= event.Dt;
+            this.Owner.Sprite.Visible = true;
+        }
+        
+        if(this.Owner.MenuVisibilityController != null)
+            this.Owner.MenuVisibilityController.Vis = this.Owner.Sprite.Visible;
+        
+        GlobalVariables.Player.RigidBody.DynamicState = RigidBodyDynamicState.Dynamic;
+        GlobalVariables.Player.RigidBody.Velocity = vel;
+        GlobalVariables.Player.BoxCollider.Ghost = ghost;
+    }
+}

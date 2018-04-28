@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "FollowSmooth",
+		uint64 ResourceId = 5a685ee9265f58b6,
+	},
+},

@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchFragmentBuilder = 
+	{
+		string Name = "GCircleColor",
+		uint64 ResourceId = 5a74a7b3b0f24b50,
+	},
+},

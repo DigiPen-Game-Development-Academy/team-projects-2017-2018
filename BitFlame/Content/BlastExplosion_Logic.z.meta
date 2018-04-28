@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "BlastExplosion_Logic",
+		uint64 ResourceId = 5ae4950ea3f1eb24,
+	},
+},

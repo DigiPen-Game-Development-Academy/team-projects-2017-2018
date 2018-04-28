@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "PlaySound",
+		uint64 ResourceId = 5a4ba8c35f6bdc3f,
+	},
+},

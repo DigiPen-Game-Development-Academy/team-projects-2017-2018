@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "ElenaLevelSpikes_TileMap02",
+		uint64 ResourceId = 5a953a9e1392a515,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "5a9522b556b5922a:ElenaLevelSpikes",
+	},
+},

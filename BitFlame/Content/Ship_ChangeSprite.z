@@ -1,0 +1,54 @@
+/***********************
+Ship_ChangeSprite.Z
+by: Luke Taranowski
+Contributers:
+Date: 2/27/2018
+Brief: Changes the ships sprite based on the repair stage its in
+***********************/
+
+class Ship_ChangeSprite : ZilchComponent
+{
+    // Added dependency to access the ships sprite easier
+    [Dependency] var Sprite : Sprite;
+    
+    // Sprites of the different stages of ship repair
+    [Property] var ShipRepairStage1Sprite : SpriteSource;
+    [Property] var ShipRepairStage2Sprite : SpriteSource;
+    [Property] var ShipRepairStage3Sprite : SpriteSource;
+    [Property] var ShipRepairStage4Sprite : SpriteSource;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {  
+        /*if(this.GameSession.GameVars.ShipRepairStage == 0)
+        {
+            // changes the sprite
+            this.Sprite.SpriteSource = this.ShipRepairStage1Sprite;
+        }*/
+        if(this.GameSession.GameVars.ShipRepairStage == 1)
+        {
+            // changes the sprite
+            this.Sprite.SpriteSource = this.ShipRepairStage1Sprite;
+        }
+        else if(this.GameSession.GameVars.ShipRepairStage == 2)
+        {
+            // changes the sprite
+            this.Sprite.SpriteSource = this.ShipRepairStage2Sprite;
+        }
+        else if(this.GameSession.GameVars.ShipRepairStage == 3)
+        {
+            // changes the sprite
+            this.Sprite.SpriteSource = this.ShipRepairStage3Sprite;
+        }
+        else if(this.GameSession.GameVars.ShipRepairStage == 4)
+        {
+            // changes the sprite
+            this.Sprite.SpriteSource = this.ShipRepairStage4Sprite;
+        }
+       
+    }
+}

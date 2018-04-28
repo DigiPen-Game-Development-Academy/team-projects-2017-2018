@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "DespawnParticleSystem",
+		uint64 ResourceId = 5a74aa0ed75a946e,
+	},
+},

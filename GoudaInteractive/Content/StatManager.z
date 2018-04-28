@@ -1,0 +1,25 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class PlayerStats {
+    
+    [Static] var Kills : Integer = 0;
+    [Static] var Deaths : Integer = 0;
+    
+    [Static] var BlocksDestroyed : Integer = 0;
+    
+}
+
+class StatManager : ZilchComponent {
+    
+    function Initialize(init : CogInitializer) {
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        //Console.WriteLine("Kills: `PlayerStats.Kills`\nDeaths: `PlayerStats.Deaths`\nBlocks Destroyed: `PlayerStats.BlocksDestroyed`");
+    }
+    
+}

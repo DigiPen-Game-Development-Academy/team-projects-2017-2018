@@ -1,0 +1,199 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "DialogBoxOK",
+	},
+	Archetyped = 
+	{
+		string Name = "5a7cfbe3c0b542fa:DialogBoxOK",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0],
+		Vec3 Scale = [0.999998808, 0.991949201, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 0.999899983],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5ae3e0de08fe7635:MenuBack",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	Area = 
+	{
+		Vec2 Size = [1, 1],
+		Location Origin = Center,
+	},
+	DialogBox = 
+	{
+		float Margin = 0.25,
+		float ButtonSpace = 0.5,
+	},
+	AnimationGraph = 
+	{
+		bool Active = true,
+		AnimPlayMode PlayMode = PlayOnce,
+		float TimeScale = 1,
+		string AnimationName = "4f8ebbde619389d0:DefaultAnimation",
+		uint64 DebugPreviewId = 2079646165726c61,
+	},
+	SimpleAnimation = 
+	{
+		string AnimationName = "5a6641ddb81fc367:Dialog",
+		AnimPlayMode PlayMode = PlayOnce,
+	},
+	Hierarchy = 
+	{
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 2,
+			},
+			Named = 
+			{
+				string Name = "TXT",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0, 0, -1],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			SpriteText = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string FontName = "5ac11e46b173061e:CavemanlyMk2-Regular",
+				uint FontSize = 150,
+				string Text = "",
+				TextAlign Align = Center,
+				float PixelsPerUnit = 696.828979,
+				bool Smoothing = true,
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 3,
+			},
+			Named = 
+			{
+				string Name = "OK",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0, 0, 2],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [0.670588255, 0.670588255, 0.670588255, 0.999899983],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "5ae3e0de08fe7635:MenuBack",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			Reactive = 
+			{
+				bool Active = true,
+				bool CaptureMouse = false,
+			},
+			Button = 
+			{
+				float ScaleM = 1,
+				Vec4 HoverColor = [0.444999993, 0.444999993, 0.444999993, 0.999899983],
+				Vec4 ClickColor = [0, 0, 0, 0.999899983],
+				float ScaleSpeed = 5,
+				bool Alpha = false,
+				bool Scaling = true,
+			},
+			DialogButton = 
+			{
+				Enum Type = OK,
+			},
+			Area = 
+			{
+				Vec2 Size = [1, 1],
+				Location Origin = Center,
+			},
+			Hierarchy = 
+			{
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 4,
+					},
+					Named = 
+					{
+						string Name = "TXTOK",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0, 0, 1],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteText = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string FontName = "5ac11e46b173061e:CavemanlyMk2-Regular",
+						uint FontSize = 30,
+						string Text = "OK",
+						TextAlign Align = Left,
+						float PixelsPerUnit = 64,
+						bool Smoothing = true,
+					},
+					Area = 
+					{
+						Vec2 Size = [0.75, 0.600000024],
+						Location Origin = Center,
+					},
+				},
+			},
+		},
+	},
+},

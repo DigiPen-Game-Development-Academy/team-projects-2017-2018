@@ -1,0 +1,8 @@
+TextContent = 
+{
+	TextBuilder = 
+	{
+		string Name = "WorldRegen",
+		uint64 ResourceId = 5a2d59168044e87d,
+	},
+},

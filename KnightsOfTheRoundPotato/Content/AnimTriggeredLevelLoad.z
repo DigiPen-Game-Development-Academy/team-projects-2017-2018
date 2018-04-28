@@ -1,0 +1,29 @@
+class AnimTriggeredLevelLoad : ZilchComponent {
+    [Property] var Load : Boolean = false;
+    [Property] var Level : Level;
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Space, Events.MouseDown, this.OnMouseDown);
+    }
+
+    function OnMouseDown(event : ViewportMouseEvent) {
+        var uiS = this.GameSession.FindSpaceByName("UI");
+        if(uiS != null) {
+            uiS.Destroy();
+        }
+        
+        this.Space.LoadLevel(this.Level);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        if(this.Load) {
+            var uiS = this.GameSession.FindSpaceByName("UI");
+            if(uiS != null) {
+                uiS.Destroy();
+            }
+            
+            this.Space.LoadLevel(this.Level);
+            
+        }
+    }
+}

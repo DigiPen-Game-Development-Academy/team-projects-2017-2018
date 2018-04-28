@@ -1,0 +1,2683 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Inventory",
+	},
+	Archetyped = 
+	{
+		string Name = "5aba5a0adaf3b7be:Inventory",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [-25.7633457, 24.1063557, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5ad2e72217bbe4eb:Inventory",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	InventoryDestroy = 
+	{
+	},
+	InventoryExists = 
+	{
+	},
+	Hierarchy = 
+	{
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 2,
+			},
+			Named = 
+			{
+				string Name = "IconBack",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-6.5, 2.5, 10],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "5ad2e427af8e03d1:Inventory_Icon",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			Hierarchy = 
+			{
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 3,
+					},
+					Named = 
+					{
+						string Name = "IconBack",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [4, 0, 0],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					Sprite = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string SpriteSource = "5ad2e427af8e03d1:Inventory_Icon",
+						bool RenderMask = false,
+						bool FlipX = false,
+						bool FlipY = false,
+						bool AnimationActive = true,
+						float AnimationSpeed = 1,
+						uint StartFrame = 0,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 4,
+					},
+					Named = 
+					{
+						string Name = "IconBack",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [9, -2.5, 0],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					Sprite = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string SpriteSource = "5ad2e427af8e03d1:Inventory_Icon",
+						bool RenderMask = false,
+						bool FlipX = false,
+						bool FlipY = false,
+						bool AnimationActive = true,
+						float AnimationSpeed = 1,
+						uint StartFrame = 0,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 5,
+					},
+					Named = 
+					{
+						string Name = "IconBack",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [13, -2.5, 0],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					Sprite = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string SpriteSource = "5ad2e427af8e03d1:Inventory_Icon",
+						bool RenderMask = false,
+						bool FlipX = false,
+						bool FlipY = false,
+						bool AnimationActive = true,
+						float AnimationSpeed = 1,
+						uint StartFrame = 0,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 6,
+					},
+					Named = 
+					{
+						string Name = "IconBack",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [4, -2.5, 0],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					Sprite = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string SpriteSource = "5ad2e427af8e03d1:Inventory_Icon",
+						bool RenderMask = false,
+						bool FlipX = false,
+						bool FlipY = false,
+						bool AnimationActive = true,
+						float AnimationSpeed = 1,
+						uint StartFrame = 0,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 7,
+					},
+					Named = 
+					{
+						string Name = "IconBack",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0, -2.5, 0],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					Sprite = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string SpriteSource = "5ad2e427af8e03d1:Inventory_Icon",
+						bool RenderMask = false,
+						bool FlipX = false,
+						bool FlipY = false,
+						bool AnimationActive = true,
+						float AnimationSpeed = 1,
+						uint StartFrame = 0,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 8,
+					},
+					Named = 
+					{
+						string Name = "IconBack",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [13, 0, 0],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					Sprite = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string SpriteSource = "5ad2e427af8e03d1:Inventory_Icon",
+						bool RenderMask = false,
+						bool FlipX = false,
+						bool FlipY = false,
+						bool AnimationActive = true,
+						float AnimationSpeed = 1,
+						uint StartFrame = 0,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 9,
+					},
+					Named = 
+					{
+						string Name = "IconBack",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [9, 0, 0],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					Sprite = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string SpriteSource = "5ad2e427af8e03d1:Inventory_Icon",
+						bool RenderMask = false,
+						bool FlipX = false,
+						bool FlipY = false,
+						bool AnimationActive = true,
+						float AnimationSpeed = 1,
+						uint StartFrame = 0,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 10,
+					},
+					Named = 
+					{
+						string Name = "IconBack",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [4, -4.83333731, 0],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					Sprite = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string SpriteSource = "5ad2e427af8e03d1:Inventory_Icon",
+						bool RenderMask = false,
+						bool FlipX = false,
+						bool FlipY = false,
+						bool AnimationActive = true,
+						float AnimationSpeed = 1,
+						uint StartFrame = 0,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 11,
+					},
+					Named = 
+					{
+						string Name = "IconBack",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [13, -4.83333731, 0],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					Sprite = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string SpriteSource = "5ad2e427af8e03d1:Inventory_Icon",
+						bool RenderMask = false,
+						bool FlipX = false,
+						bool FlipY = false,
+						bool AnimationActive = true,
+						float AnimationSpeed = 1,
+						uint StartFrame = 0,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 12,
+					},
+					Named = 
+					{
+						string Name = "IconBack",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0, -4.83333731, 0],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					Sprite = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string SpriteSource = "5ad2e427af8e03d1:Inventory_Icon",
+						bool RenderMask = false,
+						bool FlipX = false,
+						bool FlipY = false,
+						bool AnimationActive = true,
+						float AnimationSpeed = 1,
+						uint StartFrame = 0,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 13,
+					},
+					Named = 
+					{
+						string Name = "IconBack",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [9, -4.83333731, 0],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					Sprite = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string SpriteSource = "5ad2e427af8e03d1:Inventory_Icon",
+						bool RenderMask = false,
+						bool FlipX = false,
+						bool FlipY = false,
+						bool AnimationActive = true,
+						float AnimationSpeed = 1,
+						uint StartFrame = 0,
+					},
+				},
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 14,
+			},
+			Named = 
+			{
+				string Name = "Inventory_Slot",
+			},
+			Archetyped = 
+			{
+				string Name = "5a063dbcde169458:InventorySlot",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-2.5, 2.5, 15],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "4e07948c35993095:DefaultSprite",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			InventorySlot = 
+			{
+				int ItemIndex = 1,
+			},
+			Reactive = 
+			{
+				bool Active = true,
+				bool CaptureMouse = false,
+			},
+			BoxCollider = 
+			{
+				bool Ghost = false,
+				bool SendsMessages = true,
+				bool Seamless = true,
+				string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+				string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+				Vec3 Offset = [0, 0, 0],
+				Vec3 Size = [0.5, 0.5, 0.5],
+			},
+			Eat = 
+			{
+			},
+			ButtonLogic = 
+			{
+			},
+			InventoryButton = 
+			{
+				string SelectedInvItem = "",
+			},
+			Hierarchy = 
+			{
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 15,
+					},
+					Named = 
+					{
+						string Name = "ItemCount",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0, -0.5, -9.45868592e-08],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteText = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = false,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string FontName = "5a0f895ab1e49e19:DraftGameFont",
+						uint FontSize = 16,
+						string Text = " ",
+						TextAlign Align = Center,
+						float PixelsPerUnit = 16,
+						bool Smoothing = false,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 16,
+					},
+					Named = 
+					{
+						string Name = "KeySparkles",
+					},
+					Archetyped = 
+					{
+						string Name = "5a0639e12b1c4854:LegendSparkle",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [-0.0488033295, 0.00622367859, 10],
+						Vec3 Scale = [0.25000003, 0.25000003, 0.000299999985],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteParticleSystem = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						SystemChildMode ChildMode = Independent,
+						SystemSpace SystemSpace = WorldSpace,
+						uint DrawOrder = 0,
+						Vec4 Tint = [1, 0.539999843, 0, 1],
+						float WarmUpTime = 0,
+						ParticleGeometry GeometryMode = Billboarded,
+						ParticleRenderMode RenderMode = Additive,
+						ParticleSortMode SortMode = Youngest,
+						ParticleAnimation ParticleAnimation = Single,
+						string Texture = "5add733cf6bb7f8c:Particle_Sparkle()",
+						float VelocityScale = 1,
+						float LengthScale = 1,
+						float MaxParticleSize = 20,
+						Vec3 SystemSize = [1, 1, 1],
+					},
+					SphericalParticleEmitter = 
+					{
+						bool Active = false,
+						uint EmitCount = 0,
+						float EmitRate = 20,
+						float EmitVariance = 5,
+						float Size = 0.5,
+						float SizeVariance = 0.200000003,
+						float Lifetime = 0.400000006,
+						float LifetimeVariance = 0,
+						float Spin = 0,
+						float SpinVariance = 10,
+						bool RandomSpin = true,
+						float Fill = 1,
+						float EmitterVelocityPercent = 0,
+						Vec3 StartVelocity = [0, 0, 0],
+						Vec3 RandomVelocity = [0, 0, 0],
+						Vec3 TangentVelocity = [0, 0, 0],
+						Vec3 EmitterSize = [4, 4, 0.600000024],
+						bool FastMovingEmitter = false,
+					},
+					LinearParticleAnimator = 
+					{
+						Vec3 Force = [0, 0, 0],
+						Vec3 RandomForce = [0, 0, 0],
+						float Torque = 0,
+						float Growth = 0,
+						float Dampening = 0,
+						Vec3 Twist = [0, 0, 0],
+					},
+					ParticleColorAnimator = 
+					{
+						Vec4 Color0 = [0.889999986, 1, 0, 0.5],
+						Vec4 Color1 = [1, 0.720000029, 0, 1],
+						Vec4 Color2 = [1, 0.990000129, 0, 1],
+						Vec4 Color3 = [1, 0.600000143, 0, 0.5],
+						Vec4 Color4 = [1, 0.960000157, 0, 0],
+					},
+					LegendarySparkle = 
+					{
+					},
+				},
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 17,
+			},
+			Named = 
+			{
+				string Name = "Inventory_Slot",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-6.55662537, 0.00781345367, 15],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "4e07948c35993095:DefaultSprite",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			InventorySlot = 
+			{
+				int ItemIndex = 4,
+			},
+			Reactive = 
+			{
+				bool Active = true,
+				bool CaptureMouse = false,
+			},
+			BoxCollider = 
+			{
+				bool Ghost = false,
+				bool SendsMessages = true,
+				bool Seamless = true,
+				string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+				string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+				Vec3 Offset = [0, 0, 0],
+				Vec3 Size = [0.5, 0.5, 0.5],
+			},
+			Eat = 
+			{
+			},
+			ButtonLogic = 
+			{
+			},
+			InventoryButton = 
+			{
+				string SelectedInvItem = "",
+			},
+			Hierarchy = 
+			{
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 18,
+					},
+					Named = 
+					{
+						string Name = "ItemCount",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0, -0.5, -9.45868592e-08],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteText = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = false,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string FontName = "5a0f895ab1e49e19:DraftGameFont",
+						uint FontSize = 16,
+						string Text = " ",
+						TextAlign Align = Center,
+						float PixelsPerUnit = 16,
+						bool Smoothing = false,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 19,
+					},
+					Named = 
+					{
+						string Name = "KeySparkles",
+					},
+					Archetyped = 
+					{
+						string Name = "5a0639e12b1c4854:LegendSparkle",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0.0354995728, 0.0328292847, 10],
+						Vec3 Scale = [0.25000003, 0.25000003, 0.000299999985],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteParticleSystem = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						SystemChildMode ChildMode = Independent,
+						SystemSpace SystemSpace = WorldSpace,
+						uint DrawOrder = 0,
+						Vec4 Tint = [1, 0.539999843, 0, 1],
+						float WarmUpTime = 0,
+						ParticleGeometry GeometryMode = Billboarded,
+						ParticleRenderMode RenderMode = Additive,
+						ParticleSortMode SortMode = Youngest,
+						ParticleAnimation ParticleAnimation = Single,
+						string Texture = "5add733cf6bb7f8c:Particle_Sparkle()",
+						float VelocityScale = 1,
+						float LengthScale = 1,
+						float MaxParticleSize = 20,
+						Vec3 SystemSize = [1, 1, 1],
+					},
+					SphericalParticleEmitter = 
+					{
+						bool Active = false,
+						uint EmitCount = 0,
+						float EmitRate = 20,
+						float EmitVariance = 5,
+						float Size = 0.5,
+						float SizeVariance = 0.200000003,
+						float Lifetime = 0.400000006,
+						float LifetimeVariance = 0,
+						float Spin = 0,
+						float SpinVariance = 10,
+						bool RandomSpin = true,
+						float Fill = 1,
+						float EmitterVelocityPercent = 0,
+						Vec3 StartVelocity = [0, 0, 0],
+						Vec3 RandomVelocity = [0, 0, 0],
+						Vec3 TangentVelocity = [0, 0, 0],
+						Vec3 EmitterSize = [4, 4, 0.600000024],
+						bool FastMovingEmitter = false,
+					},
+					LinearParticleAnimator = 
+					{
+						Vec3 Force = [0, 0, 0],
+						Vec3 RandomForce = [0, 0, 0],
+						float Torque = 0,
+						float Growth = 0,
+						float Dampening = 0,
+						Vec3 Twist = [0, 0, 0],
+					},
+					ParticleColorAnimator = 
+					{
+						Vec4 Color0 = [0.889999986, 1, 0, 0.5],
+						Vec4 Color1 = [1, 0.720000029, 0, 1],
+						Vec4 Color2 = [1, 0.990000129, 0, 1],
+						Vec4 Color3 = [1, 0.600000143, 0, 0.5],
+						Vec4 Color4 = [1, 0.960000157, 0, 0],
+					},
+					LegendarySparkle = 
+					{
+					},
+				},
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 20,
+			},
+			Named = 
+			{
+				string Name = "Inventory_Slot",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-2.57276511, 0.00781345367, 15],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "4e07948c35993095:DefaultSprite",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			InventorySlot = 
+			{
+				int ItemIndex = 5,
+			},
+			Reactive = 
+			{
+				bool Active = true,
+				bool CaptureMouse = false,
+			},
+			BoxCollider = 
+			{
+				bool Ghost = false,
+				bool SendsMessages = true,
+				bool Seamless = true,
+				string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+				string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+				Vec3 Offset = [0, 0, 0],
+				Vec3 Size = [0.5, 0.5, 0.5],
+			},
+			Eat = 
+			{
+			},
+			ButtonLogic = 
+			{
+			},
+			InventoryButton = 
+			{
+				string SelectedInvItem = "",
+			},
+			Hierarchy = 
+			{
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 21,
+					},
+					Named = 
+					{
+						string Name = "ItemCount",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0, -0.5, -9.45868592e-08],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteText = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = false,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string FontName = "5a0f895ab1e49e19:DraftGameFont",
+						uint FontSize = 16,
+						string Text = " ",
+						TextAlign Align = Center,
+						float PixelsPerUnit = 16,
+						bool Smoothing = false,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 22,
+					},
+					Named = 
+					{
+						string Name = "KeySparkles",
+					},
+					Archetyped = 
+					{
+						string Name = "5a0639e12b1c4854:LegendSparkle",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0.078754425, -0.0219612122, 10],
+						Vec3 Scale = [0.25000003, 0.25000003, 0.000299999985],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteParticleSystem = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						SystemChildMode ChildMode = Independent,
+						SystemSpace SystemSpace = WorldSpace,
+						uint DrawOrder = 0,
+						Vec4 Tint = [1, 0.539999843, 0, 1],
+						float WarmUpTime = 0,
+						ParticleGeometry GeometryMode = Billboarded,
+						ParticleRenderMode RenderMode = Additive,
+						ParticleSortMode SortMode = Youngest,
+						ParticleAnimation ParticleAnimation = Single,
+						string Texture = "5add733cf6bb7f8c:Particle_Sparkle()",
+						float VelocityScale = 1,
+						float LengthScale = 1,
+						float MaxParticleSize = 20,
+						Vec3 SystemSize = [1, 1, 1],
+					},
+					SphericalParticleEmitter = 
+					{
+						bool Active = false,
+						uint EmitCount = 0,
+						float EmitRate = 20,
+						float EmitVariance = 5,
+						float Size = 0.5,
+						float SizeVariance = 0.200000003,
+						float Lifetime = 0.400000006,
+						float LifetimeVariance = 0,
+						float Spin = 0,
+						float SpinVariance = 10,
+						bool RandomSpin = true,
+						float Fill = 1,
+						float EmitterVelocityPercent = 0,
+						Vec3 StartVelocity = [0, 0, 0],
+						Vec3 RandomVelocity = [0, 0, 0],
+						Vec3 TangentVelocity = [0, 0, 0],
+						Vec3 EmitterSize = [4, 4, 0.600000024],
+						bool FastMovingEmitter = false,
+					},
+					LinearParticleAnimator = 
+					{
+						Vec3 Force = [0, 0, 0],
+						Vec3 RandomForce = [0, 0, 0],
+						float Torque = 0,
+						float Growth = 0,
+						float Dampening = 0,
+						Vec3 Twist = [0, 0, 0],
+					},
+					ParticleColorAnimator = 
+					{
+						Vec4 Color0 = [0.889999986, 1, 0, 0.5],
+						Vec4 Color1 = [1, 0.720000029, 0, 1],
+						Vec4 Color2 = [1, 0.990000129, 0, 1],
+						Vec4 Color3 = [1, 0.600000143, 0, 0.5],
+						Vec4 Color4 = [1, 0.960000157, 0, 0],
+					},
+					LegendarySparkle = 
+					{
+					},
+				},
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 23,
+			},
+			Named = 
+			{
+				string Name = "Inventory_Slot",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [2.48437047, 0.00781345367, 15],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "4e07948c35993095:DefaultSprite",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			InventorySlot = 
+			{
+				int ItemIndex = 6,
+			},
+			Reactive = 
+			{
+				bool Active = true,
+				bool CaptureMouse = false,
+			},
+			BoxCollider = 
+			{
+				bool Ghost = false,
+				bool SendsMessages = true,
+				bool Seamless = true,
+				string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+				string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+				Vec3 Offset = [0, 0, 0],
+				Vec3 Size = [0.5, 0.5, 0.5],
+			},
+			Eat = 
+			{
+			},
+			ButtonLogic = 
+			{
+			},
+			InventoryButton = 
+			{
+				string SelectedInvItem = "",
+			},
+			Hierarchy = 
+			{
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 24,
+					},
+					Named = 
+					{
+						string Name = "ItemCount",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0, -0.5, -9.45868592e-08],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteText = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = false,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string FontName = "5a0f895ab1e49e19:DraftGameFont",
+						uint FontSize = 16,
+						string Text = " ",
+						TextAlign Align = Center,
+						float PixelsPerUnit = 16,
+						bool Smoothing = false,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 25,
+					},
+					Named = 
+					{
+						string Name = "KeySparkles",
+					},
+					Archetyped = 
+					{
+						string Name = "5a0639e12b1c4854:LegendSparkle",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0.00756835938, -0.0219612122, 10],
+						Vec3 Scale = [0.25000003, 0.25000003, 0.000299999985],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteParticleSystem = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						SystemChildMode ChildMode = Independent,
+						SystemSpace SystemSpace = WorldSpace,
+						uint DrawOrder = 0,
+						Vec4 Tint = [1, 0.539999843, 0, 1],
+						float WarmUpTime = 0,
+						ParticleGeometry GeometryMode = Billboarded,
+						ParticleRenderMode RenderMode = Additive,
+						ParticleSortMode SortMode = Youngest,
+						ParticleAnimation ParticleAnimation = Single,
+						string Texture = "5add733cf6bb7f8c:Particle_Sparkle()",
+						float VelocityScale = 1,
+						float LengthScale = 1,
+						float MaxParticleSize = 20,
+						Vec3 SystemSize = [1, 1, 1],
+					},
+					SphericalParticleEmitter = 
+					{
+						bool Active = false,
+						uint EmitCount = 0,
+						float EmitRate = 20,
+						float EmitVariance = 5,
+						float Size = 0.5,
+						float SizeVariance = 0.200000003,
+						float Lifetime = 0.400000006,
+						float LifetimeVariance = 0,
+						float Spin = 0,
+						float SpinVariance = 10,
+						bool RandomSpin = true,
+						float Fill = 1,
+						float EmitterVelocityPercent = 0,
+						Vec3 StartVelocity = [0, 0, 0],
+						Vec3 RandomVelocity = [0, 0, 0],
+						Vec3 TangentVelocity = [0, 0, 0],
+						Vec3 EmitterSize = [4, 4, 0.600000024],
+						bool FastMovingEmitter = false,
+					},
+					LinearParticleAnimator = 
+					{
+						Vec3 Force = [0, 0, 0],
+						Vec3 RandomForce = [0, 0, 0],
+						float Torque = 0,
+						float Growth = 0,
+						float Dampening = 0,
+						Vec3 Twist = [0, 0, 0],
+					},
+					ParticleColorAnimator = 
+					{
+						Vec4 Color0 = [0.889999986, 1, 0, 0.5],
+						Vec4 Color1 = [1, 0.720000029, 0, 1],
+						Vec4 Color2 = [1, 0.990000129, 0, 1],
+						Vec4 Color3 = [1, 0.600000143, 0, 0.5],
+						Vec4 Color4 = [1, 0.960000157, 0, 0],
+					},
+					LegendarySparkle = 
+					{
+					},
+				},
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 26,
+			},
+			Named = 
+			{
+				string Name = "Inventory_Slot",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [6.498456, 0.00781345367, 15],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "4e07948c35993095:DefaultSprite",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			InventorySlot = 
+			{
+				int ItemIndex = 7,
+			},
+			Reactive = 
+			{
+				bool Active = true,
+				bool CaptureMouse = false,
+			},
+			BoxCollider = 
+			{
+				bool Ghost = false,
+				bool SendsMessages = true,
+				bool Seamless = true,
+				string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+				string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+				Vec3 Offset = [0, 0, 0],
+				Vec3 Size = [0.5, 0.5, 0.5],
+			},
+			Eat = 
+			{
+			},
+			ButtonLogic = 
+			{
+			},
+			InventoryButton = 
+			{
+				string SelectedInvItem = "",
+			},
+			Hierarchy = 
+			{
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 27,
+					},
+					Named = 
+					{
+						string Name = "ItemCount",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0, -0.5, -9.45868592e-08],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteText = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = false,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string FontName = "5a0f895ab1e49e19:DraftGameFont",
+						uint FontSize = 16,
+						string Text = " ",
+						TextAlign Align = Center,
+						float PixelsPerUnit = 16,
+						bool Smoothing = false,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 28,
+					},
+					Named = 
+					{
+						string Name = "KeySparkles",
+					},
+					Archetyped = 
+					{
+						string Name = "5a0639e12b1c4854:LegendSparkle",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [-0.00679969788, 0.00543403625, 10],
+						Vec3 Scale = [0.25000003, 0.25000003, 0.000299999985],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteParticleSystem = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						SystemChildMode ChildMode = Independent,
+						SystemSpace SystemSpace = WorldSpace,
+						uint DrawOrder = 0,
+						Vec4 Tint = [1, 0.539999843, 0, 1],
+						float WarmUpTime = 0,
+						ParticleGeometry GeometryMode = Billboarded,
+						ParticleRenderMode RenderMode = Additive,
+						ParticleSortMode SortMode = Youngest,
+						ParticleAnimation ParticleAnimation = Single,
+						string Texture = "5add733cf6bb7f8c:Particle_Sparkle()",
+						float VelocityScale = 1,
+						float LengthScale = 1,
+						float MaxParticleSize = 20,
+						Vec3 SystemSize = [1, 1, 1],
+					},
+					SphericalParticleEmitter = 
+					{
+						bool Active = false,
+						uint EmitCount = 0,
+						float EmitRate = 20,
+						float EmitVariance = 5,
+						float Size = 0.5,
+						float SizeVariance = 0.200000003,
+						float Lifetime = 0.400000006,
+						float LifetimeVariance = 0,
+						float Spin = 0,
+						float SpinVariance = 10,
+						bool RandomSpin = true,
+						float Fill = 1,
+						float EmitterVelocityPercent = 0,
+						Vec3 StartVelocity = [0, 0, 0],
+						Vec3 RandomVelocity = [0, 0, 0],
+						Vec3 TangentVelocity = [0, 0, 0],
+						Vec3 EmitterSize = [4, 4, 0.600000024],
+						bool FastMovingEmitter = false,
+					},
+					LinearParticleAnimator = 
+					{
+						Vec3 Force = [0, 0, 0],
+						Vec3 RandomForce = [0, 0, 0],
+						float Torque = 0,
+						float Growth = 0,
+						float Dampening = 0,
+						Vec3 Twist = [0, 0, 0],
+					},
+					ParticleColorAnimator = 
+					{
+						Vec4 Color0 = [0.889999986, 1, 0, 0.5],
+						Vec4 Color1 = [1, 0.720000029, 0, 1],
+						Vec4 Color2 = [1, 0.990000129, 0, 1],
+						Vec4 Color3 = [1, 0.600000143, 0, 0.5],
+						Vec4 Color4 = [1, 0.960000157, 0, 0],
+					},
+					LegendarySparkle = 
+					{
+					},
+				},
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 29,
+			},
+			Named = 
+			{
+				string Name = "Inventory_Slot",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-6.5, 2.5, 15],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "4e07948c35993095:DefaultSprite",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			BoxCollider = 
+			{
+				bool Ghost = true,
+				bool SendsMessages = true,
+				bool Seamless = true,
+				string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+				string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+				Vec3 Offset = [0, 0, 0],
+				Vec3 Size = [0.5, 0.5, 0.5],
+			},
+			Reactive = 
+			{
+				bool Active = true,
+				bool CaptureMouse = true,
+			},
+			Eat = 
+			{
+			},
+			InventorySlot = 
+			{
+				int ItemIndex = 0,
+			},
+			ButtonLogic = 
+			{
+			},
+			InventoryButton = 
+			{
+				string SelectedInvItem = "",
+			},
+			Hierarchy = 
+			{
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 30,
+					},
+					Named = 
+					{
+						string Name = "ItemCount",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0, -0.5, -9.45868592e-08],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteText = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = false,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string FontName = "5a0f895ab1e49e19:DraftGameFont",
+						uint FontSize = 16,
+						string Text = " ",
+						TextAlign Align = Center,
+						float PixelsPerUnit = 16,
+						bool Smoothing = false,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 31,
+					},
+					Named = 
+					{
+						string Name = "KeySparkles",
+					},
+					Archetyped = 
+					{
+						string Name = "5a0639e12b1c4854:LegendSparkle",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0.00626945496, 0.00622367859, 10],
+						Vec3 Scale = [0.25000003, 0.25000003, 0.000299999985],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteParticleSystem = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						SystemChildMode ChildMode = Independent,
+						SystemSpace SystemSpace = WorldSpace,
+						uint DrawOrder = 0,
+						Vec4 Tint = [1, 0.539999843, 0, 1],
+						float WarmUpTime = 0,
+						ParticleGeometry GeometryMode = Billboarded,
+						ParticleRenderMode RenderMode = Additive,
+						ParticleSortMode SortMode = Youngest,
+						ParticleAnimation ParticleAnimation = Single,
+						string Texture = "5add733cf6bb7f8c:Particle_Sparkle()",
+						float VelocityScale = 1,
+						float LengthScale = 1,
+						float MaxParticleSize = 20,
+						Vec3 SystemSize = [1, 1, 1],
+					},
+					SphericalParticleEmitter = 
+					{
+						bool Active = false,
+						uint EmitCount = 0,
+						float EmitRate = 20,
+						float EmitVariance = 5,
+						float Size = 0.5,
+						float SizeVariance = 0.200000003,
+						float Lifetime = 0.400000006,
+						float LifetimeVariance = 0,
+						float Spin = 0,
+						float SpinVariance = 10,
+						bool RandomSpin = true,
+						float Fill = 1,
+						float EmitterVelocityPercent = 0,
+						Vec3 StartVelocity = [0, 0, 0],
+						Vec3 RandomVelocity = [0, 0, 0],
+						Vec3 TangentVelocity = [0, 0, 0],
+						Vec3 EmitterSize = [4, 4, 0.600000024],
+						bool FastMovingEmitter = false,
+					},
+					LinearParticleAnimator = 
+					{
+						Vec3 Force = [0, 0, 0],
+						Vec3 RandomForce = [0, 0, 0],
+						float Torque = 0,
+						float Growth = 0,
+						float Dampening = 0,
+						Vec3 Twist = [0, 0, 0],
+					},
+					ParticleColorAnimator = 
+					{
+						Vec4 Color0 = [0.889999986, 1, 0, 0.5],
+						Vec4 Color1 = [1, 0.720000029, 0, 1],
+						Vec4 Color2 = [1, 0.990000129, 0, 1],
+						Vec4 Color3 = [1, 0.600000143, 0, 0.5],
+						Vec4 Color4 = [1, 0.960000157, 0, 0],
+					},
+					LegendarySparkle = 
+					{
+					},
+				},
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 32,
+			},
+			Named = 
+			{
+				string Name = "Inventory_Slot",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [2.45207691, 2.50706649, 15],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "4e07948c35993095:DefaultSprite",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			BoxCollider = 
+			{
+				bool Ghost = true,
+				bool SendsMessages = true,
+				bool Seamless = true,
+				string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+				string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+				Vec3 Offset = [0, 0, 0],
+				Vec3 Size = [0.5, 0.5, 0.5],
+			},
+			Reactive = 
+			{
+				bool Active = true,
+				bool CaptureMouse = true,
+			},
+			InventorySlot = 
+			{
+				int ItemIndex = 2,
+			},
+			Eat = 
+			{
+			},
+			ButtonLogic = 
+			{
+			},
+			InventoryButton = 
+			{
+				string SelectedInvItem = "",
+			},
+			Hierarchy = 
+			{
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 33,
+					},
+					Named = 
+					{
+						string Name = "ItemCount",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0, -0.5, -9.45868592e-08],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteText = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = false,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string FontName = "5a0f895ab1e49e19:DraftGameFont",
+						uint FontSize = 16,
+						string Text = " ",
+						TextAlign Align = Center,
+						float PixelsPerUnit = 16,
+						bool Smoothing = false,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 34,
+					},
+					Named = 
+					{
+						string Name = "KeySparkles",
+					},
+					Archetyped = 
+					{
+						string Name = "5a0639e12b1c4854:LegendSparkle",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0.0124664307, -0.000843048096, 10],
+						Vec3 Scale = [0.25000003, 0.25000003, 0.000299999985],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteParticleSystem = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						SystemChildMode ChildMode = Independent,
+						SystemSpace SystemSpace = WorldSpace,
+						uint DrawOrder = 0,
+						Vec4 Tint = [1, 0.539999843, 0, 1],
+						float WarmUpTime = 0,
+						ParticleGeometry GeometryMode = Billboarded,
+						ParticleRenderMode RenderMode = Additive,
+						ParticleSortMode SortMode = Youngest,
+						ParticleAnimation ParticleAnimation = Single,
+						string Texture = "5add733cf6bb7f8c:Particle_Sparkle()",
+						float VelocityScale = 1,
+						float LengthScale = 1,
+						float MaxParticleSize = 20,
+						Vec3 SystemSize = [1, 1, 1],
+					},
+					SphericalParticleEmitter = 
+					{
+						bool Active = false,
+						uint EmitCount = 0,
+						float EmitRate = 20,
+						float EmitVariance = 5,
+						float Size = 0.5,
+						float SizeVariance = 0.200000003,
+						float Lifetime = 0.400000006,
+						float LifetimeVariance = 0,
+						float Spin = 0,
+						float SpinVariance = 10,
+						bool RandomSpin = true,
+						float Fill = 1,
+						float EmitterVelocityPercent = 0,
+						Vec3 StartVelocity = [0, 0, 0],
+						Vec3 RandomVelocity = [0, 0, 0],
+						Vec3 TangentVelocity = [0, 0, 0],
+						Vec3 EmitterSize = [4, 4, 0.600000024],
+						bool FastMovingEmitter = false,
+					},
+					LinearParticleAnimator = 
+					{
+						Vec3 Force = [0, 0, 0],
+						Vec3 RandomForce = [0, 0, 0],
+						float Torque = 0,
+						float Growth = 0,
+						float Dampening = 0,
+						Vec3 Twist = [0, 0, 0],
+					},
+					ParticleColorAnimator = 
+					{
+						Vec4 Color0 = [0.889999986, 1, 0, 0.5],
+						Vec4 Color1 = [1, 0.720000029, 0, 1],
+						Vec4 Color2 = [1, 0.990000129, 0, 1],
+						Vec4 Color3 = [1, 0.600000143, 0, 0.5],
+						Vec4 Color4 = [1, 0.960000157, 0, 0],
+					},
+					LegendarySparkle = 
+					{
+					},
+				},
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 35,
+			},
+			Named = 
+			{
+				string Name = "Inventory_Slot",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [6.45062733, 2.5340364, 15],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "4e07948c35993095:DefaultSprite",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			InventorySlot = 
+			{
+				int ItemIndex = 3,
+			},
+			Reactive = 
+			{
+				bool Active = true,
+				bool CaptureMouse = false,
+			},
+			BoxCollider = 
+			{
+				bool Ghost = false,
+				bool SendsMessages = true,
+				bool Seamless = true,
+				string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+				string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+				Vec3 Offset = [0, 0, 0],
+				Vec3 Size = [0.5, 0.5, 0.5],
+			},
+			Eat = 
+			{
+			},
+			ButtonLogic = 
+			{
+			},
+			InventoryButton = 
+			{
+				string SelectedInvItem = "",
+			},
+			Hierarchy = 
+			{
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 36,
+					},
+					Named = 
+					{
+						string Name = "ItemCount",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0, -0.5, -9.45868592e-08],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteText = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = false,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string FontName = "5a0f895ab1e49e19:DraftGameFont",
+						uint FontSize = 16,
+						string Text = " ",
+						TextAlign Align = Center,
+						float PixelsPerUnit = 16,
+						bool Smoothing = false,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 37,
+					},
+					Named = 
+					{
+						string Name = "KeySparkles",
+					},
+					Archetyped = 
+					{
+						string Name = "5a0639e12b1c4854:LegendSparkle",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0.0410308838, -0.0278129578, 10],
+						Vec3 Scale = [0.25000003, 0.25000003, 0.000299999985],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteParticleSystem = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						SystemChildMode ChildMode = Independent,
+						SystemSpace SystemSpace = WorldSpace,
+						uint DrawOrder = 0,
+						Vec4 Tint = [1, 0.539999843, 0, 1],
+						float WarmUpTime = 0,
+						ParticleGeometry GeometryMode = Billboarded,
+						ParticleRenderMode RenderMode = Additive,
+						ParticleSortMode SortMode = Youngest,
+						ParticleAnimation ParticleAnimation = Single,
+						string Texture = "5add733cf6bb7f8c:Particle_Sparkle()",
+						float VelocityScale = 1,
+						float LengthScale = 1,
+						float MaxParticleSize = 20,
+						Vec3 SystemSize = [1, 1, 1],
+					},
+					SphericalParticleEmitter = 
+					{
+						bool Active = false,
+						uint EmitCount = 0,
+						float EmitRate = 20,
+						float EmitVariance = 5,
+						float Size = 0.5,
+						float SizeVariance = 0.200000003,
+						float Lifetime = 0.400000006,
+						float LifetimeVariance = 0,
+						float Spin = 0,
+						float SpinVariance = 10,
+						bool RandomSpin = true,
+						float Fill = 1,
+						float EmitterVelocityPercent = 0,
+						Vec3 StartVelocity = [0, 0, 0],
+						Vec3 RandomVelocity = [0, 0, 0],
+						Vec3 TangentVelocity = [0, 0, 0],
+						Vec3 EmitterSize = [4, 4, 0.600000024],
+						bool FastMovingEmitter = false,
+					},
+					LinearParticleAnimator = 
+					{
+						Vec3 Force = [0, 0, 0],
+						Vec3 RandomForce = [0, 0, 0],
+						float Torque = 0,
+						float Growth = 0,
+						float Dampening = 0,
+						Vec3 Twist = [0, 0, 0],
+					},
+					ParticleColorAnimator = 
+					{
+						Vec4 Color0 = [0.889999986, 1, 0, 0.5],
+						Vec4 Color1 = [1, 0.720000029, 0, 1],
+						Vec4 Color2 = [1, 0.990000129, 0, 1],
+						Vec4 Color3 = [1, 0.600000143, 0, 0.5],
+						Vec4 Color4 = [1, 0.960000157, 0, 0],
+					},
+					LegendarySparkle = 
+					{
+					},
+				},
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 38,
+			},
+			Named = 
+			{
+				string Name = "Inventory_Slot",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-6.55662537, -2.32552338, 15],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "4e07948c35993095:DefaultSprite",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			InventorySlot = 
+			{
+				int ItemIndex = 8,
+			},
+			Reactive = 
+			{
+				bool Active = true,
+				bool CaptureMouse = false,
+			},
+			BoxCollider = 
+			{
+				bool Ghost = false,
+				bool SendsMessages = true,
+				bool Seamless = true,
+				string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+				string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+				Vec3 Offset = [0, 0, 0],
+				Vec3 Size = [0.5, 0.5, 0.5],
+			},
+			Eat = 
+			{
+			},
+			ButtonLogic = 
+			{
+			},
+			InventoryButton = 
+			{
+				string SelectedInvItem = "",
+			},
+			Hierarchy = 
+			{
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 39,
+					},
+					Named = 
+					{
+						string Name = "ItemCount",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0, -0.5, -9.45868592e-08],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteText = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = false,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string FontName = "5a0f895ab1e49e19:DraftGameFont",
+						uint FontSize = 16,
+						string Text = " ",
+						TextAlign Align = Center,
+						float PixelsPerUnit = 16,
+						bool Smoothing = false,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 40,
+					},
+					Named = 
+					{
+						string Name = "KeySparkles",
+					},
+					Archetyped = 
+					{
+						string Name = "5a0639e12b1c4854:LegendSparkle",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0.0417060852, 0.0114440918, 10],
+						Vec3 Scale = [0.25000003, 0.25000003, 0.000299999985],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteParticleSystem = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						SystemChildMode ChildMode = Independent,
+						SystemSpace SystemSpace = WorldSpace,
+						uint DrawOrder = 0,
+						Vec4 Tint = [1, 0.539999843, 0, 1],
+						float WarmUpTime = 0,
+						ParticleGeometry GeometryMode = Billboarded,
+						ParticleRenderMode RenderMode = Additive,
+						ParticleSortMode SortMode = Youngest,
+						ParticleAnimation ParticleAnimation = Single,
+						string Texture = "5add733cf6bb7f8c:Particle_Sparkle()",
+						float VelocityScale = 1,
+						float LengthScale = 1,
+						float MaxParticleSize = 20,
+						Vec3 SystemSize = [1, 1, 1],
+					},
+					SphericalParticleEmitter = 
+					{
+						bool Active = false,
+						uint EmitCount = 0,
+						float EmitRate = 20,
+						float EmitVariance = 5,
+						float Size = 0.5,
+						float SizeVariance = 0.200000003,
+						float Lifetime = 0.400000006,
+						float LifetimeVariance = 0,
+						float Spin = 0,
+						float SpinVariance = 10,
+						bool RandomSpin = true,
+						float Fill = 1,
+						float EmitterVelocityPercent = 0,
+						Vec3 StartVelocity = [0, 0, 0],
+						Vec3 RandomVelocity = [0, 0, 0],
+						Vec3 TangentVelocity = [0, 0, 0],
+						Vec3 EmitterSize = [4, 4, 0.600000024],
+						bool FastMovingEmitter = false,
+					},
+					LinearParticleAnimator = 
+					{
+						Vec3 Force = [0, 0, 0],
+						Vec3 RandomForce = [0, 0, 0],
+						float Torque = 0,
+						float Growth = 0,
+						float Dampening = 0,
+						Vec3 Twist = [0, 0, 0],
+					},
+					ParticleColorAnimator = 
+					{
+						Vec4 Color0 = [0.889999986, 1, 0, 0.5],
+						Vec4 Color1 = [1, 0.720000029, 0, 1],
+						Vec4 Color2 = [1, 0.990000129, 0, 1],
+						Vec4 Color3 = [1, 0.600000143, 0, 0.5],
+						Vec4 Color4 = [1, 0.960000157, 0, 0],
+					},
+					LegendarySparkle = 
+					{
+					},
+				},
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 41,
+			},
+			Named = 
+			{
+				string Name = "Inventory_Slot",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-2.57276511, -2.32552338, 15],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "4e07948c35993095:DefaultSprite",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			InventorySlot = 
+			{
+				int ItemIndex = 9,
+			},
+			Reactive = 
+			{
+				bool Active = true,
+				bool CaptureMouse = false,
+			},
+			BoxCollider = 
+			{
+				bool Ghost = false,
+				bool SendsMessages = true,
+				bool Seamless = true,
+				string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+				string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+				Vec3 Offset = [0, 0, 0],
+				Vec3 Size = [0.5, 0.5, 0.5],
+			},
+			Eat = 
+			{
+			},
+			ButtonLogic = 
+			{
+			},
+			InventoryButton = 
+			{
+				string SelectedInvItem = "",
+			},
+			Hierarchy = 
+			{
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 42,
+					},
+					Named = 
+					{
+						string Name = "ItemCount",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0, -0.5, -9.45868592e-08],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteText = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = false,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string FontName = "5a0f895ab1e49e19:DraftGameFont",
+						uint FontSize = 16,
+						string Text = " ",
+						TextAlign Align = Center,
+						float PixelsPerUnit = 16,
+						bool Smoothing = false,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 43,
+					},
+					Named = 
+					{
+						string Name = "KeySparkles",
+					},
+					Archetyped = 
+					{
+						string Name = "5a0639e12b1c4854:LegendSparkle",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0.077041626, -0.00885009766, 10],
+						Vec3 Scale = [0.25000003, 0.25000003, 0.000299999985],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteParticleSystem = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						SystemChildMode ChildMode = Independent,
+						SystemSpace SystemSpace = WorldSpace,
+						uint DrawOrder = 0,
+						Vec4 Tint = [1, 0.539999843, 0, 1],
+						float WarmUpTime = 0,
+						ParticleGeometry GeometryMode = Billboarded,
+						ParticleRenderMode RenderMode = Additive,
+						ParticleSortMode SortMode = Youngest,
+						ParticleAnimation ParticleAnimation = Single,
+						string Texture = "5add733cf6bb7f8c:Particle_Sparkle()",
+						float VelocityScale = 1,
+						float LengthScale = 1,
+						float MaxParticleSize = 20,
+						Vec3 SystemSize = [1, 1, 1],
+					},
+					SphericalParticleEmitter = 
+					{
+						bool Active = false,
+						uint EmitCount = 0,
+						float EmitRate = 20,
+						float EmitVariance = 5,
+						float Size = 0.5,
+						float SizeVariance = 0.200000003,
+						float Lifetime = 0.400000006,
+						float LifetimeVariance = 0,
+						float Spin = 0,
+						float SpinVariance = 10,
+						bool RandomSpin = true,
+						float Fill = 1,
+						float EmitterVelocityPercent = 0,
+						Vec3 StartVelocity = [0, 0, 0],
+						Vec3 RandomVelocity = [0, 0, 0],
+						Vec3 TangentVelocity = [0, 0, 0],
+						Vec3 EmitterSize = [4, 4, 0.600000024],
+						bool FastMovingEmitter = false,
+					},
+					LinearParticleAnimator = 
+					{
+						Vec3 Force = [0, 0, 0],
+						Vec3 RandomForce = [0, 0, 0],
+						float Torque = 0,
+						float Growth = 0,
+						float Dampening = 0,
+						Vec3 Twist = [0, 0, 0],
+					},
+					ParticleColorAnimator = 
+					{
+						Vec4 Color0 = [0.889999986, 1, 0, 0.5],
+						Vec4 Color1 = [1, 0.720000029, 0, 1],
+						Vec4 Color2 = [1, 0.990000129, 0, 1],
+						Vec4 Color3 = [1, 0.600000143, 0, 0.5],
+						Vec4 Color4 = [1, 0.960000157, 0, 0],
+					},
+					LegendarySparkle = 
+					{
+					},
+				},
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 44,
+			},
+			Named = 
+			{
+				string Name = "Inventory_Slot",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [2.48437047, -2.32552338, 15],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "4e07948c35993095:DefaultSprite",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			InventorySlot = 
+			{
+				int ItemIndex = 10,
+			},
+			Reactive = 
+			{
+				bool Active = true,
+				bool CaptureMouse = false,
+			},
+			BoxCollider = 
+			{
+				bool Ghost = false,
+				bool SendsMessages = true,
+				bool Seamless = true,
+				string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+				string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+				Vec3 Offset = [0, 0, 0],
+				Vec3 Size = [0.5, 0.5, 0.5],
+			},
+			Eat = 
+			{
+			},
+			ButtonLogic = 
+			{
+			},
+			InventoryButton = 
+			{
+				string SelectedInvItem = "",
+			},
+			Hierarchy = 
+			{
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 45,
+					},
+					Named = 
+					{
+						string Name = "ItemCount",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0, -0.5, -9.45868592e-08],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteText = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = false,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string FontName = "5a0f895ab1e49e19:DraftGameFont",
+						uint FontSize = 16,
+						string Text = " ",
+						TextAlign Align = Center,
+						float PixelsPerUnit = 16,
+						bool Smoothing = false,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 46,
+					},
+					Named = 
+					{
+						string Name = "KeySparkles",
+					},
+					Archetyped = 
+					{
+						string Name = "5a0639e12b1c4854:LegendSparkle",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [-0.0255393982, 0.0157909393, 10],
+						Vec3 Scale = [0.25000003, 0.25000003, 0.000299999985],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteParticleSystem = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						SystemChildMode ChildMode = Independent,
+						SystemSpace SystemSpace = WorldSpace,
+						uint DrawOrder = 0,
+						Vec4 Tint = [1, 0.539999843, 0, 1],
+						float WarmUpTime = 0,
+						ParticleGeometry GeometryMode = Billboarded,
+						ParticleRenderMode RenderMode = Additive,
+						ParticleSortMode SortMode = Youngest,
+						ParticleAnimation ParticleAnimation = Single,
+						string Texture = "5add733cf6bb7f8c:Particle_Sparkle()",
+						float VelocityScale = 1,
+						float LengthScale = 1,
+						float MaxParticleSize = 20,
+						Vec3 SystemSize = [1, 1, 1],
+					},
+					SphericalParticleEmitter = 
+					{
+						bool Active = false,
+						uint EmitCount = 0,
+						float EmitRate = 20,
+						float EmitVariance = 5,
+						float Size = 0.5,
+						float SizeVariance = 0.200000003,
+						float Lifetime = 0.400000006,
+						float LifetimeVariance = 0,
+						float Spin = 0,
+						float SpinVariance = 10,
+						bool RandomSpin = true,
+						float Fill = 1,
+						float EmitterVelocityPercent = 0,
+						Vec3 StartVelocity = [0, 0, 0],
+						Vec3 RandomVelocity = [0, 0, 0],
+						Vec3 TangentVelocity = [0, 0, 0],
+						Vec3 EmitterSize = [4, 4, 0.600000024],
+						bool FastMovingEmitter = false,
+					},
+					LinearParticleAnimator = 
+					{
+						Vec3 Force = [0, 0, 0],
+						Vec3 RandomForce = [0, 0, 0],
+						float Torque = 0,
+						float Growth = 0,
+						float Dampening = 0,
+						Vec3 Twist = [0, 0, 0],
+					},
+					ParticleColorAnimator = 
+					{
+						Vec4 Color0 = [0.889999986, 1, 0, 0.5],
+						Vec4 Color1 = [1, 0.720000029, 0, 1],
+						Vec4 Color2 = [1, 0.990000129, 0, 1],
+						Vec4 Color3 = [1, 0.600000143, 0, 0.5],
+						Vec4 Color4 = [1, 0.960000157, 0, 0],
+					},
+					LegendarySparkle = 
+					{
+					},
+				},
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 47,
+			},
+			Named = 
+			{
+				string Name = "Inventory_Slot",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [6.498456, -2.32552338, 15],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "4e07948c35993095:DefaultSprite",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			InventorySlot = 
+			{
+				int ItemIndex = 11,
+			},
+			Reactive = 
+			{
+				bool Active = true,
+				bool CaptureMouse = false,
+			},
+			BoxCollider = 
+			{
+				bool Ghost = false,
+				bool SendsMessages = true,
+				bool Seamless = true,
+				string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+				string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+				Vec3 Offset = [0, 0, 0],
+				Vec3 Size = [0.5, 0.5, 0.5],
+			},
+			Eat = 
+			{
+			},
+			ButtonLogic = 
+			{
+			},
+			InventoryButton = 
+			{
+				string SelectedInvItem = "",
+			},
+			Hierarchy = 
+			{
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 48,
+					},
+					Named = 
+					{
+						string Name = "ItemCount",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0, -0.5, -9.45868592e-08],
+						Vec3 Scale = [1, 1, 1],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteText = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = false,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						Vec4 Color = [1, 1, 1, 1],
+						BlendMode BlendMode = Alpha,
+						SpriteGeometryMode GeometryMode = ZPlane,
+						string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+						string FontName = "5a0f895ab1e49e19:DraftGameFont",
+						uint FontSize = 16,
+						string Text = " ",
+						TextAlign Align = Center,
+						float PixelsPerUnit = 16,
+						bool Smoothing = false,
+					},
+				},
+				Cog = 
+				{
+					LinkId = 
+					{
+						uint Id = 49,
+					},
+					Named = 
+					{
+						string Name = "KeySparkles",
+					},
+					Archetyped = 
+					{
+						string Name = "5a0639e12b1c4854:LegendSparkle",
+					},
+					Transform = 
+					{
+						Vec3 Translation = [0.036485672, 0.00882720947, 10],
+						Vec3 Scale = [0.25000003, 0.25000003, 0.000299999985],
+						Quat Rotation = [0, 0, 0, 1],
+					},
+					SpriteParticleSystem = 
+					{
+						bool Visible = true,
+						bool VisibilityCulling = true,
+						bool VisibilityEvents = true,
+						bool CastShadows = false,
+						SystemChildMode ChildMode = Independent,
+						SystemSpace SystemSpace = WorldSpace,
+						uint DrawOrder = 0,
+						Vec4 Tint = [1, 0.539999843, 0, 1],
+						float WarmUpTime = 0,
+						ParticleGeometry GeometryMode = Billboarded,
+						ParticleRenderMode RenderMode = Additive,
+						ParticleSortMode SortMode = Youngest,
+						ParticleAnimation ParticleAnimation = Single,
+						string Texture = "5add733cf6bb7f8c:Particle_Sparkle()",
+						float VelocityScale = 1,
+						float LengthScale = 1,
+						float MaxParticleSize = 20,
+						Vec3 SystemSize = [1, 1, 1],
+					},
+					SphericalParticleEmitter = 
+					{
+						bool Active = false,
+						uint EmitCount = 0,
+						float EmitRate = 20,
+						float EmitVariance = 5,
+						float Size = 0.5,
+						float SizeVariance = 0.200000003,
+						float Lifetime = 0.400000006,
+						float LifetimeVariance = 0,
+						float Spin = 0,
+						float SpinVariance = 10,
+						bool RandomSpin = true,
+						float Fill = 1,
+						float EmitterVelocityPercent = 0,
+						Vec3 StartVelocity = [0, 0, 0],
+						Vec3 RandomVelocity = [0, 0, 0],
+						Vec3 TangentVelocity = [0, 0, 0],
+						Vec3 EmitterSize = [4, 4, 0.600000024],
+						bool FastMovingEmitter = false,
+					},
+					LinearParticleAnimator = 
+					{
+						Vec3 Force = [0, 0, 0],
+						Vec3 RandomForce = [0, 0, 0],
+						float Torque = 0,
+						float Growth = 0,
+						float Dampening = 0,
+						Vec3 Twist = [0, 0, 0],
+					},
+					ParticleColorAnimator = 
+					{
+						Vec4 Color0 = [0.889999986, 1, 0, 0.5],
+						Vec4 Color1 = [1, 0.720000029, 0, 1],
+						Vec4 Color2 = [1, 0.990000129, 0, 1],
+						Vec4 Color3 = [1, 0.600000143, 0, 0.5],
+						Vec4 Color4 = [1, 0.960000157, 0, 0],
+					},
+					LegendarySparkle = 
+					{
+					},
+				},
+			},
+		},
+	},
+},

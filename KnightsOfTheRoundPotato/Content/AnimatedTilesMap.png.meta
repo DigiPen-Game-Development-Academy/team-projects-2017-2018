@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "AnimatedTilesMap",
+		uint64 ResourceId = 5ada2a8b3715db06,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 164,
+		uint FrameSizeY = 296,
+		uint FrameCount = 5,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 82,
+		float OriginY = 148,
+		float PixelsPerUnit = 64,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

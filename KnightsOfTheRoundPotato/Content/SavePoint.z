@@ -1,0 +1,56 @@
+class SavePoint : ZilchComponent {
+    [Dependency] var Reactive : Reactive;
+    var Dialog : Cog;
+    function Initialize(init : CogInitializer) {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+    }
+    
+    function OnDialogEnded(event : DialogEnded) {
+        
+        if(event.Type == DialogReturn.YES) {
+            this.LevelSettings.SaveLoad.Save();
+            Utilities.ConsoleSend("Game Saved!", Real4(0, 1, 0, 1));
+        }
+        
+        Zero.Disconnect(this.Owner, Events.DialogEnded, this.Dialog);
+        
+    }
+    
+    function OnMouseDown(event : ViewportMouseEvent){
+        
+        if(event.Button == MouseButtons.Left)
+            return;
+        
+        
+        var dialog = Utilities.Dialog("Are you sure you want to save?", DialogTypes.YESNO, 10);
+        if(dialog != null) {
+            this.Dialog = dialog;
+            Zero.Connect(this.Dialog, Events.DialogEnded, this.OnDialogEnded);
+        }
+        
+    }
+
+    function OnMouseExit(event : ViewportMouseEvent) {
+        
+        GlobalVariables.LorePanel.Sprite.Visible = false;
+    }
+
+    function OnMouseEnter(event : ViewportMouseEvent) {
+        
+        var res = Utilities.Raycast(this.Owner.Transform.WorldTranslation, GlobalVariables.Player.Transform.WorldTranslation-this.Owner.Transform.WorldTranslation, this.Space.PhysicsSpace, 3);
+        
+        if(res == null || res.ObjectHit != GlobalVariables.Player) {
+            return;
+        }
+        
+        GlobalVariables.LorePanel.Sprite.Visible = true;
+        GlobalVariables.LorePanel.LorePanel.Text = "This is a sign\nRight click to save you game";
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+    }
+}

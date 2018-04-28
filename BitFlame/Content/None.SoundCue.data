@@ -1,0 +1,30 @@
+SoundCue = 
+{
+	SoundPlayMode PlayMode = Single,
+	float Volume = 0.800000012,
+	float VolumeVariation = 0,
+	float VolumeDB = -6,
+	bool UseVolumeDB = false,
+	float VolumeDBVariation = 0,
+	float Pitch = 0,
+	float PitchSemitones = 0,
+	bool UsePitchSemitones = false,
+	float PitchVariation = 0,
+	float PitchSTVariation = 0,
+	float MinDistance = 1,
+	float MaxDistance = 70,
+	float MinAttenuatedVolume = 0,
+	uint MaxPlaybacks = 10,
+	Array Sounds = 
+	[
+	],
+	Array SoundTags = 
+	[
+		{
+			string SoundTagName = "551c2d5a29ce571d:DefaultSoundTag",
+		},
+	],
+	string RolloffCurveName = "",
+	int Version = 1,
+	RolloffCurveType RolloffCurveType = Error,
+},

@@ -1,0 +1,57 @@
+//Author: Callie Robinson
+//Purpose: When Player Interacts with Hermit, Fool Level Loads (not working atm)
+
+class Interaction : ZilchComponent
+{
+    [Property] var Level : Level;
+    [Property] var Archetype : Archetype;
+    var Object : Cog;
+    
+    [Property] var BlinkStrength : Real = 0.2;
+    var OriginalOpacity : Real;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Owner, Events.CollisionEnded, this.OnCollisionEnded);
+        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionPersisted);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.OriginalOpacity = this.Owner.Sprite.Color.W;
+    }
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if (event.OtherObject.PlayerController == null) return;
+        
+        this.Object = this.Space.CreateAtPosition(this.Archetype, this.Owner.Transform.WorldTranslation);
+        
+        var seq = Action.Sequence(this.Owner.Actions);
+        this.Object.Transform.Scale = Real3.Zero;
+        Action.Property(seq, @this.Object.Transform.Scale, Real3(1, 1, 1), 1.5, Ease.QuadInOut);
+    }
+    function OnCollisionEnded(event : CollisionEvent)
+    {
+        if (event.OtherObject.PlayerController == null) return;
+        
+        var seq = Action.Sequence(this.Owner.Actions);
+        Action.Property(seq, @this.Object.Transform.Scale, Real3.Zero, 1.5, Ease.QuadInOut);
+        Action.Call(seq, this.Object.Destroy);
+        this.Object = null;
+    }
+    function OnCollisionPersisted(event : CollisionEvent)
+    {
+        if (event.OtherObject.PlayerController == null) return;
+        
+        if (Zero.Keyboard.KeyIsPressed(Keys.E))
+        {
+            this.Space.SoundSpace.PlayCue(SoundCue.Hermit);
+            this.Space.LoadLevel(this.Level);
+        }
+    }
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var color = this.Owner.Sprite.Color;
+        color.W = this.OriginalOpacity + this.BlinkStrength * Math.Cos(event.TimePassed);
+        this.Owner.Sprite.Color = color;
+    }
+}

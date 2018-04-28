@@ -1,0 +1,156 @@
+//Author Brandon Wolenetz
+
+class GlobalVariables {
+    
+    [Static]
+    var Save : Cog;
+    
+    [Static]
+    var QuestItems : Array[Boolean];
+    
+    [Static]
+    var DeathMSG : String = "";
+    
+    [Static]
+    var Enemies : Array[Cog];
+    
+    [Static]
+    var Chests : Array[Cog];
+    
+    [Static]
+    var GroundItems : Array[Cog];
+    
+    [Static]
+    var ShadowObjects : Array[Cog];
+    
+    [Static]
+    var SoundUI : SoundWaves = null;
+    
+    [Static]
+    var Invis : Boolean = false;
+    
+    [Static]
+    var Items : Array[Item];
+    
+    [Static]
+    var ChestItems : Array[Item];
+    
+    [Static]
+    var Player : Cog;
+    
+    [Static]
+    var InputManager : InputManager;
+    
+    [Static]
+    var GameSpace : Space;
+    
+    [Static]
+    var UseWeapon : UseWeapon;
+    
+    [Static]
+    var DebugLinesActive : Boolean = false;
+    
+    [Static]
+    var DebugNavNodes :Boolean = false;
+    
+    [Static]
+    var LorePanel : Cog = null;
+    
+    [Static]
+    var Inv : Cog = null;
+    
+    [Static]
+    var CInv : Cog = null;
+    
+    [Static]
+    var PauseMenu : Cog = null;
+    
+    [Static]
+    var Console : Cog = null;
+    
+    [Static]
+    var SloMo : Boolean = false;
+    
+    [Static]
+    var CamSense : Real = 6;
+    
+    [Static]
+    var Settings : Cog = null;
+    
+    [Static]
+    var QuestSprite : QuestSprite = null;
+    
+    [Static]
+    var SFXSpace : Space = null;
+    
+    [Static]
+    var Cursor : Cog;
+    
+    [Static]
+    var CamFollow : CamFollow;
+    
+    [Static]
+    var DamageEffect : DamageEffect;
+    
+    [Static]
+    function AddInventoryItem (item : Item) : Boolean {
+        
+        for(var i = 0; i < GlobalVariables.Items.Count; ++i){
+            
+            if(GlobalVariables.Items[i] == null) {
+                GlobalVariables.Items.Set(i, item);
+                if(item.Stackable && GlobalVariables.Items[i].Ammount > item.StackSize) {
+                    item.Ammount -= item.StackSize;
+                    GlobalVariables.Items[i].Ammount = item.StackSize;
+                } else {
+                    return true;
+                }
+            } else if ((item.Stackable && GlobalVariables.Items[i].Name == item.Name)) {
+                if(GlobalVariables.Items[i].Ammount + item.Ammount > item.StackSize){
+                    item.Ammount -= item.StackSize - GlobalVariables.Items[i].Ammount;
+                    GlobalVariables.Items[i].Ammount = item.StackSize;
+                } else {
+                    GlobalVariables.Items[i].Ammount += item.Ammount;
+                    delete item;
+                    return true;
+                }
+            }
+            
+        }
+        
+        Utilities.Dialog("YOUR INVENTORY IS FULLLL!!!", DialogTypes.OK, 15);
+        return false;
+        
+    }
+    
+    [Static]
+    function AddCInventoryItem (item : Item) : Boolean {
+        
+        for(var i = 0; i < GlobalVariables.ChestItems.Count; ++i){
+            
+            if(GlobalVariables.ChestItems[i] == null) {
+                GlobalVariables.ChestItems.Set(i, item);
+                if(item.Stackable && GlobalVariables.ChestItems[i].Ammount > item.StackSize) {
+                    item.Ammount -= item.StackSize;
+                    GlobalVariables.ChestItems[i].Ammount = item.StackSize;
+                } else {
+                    return true;
+                }
+            } else if ((item.Stackable && GlobalVariables.ChestItems[i].Name == item.Name)) {
+                if(GlobalVariables.ChestItems[i].Ammount + item.Ammount > item.StackSize){
+                    item.Ammount -= item.StackSize - GlobalVariables.ChestItems[i].Ammount;
+                    GlobalVariables.ChestItems[i].Ammount = item.StackSize;
+                } else {
+                    GlobalVariables.ChestItems[i].Ammount += item.Ammount;
+                    delete item;
+                    return true;
+                }
+            }
+            
+        }
+        
+        return false;
+        
+    }
+    
+}

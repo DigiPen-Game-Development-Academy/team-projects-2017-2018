@@ -1,0 +1,47 @@
+//Jacob Burke
+
+//Makes the player bounce of the object that this is on
+
+class Bounce : ZilchComponent
+{
+    [Property]
+    var BounceLevel:Real3;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStart);
+    }
+    
+    
+    
+
+    function OnCollisionStart(event : CollisionEvent)
+    {
+        
+        
+        
+            if (event.OtherObject.PlayerController != null)
+            {
+                if(event.OtherObject.Transform.Translation.X < this.Owner.Transform.WorldTranslation.X)
+                this.BounceLevel.X = -25;
+                
+                if(event.OtherObject.Transform.Translation.X > this.Owner.Transform.WorldTranslation.X)
+                this.BounceLevel.X = 25;
+                
+                if(event.OtherObject.Transform.Translation.Y > this.Owner.Transform.WorldTranslation.Y)
+                this.BounceLevel.Y = 10;
+                
+                
+                event.OtherObject.RigidBody.Velocity += this.BounceLevel;
+            }
+        
+        
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    
+            
+    }
+}

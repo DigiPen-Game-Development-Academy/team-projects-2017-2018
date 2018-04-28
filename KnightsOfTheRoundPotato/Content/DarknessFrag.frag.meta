@@ -1,0 +1,8 @@
+TextContent = 
+{
+	FragmentBuilder = 
+	{
+		string Name = "DarknessFrag",
+		uint64 ResourceId = 5a91c8dd059822c9,
+	},
+},

@@ -1,0 +1,74 @@
+class ConsoleController : ZilchComponent {
+    
+    var Text : Array[Cog];
+    
+    var MaxMsg : Integer = 21;
+    
+    function Initialize(init : CogInitializer) {
+        GlobalVariables.Console = this.Owner;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        this.Text = Array[Cog]();
+        if(GlobalVariables.DeathMSG != "") {
+            this.AddMSG(GlobalVariables.DeathMSG, Real4(1,0,0,1));
+        }
+    }
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+    }
+    
+    function AddMSG(txt : String, color : Real4) {
+        var txtobj = this.Space.Create(Archetype.ConsoleText);
+        if(txtobj != null) {
+            txt = "MSG:`txt`";
+            var lastSpace = 0;
+            if(txtobj.SpriteText.MeasureGivenText(txt).X > 2.875) {
+                var txt2 = "";
+                for (var i = 0; i < txt.Count; ++i){
+                    
+                    if(String.FromChar(txt.Get(i)) == " ") {
+                        lastSpace = i;
+                    }
+                    
+                    if(txtobj.SpriteText.MeasureGivenText("`txt2``String.FromChar(txt.Get(i))`").X > this.Owner.Area.Size.X - 0.125) {
+                        if(lastSpace + 1 > txt2.Count) {
+                            
+                        } else if(lastSpace == 0) {
+                            txt2 = "`txt2`\n";
+                        } else {
+                            
+                            
+                            txt2 = "`txt2.SubStringFromRuneIndices(0, lastSpace)`\n`txt2.SubStringFromRuneIndices(lastSpace+1, txt2.Count)`";
+                            
+                            lastSpace = 0;
+                        }
+                    }
+                    txt2 = "`txt2``String.FromChar(txt.Get(i))`";
+                }
+                txt = txt2;
+            }
+            txtobj.SpriteText.Text = txt;
+            txtobj.SpriteText.Color = color;
+            txtobj.AttachTo(this.Owner);
+            txtobj.Transform.Translation = Real3(0.0625, txtobj.SpriteText.MeasureText().Y+0.0625, 0);
+            this.Text.Add(txtobj);
+            if(this.Text.Count < 2)
+                return;
+            for (var i = this.Text.Count-2; i >= 0; --i) {
+                this.Text[i].Transform.Translation = Real3(this.Text[i].Transform.Translation.X, (this.Text[i+1].Transform.Translation.Y + this.Text[i].SpriteText.MeasureText().Y), 0.1);
+            }
+            
+            while(this.Text.Count > this.MaxMsg || this.Text[0].Transform.Translation.Y > this.Owner.Area.Size.Y + 0.125) {
+                this.Text[0].Destroy();
+                this.Text.RemoveAt(0);
+            }
+            
+        }
+    }
+    
+    function Clear() {
+        foreach(var txt in this.Text) {
+            txt.Destroy();
+        }
+        this.Text.Resize(0);
+    }
+}

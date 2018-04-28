@@ -1,0 +1,30 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "SavedData",
+	},
+	Archetyped = 
+	{
+		string Name = "5acf2ff707846b6a:SavedData",
+	},
+	SavedData = 
+	{
+		string PlayerName = "",
+		string PlayerPosition = "",
+		string PlayerHealth = "",
+		string PlayerSkin = "",
+		string PlayerMoney = "",
+		string PlayerInv = "",
+		string MenuAnimations = "",
+		string Vignette = "",
+		string PlayerTooltips = "",
+		string EnemyTooltips = "",
+		string MusicVolume = "",
+		string SoundVolume = "",
+	},
+},

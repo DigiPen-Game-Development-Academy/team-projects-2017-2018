@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "FoolBorder",
+		uint64 ResourceId = 5ae545feff5c6fd2,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 164,
+		uint FrameSizeY = 164,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 82,
+		float OriginY = 82,
+		float PixelsPerUnit = 160,
+		bool Smoothing = true,
+		bool Looping = true,
+		Vec4 Slices = [22, 22, 22, 22],
+		SpriteFill Fill = NineSlice,
+	},
+},

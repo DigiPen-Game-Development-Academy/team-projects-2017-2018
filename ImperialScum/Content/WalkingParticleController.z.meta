@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "WalkingParticleController",
+		uint64 ResourceId = 5a02a2504dc866b3,
+	},
+},

@@ -1,0 +1,27 @@
+//Sam
+//Makes the player spin like an idiot after getting shot out of a cannon
+
+class PlayerCannon : ZilchComponent
+{
+    var Player : Cog;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.Space.CreateAtPosition(Archetype.LegendaryExplode, this.Owner.Transform.Translation);
+        
+        this.Player = this.Space.FindObjectByName("Player");
+        this.Owner.Sprite.SpriteSource = this.Player.PlayerController.DeathAnimation;
+        
+        this.Player.Sprite.Visible = false;
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.Player != null)
+        {
+            this.Owner.Transform.Translation = this.Player.Transform.Translation;
+        }
+    }
+}

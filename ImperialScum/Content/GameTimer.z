@@ -1,0 +1,14 @@
+class GameTimer : ZilchComponent
+{
+    [Static] var TimePlayed : Real;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        GameTimer.TimePlayed += event.Dt;
+        
+    }
+}

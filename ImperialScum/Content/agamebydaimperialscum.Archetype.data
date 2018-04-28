@@ -1,0 +1,38 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "agamebydaimperialscum",
+	},
+	Archetyped = 
+	{
+		string Name = "5a76f7345a786423:Agamebydaimperialscum",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	SpriteText = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [0, 0, 0, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string FontName = "5a76fb9e69c80542:comic",
+		uint FontSize = 60,
+		string Text = "A Game by the Imperial Scum",
+		TextAlign Align = Center,
+		float PixelsPerUnit = 64,
+		bool Smoothing = false,
+	},
+},

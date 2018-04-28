@@ -1,0 +1,23 @@
+ResourceTable = 
+{
+	string ResourceType = "String",
+	Array EntryList = 
+	[
+		{
+			string Name = "T1",
+			string Value = "Health_Pack_(T1)",
+			float Weight = 75,
+		},
+		{
+			string Name = "T2",
+			string Value = "Health_Pack_(T2)",
+			float Weight = 50,
+		},
+		{
+			string Name = "T3",
+			string Value = "Health_Pack_(T3)",
+			float Weight = 25,
+		},
+	],
+	float MaxWeight = 100,
+},

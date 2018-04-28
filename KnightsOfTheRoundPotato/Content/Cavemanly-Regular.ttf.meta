@@ -1,0 +1,8 @@
+FontContent = 
+{
+	FontBuilder = 
+	{
+		string Name = "Cavemanly-Regular",
+		uint64 ResourceId = 5ad145146737fc79,
+	},
+},

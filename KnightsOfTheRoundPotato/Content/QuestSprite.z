@@ -1,0 +1,63 @@
+class QuestSprite : ZilchComponent {
+    
+    var MaxWhidth : Real = 3;
+    
+    var Last : Real = 0;
+    
+    function Initialize(init : CogInitializer) {
+        GlobalVariables.QuestSprite = this;
+        this.Clear();
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        var screensize = this.LevelSettings.CameraViewport.ScreenToWorldZPlane(this.LevelSettings.CameraViewport.ViewportToScreen(this.LevelSettings.CameraViewport.ViewportResolution),0);
+        
+        if (screensize.X != this.Last) {
+            
+            var txt = this.Owner.FindChildByName("txt");
+            
+            this.Last = screensize.X;
+            
+            txt.Area.Size = Real2((screensize.X) - 3, 100);
+            
+            txt.Area.Size = Real2(txt.Area.Size.X, txt.SpriteText.MeasureText().Y);
+            
+            this.Owner.Area.Size = txt.SpriteText.MeasureText() + Real2(0.25);
+            
+            txt.Transform.Translation = Real3(0, 0, 1);
+            
+        }
+        
+    }
+    
+    function Set(text : String) {
+        
+        var txt = this.Owner.FindChildByName("txt");
+        
+        txt.SpriteText.Visible = true;
+        this.Owner.Sprite.Visible = true;
+        
+        txt.SpriteText.Text = text;
+        
+        var screensize = this.LevelSettings.CameraViewport.ScreenToWorldZPlane(this.LevelSettings.CameraViewport.ViewportToScreen(this.LevelSettings.CameraViewport.ViewportResolution),0);
+        
+        this.Last = screensize.X;
+        
+        txt.Area.Size = Real2((screensize.X) - 3, 100);
+        
+        txt.Area.Size = Real2(txt.Area.Size.X, txt.SpriteText.MeasureText().Y);
+        
+        this.Owner.Area.Size = txt.SpriteText.MeasureText() + Real2(0.25);
+        
+        txt.Transform.Translation = Real3(0, 0, 1);
+        
+    }
+    
+    function Clear() {
+        this.Owner.FindChildByName("txt").SpriteText.Visible = false;
+        this.Owner.Sprite.Visible = false;
+    }
+    
+}

@@ -1,0 +1,113 @@
+//Author: Hunter Fosler
+//Purpose: AI for pigeons.
+
+class PigeonNPC : ZilchComponent
+{
+    [Dependency]
+    var Transform: Transform = null;
+    
+    [Property] var Velocity : Real2;
+    
+    [Property] var WanderAcceleration : Real = 10.0;
+    [Property] var WanderMoveSpeed : Real = 5.0;
+    [Property] var WanderTurnSpeed : Real = 5.0;
+    var WanderDirection : Real2;
+    
+    [Property] var ChaseAcceleration : Real = 5.0;
+    [Property] var ChaseMoveSpeed : Real = 10.0;
+    [Property] var ChaseTurnSpeed : Real = 3.0;
+    
+    var Active : Boolean = true;
+    
+        [Property]
+    var FlappingSoundToPlay : SoundCue;
+    // We will set the sound that is currently playing in code
+    var FlappingSoundPlaying : SoundInstance;
+    
+    var Target : Cog;
+    // How often to choose a new wander direction (min, max)
+    [Property] var TurnFrequency : Real2 = Real2(0.1, 1);
+    var TurnTimer : Real;
+    var RNG : Random = new Random();
+    
+    function OnAnimation(event : AnimationEvent)
+    {
+        this.Active =!event.Starting;
+    }
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.Animation, this.OnAnimation);
+        
+        // We need to update the enemy's behavior every logic update
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.Space.LevelSettings.PigeonCounter.PigeonCount+=1;
+    }
+    function PlayFlappingSound()
+    {
+        if (this.FlappingSoundPlaying == null || this.FlappingSoundPlaying.IsPlaying == false)
+            {
+                // Play the sound and remember which sound is playing (includes looping)
+                this.FlappingSoundPlaying = this.Space.SoundSpace.PlayCue(this.FlappingSoundToPlay);
+            }
+            else
+            {
+             if (this.FlappingSoundPlaying != null && this.FlappingSoundPlaying.IsPlaying)
+            {
+                // Stop the sound that is playing
+                this.FlappingSoundPlaying.Stop();
+            }
+            }
+    }
+    function OnLogicUpdate(event: UpdateEvent)
+    {
+        if (this.Active ==false) return;
+        
+        this.Velocity = this.Owner.RigidBody.Velocity.XY;
+        
+        if (this.Target != null)
+        {
+            // Find the direction to the target
+            var target = this.Target.Transform.WorldTranslation.XY;
+            var owner = this.Owner.Transform.WorldTranslation.XY;
+            var direction = target - owner;
+            
+            // Acceleration
+            this.Velocity += Math.Normalize(direction) * this.ChaseAcceleration;
+            // Turning
+            this.Velocity = Math.RotateTowards(this.Velocity, direction, Math.ToRadians(this.ChaseTurnSpeed) * event.Dt);
+            // Speed limiting
+            this.Limit(this.ChaseMoveSpeed);
+        }
+    
+            // Pick a random direction
+            if (this.TurnTimer <= 0)
+            {
+                this.WanderDirection = this.RNG.UnitReal2();
+                this.TurnTimer = this.RNG.Range(this.TurnFrequency.X, this.TurnFrequency.Y);
+            }
+            else this.TurnTimer -= event.Dt;
+            
+            // Acceleration
+            this.Velocity += this.WanderDirection * this.WanderAcceleration * event.Dt;
+            // Turning
+            var length = Math.Length(this.Velocity);
+            if (length != 0) this.Velocity = length * Math.RotateTowards(this.Velocity / length, this.WanderDirection, Math.ToRadians(this.WanderTurnSpeed) * event.Dt);
+            // Speed limiting
+            this.Limit(this.WanderMoveSpeed);
+        
+        this.PlayFlappingSound();
+        this.Owner.RigidBody.Velocity = Real3(this.Velocity, 0);
+    }
+    
+    function Limit(maxSpeed : Real)
+    {
+        // Speed limiting
+        var speedSq = Math.LengthSq(this.Velocity);
+        if (speedSq > maxSpeed * maxSpeed)
+        {
+            this.Velocity = Math.Normalize(this.Velocity) * maxSpeed;
+        }
+    }
+}

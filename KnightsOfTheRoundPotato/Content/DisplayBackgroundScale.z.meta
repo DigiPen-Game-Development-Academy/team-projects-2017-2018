@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "DisplayBackgroundScale",
+		uint64 ResourceId = 5a9a820422e05b1e,
+	},
+},

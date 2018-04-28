@@ -1,0 +1,61 @@
+//Author Brandon Wolenetz
+
+class CamFollow : ZilchComponent {
+    var Spin : Boolean = false;
+    var Timer : Real = 0;
+    var TargetPos : Real3 = Real3(0);
+    [Property] var MoveSpd : Real = 5;
+    var StartSpd : Real = 5;
+    
+    var Rand : Random;
+    
+    var ScreenShakeIntencity : Real = 0;
+    
+    var Falloff : Real = 5;
+    
+    function Initialize(init : CogInitializer) {
+        GlobalVariables.CamFollow = this;
+        this.Rand = Random();
+        this.StartSpd = this.MoveSpd;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        this.Owner.Transform.WorldTranslation = GlobalVariables.Player.Transform.WorldTranslation + Real3(0,0,40);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.Spin) {
+            this.Timer -= event.Dt;
+            this.Owner.Transform.SetEulerAnglesXYZ(0, 0, this.Owner.Transform.EulerAngles.Z + event.Dt*3);
+            if(this.Timer <= 0) {
+                this.Space.SoundSpace.PlayCue(SoundCue.Do_it);
+                this.Timer = 0.5;
+                Utilities.ConsoleSend("Type In The Correct Password!!!", Real4(Random().Range(0,1), Random().Range(0,1), Random().Range(0,1), 1));
+            }
+            this.Owner.Parent.FindChildByName("TrollWarp").ScreenWarpRing.Intensity = 100;
+        } else {
+            this.Owner.Parent.FindChildByName("TrollWarp").ScreenWarpRing.Intensity = 0;
+            this.Owner.Transform.SetEulerAnglesXYZ(0, 0, 0);
+        }
+        
+        var mousePos = this.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 0);
+        this.TargetPos = GlobalVariables.Player.Transform.WorldTranslation + (mousePos - GlobalVariables.Player.Transform.WorldTranslation)/GlobalVariables.CamSense;
+        this.TargetPos = Real3(this.TargetPos.X, this.TargetPos.Y, 40);
+        
+        this.Owner.Transform.WorldTranslation = Math.Lerp(this.Owner.Transform.WorldTranslation, this.TargetPos, (event.Dt*this.MoveSpd)/(0.5+(10*Settings.CamSmoothness)));
+        
+        this.HandelScreenShake(event.Dt);
+        
+    }
+    
+    function HandelScreenShake(dt : Real) {
+        
+        this.Owner.Transform.WorldTranslation += Settings.ScreenShake * (Real3(this.Rand.Range(-this.ScreenShakeIntencity, this.ScreenShakeIntencity), this.Rand.Range(-this.ScreenShakeIntencity, this.ScreenShakeIntencity), 0) * dt);
+        
+        this.ScreenShakeIntencity -= dt * this.Falloff;
+        
+        if(this.ScreenShakeIntencity < 0)
+            this.ScreenShakeIntencity = 0;
+        
+    }
+    
+}

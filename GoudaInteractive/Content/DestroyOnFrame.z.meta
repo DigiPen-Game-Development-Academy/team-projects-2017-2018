@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "DestroyOnFrame",
+		uint64 ResourceId = 5a6a194a14563026,
+	},
+},

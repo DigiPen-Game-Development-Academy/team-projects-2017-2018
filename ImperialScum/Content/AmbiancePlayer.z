@@ -1,0 +1,26 @@
+class AmbiancePlayer : ZilchComponent
+{
+    var OnlyDoOnce : Boolean = false;
+    
+    [Property]
+     var BackgroundAmbiance : SoundCue;
+     
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LevelStarted, this.OnLevelStarted);
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLevelStarted(event : GameEvent)
+    {
+        if(this.OnlyDoOnce == false)
+        {
+            this.Owner.SoundEmitter.PlayCue(this.BackgroundAmbiance);
+            this.OnlyDoOnce == true;
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

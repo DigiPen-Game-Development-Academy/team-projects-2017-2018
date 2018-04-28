@@ -1,0 +1,37 @@
+ImageContent = 
+{
+	TextureBuilder = 
+	{
+		string Name = "CamOut",
+		uint64 ResourceId = 5a9116716e57262e,
+		BuilderTextureType TextureType = Texture2D,
+		RgbUsage RgbUsage = Mask,
+		AlphaUsage AlphaUsage = Mask,
+		TextureCompression Compression = Compressed,
+		TextureWrapping Wrapping = Repeat,
+		TextureFilter Filter = Trilinear,
+		float Anisotropy = 1,
+		MipGeneration MipGeneration = All,
+		ImageFilter MipFilter = Box,
+		FixPowerOf2 FixPowerOf2 = Auto,
+		ImageFilter ResizeFilter = Box,
+		OutputTextureFormat Format = Updated,
+	},
+	SpriteSourceBuilder = 
+	{
+		string Name = "CamOut",
+		uint64 ResourceId = 5a9111eeaee421a5,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 256,
+		uint FrameSizeY = 256,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0078125,
+		float OriginX = 128,
+		float OriginY = 256,
+		float PixelsPerUnit = 256,
+		bool Smoothing = true,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Tiled,
+	},
+},

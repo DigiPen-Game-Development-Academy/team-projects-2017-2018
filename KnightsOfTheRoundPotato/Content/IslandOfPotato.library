@@ -1,0 +1,7 @@
+ContentLibrary = 
+{
+	string Name = "IslandOfPotato",
+	uint64 LibraryId = 5a1a8557e030f00e,
+	string SourceControlType = "",
+	bool ReadOnly = false,
+},

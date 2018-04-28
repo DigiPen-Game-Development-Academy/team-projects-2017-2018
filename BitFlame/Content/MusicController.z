@@ -1,0 +1,100 @@
+enum MusicState {NotPlaying, PlayingBattle, PlayingBackground, PlayingBoss, PlayingLowHP}
+
+class MusicController : ZilchComponent
+{
+    [Dependency] var SoundEmitter : SoundEmitter;
+    
+    [Property] var BackgroundSong : SoundCue = SoundCue.Background;
+    [Property] var BattleSong : SoundCue = SoundCue.Battle;
+    [Property] var HitboxArche : Archetype = Archetype.MusicHitbox;
+	
+    var Hitbox : Cog;
+    var State : MusicState;
+    var EnemiesNear : Integer = 0;
+    var Fade : Boolean = false;//there was an attempt a while ago
+
+    function PlayMusic()
+    {
+        if (this.State == MusicState.PlayingBattle)
+        {
+            this.SoundEmitter.Stop();
+            this.SoundEmitter.PlayCue(this.BattleSong);
+        }
+        else if (this.State == MusicState.PlayingBackground)
+        {
+            this.SoundEmitter.Stop();
+            this.SoundEmitter.PlayCue(this.BackgroundSong);
+        }
+    }
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.Hitbox = this.Space.CreateAtPosition(this.HitboxArche, this.Owner.Transform.Translation);
+        this.Hitbox.AttachTo(this.Owner);
+        this.State = MusicState.NotPlaying;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.EnemiesNear = this.Hitbox.MusicController_Hitbox.EnemiesNear;
+        
+        if (this.EnemiesNear != 0)
+        {
+            if (this.State != MusicState.PlayingBattle)
+            {
+                this.State = MusicState.PlayingBattle;
+                this.PlayMusic();
+            }
+        }
+        else if (this.EnemiesNear == 0)
+        {
+            if (this.State != MusicState.PlayingBackground)
+            {
+                this.State = MusicState.PlayingBackground;
+                this.PlayMusic();
+            }
+        }
+
+        if(Zero.Keyboard.KeyIsPressed(Keys.X))
+        {
+            Console.WriteLine(this.State);
+        }  
+    }
+}
+
+class MusicController_Hitbox : ZilchComponent
+{
+    var EnemiesNear : Integer = 0;
+    var BossNear : Integer = 0;
+    
+    [Property] var Collision : CollisionGroup;
+    [Property] var OtherCollision : CollisionGroup;
+    
+    function Initialize (init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Owner, Events.CollisionEnded, this.OnCollisionEnded);
+    }
+
+    function OnCollisionEnded(event : CollisionEvent)
+    {
+        var otherObject = event.OtherObject;
+        
+        if (otherObject.Collider.CollisionGroup == this.Collision || otherObject.Collider.CollisionGroup == this.OtherCollision)
+        {
+            this.EnemiesNear -= 1;
+        }
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        var otherObject = event.OtherObject;
+        
+        if (otherObject.Collider.CollisionGroup == this.Collision || otherObject.Collider.CollisionGroup == this.OtherCollision)
+        {
+            this.EnemiesNear += 1;
+        }
+    }
+}

@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "Alien_Enemy_Sprite",
+		uint64 ResourceId = 5afef6f574f75256,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 48,
+		uint FrameSizeY = 48,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 24,
+		float OriginY = 24,
+		float PixelsPerUnit = 32,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

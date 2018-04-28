@@ -1,0 +1,100 @@
+//Author: Sam
+//Purpose: Give Gear Shark an AMAZING Attack
+
+class GearSharkAttack : ZilchComponent
+{
+    [Property]
+    var Active:Boolean = true;
+    
+    [Property]
+    var ChargeSpeed:Integer = 10;
+    
+    var Timer:Integer = 140;
+    var Phase:Integer = 0;
+    
+    function Initialize(init : CogInitializer)
+    {
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        //Find the Player
+        var target = this.Space.FindObjectByName("Player");
+        
+        if (this.Active == true && this.Owner.GearSharkFollow.Aggro == true)
+        {
+            //Everything I make in Zilch has a timer.
+            this.Timer -= 1;
+            
+            if (this.Timer == 0)
+            {
+                //Make Gear Shark stop
+                if (this.Phase == 0)
+                {
+                    this.Phase = 1;
+                    this.Timer = 20;
+                    
+                    this.Owner.GearSharkFollow.Active = false;
+                    
+                    this.Owner.RigidBody.Velocity = Real3.Zero;
+                    
+                    //Flip Sprite
+                    if(this.Owner.Transform.Translation.X <= target.Transform.Translation.X)
+                    {
+                        this.Owner.Sprite.FlipX = false;
+                    }
+                    else if(this.Owner.Transform.Translation.X >= target.Transform.Translation.X)
+                    {
+                        this.Owner.Sprite.FlipX = true;
+                    }
+                    
+                }
+                
+                //Make Gear Shark CHAAAARGE
+                else if (this.Phase == 1)
+                {
+                    this.Phase = 2;
+                    this.Timer = 15;
+                    
+                    this.Owner.RigidBody.Velocity = Math.Normalize(target.Transform.Translation - this.Owner.Transform.Translation)
+                    * this.ChargeSpeed; 
+                    
+                    //Flip Sprite
+                    if(this.Owner.Transform.Translation.X <= target.Transform.Translation.X)
+                    {
+                        this.Owner.Sprite.FlipX = false;
+                    }
+                    else if(this.Owner.Transform.Translation.X >= target.Transform.Translation.X)
+                    {
+                        this.Owner.Sprite.FlipX = true;
+                    }
+                    
+                }
+                
+                //Make Gear Shark a normal litle boy
+                else if (this.Phase == 2)
+                {
+                    this.Phase = 0;
+                    this.Timer = 140;
+                    
+                    this.Owner.GearSharkFollow.Active = true;
+                    
+                    this.Owner.RigidBody.Velocity = Math.Normalize(target.Transform.Translation - this.Owner.Transform.Translation)
+                    * this.Owner.GearSharkFollow.Speed; 
+                    
+                    //Flip Sprite
+                    if(this.Owner.Transform.Translation.X <= target.Transform.Translation.X)
+                    {
+                        this.Owner.Sprite.FlipX = false;
+                    }
+                    else if(this.Owner.Transform.Translation.X >= target.Transform.Translation.X)
+                    {
+                        this.Owner.Sprite.FlipX = true;
+                    }
+                    
+                }
+            }
+        }
+        //snoogoo
+    }
+}

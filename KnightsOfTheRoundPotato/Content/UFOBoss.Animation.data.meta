@@ -1,0 +1,9 @@
+DataContent = 
+{
+	RichAnimationBuilder = 
+	{
+		string Name = "UFOBoss",
+		uint64 ResourceId = 5a3dd4ce7dec6bf4,
+		string PreviewArchetype = "",
+	},
+},

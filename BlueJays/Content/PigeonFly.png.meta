@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "PigeonFly",
+		uint64 ResourceId = 5a5b184bf39b7b7f,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 225,
+		uint FrameSizeY = 169,
+		uint FrameCount = 13,
+		float FrameDelay = 0.0333333351,
+		float OriginX = 112.5,
+		float OriginY = 84.5,
+		float PixelsPerUnit = 64,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

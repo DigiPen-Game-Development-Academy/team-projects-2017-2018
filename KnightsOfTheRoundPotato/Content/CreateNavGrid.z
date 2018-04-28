@@ -1,0 +1,124 @@
+//Author Brandon Wolenetz
+
+class CreateNavGrid : ZilchComponent {
+    
+    [Property]
+    var WorldSize : Real2 = Real2(100);
+    var NodeRadius : Real = 0.5;
+    var Grid : Array[Array[NavNode]];
+    var LargeGrid : Array[Array[NavNode]];
+    var NodeDiameter : Real;
+    var SizeX : Integer;
+    var SizeY : Integer;
+    
+    var Once : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.NodeDiameter = this.NodeRadius*2;
+        this.SizeX = Math.Round(this.WorldSize.X/this.NodeDiameter) as Integer;
+        this.SizeY = Math.Round(this.WorldSize.Y/this.NodeDiameter) as Integer;
+        
+    }
+    
+    /*Variables that use setters*/
+    var MaxSize : Integer{get{return this.SizeX * this.SizeY;}}
+    var BLeft : Real3{get{return Real3(0) - Real3(1,0,0) * (this.WorldSize.X/2) - Real3(0,1,0) * this.WorldSize.Y/2;}}
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        if(!this.Once){
+            this.Once = true;
+            this.GenerateGrid();
+        }
+    }
+    
+    /*create navgrid to pathfind from*/
+    function GenerateGrid() {
+        this.Grid = Array[Array[NavNode]]();
+        this.Grid.Resize(this.SizeX);
+        for (var i = 0; i < this.Grid.Count; ++i){
+            this.Grid[i] = Array[NavNode]();
+            this.Grid[i].Resize(this.SizeY);
+        }
+        var bLeft = this.BLeft;
+        //filter to ignore dynamic objects
+        var filter = CastFilter();
+        filter.IgnoreDynamic = true;
+        filter.IgnoreGhost = true;
+        for (var i = 0; i < this.Grid.Count; ++i){
+            for (var j = 0; j < this.Grid.Count; ++j){
+                var wPoint = bLeft + Real3(1,0,0)*(i*this.NodeDiameter+this.NodeRadius)+Real3(0,1,0)*(j*this.NodeDiameter+this.NodeRadius);     //node's world position
+                var wlk = this.Space.PhysicsSpace.CastSphereResults(wPoint + Real3(0,0,0.5), this.NodeRadius-0.3, 1, filter).Empty();           //is the node walkable?
+                var close = !this.Space.PhysicsSpace.CastSphereResults(wPoint + Real3(0,0,0.5), this.NodeRadius, 1, filter).Empty();            //is the node next to a non walkable node?
+                this.Grid[i][j] = new NavNode(wlk, wPoint, i, j, close);                                                                        //create node
+                
+                /*DEBUG STUFF*/
+                if(!GlobalVariables.DebugNavNodes)
+                    continue;
+                var debugS = this.Space.CreateAtPosition(Archetype.DEBUG, wPoint);
+                if(debugS != null)
+                {
+                    
+                    if(close)
+                        debugS.Sprite.Color = Real4(1,1,0,0.5);
+                    if(!wlk)
+                        debugS.Sprite.Color = Real4(1,0,0,0.5);
+                    
+                }
+            }
+        }
+    }
+    
+    /*Update the navgrid node*/
+    function UpdateGrid(node : NavNode, wlk : Boolean){
+        this.UpdateGrid(node, true, wlk);
+    }
+    function UpdateGrid(node : NavNode){
+        this.UpdateGrid(node, false, false);
+    }
+    function UpdateGrid(node : NavNode, manual : Boolean, wlk : Boolean){
+        var filter = CastFilter();
+        filter.IgnoreDynamic = true;
+        filter.IgnoreGhost = true;
+        var walk = false;
+        if(manual)
+            walk = wlk;
+        else
+            walk = this.Space.PhysicsSpace.CastSphereResults(node.WorldPos + Real3(0,0,0.5), this.NodeRadius-0.3, 1, filter).Empty();
+        var close = !this.Space.PhysicsSpace.CastSphereResults(node.WorldPos + Real3(0,0,0.5), this.NodeRadius, 1, filter).Empty();
+        node.Walkable = walk;
+        node.CloseToWall = close;
+    }
+    
+    /*get all neighboring nodes*/
+    function GetNeighbors (node : NavNode) : Array[NavNode] {
+        var n = Array[NavNode]();
+        var corners = !node.CloseToWall;
+        for(var x = -1; x <= 1; ++x) {
+            for (var y = -1; y <= 1; ++y){
+                if(x==0 && y == 0 || node == null) continue;
+                if(!corners)
+                    if(Math.Abs(x) == Math.Abs(y)) continue;
+                var cx = node.GridX + x;
+                var cy = node.GridY + y;
+                
+                if(cx >= 0 && cx < this.SizeX && cy >= 0 && cy < this.SizeY)
+                    n.Add(this.Grid[cx][cy]);
+            }
+        }
+        return n;
+    }
+    
+    /*get the node located at the world position*/
+    function GetNodeFromPos(pos : Real3) : NavNode {
+        var wOffset = pos - this.BLeft;
+        var lPos = Real2(wOffset.X*this.SizeX/this.WorldSize.X, wOffset.Y*this.SizeY/this.WorldSize.Y);
+        var gPos = Integer2(lPos.X as Integer, lPos.Y as Integer);
+        if(gPos.X >= this.SizeX || gPos.Y >= this.SizeY || gPos.X < 0 || gPos.Y < 0)
+            return null;
+        if(GlobalVariables.DebugNavNodes)
+            this.Space.CreateAtPosition(Archetype.DEBUG, this.Grid[gPos.X][gPos.Y].WorldPos);
+        return this.Grid[gPos.X][gPos.Y];
+    }
+}

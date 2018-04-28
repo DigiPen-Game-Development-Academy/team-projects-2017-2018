@@ -1,0 +1,31 @@
+class HealthBarEffect : ZilchComponent {
+    
+    [Property] var Speed : Real = 2;
+    
+    var Rev : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        this.Owner.Transform.Scale = Real3(0.0001, this.Owner.Transform.Scale.YZ);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(!this.Rev) {
+            this.Owner.Transform.Scale += Real3(event.Dt * this.Speed, 0, 0);
+            if(this.Owner.Transform.Scale.X > this.Owner.Parent.Area.Size.X * 2) {
+                this.Owner.Transform.Scale = Real3(this.Owner.Parent.Area.Size.X * 2, this.Owner.Transform.Scale.YZ);
+                this.Rev = true;
+            }
+        } else {
+            
+            this.Owner.Transform.Scale -= Real3(event.Dt * this.Speed, 0, 0);
+            this.Owner.Transform.Translation += Real3(event.Dt * this.Speed/2, 0, 0);
+            if(this.Owner.Transform.Scale.X <= 0) {
+                this.Owner.Destroy();
+            }
+            
+        }
+        
+    }
+}

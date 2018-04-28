@@ -1,0 +1,8 @@
+class PlaySoundOnEmmiterStart : ZilchComponent {
+    
+    [Property] var Sound : SoundCue;
+    
+    function Initialize(init : CogInitializer) {
+        this.Owner.SoundEmitter.PlayCue(this.Sound);
+    }
+}

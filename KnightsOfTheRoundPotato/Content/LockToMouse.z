@@ -1,0 +1,16 @@
+class LockToMouse : ZilchComponent {
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Space, Events.MouseUp, this.OnMouseUp);
+    }
+
+    function OnMouseUp(event : ViewportMouseEvent) {
+        this.Owner.Destroy();
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        this.Owner.Transform.WorldTranslation = this.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 1);
+        
+    }
+}

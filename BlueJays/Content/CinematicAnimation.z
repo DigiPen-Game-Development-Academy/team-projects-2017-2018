@@ -1,0 +1,64 @@
+//Author: Christian (with Jeffery's Help)
+//Purpose: Cinematic Animation for hub and fool level
+class AnimationEvent : ZilchEvent
+{
+    sends Animation : AnimationEvent;
+    
+    var Starting : Boolean;
+    
+    constructor(starting : Boolean) : base ()
+    {
+        this.Starting = starting;
+    }
+}
+
+class CinematicAnimation : ZilchComponent
+{
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(init, Events.AllObjectsInitialized, this.OnAllObjectsInitialized);
+    }
+    function OnAllObjectsInitialized (event : CogInitializerEvent)
+    {
+        if (this.Space.CurrentLevel == Level.Find("Fool"))
+        {
+            this.Space.DispatchEvent(Events.Animation, AnimationEvent(true));
+            
+            var sequence = Action.Sequence(this.Owner.Actions);
+            var group = Action.Group(sequence);
+            this.Owner.CameraConstraint.TargetObject = this.Space.FindObjectByName("Boss");
+            Actions.Delay(sequence, 1);
+            Actions.Call(sequence, this.FinishWithFoolCinematic);
+            Actions.Property(
+            sequence,
+            @this.Owner.Camera.Size,
+            this.Owner.Camera.Size + 11,
+            5,
+            Ease.SinOut);
+            
+            Action.Call(sequence, this.FinishWithFoolCinematic);
+        }
+        else
+        {
+            this.Space.DispatchEvent(Events.Animation, AnimationEvent(true));
+            
+            var sequence = Actions.Sequence(this.Owner.Actions);
+            Actions.Delay(sequence,1.5);
+            Actions.Property(
+                sequence,
+                @this.Owner.Camera.Size,
+                this.Owner.Camera.Size + 11,
+                1.5,
+                Ease.SinOut);
+            
+            Action.Call(sequence, this.FinishWithFoolCinematic);
+        }
+    }
+    function FinishWithFoolCinematic()
+    {
+        this.Owner.CameraConstraint.TargetObject = this.Space.FindObjectByName("Player");
+        
+        this.Space.DispatchEvent(Events.Animation, AnimationEvent(false));
+    }
+}

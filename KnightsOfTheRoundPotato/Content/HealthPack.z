@@ -1,0 +1,78 @@
+class HealthPackT1 : Item {
+    
+    function Init () {
+        this.Type = ItemType.Consumable;
+        this.Stackable = true;
+        var rand = Random();
+        this.Ammount = Math.Round(rand.Range(1, 2)) as Integer;
+        this.Name = "Health Pack (T1)";
+        this.ID = "Health_Pack_(T1)";
+        this.GroundSprite = SpriteSource.HealthPack1;
+        this.Icon = SpriteSource.HealthPack1;
+    }
+    
+    function Use (radAngle : Real) {
+        
+        Console.WriteLine("ADD HEATH T1");
+        GlobalVariables.Player.Health.CurrentHealth += 10;
+        if(GlobalVariables.Player.Health.CurrentHealth > GlobalVariables.Player.Health.InitialHealth) {
+            GlobalVariables.Player.Health.CurrentHealth = GlobalVariables.Player.Health.InitialHealth;
+        }
+        GlobalVariables.Player.Health.RegenEffect(60, 3);
+        
+    }
+    
+}
+
+class HealthPackT2 : Item {
+    
+    function Init () {
+        this.Type = ItemType.Consumable;
+        this.Stackable = true;
+        var rand = Random();
+        this.Ammount = Math.Round(rand.Range(1, 2)) as Integer;
+        this.Name = "Health Pack (T2)";
+        this.ID = "Health_Pack_(T2)";
+        this.GroundSprite = SpriteSource.HealthPack2;
+        this.Icon = SpriteSource.HealthPack2;
+    }
+    
+    function Use (radAngle : Real) {
+        
+        Console.WriteLine("ADD HEATH T2");
+        GlobalVariables.Player.Health.CurrentHealth += 15;
+        if(GlobalVariables.Player.Health.CurrentHealth > GlobalVariables.Player.Health.InitialHealth) {
+            GlobalVariables.Player.Health.CurrentHealth = GlobalVariables.Player.Health.InitialHealth;
+        }
+        GlobalVariables.Player.Health.RegenEffect(60, 3.5);
+        
+    }
+    
+}
+
+
+class HealthPackT3 : Item {
+    
+    function Init () {
+        this.Type = ItemType.Consumable;
+        this.Stackable = true;
+        var rand = Random();
+        this.Ammount = Math.Round(rand.Range(1, 2)) as Integer;
+        this.Name = "Health Pack (T3)";
+        this.ID = "Health_Pack_(T3)";
+        this.GroundSprite = SpriteSource.HealthPack3;
+        this.Icon = SpriteSource.HealthPack3;
+    }
+    
+    function Use (radAngle : Real) {
+        
+        Console.WriteLine("ADD HEATH T3");
+        GlobalVariables.Player.Health.CurrentHealth += 20;
+        if(GlobalVariables.Player.Health.CurrentHealth > GlobalVariables.Player.Health.InitialHealth) {
+            GlobalVariables.Player.Health.CurrentHealth = GlobalVariables.Player.Health.InitialHealth;
+        }
+        GlobalVariables.Player.Health.RegenEffect(90, 4.5);
+        
+    }
+    
+}

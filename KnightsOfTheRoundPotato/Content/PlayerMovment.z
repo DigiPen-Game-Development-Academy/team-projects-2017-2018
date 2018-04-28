@@ -1,0 +1,94 @@
+//Author Brandon Wolenetz
+
+class PlayerMovment : ZilchComponent
+{
+    
+    [Dependency]
+    var Sprite : PlayerSprites;
+    
+    [Property]
+    var MoveSpeed : Real = 10;
+    
+    [Property]
+    var SprintMultiplier : Real = 2;
+    
+    [Property]
+    var SprintSoundDist : Real = 5;
+    
+    var Dir : Real3 = Real3(0);
+    
+    var FreezeTimer : Real = 0;
+    
+    var StartSpd : Real;
+    
+    var Timer : Real = 0;
+    
+    function Initialize(init : CogInitializer) {
+        this.StartSpd = this.MoveSpeed;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        GlobalVariables.Player = this.Owner;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        this.Owner.Transform.WorldTranslation = Real3(this.Owner.Transform.WorldTranslation.XY, 0);
+        
+        if(this.FreezeTimer > 0) {
+            this.FreezeTimer -= event.Dt;
+            this.Owner.RigidBody.Velocity = Real3(0);
+            return;
+        }
+        
+        this.Owner.PlayerSprites.Update(event.Dt);
+        
+        var vel = Real3(0);
+        
+        var inMngr = this.LevelSettings.InputManager;
+        
+        if(Zero.Keyboard.KeyIsDown(inMngr.North)) vel +=  ((Real3( 0,  1, 0)));
+        if(Zero.Keyboard.KeyIsDown(inMngr.South)) vel +=  ((Real3( 0, -1, 0)));
+        if(Zero.Keyboard.KeyIsDown(inMngr.West)) vel +=  ((Real3(-1,  0, 0)));
+        if(Zero.Keyboard.KeyIsDown(inMngr.East)) vel +=  ((Real3( 1,  0, 0)));
+        
+        vel = Math.Normalize(vel);
+        
+        vel *= this.MoveSpeed;
+        
+        if(vel != Real3(0)) {
+            this.Sprite.Dir = vel;
+            this.Dir = Math.Normalize(vel);
+        }
+        
+        if(Zero.Keyboard.KeyIsDown(Keys.Shift)){
+            vel *= this.SprintMultiplier;
+            if(GlobalVariables.UseWeapon.Utility == null || GlobalVariables.UseWeapon.Utility.ID != "Shoes") {
+                if(vel != Real3(0)) {
+                    Utilities.SendSound(this.SprintSoundDist);
+                }
+            }
+        }
+        
+        if(vel != Real3(0)) {
+            
+            this.Timer -= event.Dt;
+            
+            if(this.Timer <= 0) {
+                if(Zero.Keyboard.KeyIsDown(Keys.Shift)) {
+                    this.Timer = 0.167921;
+                } else {
+                    this.Timer = 0.407921;
+                }
+                Utilities.PlaySFX(SoundCue.Walk);
+            }
+            
+        }
+        
+        this.Owner.RigidBody.Velocity = vel;
+        
+    }
+    
+    function Freeze (time : Real) {
+        this.FreezeTimer = time;
+    }
+    
+}

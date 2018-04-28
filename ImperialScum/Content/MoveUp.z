@@ -1,0 +1,13 @@
+class MoveUp : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        this.Owner.Transform.Translation += Real3(0,1,0);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Owner.Transform.Translation += Real3(0,0.01,0);
+    }
+}

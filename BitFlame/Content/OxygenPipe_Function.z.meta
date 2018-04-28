@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "OxygenPipe_Function",
+		uint64 ResourceId = 5a62ce7bba27e77b,
+	},
+},

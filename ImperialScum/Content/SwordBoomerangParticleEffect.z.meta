@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "SwordBoomerangParticleEffect",
+		uint64 ResourceId = 5a2ca9f5e2122e9a,
+	},
+},

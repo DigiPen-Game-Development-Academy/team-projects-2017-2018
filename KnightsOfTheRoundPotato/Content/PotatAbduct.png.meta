@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "PotatAbduct",
+		uint64 ResourceId = 5ab408d74f2b3dd6,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 32,
+		uint FrameSizeY = 32,
+		uint FrameCount = 11,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 16,
+		float OriginY = 16,
+		float PixelsPerUnit = 32,
+		bool Smoothing = false,
+		bool Looping = false,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

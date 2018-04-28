@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "Oxygen_Gauge_Pin",
+		uint64 ResourceId = 5ab681dbc3841df3,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 2,
+		uint FrameSizeY = 60,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 1,
+		float OriginY = 30,
+		float PixelsPerUnit = 64,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

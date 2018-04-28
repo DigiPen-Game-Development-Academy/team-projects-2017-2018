@@ -1,0 +1,60 @@
+class StealthBoss : ZilchComponent {
+    
+    [Dependency] var Stealth : Stealth;
+    [Dependency] var AI : EnemyAI;
+    
+    var MinDist : Real = 3;
+    
+    var Rand : Random;
+    
+    var Active : Boolean = true;
+    
+    function Initialize(init : CogInitializer) {
+        //set collision table so raycast goes through enemies
+        if(this.Space.PhysicsSpace.CollisionTable != CollisionTable.CollisionTable) {
+            this.Space.PhysicsSpace.CollisionTable = CollisionTable.CollisionTable;
+        }
+        
+        this.Rand = Random();
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        this.Stealth.Active = this.Active;
+        
+        if(!this.Active) {
+            this.Owner.Sprite.Color = Real4(this.Owner.Sprite.Color.XYZ, 1);
+            this.Stealth.SetHealthbarOpacity(1);
+            return;
+        }
+        
+        if(!this.InFlashlightRange(this.Owner.Transform.WorldTranslation)) {
+            this.Owner.RigidBody.Velocity *= 4;
+        }
+        
+        this.AI.State = State.Spotted;
+        
+    }
+    
+    function InFlashlightRange (pos : Real3) : Boolean {
+        var vec = pos - GlobalVariables.Player.Transform.WorldTranslation;
+        var vec2 = this.LevelSettings.CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 0) - GlobalVariables.Player.Transform.WorldTranslation;
+        
+        var dot = Math.Dot(Math.Normalize(vec), Math.Normalize(vec2));
+        
+        var angle = Math.ACos(dot);
+        
+        var dist = Math.Distance(GlobalVariables.Player.Transform.WorldTranslation, pos);
+        
+        if(angle > Math.ToRadians(45) || dist > 25 || (dist > 2 && (GlobalVariables.UseWeapon.Utility == null || GlobalVariables.UseWeapon.Utility.ID != "Light"))) {
+            if(dist < 2)
+                return true;
+            else
+                return false;
+            
+        }
+        return true;
+    }
+    
+}

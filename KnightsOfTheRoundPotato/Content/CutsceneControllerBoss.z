@@ -1,0 +1,46 @@
+class CutsceneControllerBoss : ZilchComponent {
+    
+    [Property] var Level : Level;
+    [Property] var Load : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        if(GlobalVariables.Settings != null)
+            GlobalVariables.Settings.Destroy();
+        
+        Zero.ObjectStore.RestoreOrArchetype("Config", Archetype.SettingsSave, this.Space);
+        
+        this.Space.SoundSpace.Volume = GlobalVariables.Settings.SettingsSave.SFXvol * GlobalVariables.Settings.SettingsSave.MASTERvol;
+        
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(this.Load) {
+            this.LoadTheLevel();
+        }
+        
+    }
+    
+    function LoadTheLevel () {
+        
+        if(Utilities.DialogBox != null)
+            return;
+        
+        var uiSpace = this.GameSession.FindSpaceByName("UI");
+        if(uiSpace != null) {
+            uiSpace.Destroy();
+        }
+        if(GlobalVariables.GameSpace == null) {
+            this.Space.LoadLevel(this.Level);
+            this.Space.TimeSpace.Paused = false;
+        } else {
+            GlobalVariables.GameSpace.LoadLevel(this.Level);
+            GlobalVariables.GameSpace.TimeSpace.Paused = false;
+        }
+        Zero.Mouse.Trapped = false;
+        
+    }
+    
+}

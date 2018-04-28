@@ -1,0 +1,114 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class MusicPlayer : ZilchComponent {
+    
+    [Property] var MainMenuSong : SoundCue = null;
+    [Property] var InGameSong : SoundCue = null;
+    [Property] var CaveSong : SoundCue = null;
+    
+    [Property] var MusicSpace : Archetype = null;
+    [Property] var MusicLevel : Level = null;
+    
+    //[Property] var MusicFadeoutTime : Real = 1.0;
+    
+    var CurrMusicVolume : Real = 1.0;
+    
+    var MainMenuMusicSpace : Space = null;
+    var GameLevelMusicSpace : Space = null;
+    var CaveLevelMusicSpace : Space = null;
+    //var CurrSpace : Space = null;
+    
+    //var LevelTransition : Boolean = false;
+    
+    //var CurrMusicFadeoutTime : Real = 0.0;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Space, Events.LevelStarted, this.OnLevelStarted);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        /*if(this.LevelTransition) {
+            if(this.CurrMusicFadeoutTime > this.MusicFadeoutTime) {
+                
+                this.LevelTransition = false;
+                this.CurrMusicFadeoutTime = 0.0;
+                
+                this.CurrSpace.Destroy();
+                
+            } else {
+                this.CurrMusicFadeoutTime += event.Dt;
+            }
+        }*/
+        
+        // UPDATE VOLUME ON CHANGE
+        if(this.CurrMusicVolume != GameSetting.MusicVolume) {
+            if(this.MainMenuMusicSpace != null) {
+                this.CurrMusicVolume = GameSetting.MusicVolume;
+                this.MainMenuMusicSpace.SoundSpace.Volume = GameSetting.MusicVolume;
+            } else if(this.GameLevelMusicSpace != null) {
+                this.CurrMusicVolume = GameSetting.MusicVolume;
+                this.GameLevelMusicSpace.SoundSpace.Volume = GameSetting.MusicVolume;
+            } else if(this.CaveLevelMusicSpace != null) {
+                this.CurrMusicVolume = GameSetting.MusicVolume;
+                this.CaveLevelMusicSpace.SoundSpace.Volume = GameSetting.MusicVolume;
+            }
+        }
+        
+        if(this.MainMenuMusicSpace != null)
+            this.MainMenuMusicSpace.SoundSpace.Pitch = GameSetting.PitchValue;
+        else if(this.GameLevelMusicSpace != null)
+            this.GameLevelMusicSpace.SoundSpace.Pitch = GameSetting.PitchValue;
+        else if(this.CaveLevelMusicSpace != null)
+            this.CaveLevelMusicSpace.SoundSpace.Pitch = GameSetting.PitchValue;
+        
+    }
+    
+    function OnLevelStarted(event : GameEvent) {
+        
+        if((event.LevelName == "SplashScreen" || event.LevelName == "MainMenu" || event.LevelName == "SettingsMenu") && this.MainMenuMusicSpace == null && event.LevelName != "UILevel") {
+            
+            if(this.GameLevelMusicSpace != null)
+                this.GameLevelMusicSpace.Destroy();
+            if(this.CaveLevelMusicSpace != null)
+                this.CaveLevelMusicSpace.Destroy();
+            
+            this.MainMenuMusicSpace = this.GameSession.CreateSpace(this.MusicSpace);
+            
+            this.MainMenuMusicSpace.LoadLevel(this.MusicLevel);
+            this.MainMenuMusicSpace.SoundSpace.Volume = GameSetting.MusicVolume;
+            this.MainMenuMusicSpace.SoundSpace.PlayCue(this.MainMenuSong);
+            
+        } else if(event.LevelName != "SplashScreen" && event.LevelName != "MainMenu" && event.LevelName != "SettingsMenu" && event.LevelName != "UILevel" && event.LevelName != "CaveWorld" && this.GameLevelMusicSpace == null) {
+            
+            if(this.MainMenuMusicSpace != null)
+                this.MainMenuMusicSpace.Destroy();
+            if(this.CaveLevelMusicSpace != null)
+                this.CaveLevelMusicSpace.Destroy();
+            
+            this.GameLevelMusicSpace = this.GameSession.CreateSpace(this.MusicSpace);
+            
+            this.GameLevelMusicSpace.LoadLevel(this.MusicLevel);
+            this.GameLevelMusicSpace.SoundSpace.Volume = GameSetting.MusicVolume;
+            this.GameLevelMusicSpace.SoundSpace.PlayCue(this.InGameSong);
+            
+        } else if(event.LevelName == "CaveWorld" && this.CaveLevelMusicSpace == null) {
+            
+            if(this.MainMenuMusicSpace != null)
+                this.MainMenuMusicSpace.Destroy();
+            if(this.GameLevelMusicSpace != null)
+                this.GameLevelMusicSpace.Destroy();
+            
+            this.CaveLevelMusicSpace = this.GameSession.CreateSpace(this.MusicSpace);
+            
+            this.CaveLevelMusicSpace.LoadLevel(this.MusicLevel);
+            this.CaveLevelMusicSpace.SoundSpace.Volume = GameSetting.MusicVolume;
+            this.CaveLevelMusicSpace.SoundSpace.PlayCue(this.CaveSong);
+            
+        }
+        
+    }
+    
+}

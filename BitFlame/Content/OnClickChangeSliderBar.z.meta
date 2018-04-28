@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "OnClickChangeSliderBar",
+		uint64 ResourceId = 5ac6b265e56e4fb2,
+	},
+},

@@ -1,0 +1,60 @@
+//Jacob Burke
+
+//This is not the Sword Boomerang Itself, but the creator of it and the creator of 
+//the target
+
+class SwordBoomerang : ZilchComponent
+{
+    [Static]
+    var MarkerPlaced:Boolean = false;
+    
+    
+    [Property] var ThrowSound : SoundCue = SoundCue.BoomerangThrow;
+    
+    
+    function Initialize(init : CogInitializer)
+    {
+        SwordBoomerang.MarkerPlaced = false;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Space, Events.RightMouseDown, this.OnRightMouseDown);
+    }
+
+    function OnRightMouseDown(event : ViewportMouseEvent)
+    {
+        if (this.Owner.PlayerController.Dead == false)
+        {
+            if(SwordBoomerang.MarkerPlaced == false && Inventory.Exists == false)
+            {
+                
+            var position = this.LevelSettings.CameraViewport.ScreenToWorldZPlane(event.Position, 0);
+            this.Space.CreateAtPosition(Archetype.SwordTarget, position);
+            this.Space.CreateAtPosition(Archetype.SwordBoomerang, this.Owner.Transform.Translation);
+            this.Space.CreateAtPosition(Archetype.Blur, this.Owner.Transform.Translation);
+            this.Owner.SoundEmitter.PlayCue(this.ThrowSound);
+            
+            SwordBoomerang.MarkerPlaced = true;
+            
+                //Player Spritey Stuff
+                var mouseScreen = Zero.Mouse.ScreenPosition;
+                var viewport = this.LevelSettings.CameraViewport;
+                var mouseWorld = viewport.ScreenToWorldZPlane(mouseScreen, 0);
+                
+                this.Owner.Sprite.SpriteSource = this.Owner.PlayerController.ThrowAnimation;
+                
+                if (mouseWorld.X > this.Owner.Transform.WorldTranslation.X)
+                {
+                    this.Owner.Sprite.FlipX = false;
+                }
+                else
+                {
+                    this.Owner.Sprite.FlipX = true;
+                }
+            
+            }
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

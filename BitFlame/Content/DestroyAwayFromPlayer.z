@@ -1,0 +1,17 @@
+class DestroyAwayFromPlayer : ZilchComponent
+{
+    [Property] var DistanceToDespawn : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(Math.Distance(this.Owner.Transform.Translation, this.Space.FindObjectByName("Player").Transform.Translation) > this.DistanceToDespawn)
+        {
+            this.Owner.Destroy();
+        }
+    }
+}

@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "FinalBossEnd",
+		uint64 ResourceId = 5a3de0a549f7b07d,
+	},
+},

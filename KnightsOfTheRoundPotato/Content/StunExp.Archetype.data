@@ -1,0 +1,30 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "StunExp",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0.99999994],
+		Vec3 Scale = [9.99999975e-05, 9.99999975e-05, 9.99999975e-05],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Model = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = true,
+		string MaterialName = "5a75bcea994faa8c:GlowyCircle",
+		string MeshName = "4de0354322b376ae:Sphere",
+		Vec4 Color = [1, 1, 1, 0.999899983],
+	},
+	StunExp = 
+	{
+	},
+},

@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "TouchVisible",
+		uint64 ResourceId = 5a630bca2f7f8ace,
+	},
+},

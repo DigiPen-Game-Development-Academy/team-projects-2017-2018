@@ -1,0 +1,66 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Explode",
+	},
+	Archetyped = 
+	{
+		string Name = "5a5720164d7d2304:Explosion",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [-2.53046727, -31.7882824, 0],
+		Vec3 Scale = [3, 3, 3],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 0.720000029, 0, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5a0d918776323b48:Explosion()",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	SphereCollider = 
+	{
+		bool Ghost = true,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+		string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+		Vec3 Offset = [0, 0, 0],
+		float Radius = 0.5,
+	},
+	Area = 
+	{
+		Vec2 Size = [1, 1],
+		Location Origin = Center,
+	},
+	Bounce = 
+	{
+		Vec3 BounceLevel = [0, 0, 0],
+	},
+	Explosion = 
+	{
+		string ExplodeSFX = "5a61916136d1c33d:Kill",
+	},
+	DestroyTimer = 
+	{
+		int Time = 13,
+	},
+},

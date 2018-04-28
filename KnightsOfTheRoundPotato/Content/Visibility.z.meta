@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "Visibility",
+		uint64 ResourceId = 5a118baa1c1a0696,
+	},
+},

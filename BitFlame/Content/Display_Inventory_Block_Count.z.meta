@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "Display_Inventory_Block_Count",
+		uint64 ResourceId = 5a7f5c60f93accdb,
+	},
+},

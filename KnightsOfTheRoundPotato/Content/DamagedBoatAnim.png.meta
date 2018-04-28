@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "DamagedBoatAnim",
+		uint64 ResourceId = 5ab43b0b9d352cb6,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 128,
+		uint FrameSizeY = 128,
+		uint FrameCount = 4,
+		float FrameDelay = 0.25,
+		float OriginX = 64,
+		float OriginY = 64,
+		float PixelsPerUnit = 32,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

@@ -1,0 +1,74 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Notification",
+	},
+	Archetyped = 
+	{
+		string Name = "5ad090a34f764fee:Notification",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [15.5, -7.5, 1],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Notification = 
+	{
+		int MaxNotificationCount = 5,
+	},
+	ScreenAlignment = 
+	{
+		string PositionX = "Right",
+		string PositionY = "Bottom",
+		Vec2 PositionOffset = [-0.25, 3],
+		float ZIndex = 0,
+		bool HideUntilPositioned = true,
+	},
+	Hierarchy = 
+	{
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 2,
+			},
+			Named = 
+			{
+				string Name = "NotificationText",
+			},
+			Archetyped = 
+			{
+				string Name = "5ad09789307b9a24:NotificationText",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0, 0, 0],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			SpriteText = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 0.929999828, 0, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string FontName = "5addaa7b8f441196:FontBold",
+				uint FontSize = 30,
+				string Text = "",
+				TextAlign Align = Right,
+				float PixelsPerUnit = 64,
+				bool Smoothing = false,
+			},
+		},
+	},
+},

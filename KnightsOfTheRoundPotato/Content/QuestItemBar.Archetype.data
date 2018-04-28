@@ -1,0 +1,155 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "QuestItemBar",
+	},
+	Archetyped = 
+	{
+		string Name = "5a1c254587bee729:QuestItemBar",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 1.625, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [0.61500001, 0.61500001, 0.61500001, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5586f579ca73ecc2:SquareBordered",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	Area = 
+	{
+		Vec2 Size = [2.5, 0.5],
+		Location Origin = Center,
+	},
+	Hierarchy = 
+	{
+		ArchetypeInstance = 
+		{
+			string Name = "5a1c24e6b5c27ce6:QuestItem",
+			LinkId = 
+			{
+				uint Id = 2,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-0.9375, 0, 0],
+				Vec3 Scale = [0.25, 0.25, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "QuestItem",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a1c24e6b5c27ce6:QuestItem",
+			LinkId = 
+			{
+				uint Id = 3,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0.9375, 0, 0],
+				Vec3 Scale = [0.25, 0.25, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "QuestItem",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a1c24e6b5c27ce6:QuestItem",
+			LinkId = 
+			{
+				uint Id = 4,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0.5625, 0, 0],
+				Vec3 Scale = [0.25, 0.25, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "QuestItem",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a1c24e6b5c27ce6:QuestItem",
+			LinkId = 
+			{
+				uint Id = 5,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0.1875, 0, 0],
+				Vec3 Scale = [0.25, 0.25, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "QuestItem",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a1c24e6b5c27ce6:QuestItem",
+			LinkId = 
+			{
+				uint Id = 6,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-0.1875, 0, 0],
+				Vec3 Scale = [0.25, 0.25, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "QuestItem",
+			},
+		},
+		ArchetypeInstance = 
+		{
+			string Name = "5a1c24e6b5c27ce6:QuestItem",
+			LinkId = 
+			{
+				uint Id = 7,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-0.5625, 0, 0],
+				Vec3 Scale = [0.25, 0.25, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Named = 
+			{
+				string Name = "QuestItem",
+			},
+		},
+	},
+},

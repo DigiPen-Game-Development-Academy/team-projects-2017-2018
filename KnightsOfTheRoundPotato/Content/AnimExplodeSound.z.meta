@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "AnimExplodeSound",
+		uint64 ResourceId = 5a3dc97403b82a1a,
+	},
+},

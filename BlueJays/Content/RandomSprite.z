@@ -1,0 +1,15 @@
+//Author: Eli Miller
+//Purpose: Chooses a random sprite with a certain name to display.
+
+class RandomSprite : ZilchComponent
+{
+    [Property] var Name : String = "RoseP";
+    [Property] var Num : Integer = 1;
+    [Property] var Start : Integer = 1;
+    function Initialize(init : CogInitializer)
+    {
+        var rand = Random();
+        this.Owner.Sprite.SpriteSource = SpriteSource.Find("`this.Name``rand.DieRoll(this.Num) - 1 + this.Start`");
+        this.Owner.RemoveComponentByName("RandomSprite");
+    }
+}

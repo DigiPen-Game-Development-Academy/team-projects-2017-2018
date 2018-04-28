@@ -1,0 +1,90 @@
+class SnatchTrap : ZilchComponent
+// Elena Schefer
+
+// Snatch Trap
+{
+var Timer : Real = 0;
+
+var Player : Cog;
+
+var SlimyFeet : Cog;
+
+[Property]
+var SlimeSFX:SoundCue;
+
+[Property] 
+var DamagePerSecond : Real = 0.5;
+
+var OldSpeed : Real;
+
+var OldJumpSpeed : Real;
+
+var ConstTimer : Real = 0;
+
+  function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+ function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.PlayerMovement != null && this.Player == null && this.ConstTimer <= 0)
+        {
+            this.Timer = 1.5;
+            
+            this.ConstTimer = 2.5;
+            
+            this.Player = event.OtherObject;
+            
+            this.OldSpeed = this.Player.PlayerMovement.Speed;
+            
+            this.OldJumpSpeed = this.Player.PlayerMovement.JumpSpeed;
+            
+            //Give the player Slimy Feet
+            this.SlimyFeet = this.Space.CreateAtPosition(Archetype.Slime_TrapFeet,this.Player.Transform.Translation);
+            this.SlimyFeet.JumpToPlayer.Player = this.Player;
+            
+            this.Space.SoundSpace.PlayCue(this.SlimeSFX);
+            
+            this.Space.CreateAtPosition(Archetype.HitExplode,this.Owner.Transform.Translation);
+            
+            //Particles
+            for (var i = 0; i != 4; i += 1)
+            {
+                this.Space.CreateAtPosition(Archetype.SlimeGib, this.Owner.Transform.Translation); 
+            }
+        }
+    }
+        function OnLogicUpdate(event : UpdateEvent)
+     {
+        this.ConstTimer -= event.Dt;
+       
+        if(this.Timer > 0)
+        {
+            this.Timer -= event.Dt;
+               
+            this.Player.PlayerMovement.Speed = 0;
+            
+            this.Player.PlayerMovement.JumpSpeed = 0;
+            
+            Health.CurrentHealth -= event.Dt * this.DamagePerSecond;
+        }
+        if(this.Timer <= 0 && this.Player != null)
+        {
+            this.Space.CreateAtPosition(Archetype.HitExplode,this.Player.Transform.Translation);
+            
+            //Particles
+            for (var i = 0; i != 4; i += 1)
+            {
+                this.Space.CreateAtPosition(Archetype.SlimeGib, this.Player.Transform.Translation); 
+            }
+            
+            
+            this.Player.PlayerMovement.Speed = this.OldSpeed;
+            this.Player.PlayerMovement.JumpSpeed = this.OldJumpSpeed;
+            this.Player = null;
+        }
+    }
+}
+

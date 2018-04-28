@@ -1,0 +1,25 @@
+class MusicOnLevelStart : ZilchComponent {
+    
+    [Property] var Fade : Boolean = true;
+    
+    [Property] var FadeSped : Real = 1;
+    
+    [Property] var Music : SoundCue;
+    
+    var Once : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        if (!this.Once) {
+            this.Once = true;
+            if(this.Fade) {
+                MusicUtils.PlayFade(this.Music, this.FadeSped);
+            } else {
+                MusicUtils.PlayNow(this.Music);
+            }
+        }
+    }
+}

@@ -1,0 +1,50 @@
+class Score : ZilchComponent 
+{
+    sends Damaged : ZilchEvent;
+    sends Healed : ZilchEvent;
+    [Property] var Level : Level;
+    [Property] var HealthType : HealthType = HealthType.PlayerMinion;
+    var Team : Team {
+        get {
+            if (this.HealthType == HealthType.Player || this.HealthType == HealthType.PlayerMinion)
+                return Team.Player; else
+            return Team.Enemy;
+        }
+    }
+    
+    [Property] var Health : Real = 10;
+    [Property] var Debug : Boolean;
+    [Serialized]var CurentSore : Integer =0;
+    var Score : Real = 0;
+    var ScoreNum : Integer = 0;
+     var Dead : Boolean;
+    function Initialize(init : CogInitializer) 
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+       
+      
+    function OnLogicUpdate(event : UpdateEvent) 
+    {
+        if (this.HealthType == HealthType.Player)
+        {
+            this.ScoreNum =0;
+            this.ScoreNum == this.CurentSore;
+            this.Owner.SpriteText.Text = "Score: `this.CurentSore`";
+           
+            // @missing Death effect and lose result
+        }
+       else if (this.HealthType == HealthType.Boss)
+        {
+            this.ScoreNum +=100;
+            this.ScoreNum ==this.CurentSore;
+            if (this.GameSession.Globals.BossCurrentHealth <= 0)
+            {
+            this.Owner.SpriteText.Text = "Score: `this.CurentSore+100`";
+                Console.WriteLine("AHHHHH");
+               
+            }
+    }
+    
+}
+}

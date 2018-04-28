@@ -1,0 +1,22 @@
+class DestroyMenu : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+    }
+
+    function OnMouseDown(event : ViewportMouseEvent)
+    {
+        var spaces = this.GameSession.AllSpaces;
+        
+        foreach(var space in spaces)
+        {
+            space.TimeSpace.TogglePause();
+        }
+        
+        MenuExists.Exists = false;
+        
+        this.Owner.Destroy();
+    }
+
+}

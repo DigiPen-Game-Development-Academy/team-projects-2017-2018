@@ -1,0 +1,42 @@
+class EnemyDeath : ZilchComponent {
+    
+    [Property] var NumberOfDrops : Integer = 3;
+    
+    [Property] var NumberOfDropsVariation : Integer = 1;
+    
+    [Property] var DropRange : Real = 0.2;
+    
+    [Property] var LootTable : ResourceTable = ResourceTable.Loot;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.NoHealth, this.OnNoHealth);
+        Zero.Connect(this.GameSession, Events.NoHealth, this.OnNoHealth);
+    }
+
+    function OnNoHealth(event : NoHealth) {
+        
+        var rand = Random();
+        
+        if(this.NumberOfDropsVariation != 0) {
+            this.NumberOfDrops += rand.Range(this.NumberOfDropsVariation, -this.NumberOfDropsVariation) as Integer;
+        }
+        
+        if(this.NumberOfDrops > 0) {
+            for (var i = 0; i < this.NumberOfDrops; ++i) {
+                var item = Utilities.ItemFromID(this.LootTable.SampleValue(rand.Range(0, 1), rand.Range(0, 1)));
+                if(item == null)
+                    continue;
+                item.Init();
+                var gItem = GlobalVariables.GameSpace.CreateAtPosition(Archetype.GroundItem, this.Owner.Transform.WorldTranslation + rand.Real3(0, this.DropRange));
+                if(gItem != null) {
+                    gItem.Transform.WorldTranslation = Real3(gItem.Transform.WorldTranslation.X, gItem.Transform.WorldTranslation.Y, 0);
+                    gItem.ItemPickup.SetItem(item);
+                    gItem.ItemPickup.Item.Ammount = item.Ammount;
+                }
+            }
+        }
+        
+        GlobalVariables.Enemies.RemoveFirst(this.Owner);
+        this.Owner.Destroy();
+    }
+}

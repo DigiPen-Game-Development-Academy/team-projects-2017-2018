@@ -1,0 +1,126 @@
+
+    //Modified by Jakob McFarland
+
+class Asteroid_Mining : ZilchComponent
+{
+    [Property] var ArchetypetoSpawnOnDamage : Archetype;
+    
+    [Property] var DropAmount : Real = 0.0;
+    
+    [Property] var ShrinkAmount : Real = 0.0;
+    
+    [Property] var AluminiumSprite : SpriteSource = SpriteSource.Asteroid_TileMap_Ores000;
+    
+    [Property] var CopperSprite : SpriteSource = SpriteSource.Asteroid_TileMap_Ores002;
+    
+    [Property] var IronSprite : SpriteSource = SpriteSource.Asteroid_TileMap_Ores004;
+    
+    [Property] var TitaniumSprite : SpriteSource = SpriteSource.Asteroid_TileMap_Ores005;
+    
+    [Property] var AluminiumArchetype : Archetype = null;
+    
+    [Property] var CopperArchetype : Archetype = null;
+    
+    [Property] var IronArchetype : Archetype = null;
+    
+    [Property] var TitaniumArchetype : Archetype = null;
+    
+    [Property] var AluminiumProbability : Real = 0.0;
+    
+    [Property] var CopperProbability : Real = 0.0;
+    
+    [Property] var IronProbability : Real = 0.0;
+    
+    [Property] var TitaniumProbability : Real = 0.0;
+    
+    [Property] var EmptyProbability : Real = 0.0;
+    
+    var RandomGen : Random = Random();
+    
+    var Player : Cog;
+    
+    var ResourceArchetype : Archetype = null;
+    
+    function Setup()
+    {
+        if(this.Owner.Sprite.SpriteSource == SpriteSource.Asteroid_TileMap_Normal004 || this.Owner.Sprite.SpriteSource == SpriteSource.Asteroid_TileMap_Normal005)
+        {
+            var randNum = 0.0;
+            randNum += Math.Clamp(this.RandomGen.Range(0,100), 0.0, 100.0);
+            
+            if(randNum < this.EmptyProbability)
+            {
+                this.Owner.Health.Health = this.RandomGen.Range(2,6);
+            }
+            else if(randNum < this.EmptyProbability + this.AluminiumProbability)
+            {
+                this.ResourceArchetype = this.AluminiumArchetype;
+                
+                this.Owner.Sprite.SpriteSource = this.AluminiumSprite;
+                
+                this.Owner.Health.Health = this.RandomGen.Range(1,2);
+            }
+            else if(randNum < this.EmptyProbability + this.AluminiumProbability + this.CopperProbability)
+            {
+                this.ResourceArchetype = this.CopperArchetype;
+                
+                this.Owner.Sprite.SpriteSource = this.CopperSprite;
+                
+                this.Owner.Health.Health = this.RandomGen.Range(1,3);
+            }
+            else if(randNum <= this.EmptyProbability + this.AluminiumProbability + this.CopperProbability + this.IronProbability)
+            {
+                this.ResourceArchetype = this.IronArchetype;
+                
+                this.Owner.Sprite.SpriteSource = this.IronSprite;
+                
+                this.Owner.Health.Health = this.RandomGen.Range(2,4);
+            }
+            else if(randNum <= 100)
+            {
+                this.ResourceArchetype = this.TitaniumArchetype;
+                
+                this.Owner.Sprite.SpriteSource = this.TitaniumSprite;
+                
+                this.Owner.Health.Health = this.RandomGen.Range(3,5);
+            }
+        }
+    }
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.Player = this.Space.FindObjectByName("Arm");
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.DamageOnHit != null || event.OtherObject.BlastExplosion_Logic != null)
+        {
+            this.Owner.Transform.Scale -= this.Owner.Transform.Scale / this.ShrinkAmount;
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Owner.Health.Health <= 0.0)
+        {
+            if(this.ResourceArchetype != null)
+            {
+                for(var i = 0.0; i < this.DropAmount; ++i)
+                {
+                    var resource = this.Space.CreateAtPosition(this.ResourceArchetype, this.Owner.Transform.WorldTranslation);
+                    
+                    resource.RigidBody.Velocity += Real3(this.RandomGen.Range(-1.0, 1.0), this.RandomGen.Range(-1.0, 1.0), 0.0);
+                }
+            }
+            
+            //this.Player.SoundThing.PlayBlockBreak();
+            this.Space.SoundSpace.PlayCue(SoundCue.BlockBreak);
+            this.Owner.Destroy();
+        }
+    }
+}

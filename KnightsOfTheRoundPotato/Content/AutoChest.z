@@ -1,0 +1,133 @@
+class AutoChest : ZilchComponent {
+    
+    [Dependency]
+    var Reactive : Reactive;
+    
+    [Property]
+    var LootTable : ResourceTable;
+    
+    var Items : Array[Item];
+    
+    var Set : Boolean = false;
+    
+    var Once : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        if(GlobalVariables.Chests == null)
+            GlobalVariables.Chests = Array[Cog]();
+        GlobalVariables.Chests.Add(this.Owner);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+        
+    }
+
+    function OnMouseDown(event : ViewportMouseEvent){
+        
+        //Console.WriteLine(this.Items == null);
+        
+        var res = Utilities.Raycast(this.Owner.Transform.WorldTranslation, GlobalVariables.Player.Transform.WorldTranslation-this.Owner.Transform.WorldTranslation, this.Space.PhysicsSpace, 3);
+        
+        if(res == null || res.ObjectHit != GlobalVariables.Player) {
+            return;
+        }
+        
+        if(event.Button == MouseButtons.Left)
+            return;
+        
+        GlobalVariables.ChestItems = this.Items;
+        GlobalVariables.Inv.Transform.WorldTranslation = Real3(GlobalVariables.Inv.Transform.WorldTranslation.X, GlobalVariables.Inv.Transform.WorldTranslation.Y, GlobalVariables.Inv.InventoryManager.InitalZ);
+        GlobalVariables.CInv.ChestInventory.Vis = true;
+        GlobalVariables.PauseMenu.MenuVisibilityController.Vis = true;
+        this.Space.TimeSpace.Paused = true;
+        
+    }
+
+    function OnMouseExit(event : ViewportMouseEvent) {
+        
+        this.Owner.Sprite.CurrentFrame = 0;
+        this.Owner.Sprite.StartFrame = 0;
+        this.Owner.Sprite.SpriteSource = SpriteSource.ChestSpriteRev;
+        
+        GlobalVariables.LorePanel.Sprite.Visible = false;
+    }
+
+    function OnMouseEnter(event : ViewportMouseEvent) {
+        
+        var res = Utilities.Raycast(this.Owner.Transform.WorldTranslation, GlobalVariables.Player.Transform.WorldTranslation-this.Owner.Transform.WorldTranslation, this.Space.PhysicsSpace, 3);
+        
+        if(res == null || res.ObjectHit != GlobalVariables.Player) {
+            return;
+        }
+        
+        this.Owner.Sprite.CurrentFrame = 0;
+        this.Owner.Sprite.StartFrame = 0;
+        this.Owner.Sprite.SpriteSource = SpriteSource.ChestSprite;
+        
+        GlobalVariables.LorePanel.Sprite.Visible = true;
+        GlobalVariables.LorePanel.LorePanel.Text = "This is a chest\nRight click to open";
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(!this.Once) {
+            this.Once = true;
+            this.GenLoot();
+        }
+        
+    }
+    
+    function GenLoot () {
+        /*Generate Loot*/
+        if((this.Items == null || this.Items.Count == 0) && this.Owner.SetChest == null && !this.Set) {
+            
+            this.Items = Array[Item]();
+            this.Items.Resize(GlobalVariables.ChestItems.Count);
+            var table = this.LootTable;
+            var rand = Random();
+            for(var i = 0; i < this.Items.Count; ++i) {
+                var name = table.SampleValue(rand.Range(0, 1), rand.Range(0, 1));
+                var n = Utilities.ItemFromID(name);
+                if(n != null)
+                    n.Init();
+                this.Items[i] = n;
+            }
+            
+        } else if((this.Items == null || this.Items.Count == 0) && this.Owner.SetChest != null && !this.Set) {
+            
+            var n : Item = null;
+            this.Items = Array[Item]();
+            this.Items.Resize(GlobalVariables.ChestItems.Count);
+            n = Utilities.ItemFromID(this.Owner.SetChest.Slot1ID);
+            this.Items[0] = n;
+            
+            n = Utilities.ItemFromID(this.Owner.SetChest.Slot2ID);
+            this.Items[1] = n;
+            
+            n = Utilities.ItemFromID(this.Owner.SetChest.Slot3ID);
+            this.Items[2] = n;
+            
+            n = Utilities.ItemFromID(this.Owner.SetChest.Slot4ID);
+            this.Items[3] = n;
+            
+            n = Utilities.ItemFromID(this.Owner.SetChest.Slot5ID);
+            this.Items[4] = n;
+            
+            n = Utilities.ItemFromID(this.Owner.SetChest.Slot6ID);
+            this.Items[5] = n;
+            
+            n = Utilities.ItemFromID(this.Owner.SetChest.Slot7ID);
+            this.Items[6] = n;
+            
+            n = Utilities.ItemFromID(this.Owner.SetChest.Slot8ID);
+            this.Items[7] = n;
+            
+            for(var i = 0; i < this.Items.Count; ++i){
+            if(this.Items[i] != null)
+                this.Items[i].Init();
+            }
+        }
+    }
+}

@@ -1,0 +1,424 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Tower",
+	},
+	Archetyped = 
+	{
+		string Name = "5aea1bea3167182a:Tower",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0],
+		Vec3 Scale = [2.5, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [0, 0, 0, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5274db4c2e7c11f9:Circle",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	EllipsoidCollider = 
+	{
+		bool Ghost = false,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+		string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+		Vec3 Offset = [0, 0, 0],
+		Vec3 Radii = [0.5, 0.5, 1],
+	},
+	AutoDepth = 
+	{
+		bool Local = false,
+		float Offset = 0,
+	},
+	TowerLogic = 
+	{
+		float TimeBetweenShots = 2,
+		float ShootDuration = 2,
+		float BeamAcceleration = 10,
+		float DamagePerSecond = 2,
+		string ShootingSoundToPlay = "5ada0c41e479780f:TowerShoot",
+		string ChargingSoundToPlay = "5ab6971f6c9a96d7:TowerCharge2",
+	},
+	DestroyTimer = 
+	{
+		float Timer = 10,
+	},
+	Hierarchy = 
+	{
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 2,
+			},
+			Named = 
+			{
+				string Name = "MainSprite",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-0.0477290154, 3.88067722, 0.00999999978],
+				Vec3 Scale = [0.399999976, 0.99999994, 0.99999994],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 1, 1, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "5a08ee9cd242c646:Towers",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			Hierarchy = 
+			{
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 3,
+			},
+			Named = 
+			{
+				string Name = "BeamOrigin",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-0.148590803, 7.87913322, 0.100000001],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0.382683456, 0.923879504],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [0.430000007, 0.111799985, 0.111799985, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "5ae57337772f2476:Cursor",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			HoverMovement = 
+			{
+				Vec3 OscilationDirection = [0, 1, 0],
+				float OscilationMagnitude = 0.5,
+				float OscilationFrequency = 2,
+				float OscilationTimer = 0,
+				Enum CoordinateSystem = LocalSpace,
+			},
+			Spin = 
+			{
+				float Speed = 45,
+			},
+			Hierarchy = 
+			{
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 4,
+			},
+			Named = 
+			{
+				string Name = "BeamOriginAlt",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-0.148590803, 7.80178595, 0.100000001],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0.382683456, 0.923879504],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [0.430000007, 0.111799985, 0.111799985, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "5ae57337772f2476:Cursor",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			HoverMovement = 
+			{
+				Vec3 OscilationDirection = [0, 1, 0],
+				float OscilationMagnitude = 0.300000012,
+				float OscilationFrequency = 2,
+				float OscilationTimer = 0,
+				Enum CoordinateSystem = LocalSpace,
+			},
+			Spin = 
+			{
+				float Speed = 45,
+			},
+			Hierarchy = 
+			{
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 5,
+			},
+			Named = 
+			{
+				string Name = "BeamOriginAlt",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-0.148590803, 7.96752977, 0.100000001],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0.382683456, 0.923879504],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [0.430000007, 0.111799985, 0.111799985, 1],
+				BlendMode BlendMode = Alpha,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "5ae57337772f2476:Cursor",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			HoverMovement = 
+			{
+				Vec3 OscilationDirection = [0, 1, 0],
+				float OscilationMagnitude = 0.300000012,
+				float OscilationFrequency = 2,
+				float OscilationTimer = 0,
+				Enum CoordinateSystem = LocalSpace,
+			},
+			Spin = 
+			{
+				float Speed = 45,
+			},
+			Hierarchy = 
+			{
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 6,
+			},
+			Named = 
+			{
+				string Name = "BeamStart",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-0.148590803, 7.87913322, 0.100000001],
+				Vec3 Scale = [0.400000006, 1, 1],
+				Quat Rotation = [0, 0, 1.86264515e-08, 1],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 0.951180279, 0.125, 0.63499999],
+				BlendMode BlendMode = Additive,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "5274db4c2e7c11f9:Circle",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			AutoFollow = 
+			{
+				CogPath ToFollow = 
+				{
+					string Path = "../BeamOrigin",
+					bool ErrorOnResolveToNull = false,
+					bool ErrorOnPathCantCompute = false,
+					bool ErrorOnDirectLinkFail = false,
+					bool UpdateCogOnPathChange = true,
+					bool UpdatePathOnCogChange = true,
+					bool UpdateCogOnInitialize = true,
+					bool ResolvedNullErrorOccurred = false,
+					uint ResolvedCog = 3,
+					CogPathPreference PathPreference0 = CogRelative,
+					CogPathPreference PathPreference1 = SpaceRelative,
+					CogPathPreference PathPreference2 = Absolute,
+				},
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 7,
+			},
+			Named = 
+			{
+				string Name = "BeamMiddle",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-0.904870629, 7.87065411, 0.0156891271],
+				Vec3 Scale = [1.5140779, 1, 1],
+				Quat Rotation = [0, 0.994731247, -0.100042626, 0.0223917905],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 0.94901967, 0.0862745047, 0.504999995],
+				BlendMode BlendMode = Additive,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "5586f579ca73ecc2:SquareBordered",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			ObjectLink = 
+			{
+				CogPath ObjectA = 
+				{
+					string Path = "../BeamStart",
+					bool ErrorOnResolveToNull = false,
+					bool ErrorOnPathCantCompute = false,
+					bool ErrorOnDirectLinkFail = false,
+					bool UpdateCogOnPathChange = true,
+					bool UpdatePathOnCogChange = true,
+					bool UpdateCogOnInitialize = true,
+					bool ResolvedNullErrorOccurred = false,
+					uint ResolvedCog = 6,
+					CogPathPreference PathPreference0 = CogRelative,
+					CogPathPreference PathPreference1 = SpaceRelative,
+					CogPathPreference PathPreference2 = Absolute,
+				},
+				CogPath ObjectB = 
+				{
+					string Path = "../BeamEnd",
+					bool ErrorOnResolveToNull = false,
+					bool ErrorOnPathCantCompute = false,
+					bool ErrorOnDirectLinkFail = false,
+					bool UpdateCogOnPathChange = true,
+					bool UpdatePathOnCogChange = true,
+					bool UpdateCogOnInitialize = true,
+					bool ResolvedNullErrorOccurred = false,
+					uint ResolvedCog = 8,
+					CogPathPreference PathPreference0 = CogRelative,
+					CogPathPreference PathPreference1 = SpaceRelative,
+					CogPathPreference PathPreference2 = Absolute,
+				},
+				Vec3 BodyPointA = [0, 0, 0],
+				Vec3 BodyPointB = [0, 0, 0],
+			},
+			AutoStretch = 
+			{
+			},
+		},
+		Cog = 
+		{
+			LinkId = 
+			{
+				uint Id = 8,
+			},
+			Named = 
+			{
+				string Name = "BeamEnd",
+			},
+			Transform = 
+			{
+				Vec3 Translation = [-1.66115034, 7.86217451, -0.0686217472],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 1.86264515e-08, 1],
+			},
+			Sprite = 
+			{
+				bool Visible = true,
+				bool VisibilityCulling = true,
+				bool VisibilityEvents = true,
+				bool CastShadows = false,
+				Vec4 Color = [1, 0.951180279, 0.125, 0.75],
+				BlendMode BlendMode = Additive,
+				SpriteGeometryMode GeometryMode = ZPlane,
+				string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+				string SpriteSource = "5274db4c2e7c11f9:Circle",
+				bool RenderMask = false,
+				bool FlipX = false,
+				bool FlipY = false,
+				bool AnimationActive = true,
+				float AnimationSpeed = 1,
+				uint StartFrame = 0,
+			},
+			AutoDepth = 
+			{
+				bool Local = false,
+				float Offset = 0.00999999978,
+			},
+		},
+	},
+},

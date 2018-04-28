@@ -1,0 +1,321 @@
+class SaveFuncs {
+    
+    [Static]
+    function SerializeBools (bools : Array[Boolean]) : String {
+        var str = "";
+        if(bools == null || bools.Count == 0)
+            return "";
+        foreach (var b in bools) {
+            str = "`str`,`b`";
+        }
+        return "`str`,";
+    }
+    
+    [Static]
+    function DeserializeBools (str : String) : Array[Boolean] {
+        
+        var bools = Array[Boolean]();
+        var last = -1;
+        
+        for(var i = 0; i < str.Count; ++i) {
+            var c = str[i];
+            if(c == ","[0]) {
+                if(last == -1) {
+                    last = i;
+                    continue;
+                }
+                bools.Add(str.SubStringFromRuneIndices(last+1, i) == "true");
+                last = i;
+            }
+        }
+        Console.WriteLine(bools);
+        return bools;
+        
+    }
+    
+    [Static]
+    function SerializeEnemies (enemies : Array[Cog]) : String {
+        var str = "";
+        if(enemies == null || enemies.Count == 0)
+            return "";
+        str = ";";
+        foreach (var e in enemies) {
+            if(e != null) {
+                str = "`str`,`e.Name`";
+                str = "`str`,`e.Transform.WorldTranslation.X`";
+                str = "`str`,`e.Transform.WorldTranslation.Y`";
+                str = "`str`,`e.Transform.WorldTranslation.Z`";
+                str = "`str`,`e.EnemyAI.State`";
+                str = "`str`,`e.EnemyAI.ViewDirection.X`";
+                str = "`str`,`e.EnemyAI.ViewDirection.Y`";
+                str = "`str`,`e.EnemyAI.Timer`";
+                str = "`str`,`e.EnemyAI.GuardPos.X`";
+                str = "`str`,`e.EnemyAI.GuardPos.Y`";
+                str = "`str`,`e.Health.CurrentHealth`";
+                str = "`str`,;";
+            }
+        }
+        str = "`str`";
+        //Console.WriteLine(str);
+        return str;
+    }
+    
+    [Static]
+    function DeserializeEnemies (str : String) {
+        var enemies = Array[String]();
+        var last = -1;
+        for(var i = 0; i < str.Count; ++i) {
+            var c = str[i];
+            if(c == ";"[0]) {
+                if(last == -1) {
+                    last = i;
+                    continue;
+                }
+                enemies.Add(str.SubStringFromRuneIndices(last+1, i));
+                last = i;
+            }
+        }
+        foreach(var e in enemies) {
+            var l = -1;
+            var properties = Array[String]();
+            for(var i = 0; i < e.Count; ++i) {
+                var c = e[i];
+                if(c == ","[0]) {
+                    if(l == -1) {
+                        l = i;
+                        continue;
+                    }
+                    properties.Add(e.SubStringFromRuneIndices(l+1, i));
+                    l = i;
+                }
+            }
+            var enemy = GlobalVariables.GameSpace.CreateAtPosition(Utilities.EnemyFromID(properties[0]), Real3(Real.Parse(properties[1]), Real.Parse(properties[2]), Real.Parse(properties[3])));
+            //Console.WriteLine(properties[0]);
+            if(enemy != null && properties.Count >= 12) {
+                enemy.EnemyAI.State = Integer.Parse(properties[4]) as State;
+                enemy.EnemyAI.ViewDirection = Real3(Real.Parse(properties[5]), Real.Parse(properties[6]), 0);
+                enemy.EnemyAI.Timer = Real.Parse(properties[7]);
+                enemy.EnemyAI.GuardPos = Real3(Real.Parse(properties[8]), Real.Parse(properties[9]), 0);
+                enemy.Health.CurrentHealth = Real.Parse(properties[10]);
+            }
+        }
+        return;
+    }
+    
+    [Static]
+    function SerializeInventory (inv : Array[Item]) : String {
+        var str = "";
+        if(inv == null || inv.Count == 0)
+            return "";
+        str = ";";
+        foreach(var i in inv) {
+            if(i == null) {
+                str = "`str`;";
+                continue;
+            }
+            str = "`str``SaveFuncs.SerializeItem(i)`";
+            str = "`str`;";
+        }
+        str = "`str`";
+        //Console.WriteLine(str);
+        return str;
+    }
+    
+    [Static]
+    function DeserializeInventory (str : String) : Array[Item] {
+        
+        var items = Array[String]();
+        var last = -1;
+        for(var i = 0; i < str.Count; ++i) {
+            var c = str[i];
+            if(c == ";"[0]) {
+                if(last == -1) {
+                    last = i;
+                    continue;
+                }
+                items.Add(str.SubStringFromRuneIndices(last+1, i));
+                last = i;
+            }
+        }
+        
+        var nItems = Array[Item]();
+        
+        foreach(var item in items) {
+            if(item == "") {
+                nItems.Add(null);
+                continue;
+            }
+            nItems.Add(SaveFuncs.DeserializeItem(item));
+        }
+        
+        return nItems;
+    }
+    
+    [Static]
+    function SerializeItem (item : Item) : String {
+        var str = "";
+        if(item == null)
+        return "";
+        str = "`str`,`item.ID`";
+        str = "`str`,`item.Ammount`";
+        str = "`str`,`item.Timer`";
+        str = "`str`,`item.CurrentMag`";
+        str = "`str`,`item.Reloading`";
+        str = "`str`,`item.Auto`";
+        str = "`str`,";
+        return str;
+    }
+    
+    [Static]
+    function DeserializeItem (str : String) : Item {
+        
+        var l = -1;
+        var properties = Array[String]();
+        for(var i = 0; i < str.Count; ++i) {
+            var c = str[i];
+            if(c == ","[0]) {
+                if(l == -1) {
+                    l = i;
+                    continue;
+                }
+                properties.Add(str.SubStringFromRuneIndices(l+1, i));
+                l = i;
+            }
+        }
+        
+        if(properties.Count == 0)
+            return null;
+        
+        var nItem = Utilities.ItemFromID(properties[0]);
+        if(nItem != null) {
+            nItem.Init();
+            nItem.Ammount = Integer.Parse(properties[1]);
+            nItem.Timer = Real.Parse(properties[2]);
+            nItem.CurrentMag = Integer.Parse(properties[3]);
+            nItem.Reloading = properties[4] == "true";
+            nItem.Auto = properties[5] == "true";
+        }
+        return nItem;
+        
+    }
+    
+    [Static]
+    function SerializeChests (chests : Array[Cog]) : String {
+        
+        var str = "";
+        if(chests == null || chests.Count == 0)
+            return "";
+        str = "]";
+        foreach (var c in chests) {
+            str = "`str`|`SaveFuncs.SerializeInventory(c.AutoChest.Items)`";
+            str = "`str`|`c.Transform.WorldTranslation.X`";
+            str = "`str`|`c.Transform.WorldTranslation.Y`";
+            str = "`str`|`c.Transform.WorldTranslation.Z`";
+            str = "`str`|]";
+        }
+        str = "`str`";
+        //Console.WriteLine(str);
+        return str;
+    }
+    
+    [Static]
+    function DeserializeChests (str : String) {
+        var chests = Array[String]();
+        var last = -1;
+        for(var i = 0; i < str.Count; ++i) {
+            var c = str[i];
+            if(c == "]"[0]) {
+                if(last == -1) {
+                    last = i;
+                    continue;
+                }
+                chests.Add(str.SubStringFromRuneIndices(last+1, i));
+                last = i;
+            }
+        }
+        foreach(var c in chests) {
+            var l = -1;
+            var properties = Array[String]();
+            for(var i = 0; i < c.Count; ++i) {
+                var char = c[i];
+                if(char == "|"[0]) {
+                    if(l == -1) {
+                        l = i;
+                        continue;
+                    }
+                    properties.Add(c.SubStringFromRuneIndices(l+1, i));
+                    l = i;
+                }
+            }
+            
+            if(SaveFuncs.DeserializeInventory(properties[0]).Count == 0) {
+                GlobalVariables.GameSpace.CreateAtPosition(Archetype.AutoGen_Chest, Real3(Real.Parse(properties[1]), Real.Parse(properties[2]), Real.Parse(properties[3])));
+                continue;
+            }
+            
+            var chest = GlobalVariables.GameSpace.CreateAtPosition(Archetype.Manual_Chest, Real3(Real.Parse(properties[1]), Real.Parse(properties[2]), Real.Parse(properties[3])));
+            if(chest != null) {
+                chest.AutoChest.Items = SaveFuncs.DeserializeInventory(properties[0]);
+                chest.AutoChest.Set = true;
+            }
+        }
+        return;
+    }
+    
+    [Static]
+    function SerializeGItems (items : Array[Cog]) : String {
+        var str = "";
+        if(items == null || items.Count == 0)
+            return "";
+        str = "]";
+        foreach (var item in items) {
+            str = "`str`|`SaveFuncs.SerializeItem(item.ItemPickup.Item)`";
+            str = "`str`|`item.Transform.WorldTranslation.X`";
+            str = "`str`|`item.Transform.WorldTranslation.Y`";
+            str = "`str`|`item.Transform.WorldTranslation.Z`";
+            str = "`str`|]";
+        }
+        str = "`str`";
+        //Console.WriteLine(str);
+        return str;
+    }
+    
+    [Static]
+    function DeserializeGItems (str : String) {
+        var items = Array[String]();
+        var last = -1;
+        for(var i = 0; i < str.Count; ++i) {
+            var c = str[i];
+            if(c == "]"[0]) {
+                if(last == -1) {
+                    last = i;
+                    continue;
+                }
+                items.Add(str.SubStringFromRuneIndices(last+1, i));
+                last = i;
+            }
+        }
+        foreach(var item in items) {
+            var l = -1;
+            var properties = Array[String]();
+            for(var i = 0; i < item.Count; ++i) {
+                var char = item[i];
+                if(char == "|"[0]) {
+                    if(l == -1) {
+                        l = i;
+                        continue;
+                    }
+                    properties.Add(item.SubStringFromRuneIndices(l+1, i));
+                    l = i;
+                }
+            }
+            
+            var nItem = GlobalVariables.GameSpace.CreateAtPosition(Archetype.GroundItem, Real3(Real.Parse(properties[1]), Real.Parse(properties[2]), Real.Parse(properties[3])));
+            if(nItem != null) {
+                nItem.ItemPickup.SetItem(SaveFuncs.DeserializeItem(properties[0]));
+            }
+        }
+        return;
+    }
+    
+}

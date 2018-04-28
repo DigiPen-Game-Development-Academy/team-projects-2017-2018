@@ -1,0 +1,48 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class PauseMenu : ZilchComponent {
+    
+    var PauseMenuEnabled : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(Zero.Keyboard.KeyIsPressed(Keys.Escape) && Relocation.Space != null) {
+            
+            var player = Relocation.Space.FindObjectByName(Relocation.EntityPlayer);
+            var cmd = this.Space.FindObjectByName("DebugCommand").FindChildByName("TextEntry");
+            
+            if(player != null) {
+                if(player.Inventory != null && !player.Inventory.InventoryOpen && player.Health.CurrentHealth > 0.0) {
+                    if(cmd != null && !cmd.TextEntry.CaptureKeys)
+                        this.TogglePauseMenu();
+                } else if(player.Inventory == null && cmd != null && !cmd.TextEntry.CaptureKeys) {
+                    this.TogglePauseMenu();
+                }
+            }
+            
+        }
+        
+        if(this.PauseMenuEnabled)
+            this.Owner.Transform.WorldTranslation = Real3(0.0);
+        else if(Relocation.Space != null)
+            this.Owner.Transform.WorldTranslation = Real3(0.0, -25, 500);
+        
+    }
+    
+    function TogglePauseMenu() {
+        
+        this.PauseMenuEnabled = !this.PauseMenuEnabled;
+        
+        if(this.PauseMenuEnabled && Relocation.Space != null && Relocation.Space.LevelSettings.SaveLoadData != null)
+            Relocation.Space.LevelSettings.SaveLoadData.Save();
+        
+        Relocation.Space.TimeSpace.Paused = this.PauseMenuEnabled;
+        
+    }
+    
+}

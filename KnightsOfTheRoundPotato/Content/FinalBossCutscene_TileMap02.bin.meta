@@ -1,0 +1,12 @@
+BinaryContent = 
+{
+	BinaryBuilder = 
+	{
+		string Name = "FinalBossCutscene_TileMap02",
+		uint64 ResourceId = 5ab6bcf65cb2ec06,
+		string LoaderType = "TileMapSource",
+		uint Version = 0,
+		string FilterTag = "",
+		string ResourceOwner = "5ab6820324f8e9d5:FinalBossCutscene",
+	},
+},

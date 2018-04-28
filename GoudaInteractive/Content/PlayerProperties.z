@@ -1,0 +1,284 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class PlayerProperties : ZilchComponent {
+    
+    [Property] var PlayerName : String = "Astronaut Zero";
+    [Property] var PlayerSkin : Integer = 0;
+    [Property] var SpawnPosition : Real3 = Real3(0);
+    [Property] var IsInWater : Boolean = false;
+    [Property] var IsInUnauthorizedZone : Boolean = false;
+    [Property] var IsDead : Boolean = false;
+    [Property] var Balance : Real = 0.00;
+    
+    var HasMadeWaterGhost : Boolean = false;
+    var HasPlayedBorderSong : Boolean = false;
+    
+    var SkinCount : Integer = 5;
+    
+    var UISpace : Space = null;
+    
+    var UnauthorizedKillTime : Real = 18.0;
+    var CurrUnauthKillTime : Real = 0.0;
+    
+    var StopBiomeSoundCue : Boolean = false;
+    var QueueBiomeChange : Boolean = false;
+    
+    var StormSoundsActive : Boolean = false;
+    var StormSoundsPlayed : Boolean = false;
+    
+    var BiomeChangeTime : Real = 1.5;
+    var CurrBiomeChangeTime : Real = 0.0;
+    
+    function Initialize(init : CogInitializer) {
+        
+        Relocation.Player = this.Owner;
+        
+        this.UISpace = this.Space.FindObjectByName("LevelSettings").UICreator.UISpace;
+        
+        /*this.SetUsername(this.PlayerName);
+        this.SetSkin(this.PlayerSkin);*/
+        
+        if(Relocation.Space.CurrentLevel.Name == "SurfaceWorld") {
+            this.Owner.Transform.WorldTranslation = PlayerData.SpawnPosition;
+        }
+        
+        Zero.Connect(this.Owner, Events.MouseUpdate, this.OnMouseUpdate);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionStarted);
+        Zero.Connect(this.Owner, Events.CollisionEnded, this.OnCollisionEnded);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+    }
+    
+    function OnMouseUpdate(event : ViewportMouseEvent) {
+        
+        if(GameSetting.PlayerTooltip) {
+            
+            Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.ShowTooltip(true);
+            
+            if(Zero.Keyboard.KeyIsDown(Keys.Control)) {
+                Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.TooltipText(
+                    "`this.PlayerName`",
+                    "HP: `this.Owner.Health.CurrentHealth` / `this.Owner.Health.MaxHealth`",
+                    Real4(0.0, 1.0, 0.0, 1.0),
+                    Real4(1.0)
+                );
+            } else {
+                Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.TooltipText(
+                    "`this.PlayerName` (Ctrl)",
+                    "",
+                    Real4(0.0, 1.0, 0.0, 1.0),
+                    Real4(1.0)
+                );
+            }
+            
+        }
+        
+    }
+    
+    function OnMouseExit(event : ViewportMouseEvent) {
+        Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.ShowTooltip(false);
+    }
+    
+    function OnCollisionStarted(event : CollisionEvent) {
+        
+        if(event.OtherObject.Parent != null && event.OtherObject.Parent.Name == "BiomeWater") {
+            this.IsInWater = true;
+            this.QueueBiomeChange = false;
+            this.CurrBiomeChangeTime = 0.0;
+        } else if(event.OtherObject.Name == "WorldBorder") {
+            this.IsInUnauthorizedZone = true;
+            if(this.Space.MusicPlayer.GameLevelMusicSpace != null && !this.HasPlayedBorderSong) {
+                this.Space.MusicPlayer.GameLevelMusicSpace.SoundSpace.StopAllSounds();
+                this.Space.MusicPlayer.GameLevelMusicSpace.SoundSpace.PlayCue(SoundCue.WorldBorder);
+                GameSetting.PitchValue = 1.0;
+                this.HasPlayedBorderSong = true;
+                
+            }
+        }
+        
+    }
+    
+    function OnCollisionEnded(event : CollisionEvent) {
+        
+        if(event.OtherObject.Parent != null && event.OtherObject.Parent.Name == "BiomeWater") {
+            this.IsInWater = false;
+            this.QueueBiomeChange = true;
+        } else if(event.OtherObject.Name == "WorldBorder") {
+            this.IsInUnauthorizedZone = false;
+            if(this.Space.MusicPlayer.GameLevelMusicSpace != null) {
+                this.Space.MusicPlayer.GameLevelMusicSpace.SoundSpace.StopAllSounds();
+                this.Space.SoundSpace.Pitch = 0.0;
+                GameSetting.PitchValue = 0.0;
+                this.HasPlayedBorderSong = false;
+                
+            }
+        }
+        
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        var waterPart = this.Owner.FindChildByName("ParticleWater");
+        var waterSplash = this.Owner.FindChildByName("ParticleWater").FindChildByName("ParticleWaterSplash");
+        
+        if(this.IsInWater) {
+            waterPart.SpriteParticleSystem.Visible = true;
+            waterPart.SphericalParticleEmitter.Active = true;
+            waterSplash.SpriteParticleSystem.Visible = true;
+            waterSplash.SphericalParticleEmitter.Active = true;
+            if(!this.StopBiomeSoundCue) {
+                this.Space.FindObjectByName("BiomeWater").SoundObject.PlayCue(SoundCue.LakeDay);
+                this.StopBiomeSoundCue = true;
+            }
+            this.Space.MusicPlayer.GameLevelMusicSpace.SoundSpace.Volume = GameSetting.SoundEffectsVolume;
+        } else {
+            waterPart.SpriteParticleSystem.Visible = true;
+            waterPart.SphericalParticleEmitter.Active = false;
+            waterSplash.SpriteParticleSystem.Visible = true;
+            waterSplash.SphericalParticleEmitter.Active = false;
+            if(this.StopBiomeSoundCue && this.CurrBiomeChangeTime > this.BiomeChangeTime) {
+                this.Space.FindObjectByName("BiomeWater").SoundEmitter.Stop();
+                this.Space.FindObjectByName("BiomeWater").SoundEmitter.Volume = GameSetting.SoundEffectsVolume;
+                this.StopBiomeSoundCue = false;
+                this.CurrBiomeChangeTime = 0.0;
+            } else if(this.CurrBiomeChangeTime <= 1.0 && this.StopBiomeSoundCue && this.CurrBiomeChangeTime > this.BiomeChangeTime / 2) {
+                this.Space.FindObjectByName("BiomeWater").SoundEmitter.Volume -= event.Dt * 2;
+            }
+            
+            this.CurrBiomeChangeTime += event.Dt;
+            //this.Space.MusicPlayer.GameLevelMusicSpace.SoundSpace.Volume = this.CurrBiomeChangeTime / 2.0;
+            
+        }
+        
+        // CHECK IF GOING INTO UNCHARTED TERRRITORY (PAST WORLD BORDER)
+        if(this.IsInUnauthorizedZone) {
+            
+            if(this.CurrUnauthKillTime < this.UnauthorizedKillTime) {
+                this.CurrUnauthKillTime += event.Dt;
+                GameSetting.PitchValue -= event.Dt / this.UnauthorizedKillTime;
+                this.Space.SoundSpace.Pitch -= event.Dt / (this.UnauthorizedKillTime / 3);
+            } else {
+                this.CurrUnauthKillTime = this.UnauthorizedKillTime;
+            }
+            
+            this.Owner.Health.DecreaseHealth(event.Dt * 1.5);
+            
+            if(Relocation.UISpace != null) {
+                Relocation.UISpace.FindObjectByName("OverlayVignette").Sprite.Visible = true;
+                Relocation.UISpace.FindObjectByName("OverlayVignette").Sprite.Color = 
+                    Real4(1.0, Real2(1.0 - this.CurrUnauthKillTime / this.UnauthorizedKillTime), 1.0);
+            }
+            
+        } else {
+            this.CurrUnauthKillTime = 0.0;
+            if(Relocation.UISpace != null) {
+                Relocation.UISpace.FindObjectByName("OverlayVignette").Sprite.Visible = GameSetting.EnableVignette;
+                Relocation.UISpace.FindObjectByName("OverlayVignette").Sprite.Color = Real4(1.0);
+            }
+        }
+        
+        // TRIGGER STORM
+        /*if(Zero.Keyboard.KeyIsPressed(Keys.Four)) {
+            this.StormSoundsActive = !this.StormSoundsActive;
+        }
+        
+        // STORM SOUNDS
+        if(this.Space.FindObjectByName("BuildingSiren") != null) {
+            if(this.StormSoundsActive && !this.StormSoundsPlayed) {
+                this.StormSoundsPlayed = true;
+                this.Space.FindObjectByName("BuildingSiren").SoundEmitter.PlayCue(SoundCue.StormSiren);
+                this.Space.FindObjectByName("BuildingSiren").SoundEmitter.Volume = GameSetting.SoundEffectsVolume;
+            } else if(!this.StormSoundsActive) {
+                this.Space.FindObjectByName("BuildingSiren").SoundEmitter.Stop();
+                this.StormSoundsPlayed = false;
+            }
+        }*/
+        
+        if(this.CurrUnauthKillTime > this.UnauthorizedKillTime) {
+            this.Owner.Health.CurrentHealth = 0.0;
+        }
+        
+        // SET USERNAME
+        if(Relocation.UISpace != null && Relocation.UISpace.FindObjectByName("PlayerName") != null) {
+            
+            var playerNameField = Relocation.UISpace.FindObjectByName("PlayerName");
+            
+            if(this.PlayerName != playerNameField.SpriteText.Text && !playerNameField.SpriteText.Text.EndsWith("¡")) {
+                this.PlayerName = playerNameField.SpriteText.Text;
+                playerNameField.SpriteText.Text = String.Concatenate(this.PlayerName, " ¡");
+            }
+            
+        }
+        
+        // SET SPAWN POSITION
+        if(Relocation.Space.CurrentLevel.Name == "SurfaceWorld") {
+            PlayerData.SpawnPosition = this.Owner.Transform.WorldTranslation;
+        }
+        
+    }
+    
+    function AddToBalance(amt : Real) {
+        this.Balance += amt;
+    }
+    
+    function SetBalance(bal : Real) {
+        this.Balance = bal;
+    }
+    
+    function SetUsername(username : String) {
+        this.PlayerName = username;
+    }
+    
+    function SetSkin(skinID : Integer) {
+        
+        this.PlayerSkin = skinID;
+        
+        if(skinID == 0) {
+            this.Owner.Sprite.SpriteSource = SpriteSource.EntityPlayer;
+            this.UISpace.FindObjectByName("InventoryPlayerPreview").Sprite.SpriteSource = SpriteSource.EntityPlayer;
+            this.Owner.Sprite.Color = Real4(1.0);
+            this.UISpace.FindObjectByName("InventoryPlayerPreview").Sprite.Color = Real4(1.0);
+            this.Owner.Sprite.BlendMode = BlendMode.Alpha;
+            this.UISpace.FindObjectByName("InventoryPlayerPreview").Sprite.BlendMode = BlendMode.Alpha;
+        } else if(skinID == 1) {
+            this.Owner.Sprite.SpriteSource = SpriteSource.EntityPlayerWhite;
+            this.UISpace.FindObjectByName("InventoryPlayerPreview").Sprite.SpriteSource = SpriteSource.EntityPlayerWhite;
+            this.Owner.Sprite.Color = Real4(1.0);
+            this.UISpace.FindObjectByName("InventoryPlayerPreview").Sprite.Color = Real4(1.0);
+            this.Owner.Sprite.BlendMode = BlendMode.Alpha;
+            this.UISpace.FindObjectByName("InventoryPlayerPreview").Sprite.BlendMode = BlendMode.Alpha;
+        } else if(skinID == 2) {
+            this.Owner.Sprite.SpriteSource = SpriteSource.EntityPlayerWhite;
+            this.UISpace.FindObjectByName("InventoryPlayerPreview").Sprite.SpriteSource = SpriteSource.EntityPlayerWhite;
+            this.Owner.Sprite.Color = Real4(1.0, 0.0, 0.0, 1.0);
+            this.UISpace.FindObjectByName("InventoryPlayerPreview").Sprite.Color = Real4(1.0, 0.0, 0.0, 1.0);
+            this.Owner.Sprite.BlendMode = BlendMode.Alpha;
+            this.UISpace.FindObjectByName("InventoryPlayerPreview").Sprite.BlendMode = BlendMode.Alpha;
+        } else if(skinID == 3) {
+            this.Owner.Sprite.SpriteSource = SpriteSource.EntityPlayerWhite;
+            this.UISpace.FindObjectByName("InventoryPlayerPreview").Sprite.SpriteSource = SpriteSource.EntityPlayerWhite;
+            this.Owner.Sprite.Color = Real4(0.0, 1.0, 0.0, 1.0);
+            this.UISpace.FindObjectByName("InventoryPlayerPreview").Sprite.Color = Real4(0.0, 1.0, 0.0, 1.0);
+            this.Owner.Sprite.BlendMode = BlendMode.Alpha;
+            this.UISpace.FindObjectByName("InventoryPlayerPreview").Sprite.BlendMode = BlendMode.Alpha;
+        } else if(skinID == 4) {
+            this.Owner.Sprite.SpriteSource = SpriteSource.EntityPlayerWhite;
+            this.UISpace.FindObjectByName("InventoryPlayerPreview").Sprite.SpriteSource = SpriteSource.EntityPlayerWhite;
+            this.Owner.Sprite.Color = Real4(1.0, 0.7, 0.0, 1.0);
+            this.UISpace.FindObjectByName("InventoryPlayerPreview").Sprite.Color = Real4(1.0, 0.7, 0.0, 1.0);
+            this.Owner.Sprite.BlendMode = BlendMode.Alpha;
+            this.UISpace.FindObjectByName("InventoryPlayerPreview").Sprite.BlendMode = BlendMode.Alpha;
+        } else if(skinID == 5) {
+            this.Owner.Sprite.SpriteSource = SpriteSource.EntityPlayerWhite;
+            this.UISpace.FindObjectByName("InventoryPlayerPreview").Sprite.SpriteSource = SpriteSource.EntityPlayerWhite;
+            this.Owner.Sprite.Color = Real4(1.0);
+            this.UISpace.FindObjectByName("InventoryPlayerPreview").Sprite.Color = Real4(1.0);
+            this.Owner.Sprite.BlendMode = BlendMode.Additive;
+            this.UISpace.FindObjectByName("InventoryPlayerPreview").Sprite.BlendMode = BlendMode.Additive;
+        }
+        
+    }
+    
+}

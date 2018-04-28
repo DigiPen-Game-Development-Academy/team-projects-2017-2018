@@ -1,0 +1,147 @@
+/*************************************
+Filename: Player_Block_Placing.z
+Author: Jakob McFarland
+Contributors: NULL
+Last modified: 2/22/18
+Brief: This Component allows the player to place blocks
+******************************************/
+
+enum BlockType { Pipe, Turret }
+
+class Player_Block_Placing : ZilchComponent
+{
+    [Dependency] var Transform : Transform = null;
+    
+     //does player have control?
+    [Property] var Active : Boolean = true;
+    
+    [Property] var PlacingRange : Integer = 6;
+    
+    //iron block
+    //[Property] var IronBlockPlaceKey : Keys;
+    //[Property] var IronBlockIronCost : Integer;
+    //[Property] var IronBlockArchetype : Archetype = Archetype.IronBlock;
+    
+    //turret block
+    [Property] var TurretCost : Integer = 1;
+    [Property] var TurretArchetype : Archetype = Archetype.Turret;
+    [Property] var PreTurretArchetype : Archetype = Archetype.Pre_Turret;
+    
+    //oxygen pipe block
+    [Property] var PipeCost : Integer = 1;
+    [Property] var PipeArchetype : Archetype = Archetype.OxygenPipe;
+    [Property] var PrePipeArchetype : Archetype = Archetype.OxygenPipe_Preview;
+        
+    [Property] var Type : BlockType;
+    
+    var Preview : Cog;
+    
+    var RoundedMouse : Real3;
+
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.RightMouseUp, this.OnRightMouseUp);
+        Zero.Connect(this.Space, Events.RightMouseDown, this.OnRightMouseDown);
+        Zero.Connect(this.Space, Events.MouseUpdate, this.OnMouseUpdate);
+    }
+
+    function OnMouseUpdate(event : ViewportMouseEvent)
+    {
+        var mousePosition = event.ToWorldZPlane(0.0);
+        this.RoundedMouse = Math.Round(mousePosition);
+        
+        if(this.RoundedMouse.X >= mousePosition.X)
+        {
+            this.RoundedMouse.X -= 0.5;
+        }
+        else if(this.RoundedMouse.X < mousePosition.X)
+        {
+            this.RoundedMouse.X += 0.5;
+        }
+        
+        if(this.RoundedMouse.Y >= mousePosition.Y)
+        {
+            this.RoundedMouse.Y -= 0.5;
+        }
+        else if(this.RoundedMouse.Y < mousePosition.Y)
+        {
+            this.RoundedMouse.Y += 0.5;
+        }  
+         
+        if(this.Preview != null)
+        {
+            this.Preview.Transform.Translation = this.RoundedMouse;
+        }
+    }
+
+    function OnRightMouseDown(event : ViewportMouseEvent)
+    {
+        if(this.Active)
+        {
+            if(this.Type == 0)
+            {
+                if(this.Preview == null)
+                {
+                    this.Preview = this.Space.CreateAtPosition( this.PrePipeArchetype, this.RoundedMouse);
+                }
+            }
+            else if(this.Type == 1)
+            {
+                if(this.Preview == null)
+                {
+                    this.Preview = this.Space.CreateAtPosition( this.PreTurretArchetype, this.RoundedMouse);
+                }
+            }
+        }    
+    }
+
+    function OnRightMouseUp(event : ViewportMouseEvent)
+    {
+
+        //if(Zero.Keyboard.KeyIsDown(this.IronBlockPlaceKey))
+        //{
+            //if(this.Space.GameSession.GameVars.PlayerResources >= this.IronBlockIronCost)
+            //{
+                //this.Space.GameSession.GameVars.PlayerResources -= this.IronBlockIronCost;
+                // this.Space.CreateAtPosition(this.IronBlockArchetype, roundedMouse);
+            // }
+        //} 
+        
+        if(this.Preview != null && this.Active)
+        {
+            if(this.Type == 0)
+            {
+                if(this.Preview.Pipe_Preview_Collision != null && this.Preview.Pipe_Preview_Collision.PlacementInvalid == false) 
+                {   
+                    if(this.Space.GameSession.GameVars.PlayerPipes >= this.PipeCost)
+                    {
+                        this.Space.GameSession.GameVars.PlayerPipes -= this.PipeCost;
+                        this.Space.CreateAtPosition(this.PipeArchetype, this.RoundedMouse);      
+                        var blockUpdate = BlockUpdate();
+                        blockUpdate.Translation = this.RoundedMouse;
+                        this.Space.DispatchEvent(Events.BlockUpdate, blockUpdate);
+                    } 
+                }
+            }
+            else if(this.Type == 1)
+            {
+                if(this.Preview.Pipe_Preview_Collision != null && this.Preview.Pipe_Preview_Collision.PlacementInvalid == false) 
+                {   
+                    //Console.WriteLine("test");
+                    if(this.Space.GameSession.GameVars.PlayerTurrets >= this.TurretCost)
+                    {
+                        
+                        //Console.WriteLine("test");
+                        this.Space.GameSession.GameVars.PlayerTurrets -= this.TurretCost;
+                        this.Space.CreateAtPosition(this.TurretArchetype, this.RoundedMouse);      
+                        var blockUpdate = BlockUpdate();
+                        blockUpdate.Translation = this.RoundedMouse;
+                        this.Space.DispatchEvent(Events.BlockUpdate, blockUpdate);
+                    } 
+                }
+            } 
+            
+            this.Preview.Destroy();
+        }              
+    }
+}

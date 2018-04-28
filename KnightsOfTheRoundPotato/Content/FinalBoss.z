@@ -1,0 +1,198 @@
+enum FState {
+    
+    Winding,
+    Rusher,
+    GI,
+    Shield,
+    Stealth,
+    AllOut
+    
+}
+
+class FinalBoss : ZilchComponent {
+    
+    //*****Dependencies*****
+    [Dependency] var Rusher : Boss_Rusher_AI;
+    [Dependency] var GI : Boss_GI_AI;
+    [Dependency] var Shield : Boss_Shield;
+    [Dependency] var Stealth : StealthBoss;
+    [Dependency] var RigidBody : RigidBody;
+    [Dependency] var Health : Health;
+    [Dependency] var PathFollow : BasicPathFollowAI;
+    [Dependency] var GPathFollow : GenericPathFollowAI;
+    
+    //*****Properties*****
+    //wind up time between states at full heath
+    [Property] var WindTimeFull : Real = 3;
+    //wind up time between states at no health
+    [Property] var WindTimeEmpty : Real = 1;
+    //ammount of time to stay in a state at full heath
+    [Property] var StateTimeFull : Real = 10;
+    //ammount of time to stay in a state at no health
+    [Property] var StateTimeEmpty : Real = 5;
+    //ammount of health to switch to "all out" state
+    [Property] var AllOutHeath : Real = 0.25;
+    //ammount of health to switch to "stealth" state
+    [Property] var StealthHeath : Real = 0.40;
+    //ammount of health to switch to "shield" state
+    [Property] var ShealdHeath : Real = 0.60;
+    //ammount of health to switch to "gi" state
+    [Property] var GIHeath : Real = 0.80;
+    
+    //*****Variables*****
+    //timer before going back to wind
+    var StateTimer : Real = 0;
+    //wind timer for winding
+    var WindTimer : Real = 0;
+    //the current state of the boss
+    var State : FState = FState.Winding;
+    //random for randomness
+    var Rand : Random;
+    //is the ai currently active?
+    var Active : Boolean = true;
+    
+    
+    function Initialize(init : CogInitializer) {
+        this.Rand = Random();
+        this.WindTimer = Math.Lerp(this.WindTimeEmpty, this.WindTimeFull, this.Health.Percent);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        //set all ais to inactive
+        this.Rusher.Active = false;
+        this.GI.Active = false;
+        this.Shield.Active = false;
+        this.Stealth.Active = false;
+        
+    }
+
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        if(!this.Active)
+            return;
+        
+        this.Owner.Sprite.Visible = true;
+        
+        //turn lights on
+        this.LevelSettings.DeferredRenderer.RenderMasks = false;
+        
+        //set all ais to inactive
+        this.Rusher.Active = false;
+        this.GI.Active = false;
+        this.Shield.Active = false;
+        this.Stealth.Active = false;
+        this.GPathFollow.Active = false;
+        
+        //go back to wind when state timer has ended
+        if(this.StateTimer <= 0 && this.State != FState.Winding) {
+            
+            this.WindTimer = Math.Lerp(this.WindTimeEmpty, this.WindTimeFull, this.Health.Percent);
+            this.State = FState.Winding;
+            
+        } else {
+            this.StateTimer -= event.Dt;
+        }
+        
+        //goto state
+        if (this.State == FState.Winding) {
+            this.WindState(event.Dt);
+        } else if (this.State == FState.Rusher) {
+            this.RusherState(event.Dt);
+        } else if (this.State == FState.GI) {
+            this.GIState(event.Dt);
+        } else if (this.State == FState.Shield) {
+            this.ShieldState(event.Dt);
+        } else if (this.State == FState.Stealth) {
+            this.StealthState(event.Dt);
+        } else if (this.State == FState.AllOut) {
+            this.AllOutState(event.Dt);
+        }
+        
+    }
+    
+    function GoToNewState () {
+        
+        this.StateTimer = Math.Lerp(this.StateTimeEmpty, this.StateTimeFull, this.Health.Percent);
+        
+        if(this.Health.Percent <= this.AllOutHeath) {
+            this.State = FState.AllOut;
+        } else if(this.Health.Percent <= this.StealthHeath) {
+            this.State = FState.Stealth;
+        } else if(this.Health.Percent <= this.ShealdHeath) {
+            this.State = FState.Shield;
+        } else if(this.Health.Percent <= this.GIHeath) {
+            this.State = FState.GI;
+        } else {
+            this.State = FState.Rusher;
+        }
+        
+    }
+    
+    //*****State Functions*****
+    
+    //time between states
+    function WindState (dt : Real) {
+        
+        this.RigidBody.Velocity = Real3(0);
+        
+        this.WindTimer -= dt;
+        
+        if(this.WindTimer <= 0) {
+            this.GoToNewState();
+        }
+        
+    }
+    
+    //use rusher boss AI
+    function RusherState (dt : Real) {
+        
+        this.GPathFollow.Active = true;
+        this.Rusher.Active = true;
+        
+    }
+    
+    //use GI boss AI
+    function GIState (dt : Real) {
+        
+        this.PathFollow.Active = true;
+        this.GI.Active = true;
+        
+    }
+    
+    //use shield boss AI (missiles)
+    function ShieldState (dt : Real) {
+        
+        this.PathFollow.Active = true;
+        this.GI.Active = true;
+        
+        this.PathFollow.Active = true;
+        this.Shield.Active = true;
+        
+    }
+    
+    //use stealth boss AI and cut the lights
+    function StealthState (dt : Real) {
+        
+        this.PathFollow.Active = true;
+        this.GI.Active = true;
+        
+        this.PathFollow.Active = true;
+        this.Shield.Active = true;
+        
+        this.PathFollow.Active = true;
+        this.Stealth.Active = true;
+        this.LevelSettings.DeferredRenderer.RenderMasks = true;
+        
+    }
+    
+    //use ALL boss AIs and cut the lights
+    function AllOutState (dt : Real) {
+        
+        this.PathFollow.Active = true;
+        this.GI.Active = true;
+        this.Shield.Active = true;
+        this.Stealth.Active = true;
+        this.LevelSettings.DeferredRenderer.RenderMasks = true;
+        
+    }
+    
+}

@@ -1,0 +1,58 @@
+/* 
+Jessica Alberg,
+Hit sound effect,
+*/
+class HitSound : ZilchComponent
+{
+    var Timer : Real = 0.25;
+    var KeyWasPressed : Boolean;
+    [Property]
+    var HitSoundThing : SoundCue;
+    
+    function Initialize(init : CogInitializer)
+    {
+       //d Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.SwordBoomerangMove != null)
+        {
+            this.Owner.SoundEmitter.PlayCue(this.HitSoundThing);
+        }
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+        if(Zero.Keyboard.KeyIsPressed(Keys.S))
+        {
+            this.Owner.SoundEmitter.PlayCue(this.HitSoundThing);
+        }
+        
+        //Mute Music by pressing M
+        if (Zero.Keyboard.KeyIsPressed(Keys.M) && this.KeyWasPressed == false)
+        {
+            this.KeyWasPressed = true;
+            
+           this.Owner.SoundEmitter.Volume = 0;
+        }
+        
+        //Makes it so music doesn't mute and then Unmute again immedietly?
+        if(this.Timer >= 0 && this.KeyWasPressed == true)
+            {
+                this.Timer -= event.Dt;
+            }
+        
+        //Make it so if you press M again it unmutes it.
+        if(Zero.Keyboard.KeyIsPressed(Keys.M) && this.Timer <= 0)
+            {
+                this.KeyWasPressed = false;
+                
+                this.Owner.SoundEmitter.Volume = 1;
+                this.Timer += 0.25;
+                
+            }
+    }
+}

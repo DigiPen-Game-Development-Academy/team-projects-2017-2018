@@ -1,0 +1,46 @@
+SoundCue = 
+{
+	SoundPlayMode PlayMode = Single,
+	float Volume = 1.19999993,
+	float VolumeVariation = 0,
+	float VolumeDB = 1.58362436,
+	bool UseVolumeDB = false,
+	float VolumeDBVariation = 0,
+	float Pitch = 0,
+	float PitchSemitones = 0,
+	bool UsePitchSemitones = false,
+	float PitchVariation = 0.400000006,
+	float PitchSTVariation = 0,
+	float MinDistance = 1,
+	float MaxDistance = 70,
+	float MinAttenuatedVolume = 0,
+	uint MaxPlaybacks = 10,
+	Array Sounds = 
+	[
+		{
+			string SoundName = "5a2e377659515e30:Death Sound Effect _02",
+			string GeneratedSoundName = "",
+			WhichSoundType WhichToUse = FromFile,
+			float Weight = 1,
+			float LoopEndTime = 0,
+			float LoopStartTime = 0,
+		},
+		{
+			string SoundName = "5a2e3776595780d8:Death Sound Effect _01",
+			string GeneratedSoundName = "",
+			WhichSoundType WhichToUse = FromFile,
+			float Weight = 1,
+			float LoopEndTime = 0,
+			float LoopStartTime = 0,
+		},
+	],
+	Array SoundTags = 
+	[
+		{
+			string SoundTagName = "551c2d5a29ce571d:DefaultSoundTag",
+		},
+	],
+	string RolloffCurveName = "",
+	int Version = 1,
+	RolloffCurveType RolloffCurveType = Log,
+},

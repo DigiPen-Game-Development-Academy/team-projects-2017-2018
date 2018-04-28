@@ -1,0 +1,136 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Boss_Rusher",
+	},
+	Archetyped = 
+	{
+		string Name = "5a53e87b7cda6d5e:Boss_Rusher",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0],
+		Vec3 Scale = [2, 2, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	RigidBody = 
+	{
+		bool Static = false,
+		bool Asleep = false,
+		bool Kinematic = false,
+		bool RotationLocked = true,
+		bool Mode2D = true,
+		bool AllowSleep = true,
+		bool Inherit2DMode = true,
+		Vec3 Velocity = [0, 0, 0],
+		Vec3 AngularVelocity = [0, 0, 0],
+	},
+	SphereCollider = 
+	{
+		bool Ghost = false,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+		string SerializedGroupName = "5a11bfba4f162cf2:Enemies",
+		Vec3 Offset = [0, 0, 0],
+		float Radius = 0.239999995,
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5a5085d1c141c287:RusherBoss000",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	Health = 
+	{
+		float InitialHealth = 1500,
+		float Cooldown = 10,
+		float RegenRate = 0.5,
+	},
+	EnemyPathFind = 
+	{
+	},
+	GenericPathFollowAI = 
+	{
+	},
+	Boss_Rusher_AI = 
+	{
+		float MovSpeed = 3,
+		float DashSpeed = 7,
+		float AngryDashSpeed = 5,
+		float WindUpTimeMax = 1.5,
+		float WindUpTimeMin = 0.5,
+		float DashDistance = 15,
+		float AngryDashTime = 4,
+		float DazeTime = 7,
+		float AngryDashHealth = 0.5,
+		float AngryTurnSpeed = 90,
+		float DashDamage = 100,
+		float PassiveDamage = 50,
+		float DashCooldownMax = 6,
+		float DashCooldownMin = 4,
+		float DashCooldownRand = 0.100000001,
+		float StartRange = 5,
+		string DashDamageMSG = "You were run over by a giant rusher!",
+		string PassiveDamageMSG = "You where bitten by a giant rusher",
+		string North = "5a5085ddc0e6bd58:RusherBoss004",
+		string NorthEast = "5a5085dec001bd74:RusherBoss005",
+		string East = "5a5085dfc039e63e:RusherBoss006",
+		string SouthEast = "5a5085d8c051b77b:RusherBoss007",
+		string South = "5a5085d1c141c287:RusherBoss000",
+		string SouthWest = "5a5085d2c1792553:RusherBoss001",
+		string West = "5a5085d3c096f6bd:RusherBoss002",
+		string NorthWest = "5a5085dcc0cd1d6f:RusherBoss003",
+	},
+	BossDrops = 
+	{
+		string Part = "5a501946cb973583:QuestItem1",
+		string Note = "THIS IS A NOTE",
+		string Drops = "",
+		float DropRange = 1,
+		string NeurtralMusic = "5a518f65cac35b18:Nuetral",
+	},
+	Hierarchy = 
+	{
+		ArchetypeInstance = 
+		{
+			string Name = "5a7c1968c9af3d26:Healthbar",
+			LinkId = 
+			{
+				uint Id = 2,
+			},
+			Transform = 
+			{
+				Vec3 Translation = [0, -0.625, 1],
+				Vec3 Scale = [1, 1, 1],
+				Quat Rotation = [0, 0, 0, 1],
+			},
+			Area = 
+			{
+				Vec2 Size = [1, 0.100000001],
+				Location Origin = Center,
+			},
+			Named = 
+			{
+				string Name = "Healthbar",
+			},
+		},
+	},
+},

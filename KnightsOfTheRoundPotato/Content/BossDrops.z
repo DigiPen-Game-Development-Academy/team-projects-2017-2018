@@ -1,0 +1,101 @@
+//Author Brandon Wolenetz
+
+class BossDrops : ZilchComponent {
+    
+    [Property] var Part  : Archetype = Archetype.QuestItemPickup;
+    [Property] var Note  : String = "THIS IS A NOTE";
+    [Property] var Drops : ResourceTable;
+    [Property] var DropRange : Real = 1;
+    [Property] var NeurtralMusic : SoundCue = SoundCue.Nuetral;
+    
+    
+    var Dialog : Cog;
+    
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.NoHealth, this.OnNoHealth);
+    }
+    
+    function OnDialogEnded(event : DialogEnded) {
+        //Console.WriteLine("BLAH");
+        
+        ++GlobalVariables.Save.SaveController.PotatKillCount;
+        
+        Utilities.Dialog("The potatos have granted you a legendary weapon!", DialogTypes.OK, 15);
+        
+        
+        Zero.Disconnect(this.Owner, Events.DialogEnded, this.Dialog);
+        this.Dialog = null;
+        this.Owner.Destroy();
+        
+        if (this.LevelSettings.DeferredRenderer != null) {
+            this.LevelSettings.DeferredRenderer.RenderMasks = false;
+        }
+        
+    }
+
+    function OnNoHealth(event : NoHealth) {
+        
+        if(this.Owner.FinalBoss != null)
+            this.Owner.FinalBoss.Active = false;
+        
+        var rand = Random();
+        
+        //drop quest item
+        this.Space.CreateAtPosition(this.Part, this.Owner.Transform.WorldTranslation + Real3(0, this.DropRange+1, 0));
+        
+        //dont try to drop item from the resource table if the table is null
+        if(this.Drops != null) {
+            
+            //drop "ALL!" items in the 'Drops' resource table
+            for (var i = 0; i < this.Drops.Size; ++i) {
+                
+                var item = Utilities.ItemFromID(this.Drops.GetValueAt(i));
+                
+                if(item == null)
+                    continue;
+                item.Init();
+                var gItem = GlobalVariables.GameSpace.CreateAtPosition(Archetype.GroundItem, this.Owner.Transform.WorldTranslation + rand.Real3(0, this.DropRange));
+                if(gItem != null) {
+                    gItem.Transform.WorldTranslation = Real3(gItem.Transform.WorldTranslation.X, gItem.Transform.WorldTranslation.Y, 0);
+                    gItem.ItemPickup.SetItem(item);
+                    gItem.ItemPickup.Item.Ammount = item.Ammount;
+                }
+            }
+            
+        }
+        
+        MusicUtils.PlayFade(this.NeurtralMusic, 1);
+        
+        if (this.LevelSettings.DeferredRenderer != null) {
+            this.LevelSettings.DeferredRenderer.RenderMasks = false;
+        }
+        
+        this.Dialog = Utilities.Dialog("You found a note!  It reads:\n`this.Note`", DialogTypes.OK, 15);
+        
+        if (event.DeathMSG == "POTATO") {
+            
+            if(this.Dialog != null) {
+                Zero.Connect(this.Dialog, Events.DialogEnded, this.OnDialogEnded);
+            }
+            
+            ++GlobalVariables.Save.SaveController.PotatKillCount;
+            
+            if (GlobalVariables.Save.SaveController.PotatKillCount == 4) {
+                var item = Potatocannon();
+                
+                item.Init();
+                
+                ++GlobalVariables.Save.SaveController.PotatKillCount;
+                
+                var gItem = GlobalVariables.GameSpace.CreateAtPosition(Archetype.GroundItem, this.Owner.Transform.WorldTranslation + rand.Real3(0, this.DropRange));
+                if(gItem != null) {
+                    gItem.Transform.WorldTranslation = Real3(gItem.Transform.WorldTranslation.X, gItem.Transform.WorldTranslation.Y, 0);
+                    gItem.ItemPickup.SetItem(item);
+                    gItem.ItemPickup.Item.Ammount = item.Ammount;
+                }
+            }
+        } else {
+            this.Owner.Destroy();
+        }
+    }
+}

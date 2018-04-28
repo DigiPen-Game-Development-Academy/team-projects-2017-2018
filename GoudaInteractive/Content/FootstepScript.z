@@ -1,0 +1,56 @@
+// AUTHOR: MATTHEW ZEARING
+// CONTRIBUTERS: KEVIN PANASYUK, MYLES BUSIG
+
+class FootstepScript : ZilchComponent {
+    
+    [Property] var FootstepCooldown : Real = 0.3;
+    
+    var TimeTilPlaySound : Real = 0.0;
+    
+    var IsMoving : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        this.TimeTilPlaySound = this.FootstepCooldown;
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        var currentFootstepCooldown = this.FootstepCooldown;
+        
+        if(Zero.Keyboard.KeyIsDown(Keys.Shift)) {
+            currentFootstepCooldown /= 1.5;
+        }
+        
+        this.TimeTilPlaySound -= event.Dt;
+        
+        if(Relocation.Player.RigidBody.Velocity != Real3(0.0)) {
+            this.IsMoving = true;
+        } else {
+            this.IsMoving = false;
+        }
+        
+        if(this.IsMoving == true) {
+            
+            this.Owner.SphericalParticleEmitter.Active = true;
+            
+            if (this.Owner.Parent.Transform.Translation.Z == 2.0) {
+                this.Owner.SphericalParticleEmitter.Size = 1.0;
+                this.Owner.SphericalParticleEmitter.EmitRate = 10.0;
+            } else {
+                this.Owner.SphericalParticleEmitter.Size = 0.3;
+                this.Owner.SphericalParticleEmitter.EmitRate = 6.0;
+            }
+            
+            if(this.TimeTilPlaySound <= 0) {
+                Relocation.Player.SoundObject.PlayCue(SoundCue.Find("Footstep"));
+                this.TimeTilPlaySound = currentFootstepCooldown;
+            }
+            
+        } else {
+            this.Owner.SphericalParticleEmitter.Active = false;
+        }
+        
+    }
+    
+}

@@ -1,0 +1,45 @@
+class Player_Hurt_Visual : ZilchComponent
+{
+    [Dependency] var Sprite : Sprite;
+    
+    [Property] var Enabled : Boolean = true;
+    
+    var Active : Boolean = false;
+    
+    var PreviusHealth : Integer;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.PreviusHealth = this.GameSession.GameVars.PlayerHealth;
+        Zero.Connect(this.GameSession, Events.PlayerHurtUpdate, this.OnPlayerHurtUpdate);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Sprite.CurrentFrame == 8)
+        {
+            this.Sprite.CurrentFrame = 0;
+            this.Active = false;
+            this.Sprite.Visible = false;
+            this.Sprite.AnimationActive = false;
+        }
+    }
+
+    function OnPlayerHurtUpdate(event : ZilchEvent)
+    {
+        //Console.WriteLine("test");
+        
+        if(this.Active)
+        {
+            this.Sprite.CurrentFrame = 3;
+        }
+        else
+        {
+            this.Sprite.CurrentFrame = 0;
+            this.Active = true;
+            this.Sprite.Visible = true;
+            this.Sprite.AnimationActive = true;
+        }
+    }
+}

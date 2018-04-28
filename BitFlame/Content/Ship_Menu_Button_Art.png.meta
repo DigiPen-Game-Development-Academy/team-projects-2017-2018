@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "Ship_Menu_Button_Art",
+		uint64 ResourceId = 5a073c442a60ccfc,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 32,
+		uint FrameSizeY = 32,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 16,
+		float OriginY = 16,
+		float PixelsPerUnit = 16,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [12, 12, 12, 12],
+		SpriteFill Fill = NineSlice,
+	},
+},

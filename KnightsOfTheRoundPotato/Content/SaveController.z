@@ -1,0 +1,54 @@
+class SaveController : ZilchComponent {
+    
+    [Serialized]
+    var PlayerPos : Real3 = Real3(0);
+    
+    [Serialized]
+    var PlayerHealth : Real = 100;
+    
+    [Serialized]
+    var QuestItems : String = "";
+    
+    [Serialized]
+    var Enemies : String = "";
+    
+    [Serialized]
+    var Chests : String = "";
+    
+    [Serialized]
+    var Inventory : String = "";
+    
+    [Serialized]
+    var Primary : String = "";
+    
+    [Serialized]
+    var Secondary : String = "";
+    
+    [Serialized]
+    var Utility : String = "";
+    
+    [Serialized]
+    var Mouse : String = "";
+    
+    [Serialized]
+    var GItems : String = "";
+    
+    [Serialized]
+    var Quest : String = "";
+    
+    [Serialized]
+    var MaxQIndex : Integer = -1;
+    
+    [Serialized]
+    var FirstLoad : Boolean = false;
+    
+    [Serialized]
+    var PotatKillCount : Real = 0;
+    
+    [Serialized]
+    var BridgeBuilt : Boolean = false;
+    
+    function Initialize(init : CogInitializer) {
+        GlobalVariables.Save = this.Owner;
+    }
+}

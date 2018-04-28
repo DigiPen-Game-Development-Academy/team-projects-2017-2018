@@ -1,0 +1,41 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "SpriteText",
+	},
+	Archetyped = 
+	{
+		string Name = "5ac12e772163a358:WhatText",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0],
+		Vec3 Scale = [1.11316299, 1.11316299, 1.11316299],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	SpriteText = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 0.999899983],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string FontName = "5a0f895ab1e49e19:DraftGameFont",
+		uint FontSize = 30,
+		string Text = "Sprite Text...",
+		TextAlign Align = Left,
+		float PixelsPerUnit = 45,
+		bool Smoothing = false,
+	},
+	WhatText = 
+	{
+	},
+},

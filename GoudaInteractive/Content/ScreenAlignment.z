@@ -1,0 +1,80 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+enum AlignmentPositionX {
+    Left,
+    Center,
+    Right
+}
+
+enum AlignmentPositionY {
+    Top,
+    Center,
+    Bottom
+}
+
+class ScreenAlignment : ZilchComponent {
+    
+    [Property] var PositionX : AlignmentPositionX = AlignmentPositionX.Left;
+    [Property] var PositionY : AlignmentPositionY = AlignmentPositionY.Top;
+    [Property] var PositionOffset : Real2 = Real2(0);
+    [Property] var ZIndex : Real = 0.0;
+    [Property] var HideUntilPositioned : Boolean = false;
+    
+    var CanPosition : Boolean = false;
+    
+    var Pos : Real2 = Real2(0);
+    
+    function Initialize(init : CogInitializer) {
+        
+        if(this.HideUntilPositioned) {
+            if(this.Owner.Sprite != null) {
+                this.Owner.Sprite.Visible = false;
+            } else if(this.Owner.SpriteText != null) {
+                this.Owner.SpriteText.Visible = false;
+            }
+        }
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        var screen = this.Space.FindObjectByName("LevelSettings");
+        var screenRes = screen.CameraViewport.ViewportResolutionWithMargin;
+        
+        if(this.PositionX == AlignmentPositionX.Left) {
+            this.Pos = Real2(0, 0);
+        } else if(this.PositionX == AlignmentPositionX.Right) {
+            this.Pos = Real2(screenRes.X, 0);
+        } else if(this.PositionX == AlignmentPositionX.Center) {
+            this.Pos = Real2(screenRes.X / 2, 0);
+        }
+        
+        if(this.PositionY == AlignmentPositionY.Top) {
+            this.Pos = Real2(this.Pos.X, 0);
+        } else if(this.PositionY == AlignmentPositionY.Bottom) {
+            this.Pos = Real2(this.Pos.X, screenRes.Y);
+        } else if(this.PositionY == AlignmentPositionY.Center) {
+            this.Pos = Real2(this.Pos.X, screenRes.Y / 2);
+        }
+        
+        this.Pos = screen.CameraViewport.ViewportToScreen(this.Pos);
+        this.Owner.Transform.WorldTranslation = screen.CameraViewport.ScreenToWorldZPlane(this.Pos, 0.0) + Real3(this.PositionOffset, this.ZIndex);
+        
+        if(!this.CanPosition && this.Owner.Transform.WorldTranslation.XY != Real2(0.0)) {
+            this.CanPosition = true;
+        }
+        
+        if(this.HideUntilPositioned && this.CanPosition) {
+            if(this.Owner.Sprite != null) {
+                this.Owner.Sprite.Visible = true;
+            } else if(this.Owner.SpriteText != null) {
+                this.Owner.SpriteText.Visible = true;
+            }
+        }
+        
+    }
+    
+}

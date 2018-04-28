@@ -1,0 +1,33 @@
+//Author Brandon Wolenetz
+
+class SettingsExit : ZilchComponent {
+    function Initialize(init : CogInitializer) {
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.Owner.Parent.FindChildByName("MasterVol").SlideBox.Value = Settings.MASTERvol;
+        this.Owner.Parent.FindChildByName("MusicVol").SlideBox.Value = Settings.MUSICvol;
+        this.Owner.Parent.FindChildByName("SFXVol").SlideBox.Value = Settings.SFXvol;
+        this.Owner.Parent.FindChildByName("CameraSmothness").SlideBox.Value = Settings.CamSmoothness;
+        this.Owner.Parent.FindChildByName("ScreenShake").SlideBox.Value = Settings.ScreenShake / 15;
+        
+    }
+
+    //force pause game/ui spaces
+    function OnLogicUpdate(event : UpdateEvent) {
+        if(this.GameSession.FindSpaceByName("UI") != null)
+            this.GameSession.FindSpaceByName("UI").TimeSpace.Paused = true;
+        GlobalVariables.GameSpace.TimeSpace.Paused = true;
+    }
+
+    //save settings and close dialog box
+    function OnMouseDown(event : ViewportMouseEvent) {
+        Settings.MASTERvol = this.Owner.Parent.FindChildByName("MasterVol").SlideBox.Value;
+        Settings.MUSICvol = this.Owner.Parent.FindChildByName("MusicVol").SlideBox.Value;
+        Settings.SFXvol = this.Owner.Parent.FindChildByName("SFXVol").SlideBox.Value;
+        Settings.CamSmoothness = this.Owner.Parent.FindChildByName("CameraSmothness").SlideBox.Value;
+        Settings.ScreenShake = this.Owner.Parent.FindChildByName("ScreenShake").SlideBox.Value * 15;
+        GlobalVariables.Settings.SettingsSave.Save();
+    }
+
+}

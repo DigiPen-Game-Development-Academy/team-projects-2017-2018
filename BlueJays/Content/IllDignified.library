@@ -1,0 +1,7 @@
+ContentLibrary = 
+{
+	string Name = "IllDignified",
+	uint64 LibraryId = 5a1b75c0d14c723f,
+	string SourceControlType = "",
+	bool ReadOnly = false,
+},

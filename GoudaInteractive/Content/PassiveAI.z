@@ -1,0 +1,120 @@
+class PassiveAI : ZilchComponent
+{
+    [Property] var ChanceOfAddingMovement : Real = 0.02;
+    [Property] var ChanceOfAddingMovingWhenHurt : Real = 0.08;
+    [Property] var MovementToAdd : Real2 = Real2(-0.5, 0.5);
+    [Property] var MovementToAddWhenHurt : Real2 = Real2(-1.25, 1.25);
+    
+    [Property] var TimeBetweenStops : Real = 2;
+    [Property] var TimeBetweenStopsVariance : Real = 0.3;
+    var TimeTillStop : Real = 0.0;
+    
+    [Property] var TimeTillSlowdown : Real = 2.0;
+    var SlowdownTimer : Real = 0.0;
+    
+    [Property] var SpriteUp : SpriteSource = null;
+    [Property] var SpriteUpRight : SpriteSource = null;
+    [Property] var SpriteRight : SpriteSource = null;
+    [Property] var SpriteDownRight : SpriteSource = null;
+    [Property] var SpriteDown : SpriteSource = null;
+    [Property] var SpriteDownLeft : SpriteSource = null;
+    [Property] var SpriteLeft : SpriteSource = null;
+    [Property] var SpriteUpLeft : SpriteSource = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.TimeTillStop -= event.Dt;
+        this.SlowdownTimer -= event.Dt;
+        
+        this.Move();
+        
+        this.Stop();
+        
+        this.UpdateSprite();
+    }
+    
+    function Move()
+    {
+        var chanceOfMoving = new Random().Range(0, 1);
+        
+        //Console.WriteLine("`chanceOfMoving`");
+        
+        if (this.SlowdownTimer <= 0.0)
+            if (chanceOfMoving > this.ChanceOfAddingMovement)
+                return;
+        else
+            if (chanceOfMoving > this.ChanceOfAddingMovingWhenHurt)
+                return;
+        
+        var movementToAdd = Real3(0.0, 0.0, 0.0);
+        
+        if (this.SlowdownTimer <= 0.0)
+            movementToAdd = Real3(new Random().Range(this.MovementToAdd.X, this.MovementToAdd.Y), 
+                new Random().Range(this.MovementToAdd.X, this.MovementToAdd.Y), 0.0);
+        else
+            movementToAdd = Real3(new Random().Range(this.MovementToAddWhenHurt.X, this.MovementToAddWhenHurt.Y), 
+                new Random().Range(this.MovementToAddWhenHurt.X, this.MovementToAddWhenHurt.Y), 0.0);
+        
+        //Console.WriteLine("`movementToAdd`");
+        
+        this.Owner.RigidBody.Velocity += movementToAdd;
+    }
+    
+    function Stop()
+    {
+        var variance = new Random().Range(-this.TimeBetweenStopsVariance, this.TimeBetweenStopsVariance);
+        
+        if (this.TimeTillStop <= 0.0)
+        {
+            //Console.WriteLine("T + V = `this.TimeBetweenStops + variance`");
+            
+            //Console.WriteLine("STOP");
+            
+            this.Owner.RigidBody.Velocity = Real3(0.0, 0.0, 0.0);
+            this.TimeTillStop = this.TimeBetweenStops + variance;
+        }
+    }
+    
+    function Hurt()
+    {
+        this.SlowdownTimer = this.TimeTillSlowdown;
+    }
+    
+    function UpdateSprite()
+    {
+        var velocity = this.Owner.RigidBody.Velocity;
+        
+        if (this.SlowdownTimer <= 0.0)
+            this.Owner.Sprite.AnimationSpeed = 1;
+        else
+            this.Owner.Sprite.AnimationSpeed = 1.5;
+        
+        if (Math.ApproximatelyEqual(velocity.X, 0.0,  0.25) && Math.ApproximatelyEqual(velocity.Y, 0.0, 0.25))
+        {
+            this.Owner.Sprite.AnimationActive = false;
+            this.Owner.Sprite.CurrentFrame = 0;
+        }
+        else
+            this.Owner.Sprite.AnimationActive = true;
+        
+        var radians = Math.AngleBetween(velocity, Real3.YAxis);
+        var degrees = Math.ToDegrees(radians);
+        
+        if (velocity.X < 0.0)
+            degrees *= -1;
+        
+        if (degrees > -45 && degrees < 45 && this.Owner.Sprite.SpriteSource != this.SpriteUp)
+            this.Owner.Sprite.SpriteSource = this.SpriteUp;
+        else if (degrees > 45 && degrees < 135 && this.Owner.Sprite.SpriteSource != this.SpriteRight)
+            this.Owner.Sprite.SpriteSource = this.SpriteRight;
+        else if (degrees > 135 || degrees < -135 && this.Owner.Sprite.SpriteSource != this.SpriteDown)
+            this.Owner.Sprite.SpriteSource = this.SpriteDown;
+        else if (degrees > -135 && degrees < -45 && this.Owner.Sprite.SpriteSource != this.SpriteLeft)
+            this.Owner.Sprite.SpriteSource = this.SpriteLeft;
+    }
+}

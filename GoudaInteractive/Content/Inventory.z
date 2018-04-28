@@ -1,0 +1,572 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: N/A
+
+class Inventory : ZilchComponent {
+    
+    [Dependency] var Crafting : Crafting = null;
+    
+    [Property] var InventoryButton : Keys = Keys.E;
+    [Property] var CraftingButton : Keys = Keys.C;
+    [Property] var SwapOffHandButton : Keys = Keys.F;
+    
+    var UISpace : Space = null;
+    
+    var InventoryOpen : Boolean = false;
+    var InventoryOpenFirst : Boolean = false;
+    var CraftingOpen : Boolean = false;
+    var RightButtonDown : Boolean = false;
+    
+    var MaxInventorySlots : Integer = 21;
+    var SlotClicked : Integer = -1;
+    var SlotHover : Integer = -1;
+    
+    var SLOT_HAND : Integer = 2;
+    var SLOT_OFFHAND : Integer = 3;
+    var SLOT_MOUSE : Integer = 1;
+    
+    var TooltipName : String = "";
+    var TooltipLoreName : String = "";
+    
+    function Initialize(init : CogInitializer) {
+        
+        this.UISpace = this.LevelSettings.UICreator.UISpace;
+        this.UISpace.LevelSettings.MainLevelReferances.Player = this.Owner;
+        
+        if(PlayerData.InventoryContents == null || PlayerData.InventoryContentsCount == null) {
+            
+            PlayerData.InventoryContents = Array[Integer]();
+            PlayerData.InventoryContentsCount = Array[Integer]();
+            
+            // ZERO OUT INVENTORY
+            for(var i = 0; i < this.MaxInventorySlots; ++i) {
+                PlayerData.InventoryContents.Push(0);
+                PlayerData.InventoryContentsCount.Push(0);
+            }
+            
+        }
+        
+        this.RefreshInventoryIcons();
+        
+        Zero.Connect(this.UISpace, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(Zero.Keyboard, Events.KeyUp, this.OpenCloseInventory);
+        
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent) {
+        
+        var inventory = this.UISpace.FindObjectByName("Inventory");
+        
+        // CHECK IF INVENTORY IS OPEN
+        if(this.InventoryOpen && this.Owner.Health.CurrentHealth > 0.0) {
+            
+            this.Owner.Crafting.OnPausedLogicUpdate(event);
+            this.RefreshInventoryIcons();
+            this.MouseSlot();
+            
+            var commandScreenCapture = this.UISpace.FindObjectByName("DebugCommand").FindChildByName("TextEntry").TextEntry.CaptureKeys;
+            var playerNameScreenCapture = this.UISpace.FindObjectByName("PlayerNameWrapper").FindChildByName("TextEntry").TextEntry.CaptureKeys;
+            var isPaused = this.UISpace.FindObjectByName("PauseMenu").PauseMenu.PauseMenuEnabled;
+            
+            if(Zero.Keyboard.KeyIsPressed(this.CraftingButton) && !commandScreenCapture && !playerNameScreenCapture && !isPaused) {
+                this.CraftingOpen = !this.CraftingOpen;
+            }
+            
+            if(!this.InventoryOpenFirst) {
+                // FIRST RUN SCRIPTS
+                if(!this.CraftingOpen) {
+                    inventory.FindChildByName("CraftingMenu").Transform.WorldTranslation = Real3(35, 0, 50000);
+                    inventory.Transform.WorldTranslation = Real3(0, 0, 1);
+                } else {
+                    inventory.FindChildByName("CraftingMenu").Transform.WorldTranslation = Real3(14.5, 0, 1);
+                    inventory.Transform.WorldTranslation = Real3(-3.75, 0, 1);
+                }
+                this.InventoryOpenFirst = true;
+                return;
+            }
+            
+            if(!this.CraftingOpen) {
+                var craftTrans = Real3(inventory.FindChildByName("CraftingMenu").Transform.WorldTranslation.XY, 0.0);
+                var invTrans = inventory.Transform.WorldTranslation;
+                inventory.FindChildByName("CraftingMenu").Transform.WorldTranslation = Math.Lerp(craftTrans, Real3(35, 0, 1), event.Dt * 12.0);
+                inventory.Transform.WorldTranslation = Math.Lerp(invTrans, Real3(0, 0, 1), event.Dt * 12.0);
+            } else {
+                var craftTrans = Real3(inventory.FindChildByName("CraftingMenu").Transform.WorldTranslation.XY, 0.0);
+                var invTrans = inventory.Transform.WorldTranslation;
+                inventory.FindChildByName("CraftingMenu").Transform.WorldTranslation = Math.Lerp(craftTrans, Real3(10.75, 0, 1), event.Dt * 12.0);
+                inventory.Transform.WorldTranslation = Math.Lerp(invTrans, Real3(-3.75, 0, 1), event.Dt * 12.0);
+            }
+            
+            this.Owner.Crafting.PausedLogicUpdateEnd();
+            
+        } else {
+            
+            this.InventoryOpenFirst = false;
+            
+            if(PlayerData.InventoryContents[this.SLOT_MOUSE - 1] != 0) {
+                var tmpItem = PlayerData.InventoryContents[this.SLOT_MOUSE - 1];
+                var tmpItemCt = PlayerData.InventoryContentsCount[this.SLOT_MOUSE - 1];
+                PlayerData.InventoryContents[this.SLOT_MOUSE - 1] = 0;
+                this.GiveItemWithAmount(tmpItem, false, tmpItemCt);
+            }
+            
+            inventory.Transform.WorldTranslation = Real3(0, 0, 50000);
+            
+            Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.ShowTooltip(false);
+            
+            if(Zero.Keyboard.KeyIsPressed(this.SwapOffHandButton)) {
+                this.MoveItem(this.SLOT_OFFHAND, this.SLOT_HAND);
+                this.RefreshInventoryIcons();
+            }
+            
+        }
+        
+    }
+    
+    function OpenCloseInventory(event : KeyboardEvent) {
+        
+        var commandScreenCapture = this.UISpace.FindObjectByName("DebugCommand").FindChildByName("TextEntry").TextEntry.CaptureKeys;
+        var playerNameScreenCapture = this.UISpace.FindObjectByName("PlayerNameWrapper").FindChildByName("TextEntry").TextEntry.CaptureKeys;
+        var isPaused = this.UISpace.FindObjectByName("PauseMenu").PauseMenu.PauseMenuEnabled;
+        
+        if(event.Key == this.InventoryButton && !commandScreenCapture && !playerNameScreenCapture && !isPaused) {
+            this.ToggleInventory();
+        } else if(event.Key == Keys.Escape && !commandScreenCapture && !playerNameScreenCapture && !isPaused && this.InventoryOpen) {
+            this.Space.TimeSpace.Paused = false;
+            Relocation.InventoryOpen = false;
+            this.InventoryOpen = false;
+            
+        }
+        
+    }
+    
+    // TOGGLE INVENTORY AND TIMESPACE PAUSE
+    function ToggleInventory() {
+        this.Space.TimeSpace.Paused = !this.Space.TimeSpace.Paused;
+        Relocation.InventoryOpen = !Relocation.InventoryOpen;
+        this.InventoryOpen = !this.InventoryOpen;
+    }
+    
+    function RefreshInventoryIcons() {
+        
+        for(var i = 0; i < this.MaxInventorySlots; ++i) {
+            
+            if(PlayerData.InventoryContentsCount[i] == 0) {
+                PlayerData.InventoryContents[i] = 0;
+            } else if(PlayerData.InventoryContents[i] == 0 && PlayerData.InventoryContentsCount[i] > 0) {
+                PlayerData.InventoryContentsCount[i] = 0;
+            }
+            
+            var slotObj = this.UISpace.FindObjectByName("Slot`i + 1`");
+            var itemMgmt = this.Space.FindObjectByName("LevelSettings").ItemManager;
+            
+            slotObj.FindChildByName("SlotIcon").Sprite.SpriteSource = Relocation.Items[PlayerData.InventoryContents[i]].Sprite;
+            slotObj.FindChildByName("ItemCount").SpriteText.Text = "`PlayerData.InventoryContentsCount[i]`";
+            slotObj.FindChildByName("ItemName").SpriteText.Text = Relocation.Items[PlayerData.InventoryContents[i]].ItemRecognizableName;
+            
+            if(slotObj.FindChildByName("SlotIcon").Sprite.SpriteSource == SpriteSource.Circle) {
+                slotObj.FindChildByName("SlotIcon").Sprite.Visible = false;
+                slotObj.FindChildByName("ItemCount").SpriteText.Visible = false;
+                if(slotObj.Name == "Slot1") {
+                    Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.ShowTooltip(false);
+                    
+                }
+            } else {
+                slotObj.FindChildByName("SlotIcon").Sprite.Visible = true;
+                slotObj.FindChildByName("ItemCount").SpriteText.Visible = (Integer.Parse(slotObj.FindChildByName("ItemCount").SpriteText.Text) > 1);
+            }
+            
+            if(i == this.SLOT_HAND - 1 || i == this.SLOT_OFFHAND - 1) {
+                
+                slotObj = this.UISpace.FindObjectByName("Slot`i + 1`H");
+                slotObj.FindChildByName("SlotIcon").Sprite.SpriteSource = Relocation.Items[PlayerData.InventoryContents[i]].Sprite;
+                slotObj.FindChildByName("ItemCount").SpriteText.Text = "`PlayerData.InventoryContentsCount[i]`";
+                
+                if(slotObj.FindChildByName("SlotIcon").Sprite.SpriteSource == SpriteSource.Circle) {
+                    slotObj.FindChildByName("SlotIcon").Sprite.Visible = false;
+                    slotObj.FindChildByName("ItemCount").SpriteText.Visible = false;
+                } else {
+                    slotObj.FindChildByName("SlotIcon").Sprite.Visible = true;
+                    slotObj.FindChildByName("ItemCount").SpriteText.Visible = true;
+                }
+                
+            }
+            
+            this.Owner.Crafting.RefreshIcons(i);
+            
+        }
+        
+    }
+    
+    function MouseSlot() {
+        
+        // SET MOUSE SLOT POSITION
+        var mousePos = this.UISpace.FindObjectByName("LevelSettings").CameraViewport.ScreenToWorldZPlane(Zero.Mouse.ScreenPosition, 5.0);
+        this.UISpace.FindObjectByName("Slot1").Transform.WorldTranslation = mousePos;
+        
+        // MOVING ITEMS
+        if(this.SlotClicked != -1 && this.SlotClicked != this.SLOT_MOUSE && Zero.Mouse.IsButtonDown(MouseButtons.Left)) {
+            
+            if(PlayerData.InventoryContents[this.SLOT_MOUSE - 1] == 0 && !Zero.Keyboard.KeyIsDown(Keys.Shift)) {
+                this.MoveItem(this.SlotClicked, this.SLOT_MOUSE);
+            } else if(!Zero.Keyboard.KeyIsDown(Keys.Shift)) {
+                this.MoveItem(this.SLOT_MOUSE, this.SlotClicked);
+            }
+            
+            if(PlayerData.InventoryContents[this.SLOT_MOUSE - 1] == 0 && Zero.Keyboard.KeyIsDown(Keys.Shift)) {
+                this.MoveItem(this.SlotClicked, this.SLOT_HAND);
+                this.MoveItem(this.SlotClicked, this.SLOT_OFFHAND);
+            }
+            
+            this.SlotClicked = -1;
+            
+        } else if(this.SlotClicked != -1 && this.SlotClicked != this.SLOT_MOUSE && Zero.Mouse.IsButtonDown(MouseButtons.Right) && !Zero.Keyboard.KeyIsDown(Keys.Shift)) {
+            
+            this.RightButtonDown = true;
+            
+            var itemInSlot = PlayerData.InventoryContents[this.SlotClicked - 1];
+            
+            if(PlayerData.InventoryContents[this.SLOT_MOUSE - 1] == 0) {
+                
+                var itemCt = PlayerData.InventoryContentsCount[this.SlotClicked - 1];
+                var itemCtFirstHalf = Math.Ceil(itemCt / 2.0) as Integer;
+                var itemCtSecondHalf = itemCt - itemCtFirstHalf + itemCt % 2;
+                
+                this.RemoveItemsInSlot(this.SlotClicked, false, itemCtFirstHalf);
+                this.GiveItemsInSlot(itemInSlot, this.SLOT_MOUSE, itemCtSecondHalf, true);
+                
+            } else if(PlayerData.InventoryContents[this.SLOT_MOUSE - 1] != 0 && (PlayerData.InventoryContents[this.SlotClicked - 1] == 0 || PlayerData.InventoryContents[this.SlotClicked - 1] == PlayerData.InventoryContents[this.SLOT_MOUSE - 1])) {
+                this.GiveItemInSlot(PlayerData.InventoryContents[this.SLOT_MOUSE - 1], this.SlotClicked);
+                this.RemoveItemInSlot(this.SLOT_MOUSE, false);
+            }
+            
+            this.SlotClicked = -1;
+            
+        } else if(PlayerData.InventoryContents[this.SLOT_MOUSE - 1] != 0 && this.SlotClicked == -1 && Zero.Mouse.IsButtonDown(MouseButtons.Right) && !this.RightButtonDown) {
+            this.RightButtonDown = true;
+            this.RemoveItemInSlot(this.SLOT_MOUSE, true);
+        } else if(PlayerData.InventoryContents[this.SLOT_MOUSE - 1] != 0 && this.SlotClicked == -1 && Zero.Mouse.IsButtonDown(MouseButtons.Right) && Zero.Keyboard.KeyIsDown(Keys.Shift)) {
+            this.RightButtonDown = false;
+            this.RemoveItemInSlot(this.SLOT_MOUSE, true);
+        } else if(!Zero.Mouse.IsButtonDown(MouseButtons.Right) && !Zero.Keyboard.KeyIsDown(Keys.Shift)) {
+            this.RightButtonDown = false;
+        }
+        
+        // TOOLTIPS AND LORE
+        if(PlayerData.InventoryContents[this.SLOT_MOUSE - 1] == 0 && this.SlotHover != -1 && this.SlotHover != this.SLOT_MOUSE) {
+            
+            if(this.Owner.Crafting.GetTooltipName() == "State.False") {
+                this.TooltipName = Relocation.Items[PlayerData.InventoryContents[this.SlotHover - 1]].ItemRecognizableName;
+                this.TooltipLoreName = Relocation.Items[PlayerData.InventoryContents[this.SlotHover - 1]].ItemLore;
+            }
+            
+            if(this.TooltipName != "") {
+                
+                var itemMgmt = this.Space.FindObjectByName("LevelSettings").ItemManager;
+                var tooltipColor = this.GetTooltipColor(PlayerData.InventoryContents, this.SlotHover);
+                var tooltipLoreColor = Real4(1.0, 1.0, 1.0, 0.9);
+                
+                Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.ShowTooltip(true);
+                Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.TooltipText(this.TooltipName, this.TooltipLoreName, tooltipColor, tooltipLoreColor);
+                
+            }
+            
+            this.SlotHover = -1;
+            
+        } else if(this.Owner.Crafting.GetTooltipName() == "State.False") {
+            
+            this.TooltipName = "";
+            this.TooltipLoreName = "";
+            
+            Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.ShowTooltip(false);
+            
+            this.SlotHover = -1;
+            
+        } else {
+            
+            this.TooltipName = this.Owner.Crafting.GetTooltipName();
+            this.TooltipLoreName = this.Owner.Crafting.GetTooltipLore();
+            
+            var crafting = this.Owner.Crafting;
+            var tooltipColor = crafting.GetTooltipColor();
+            
+            Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.ShowTooltip(true);
+            Relocation.UISpace.FindObjectByName("Tooltip").Tooltip.TooltipText(this.TooltipName, this.TooltipLoreName, tooltipColor, Real4(1.0));
+            
+            this.SlotHover = -1;
+            
+        }
+        
+    }
+    
+    function GetTooltipColor(array : Array[Integer], slot : Integer) : Real4 {
+        
+        return Relocation.Items[array[slot - 1]].ItemColor;
+        
+    }
+    
+    function CheckIfFull() : Boolean {
+        
+        for(var i = 0; i < PlayerData.InventoryContents.Count; ++i) {
+            if(PlayerData.InventoryContents[i] == 0) {
+                return false;
+            }
+        }
+        
+        return true;
+        
+    }
+    
+    function GiveItem(itemID : Integer, notifyUser : Boolean) {
+        this.GiveItemWithAmount(itemID, notifyUser, 1);
+    }
+    
+    function GiveItemWithAmount(itemID : Integer, notifyUser : Boolean, amount : Integer) {
+        
+        var firstAvailableSlot = -1;
+        var cmd : TextEntry = null;
+        
+        itemID = Math.Abs(itemID);
+        
+        if(notifyUser) {
+            cmd = this.UISpace.FindObjectByName("DebugCommand").FindChildByName("TextEntry").TextEntry;
+        }
+        
+        if(itemID < Relocation.Items.Count) {
+            
+            var hasGoneThru = false;
+            
+            for(var i = this.SLOT_OFFHAND; i < this.MaxInventorySlots + this.SLOT_OFFHAND; ++i) {
+                if((i < this.MaxInventorySlots && !hasGoneThru) || (i < this.SLOT_OFFHAND && hasGoneThru)) {
+                    if(PlayerData.InventoryContents[i] == 0 && firstAvailableSlot == -1) {
+                        firstAvailableSlot = i;
+                    } else if(PlayerData.InventoryContents[i] == itemID) {
+                        PlayerData.InventoryContentsCount[i] += amount;
+                        this.RefreshInventoryIcons();
+                        if(notifyUser)
+                            cmd.PrintToUIConsole("Item with the ID \"`itemID`\" has been added to your inventory.");
+                        return;
+                    }
+                } else if(i >= this.SLOT_OFFHAND && hasGoneThru) {
+                    break;
+                } else {
+                    i = 0;
+                    hasGoneThru = true;
+                }
+            }
+            
+            if(firstAvailableSlot != -1) {
+                PlayerData.InventoryContents[firstAvailableSlot] = itemID;
+                PlayerData.InventoryContentsCount[firstAvailableSlot] = amount;
+                this.RefreshInventoryIcons();
+                if(notifyUser)
+                    cmd.PrintToUIConsole("Item with the ID \"`itemID`\" has been added to your inventory.");
+                return;
+            }
+            
+        } else {
+            this.UISpace.FindObjectByName("DebugCommand").FindChildByName("TextEntry").TextEntry.PrintToUIConsole("Error: An item with the ID \"`itemID`\" does not exist.");
+            return;
+        }
+        
+        Console.WriteLine("Warning: Inventory full. Item with the ID \"`itemID`\" was not added to the inventory. Dropping item...");
+        
+        Relocation.ItemManager.DropItems(itemID, amount, this.Owner.Transform.WorldTranslation + Real3(0.0, -0.75, 0.0));
+        
+    }
+    
+    function GiveItemInSlot(itemID : Integer, slot : Integer) {
+        
+        itemID = Math.Abs(itemID);
+        
+        if(itemID < Relocation.Items.Count) {
+            if(slot <= this.MaxInventorySlots && slot > this.SLOT_MOUSE) {
+                
+                if(PlayerData.InventoryContents[slot - 1] == 0) {
+                    PlayerData.InventoryContents[slot - 1] = itemID;
+                    PlayerData.InventoryContentsCount[slot - 1] = 1;
+                    this.RefreshInventoryIcons();
+                    return;
+                } else if(PlayerData.InventoryContents[slot - 1] == itemID) {
+                    ++PlayerData.InventoryContentsCount[slot - 1];
+                    this.RefreshInventoryIcons();
+                    return;
+                }
+                
+            } else {
+                Console.WriteLine("Error: Item with the ID `itemID` was not added to the inventory. Invalid slot.");
+            }
+        } else {
+            this.UISpace.FindObjectByName("DebugCommand").FindChildByName("TextEntry").TextEntry.PrintToUIConsole("Error: An item with the ID \"`itemID`\" does not exist.");
+            return;
+        }
+        
+    }
+    
+    function GiveItemsInSlot(itemID : Integer, slot : Integer, amount : Integer, allowInMouseSlot : Boolean) {
+        
+        itemID = Math.Abs(itemID);
+        
+        if(itemID < Relocation.Items.Count) {
+            if(slot < this.MaxInventorySlots && slot > this.SLOT_MOUSE) {
+                
+                if(PlayerData.InventoryContents[slot - 1] == 0) {
+                    PlayerData.InventoryContents[slot - 1] = itemID;
+                    PlayerData.InventoryContentsCount[slot - 1] = amount;
+                    this.RefreshInventoryIcons();
+                    return;
+                } else if(PlayerData.InventoryContents[slot - 1] == itemID) {
+                    PlayerData.InventoryContentsCount[slot - 1] += amount;
+                    this.RefreshInventoryIcons();
+                    return;
+                }
+                
+            } else if(slot == this.SLOT_MOUSE && allowInMouseSlot) {
+                
+                if(PlayerData.InventoryContents[slot - 1] == 0) {
+                    PlayerData.InventoryContents[slot - 1] = itemID;
+                    PlayerData.InventoryContentsCount[slot - 1] = amount;
+                    this.RefreshInventoryIcons();
+                    return;
+                } else if(PlayerData.InventoryContents[slot - 1] == itemID) {
+                    PlayerData.InventoryContentsCount[slot - 1] += amount;
+                    this.RefreshInventoryIcons();
+                    return;
+                }
+                
+            } else {
+                Console.WriteLine("Error: Item with the ID `itemID` was not added to the inventory. Invalid slot.");
+            }
+        } else {
+            this.UISpace.FindObjectByName("DebugCommand").FindChildByName("TextEntry").TextEntry.PrintToUIConsole("Error: An item with the ID \"`itemID`\" does not exist.");
+            return;
+        }
+        
+    }
+    
+    function CheckForItem(itemID : Integer) : Boolean {
+        
+        return this.CheckForItems(itemID, 1);
+        
+    }
+    
+    function CheckForItems(itemID : Integer, amount : Integer) : Boolean {
+        
+        itemID = Math.Abs(itemID);
+        
+        var itemCount = 0;
+        
+        for(var i = 0; i < this.MaxInventorySlots; ++i) {
+            if(PlayerData.InventoryContents[i] == itemID) {
+                itemCount += PlayerData.InventoryContentsCount[i];
+            }
+        }
+        
+        if(itemCount >= amount) {
+            return true;
+        } else {
+            return false;
+        }
+        
+    }
+    
+    function CheckForItemMainHand(itemID : Integer) : Boolean {
+        
+        itemID = Math.Abs(itemID);
+            
+        if(PlayerData.InventoryContents[this.SLOT_HAND - 1] == itemID) {
+            return true;
+        } else {
+            return false;
+        }
+        
+    }
+    
+    function GetItemInMainHand() : Integer {
+        return PlayerData.InventoryContents[this.SLOT_HAND - 1];
+    }
+    
+    function GetItemInSlot(slot : Integer) : Integer {
+        return PlayerData.InventoryContents[slot - 1];
+    }
+    
+    function MoveItem(slot : Integer, destSlot : Integer) {
+        
+        if(slot - 1 < this.MaxInventorySlots && destSlot - 1 < this.MaxInventorySlots) {
+            
+            var tmpItem = PlayerData.InventoryContents[slot - 1];
+            var tmpItemCt = PlayerData.InventoryContentsCount[slot - 1];
+            
+            if(PlayerData.InventoryContents[slot - 1] == 0) {
+                return;
+            } else if(PlayerData.InventoryContents[destSlot - 1] != 0 && PlayerData.InventoryContents[destSlot - 1] != tmpItem) {
+                PlayerData.InventoryContents[slot - 1] = PlayerData.InventoryContents[destSlot - 1];
+                PlayerData.InventoryContentsCount[slot - 1] = PlayerData.InventoryContentsCount[destSlot - 1];
+                PlayerData.InventoryContents[destSlot - 1] = tmpItem;
+                PlayerData.InventoryContentsCount[destSlot - 1] = tmpItemCt;
+                return;
+            } else {
+                
+                PlayerData.InventoryContents[slot - 1] = 0;
+                PlayerData.InventoryContentsCount[slot - 1] = 0;
+                
+                if(PlayerData.InventoryContents[destSlot - 1] == tmpItem) {
+                    PlayerData.InventoryContentsCount[destSlot - 1] += tmpItemCt;
+                } else {
+                    PlayerData.InventoryContents[destSlot - 1] = tmpItem;
+                    PlayerData.InventoryContentsCount[destSlot - 1] = tmpItemCt;
+                }
+                
+            }
+            
+            this.RefreshInventoryIcons();
+            
+        }
+        
+    }
+    
+    function RemoveItem(itemID : Integer) {
+        this.RemoveItems(itemID, 1);
+    }
+    
+    function RemoveItems(itemID : Integer, amount : Integer) {
+        
+        itemID = Math.Abs(itemID);
+        
+        if(itemID < Relocation.Items.Count) {
+            for(var i = 0; i < this.MaxInventorySlots; ++i) {
+                if(PlayerData.InventoryContents[i] == itemID) {
+                    PlayerData.InventoryContentsCount[i] -= amount;
+                    this.RefreshInventoryIcons();
+                    return;
+                }
+            }
+        } else {
+            this.UISpace.FindObjectByName("DebugCommand").FindChildByName("TextEntry").TextEntry.PrintToUIConsole("Error: An item with the ID \"`itemID`\" does not exist.");
+            return;
+        }
+        
+    }
+    
+    function RemoveItemInSlot(slot : Integer, drop : Boolean) {
+        this.RemoveItemsInSlot(slot, drop, 1);
+    }
+    
+    function RemoveItemsInSlot(slot : Integer, drop : Boolean, amount : Integer) {
+        
+        var itemID = -1;
+        
+        if(PlayerData.InventoryContents[slot - 1] != 0 && PlayerData.InventoryContentsCount[slot - 1] > 0) {
+            
+            itemID = PlayerData.InventoryContents[slot - 1];
+            
+            // DROP ITEM
+            if(drop) Relocation.ItemManager.DropItems(itemID, amount, this.Owner.Transform.WorldTranslation + Real3(0.0, -0.75, 0.0));
+            
+            PlayerData.InventoryContentsCount[slot - 1] -= amount;
+            this.RefreshInventoryIcons();
+            
+        }
+        
+    }
+    
+}

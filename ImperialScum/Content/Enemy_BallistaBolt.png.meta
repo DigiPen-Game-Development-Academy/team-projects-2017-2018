@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "Enemy_BallistaBolt",
+		uint64 ResourceId = 5a4aeea9a5794775,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 40,
+		uint FrameSizeY = 7,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333358,
+		float OriginX = 20,
+		float OriginY = 3,
+		float PixelsPerUnit = 16,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

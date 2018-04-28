@@ -1,0 +1,102 @@
+// AUTHOR: HUDSON GREEN
+// CONTRIBUTORS: MATTHEW ZEARING
+
+enum DoorState { Locked, Unlocked }
+enum DoorPermissions { Any, None, PlayerOnly, EnemyOnly }
+enum DoorDirection { North, South, East, West }
+
+class Door : ZilchComponent {
+    
+    [Property] var DoorState : DoorState = DoorState.Unlocked;
+    [Property] var DoorDir : DoorDirection = DoorDirection.North;
+    [Property] var DoorPerms : DoorPermissions = DoorPermissions.Any;
+    [Property] var OneWayDoor : Boolean = false;
+    [Property] var DebugMode : Boolean = false;
+    [Property] var OpenDoorSound : SoundCue;
+    var CurrDoorState : DoorState = DoorState.Unlocked;
+    
+    function Initialize(init : CogInitializer) {
+        
+        this.Owner.FindChildByName("Door").BoxCollider.Ghost = this.DoorState == DoorState.Unlocked;
+        this.CurrDoorState = this.DoorState;
+        
+        if(this.DoorDir == DoorDirection.East || this.DoorDir == DoorDirection.West)
+            this.Owner.FindChildByName("Door").Sprite.SpriteSource = SpriteSource.DoorVertical;
+        else
+            this.Owner.FindChildByName("Door").Sprite.SpriteSource = SpriteSource.DoorHorizontal;
+        
+        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionPersisted);
+        Zero.Connect(this.Owner, Events.CollisionEnded, this.OnCollisionEnded);
+    }
+    
+    function OnCollisionPersisted(event : CollisionEvent) {
+        this.DoorPassthroughLogic(event);
+    }
+    
+    function OnCollisionEnded(event : CollisionEvent) {
+        
+        var entityPerm = this.GetEntityPerm(event.OtherObject.Name);
+        
+        if((this.DoorPerms != DoorPermissions.None && this.DoorPerms == entityPerm) || this.DoorPerms == DoorPermissions.Any) {
+            this.LockDoor();
+        }
+        
+    }
+    
+    function DoorPassthroughLogic(event : CollisionEvent) {
+        
+        if(
+            this.DoorState == DoorState.Unlocked &&
+            event.OtherObject.Name.Contains("Entity")
+        ) {
+            
+            var entityPerm = this.GetEntityPerm(event.OtherObject.Name);
+            
+            if((this.DoorPerms != DoorPermissions.None && this.DoorPerms == entityPerm) || this.DoorPerms == DoorPermissions.Any) {
+                this.UnlockDoor();
+            }
+            
+        }
+        
+    }
+    
+    function UnlockDoor() {
+        
+        if(this.CurrDoorState == DoorState.Locked)
+            this.Space.SoundSpace.PlayCue(this.OpenDoorSound);
+        
+        this.CurrDoorState = DoorState.Unlocked;
+        
+        this.Owner.FindChildByName("Door").Sprite.CurrentFrame = 5;
+        this.Owner.FindChildByName("Door").Sprite.AnimationActive = false;
+        
+        this.Owner.FindChildByName("Door").BoxCollider.Ghost = true;
+  
+    }
+    
+    function LockDoor() {
+        
+        if(this.CurrDoorState == DoorState.Unlocked)
+            this.Space.SoundSpace.PlayCue(this.OpenDoorSound);
+        
+        this.CurrDoorState = DoorState.Locked;
+        
+        this.Owner.FindChildByName("Door").Sprite.CurrentFrame = 0;
+        this.Owner.FindChildByName("Door").Sprite.AnimationActive = false;
+        
+        this.Owner.FindChildByName("Door").BoxCollider.Ghost = false;
+        
+    }
+    
+    function GetEntityPerm(objName : String) : DoorPermissions {
+        
+        if(objName == "EntityPlayer")
+            return DoorPermissions.PlayerOnly;
+        else if(objName == "EntityEnemy")
+            return DoorPermissions.EnemyOnly;
+        else
+            return DoorPermissions.Any;
+        
+    }
+    
+}

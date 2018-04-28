@@ -1,0 +1,9 @@
+class InFront : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        var pos = this.Owner.Transform.Translation;
+        
+        this.Owner.Transform.Translation = pos + Real3(0,0,2);
+    }
+}

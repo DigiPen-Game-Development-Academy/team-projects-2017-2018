@@ -1,0 +1,23 @@
+class Invisible : ZilchComponent
+{
+    var DoOnce : Boolean = false;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(KeyPickUp.IsPickedUp == true && this.DoOnce == false)
+        {
+            this.Owner.Sprite.Visible = true;
+            this.DoOnce = true;
+        }
+        
+        if(KeyPickUp.IsPickedUp == false && this.DoOnce == true)
+        {
+            this.Owner.Sprite.Visible = false;
+            this.DoOnce = false;
+        }
+    }
+}
