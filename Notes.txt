@@ -1,0 +1,217 @@
+**Escape Velocity by BitFlame**
+
+  Art Notes:
+
+Animations (player feet and arm, enemy tentacles, resources, ship)
+Effects (player damage, bullet trail, comet and trail, enemy death, player death, resource pickup, etc.)
+Cutscenes (player death and win)
+
+  Game Design Notes:
+
+Resources and purchases are meaningful.
+Progression is shown.
+Waves are compelling.
+World is filled out and greatly benefits from regeneration option.
+Tutorial is almost unnecessary, but is absent and needed for some finer details like reminders to open ship menu.
+Compass or other directional indication to get to ship.
+
+  Sound Design Notes:
+
+Sound effects are excellent overall, especially in their working together.
+Ambience is fantastic.
+Death sound is a little obnoxious, which is not horrible since it is the death sound, but it could be less scratchy and have more bass tones.
+
+  Tech Notes:
+
+Game had only three glitches:
+    HUD is clipped on some screen resolutions.
+    No mouse cursor on win screen.
+    No way to quit the game except dying and then quitting from the lose screen.
+
+  Team Notes:
+
+Only five person team.
+Members initially were unintentionally excluding the quieter members.
+Team fully melded by the end of the semester.
+
+**Ill Dignified by BlueJays**
+
+  Art Notes:
+
+Animations (player, hermit, and bird)
+Lighting (windows, room, spotlight, etc.)
+Effects (parallax fool foreground, player walk, bird flap, bomb explode, dust ambience, fool hover, hub petals, and hermit bubbles)
+Cutscenes (hub and fool level starts, player death)
+
+  Game Design Notes:
+
+HUD layout and information is very clear.
+Very little progression.
+Each of the towers does something very different.
+Menus are built into the world.
+Gameplay is intuitive.
+Boss is very simplistic and could be improved with multiple stages (and healing/checkpoints for the player between each).
+
+  Sound Design Notes:
+
+Sound effects vary in quality.
+Tower sound effects are awesome, but don't fit with the timing of the attacks.
+Walk sound effects are perfect.
+Damage sound effects are OK.
+Death sound effect is OK.
+Death sound is a little obnoxious, which is not horrible since it is the death sound, but it could be less scratchy and have more bass tones.
+Music is well done and custom made with a real instrument, but needed accompanyment (possibly percussion or a harmony).
+
+  Tech Notes:
+
+Game had only five glitches:
+    After the chariot disappears, the player does not animate.
+    Cannot see entire level (screen bounds are limited to too small an area).
+    No way to quit the game.
+    You can place way too many knights in the win level and get stuck because you can't get to the ladder.
+    Using the chariot while on the left edge of the screen gets the player stuck.
+
+  Team Notes:
+
+Only three person team.
+Communication and cooperation problems at the beginning of the semester.
+Way more cooperation after second milestone.
+
+**Relocation by Gouda Interactive**
+
+  Art Notes:
+
+Animations (player, several enemies, NPC, door, and rover)
+Effects (player walk, laser, rover hover, water splash)
+Color scheme (distinct per level, understandable)
+
+  Game Design Notes:
+
+Excellent tutorial, but no reminder on how to open the inventory when crafting the gun.
+Good progression, but no goal.
+Fun to upgrade, but what after?
+Ammo system makes minigun extra awesome, because it paces the player and keeps the other guns relevant.
+Reloading the gun has to take place outside the inventory.
+The player is allowed to build multiple guns of the same type.
+
+  Sound Design Notes:
+
+Sound effects are good overall, but some are better than others.
+Music on main menu is epic.
+Music on credits screen cuts in quickly, but is also really good.
+Music in game is excellent, but quickly gets annoying because it repeats so soon.
+Break the monotony with occasional replays of the music or a combat track that fades in for combat and then fades out again.
+
+  Tech Notes:
+
+Game had only three glitches:
+    HUD is not fully on screen in different screen resolutions.
+    Reloading the tutorial over and over will allow you to mine just the really good resources over and over.
+    Picking up items with a full inventory destroys the items, but doesn't add them to the inventory.
+
+  Team Notes:
+
+A lot of team conflict early in the semester, but not later on.
+Several strong personalities and several passive personalities made communication strained at the beginning.
+Excellent delegation of tasks toward the end of the project, which allowed accelerated progress.
+
+**Substeam by Imperial Scum**
+
+  Art Notes:
+
+Animations (player, several enemies, NPC, and boss)
+Effects (parallax, player walk, player spear, player sworderang, cannon, snail spear, explosion fish, lasers, bubbles, etc.)
+Color scheme (mostly distinct per level, understandable)
+Main menu is not parallaxed and stops animating after ping-pong-ing.
+Checkpoints are barely noticable, because the text is small.
+
+  Game Design Notes:
+
+Excellent tutorial and good contextual information ("you are starving" and such).
+Good progression and excellent climax.
+A lot of fun to upgrade.
+Legendary items!
+Each enemy feals different except the gear shark and gear piranha (but they look different, so it's mostly OK).
+Boss is really satisfying to fight, but the enemies that are spawned in the center of the level are weird.
+"Surprise! We've been counting your deaths the entire time!" adds replayability.
+
+  Sound Design Notes:
+
+Sound effects are excellent and fit the game very well.
+Buttons on intermission/loading level do not have sound effects.
+The balista snails bolt has a good launch sound, but the hit sound is barely audible.
+Some sound effects could have been added:
+    Checkpoints.
+    Landing on the ground after jumping.
+    Hitting walls (running or jumping).
+    Starving could have used a new particle effect or the same one as damage.
+    Being hit by flow zones.
+    Picking up different items could have different sounds like the key already does (legendary, food, gears, etc.).
+    Geysers and getting launched by geysers.
+Running on ground could have been made louder.
+Music is fun, but could have used a little more variance.
+Break the monotony with occasional replays of the music or a combat track that fades in for combat and then fades out again.
+
+  Tech Notes:
+
+Game had only three glitches:
+    The fruit on the island and other sprites here and there were Z fighting.
+    Lag on the larger levels.
+    Game crashes on exit.
+
+  Team Notes:
+
+Excellent communication, although some personality differences caused some contention here and there.
+Coordination and task management were phenomenal.
+
+**Island of Potato by Knights Of The Round Potato**
+
+  Art Notes:
+
+Animations (boat pre and post crash, player walk and attack, torch, several enemies, and boss)
+Effects (lasers, enemy movement, boss dizzy, boss shield, sound meter, rocket trail, and stun zone reticle)
+Color scheme is excellent on the beach, but on the path and in the forest, things are either a light grey with tiny variation or a deep green/brown with tiny variation.
+The sign says "SAVE" on it, but the sign itself and the writing on the sign could be contrasted in color more since the save point is so important.
+Cutscene explains the game's shipwreck setting perfectly.
+The font can be hard to read at times and could have used a drop shadow or a little more boldness.
+The vignette is WAY too extreme and this is not allowed, because remember that strong red vignettes are all about BLOOD BLOOD BLOOD BLOOD BLOOD.
+There are many cases of lines being square when they should be curved or dithered.
+
+  Game Design Notes:
+
+Bosses are really satisfying to fight, but the other enemies are just a pain.
+The final boss is a lot of fun, except that the sheild is just way too hard to get around.
+It is exceedingly difficult to be stealthy, because enemies see you too easily and it is too hard to tell where they are looking.
+You can tell where they are, mostly, but you cannot predict whether turning a corner will let them see you.
+The two last bosses are impossible without the flashlight.
+
+  Sound Design Notes:
+
+The water and the boat crashing sound effects are excellent.
+Player walk sound effect is also great and sprinting accelerates the walk sound effect.
+Reload sound effect is broken.
+Some sound effects could have been added:
+    Fist attack.
+    Potato attack.
+    Boss level enter.
+    Boss ammo stations.
+    First stage of final boss.
+    Buttons (hover, unhover, press, invalid, accepted, etc.).
+Menu and boss music is fantastic, but the first game track to play is a brain numbingly pure tone that needed harmony, rhythm variance, reverb, etc.
+The music needed to be decreased in volume A TON by default and the sound effects needed to be boosted a lot.
+Combat track fades in for combat and then fades out again.
+
+  Tech Notes:
+
+Game had only five glitches:
+    Final boss isn't smart enough to path around things in it's first two stages and there are no missiles, so you can sit at the reload station forever.
+    Even with infinite health packs and ammo, you cannot beat the final boss without the flashlight and there is no way to exit the boss fight to get one.
+    Lag on the larger level causes gameplay to be too difficult and audio to glitch (yes it is the lag).
+    Player character plays the wrong animation when moving up and to the right.
+    Music stops playing after respawning in the boss level.
+
+  Team Notes:
+
+Excellent task tracking on Trello, but very rarely any communication on Discord.
+A lot of team communication was missing outside of class, including what people were working on or wanting to add to the game.
+Less directed during beginning of the project, but by the end, they knew what they wanted.
