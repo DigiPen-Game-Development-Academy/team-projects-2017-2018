@@ -1170,7 +1170,7 @@ Level =
 					string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
 					string FontName = "5a0f895ab1e49e19:DraftGameFont",
 					uint FontSize = 16,
-					string Text = "Go to last checkpoint = R",
+					string Text = "Go to last checkpoint = Y",
 					TextAlign Align = Left,
 					float PixelsPerUnit = 16,
 					bool Smoothing = false,

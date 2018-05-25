@@ -119,7 +119,7 @@ Level =
 			float FieldOfView = 45,
 			float NearPlane = 0.5,
 			float FarPlane = 500,
-			float Size = 20.1896782,
+			float Size = 90.4838028,
 		},
 		EditorCameraController = 
 		{
@@ -889,7 +889,7 @@ Level =
 		},
 		Vignette = 
 		{
-			Vec4 HurtColor = [0.360000014, 0.117864057, 0.0414000154, 1],
+			Vec4 HurtColor = [0.24000001, 0.13142401, 0.0528000146, 1],
 			Vec4 SlimeColor = [0.440978974, 0.829999983, 0.377649993, 1],
 		},
 	},
