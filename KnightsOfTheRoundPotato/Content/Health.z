@@ -65,7 +65,7 @@ class Health : ZilchComponent {
             this.CooldownTimer = this.Cooldown;
             
             this.FlashTimer = this.FlashLength;
-            this.Owner.Sprite.Color = Real4(1, 0, 0, 1);
+            this.Owner.Sprite.Color = Real4(0, 0, 0, 1);
             
         }
         
